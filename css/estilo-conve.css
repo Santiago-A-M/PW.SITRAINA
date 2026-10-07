@@ -1,0 +1,208 @@
+/* ==========================================================================
+   ESTILOS DE CONVENIOS (estilo-conve.css)
+   ========================================================================== */
+
+/* 1. Contenedor Principal */
+.contenedor-catalogo {
+    margin-top: 120px; /* Evita que el menú tape el título */
+    padding: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 2. Cabecera y Título (En Altas y Bajas) */
+.cabecera-revista {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: none; 
+    padding-bottom: 0;
+}
+/* 2. Cabecera y Título */
+.titulo-pagina {
+    color: #000000; /* Título cambiado a negro solicitado */
+    font-family: 'Roboto', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+/* 3. Menú de Categorías (Botones con bordes, texto negro y redondeados) */
+.menu-categorias {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px; 
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.btn-categoria {
+    background-color: #ffffff;
+    color: #000000;             /* Texto negro */
+    border: 2px solid #000000;  /* Borde negro solicitado */
+    padding: 12px 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 30px;        /* Esquinas redondeadas */
+    min-width: 140px;
+    font-size: 0.9rem;
+    text-transform: none;
+}
+
+/* Estado al pasar el mouse (Hover) y botón seleccionado (Active) */
+.btn-categoria:hover, 
+.btn-categoria.active {
+    background-color: #000000 !important; /* Fondo negro al activarse */
+    color: #ffffff !important;            /* Texto blanco para contraste sobre el fondo negro */
+    border-color: #000000 !important;
+}
+
+/* 4. Grid de Revista (Horizontal en Escritorio) */
+.grid-revista {
+    display: grid;
+    /* Crea columnas automáticas de mínimo 300px */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    padding-bottom: 50px;
+}
+
+/* 5. Tarjeta de Convenio */
+.tarjeta-pagina {
+    background: white;
+    border: 1px solid #eee;
+    padding: 10px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.tarjeta-pagina:hover {
+    transform: translateY(-5px);
+}
+
+.foto-convenio {
+    width: 100%;
+    height: 250px; /* Altura uniforme para las fotos */
+    background: #f9f9f9;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.foto-convenio img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Para que el logo/imagen se vea completo */
+    cursor: pointer;
+}
+
+.pie-pagina {
+    padding: 15px 5px;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.pie-pagina h3 {
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}
+
+.pie-pagina p {
+    color: #6
+}
+
+/* ==========================================================================
+   ESTILOS PARA MAXIMIZAR IMAGEN (LIGHTBOX)
+   ========================================================================== */
+.modal-lightbox {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 9999; /* Por encima de todo, incluido el menú */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* Fondo negro semitransparente */
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+}
+
+.modal-lightbox img {
+    max-width: 90%;
+    max-height: 85vh;
+    border: 3px solid #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.cerrar-lightbox {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    color: #fff;
+    font-size: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.cerrar-lightbox:hover {
+    color: #c81d25; /* Cambia a rojo SITRAINA al pasar el mouse */
+}
+
+/* Animación de apertura */
+@keyframes zoom {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+#imagen-maximizada {
+    animation: zoom 0.3s ease-out;
+}
+
+
+
+
+/* Cuando el body tiene la clase del modo oscuro */
+body.dark-mode .titulo-pagina {
+    color: #f0f0f0 !important; /* Gris muy claro/blanco */
+}
+
+body.dark-mode .btn-categoria {
+    background-color: #333;
+    color: #ffffff;
+    border-color: #555;
+}
+
+body.dark-mode .btn-categoria:hover,
+body.dark-mode .btn-categoria.active {
+    background-color: #004a99 !important; 
+    color: #ffffff !important;
+}
+
+/* Cuando el body tiene la clase de accesibilidad (ajusta '.daltonismo' al nombre de tu clase) */
+body.daltonismo .titulo-pagina {
+    color: #004a99 !important; /* Azul cobalto de accesibilidad */
+}
+
+body.daltonismo .btn-categoria {
+    border-color: #004a99;
+    color: #004a99;
+}
+
+body.daltonismo .btn-categoria.active,
+body.daltonismo .btn-categoria:hover {
+    background-color: #004a99 !important;
+    color: #ffffff !important;
+    border-color: #004a99 !important;
+}

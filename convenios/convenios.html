@@ -1,0 +1,374 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SITRAINA | Sindicato INA</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/estilo.css?v=15">
+  <link rel="stylesheet" href="../css/estilo-conve.css?v=3">
+  <link rel="icon" type="image/x-icon" href="../img/ley.png">
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+  <header class="header">
+  <div class="logo">
+    <a href="../index.html">
+        <img src="../img/logo.png" alt="SITRAINA">
+    </a>
+  </div>
+
+  <button class="menu-toggle" id="btn-menu">☰</button>
+
+<nav class="navbar" id="menu-principal">
+  <a href="../index.html">Inicio</a>
+  <a href="../quiensomos.html">Quiénes Somos</a>
+  <a href="../mision-vision.html">Misión y Visión</a>
+  <a href="../afiliacion.html">Afiliación</a>
+  <a href="../asesoria-legal.html">Asesoría</a>
+  <a href="../contacto.html">Contacto</a>
+</nav>
+
+<div class="acciones-header">
+    <button id="toggle-daltonismo" class="btn-header" title="Modo Accesibilidad">
+        <i class="fas fa-wheelchair"></i>
+    </button>
+    
+    <button id="toggle-oscuro" class="btn-header" title="Modo Oscuro">🌙</button>
+</div>
+</header>
+
+
+<main class="contenedor-catalogo">
+    <div class="cabecera-revista">
+        <h1 class="titulo-pagina">Convenios</h1>
+    </div>
+
+    <div class="menu-categorias">
+        <button class="btn-categoria active" onclick="filtrar('todos')">Todos</button>
+        <button class="btn-categoria" onclick="filtrar('salud')">Salud</button>
+        <button class="btn-categoria" onclick="filtrar('educacion')">Educación</button>
+        <button class="btn-categoria" onclick="filtrar('turismo')">Turismo</button>
+    </div>
+
+    <div class="grid-revista">
+        
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (1).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (2).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (3).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (4).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (5).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (6).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (7).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (8).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (9).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Asembis/asembis (10).jpg" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Zhen/Zhen (1).png" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Zhen/Zhen (2).png" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+       <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Zhen/Zhen (3).png" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+               <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Zhen/Zhen (4).png" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+               <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Zhen/Zhen (5).png" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/Zhen/Zhen (6).png" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="img-conv/SmartFit/Smartfit.png" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>SmartFit</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+  
+        <div class="tarjeta-pagina" data-category="educacion">
+            <div class="foto-convenio">
+                <img src="img-conv/ucienciasarte/ucienciaarte.png" alt="educacion" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>U. Ciencias y Artes</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+                <div class="tarjeta-pagina" data-category="educacion">
+            <div class="foto-convenio">
+                <img src="img-conv/ufidelitas/ufidelitas.png"   alt="educacion" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>U. Fidélitas</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+
+                <div class="tarjeta-pagina" data-category="educacion">
+            <div class="foto-convenio">
+                <img src="img-conv/UStaLucia/sta.png" alt="educacion" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>U. Sta.Lucía</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+                        <div class="tarjeta-pagina" data-category="turismo">
+            <div class="foto-convenio">
+                <img src="img-conv/bestwester/best.png" alt="Turismo" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Best Wester</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="turismo">
+            <div class="foto-convenio">
+                <img src="img-conv/ponderosa/ponderosa.png" alt="Turismo" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Ponderosa</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="turismo">
+            <div class="foto-convenio">
+                <img src="img-conv/termomania/thermo.png" alt="Turismo"  onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Thermomanía</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+
+
+</main>
+
+<div id="modal-imagen" class="modal-lightbox" onclick="cerrarImagen()">
+    <span class="cerrar-lightbox">&times;</span>
+    <img id="imagen-maximizada" src="" alt="Convenio Ampliado">
+</div>
+
+
+<footer class="footer-franja">
+    <div class="contenedor footer-grid-compacto">
+        
+        <div class="datos-contacto-premium">
+            <div class="dato">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="dato-texto">
+                    <span class="label">Dirección</span>
+                    <span class="valor">La Uruca, San José</span>
+                </div>
+            </div>
+            <div class="dato">
+                <i class="fas fa-envelope"></i>
+                <div class="dato-texto">
+                    <span class="label">Email</span>
+                    <span class="valor">sitraina@ina.ac.cr</span>
+                </div>
+            </div>
+            <div class="dato">
+                <i class="fas fa-phone-alt"></i>
+                <div class="dato-texto">
+                    <span class="label">Teléfono</span>
+                    <span class="valor">+506 2220-2480</span>
+                </div>
+            </div>
+            <div class="dato">
+                <i class="fab fa-whatsapp"></i>
+                <div class="dato-texto">
+                    <span class="label">WhatsApp</span>
+                    <span class="valor">+506 8448-1450</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="redes-contacto-premium">
+            <a href="https://facebook.com/sitraina.cr" target="_blank" class="btn-social">
+                <img src="../img/facebook.png" alt="Facebook">
+            </a>
+            <a href="https://www.instagram.com/sitrainacr" target="_blank" class="btn-social">
+                <img src="../img/instagram.png" alt="Instagram">
+            </a>
+            <a href="https://www.tiktok.com/@sitraina" target="_blank" class="btn-social">
+                <img src="../img/tik-tok.png" alt="TikTok">
+            </a>
+        </div>
+        
+    </div>
+</footer>
+
+<div id="modal-imagen" class="modal-lightbox" onclick="cerrarImagen()">
+    <span class="cerrar-lightbox">&times;</span>
+    <img id="imagen-maximizada" src="" alt="Convenio Ampliado">
+</div>
+
+
+  <!-- Script -->
+<script src="../js/script.js?v=002"></script>
+<script src="../js/script-conve.js"></script>
+ 
+
+  
+</body>
+</html>

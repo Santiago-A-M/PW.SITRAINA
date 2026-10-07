@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>SITRAINA | Sindicato INA</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/estilo.css?v=15">
+  <link rel="icon" type="image/x-icon" href="img/ley.png">
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+
+<body>
+
+  <header class="header">
+  <div class="logo">
+    <a href="index.html">
+        <img src="img/logo.png" alt="SITRAINA">
+    </a>
+  </div>
+
+  <button class="menu-toggle" id="btn-menu">☰</button>
+
+<nav class="navbar" id="menu-principal">
+  <a href="index.html">Inicio</a>
+  <a href="quiensomos.html">Quiénes Somos</a>
+  <a href="mision-vision.html">Misión y Visión</a>
+  <a href="afiliacion.html">Afiliación</a>
+  <a href="asesoria-legal.html">Asesoría</a>
+  <a href="contacto.html">Contacto</a>
+</nav>
+
+ <div class="acciones-header">
+    <button id="toggle-daltonismo" class="btn-header" title="Modo Accesibilidad">
+        <i class="fas fa-wheelchair"></i>
+    </button>
+    
+    <button id="toggle-oscuro" class="btn-header" title="Modo Oscuro">🌙</button>
+</div>
+
+
+
+
+</header>
+
+  <!-- Sección: Formulario de Afiliación -->
+  <section class="afiliacion">
+    <div class="contenedor">
+      <h2 style="text-align: center; color: var(--color-principal); margin-bottom: 40px;">Boleta de Afiliación SITRAINA</h2>
+      
+      <!-- FORMULARIO CORREGIDO -->
+      <form id="form-afiliacion" action="afiliacion.php" method="POST" style="max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: var(--sombra-suave);">
+        
+        <!-- Datos Personales -->
+        <fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+          <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Datos Personales</legend>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+            <input type="text" name="nombre" placeholder="Nombre completo" required>
+            <input type="text" name="cedula" placeholder="Número de cédula" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+            <input type="email" name="correo_ina" placeholder="Correo INA">
+            <input type="email" name="correo_personal" placeholder="Correo personal">
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+            <div>
+              <label>Fecha de nacimiento</label>
+              <input type="date" name="fecha_nacimiento">
+            </div>
+            <div>
+          
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+            <input type="text" name="nombramiento" placeholder="Tipo de nombramiento">
+          </div>
+        </fieldset>
+
+        <!-- Ubicación Laboral -->
+        <fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+          <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Ubicación Laboral</legend>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+            <input type="text" name="unidad" placeholder="Unidad regional">
+            <input type="text" name="centro" placeholder="Centro o núcleo">
+          </div>
+          <input type="text" name="puesto" placeholder="Puesto desempeñado" style="width: 100%; margin-bottom: 15px;">
+        </fieldset>
+
+        <!-- Teléfonos -->
+        <fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+          <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Teléfonos</legend>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+            <input type="text" name="telefono_trabajo" placeholder="Trabajo / Ext">
+            <input type="text" name="telefono_domicilio" placeholder="Domicilio">
+            <input type="text" name="telefono_celular" placeholder="Celular">
+          </div>
+        </fieldset>
+
+        <!-- Autorización -->
+        <fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px; background: var(--color-fondo-claro);">
+          <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Autorización</legend>
+          <p style="text-align: center; color: #23108f; font-weight: bold;">
+            Autorizo a la Unidad de Recursos Humanos del INA para que deduzca de mi
+            salario el 1% mensual a favor de SITRAINA.
+          </p> 
+        </fieldset>
+
+        <!-- Firma Digital -->
+<fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+  <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Firma Digital</legend>
+  <p style="text-align: center; color: #23108f; font-weight: bold;">
+    Una vez enviada tu afiliación, se generará un PDF con tus datos. 
+    <strong>Debes descargarlo y firmarlo con la aplicación Gaudi usando tu certificado digital.</strong>
+  </p> 
+  <p style="text-align: center; color: #23108f; font-weight: bold;">
+    ⚠️ Recuerda: sin la firma digital en Gaudi, la afiliación no es válida legalmente.
+  </p>
+</fieldset>
+
+
+        <!-- Botón de envío -->
+        <button type="submit" class="btn" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-top: 20px;">Enviar Afiliación</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Pie de página -->
+<footer class="footer-franja">
+    <div class="contenedor footer-grid-compacto">
+        
+        <div class="datos-contacto-premium">
+            <div class="dato">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="dato-texto">
+                    <span class="label">Dirección</span>
+                    <span class="valor">La Uruca, San José</span>
+                </div>
+            </div>
+            <div class="dato">
+                <i class="fas fa-envelope"></i>
+                <div class="dato-texto">
+                    <span class="label">Email</span>
+                    <span class="valor">sitraina@ina.ac.cr</span>
+                </div>
+            </div>
+            <div class="dato">
+                <i class="fas fa-phone-alt"></i>
+                <div class="dato-texto">
+                    <span class="label">Teléfono</span>
+                    <span class="valor">+506 2220-2480</span>
+                </div>
+            </div>
+            <div class="dato">
+                <i class="fab fa-whatsapp"></i>
+                <div class="dato-texto">
+                    <span class="label">WhatsApp</span>
+                    <span class="valor">+506 8448-1450</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="redes-contacto-premium">
+            <a href="https://facebook.com/sitraina.cr" target="_blank" class="btn-social">
+                <img src="img/facebook.png" alt="Facebook">
+            </a>
+            <a href="https://www.instagram.com/sitrainacr" target="_blank" class="btn-social">
+                <img src="img/instagram.png" alt="Instagram">
+            </a>
+            <a href="https://www.tiktok.com/@sitraina" target="_blank" class="btn-social">
+                <img src="img/tik-tok.png" alt="TikTok">
+            </a>
+        </div>
+        
+    </div>
+</footer>
+
+  <!-- Script -->
+<script src="js/script.js?v=05"></script>
+
+  
+</body>
+</html>

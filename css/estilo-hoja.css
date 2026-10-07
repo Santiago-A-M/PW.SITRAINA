@@ -1,0 +1,116 @@
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS DE LA GALERÍA (estilo-hoja.css)
+   ========================================================================== */
+
+/* Solo aplicamos el reseteo a los elementos dentro de la galería 
+   para no dañar el menú principal ni el footer */
+.contenedor-galeria, 
+.contenedor-galeria *,
+.contenedor-titulo-galeria,
+.contenedor-titulo-galeria * {
+    box-sizing: border-box;
+}
+
+/* Título de la página (Imagen central) */
+.contenedor-titulo-galeria {
+    text-align: center;
+    padding: 100px 20px 40px 20px; /* Espacio amplio arriba para no chocar con el menú */
+    width: 100%;
+}
+
+.imagen-titulo {
+    display: inline-block;
+    max-width: 90%;
+    height: auto;
+    width: 450px; /* Tamaño del título visual */
+}
+
+/* Contenedor Principal de la Galería */
+.contenedor-galeria {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 60vh;
+}
+
+/* GRID: Esto permite que las tarjetas se pongan una al lado de la otra */
+.grid-videos {
+    display: grid;
+    /* En escritorio permite varias columnas, en móvil baja a una */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 40px; 
+    width: 100%;
+    justify-items: center; 
+    align-items: start;
+    padding: 20px 0;
+}
+
+/* Tarjeta de Video */
+.tarjeta-video {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    width: 100%; 
+    max-width: 320px; 
+    display: flex;
+    flex-direction: column;
+}
+
+.tarjeta-video:hover {
+    transform: translateY(-5px);
+}
+
+/* Este contenedor ahora se ajustará al tamaño real del video */
+.video-wrapper {
+    width: 100%;
+    background: #000; /* Fondo de seguridad si la imagen es distinta */
+    border-radius: 15px 15px 0 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* El video dictará el tamaño de la tarjeta de forma natural */
+.video-wrapper video {
+    display: block;
+    width: 100%;
+    height: auto; /* IMPORTANTE: Esto mantiene la proporción original */
+    max-height: 80vh; /* Evita que videos muy largos se salgan de la pantalla */
+    
+    /* Mantiene la imagen del poster y el video con su forma original */
+    object-fit: contain; 
+}
+
+/* Información de la tarjeta */
+.info-video {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.info-video h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    color: #004b8d;
+    font-family: 'Roboto', sans-serif;
+}
+
+.info-video p {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0 0 20px 0;
+}
+
+/* Botón de Copiar Vínculo */
+.btn-copiar {
+    background-color: #004b8d;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
