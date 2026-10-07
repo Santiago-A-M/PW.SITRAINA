@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=15">
+  <link rel="stylesheet" href="css/estilo.css?v=2.22">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -26,19 +26,18 @@
 
  <nav class="navbar" id="menu-principal">
   <a href="index.html">Inicio</a>
-  <a href="quiensomos.html">Quiénes Somos</a>
-  <a href="mision-vision.html">Misión y Visión</a>
+  <a href="quiensomos.html">Conócenos</a>
   <a href="afiliacion.html">Afiliación</a>
   <a href="asesoria-legal.html">Asesoría</a>
+  <a href="documentos.html">Documentos</a>
   <a href="contacto.html">Contacto</a>
 </nav>
 
 <div class="acciones-header">
-    <button id="toggle-daltonismo" class="btn-header" title="Modo Accesibilidad">
-        <i class="fas fa-wheelchair"></i>
+    <button id="toggle-oscuro" class="btn-header" title="Cambiar tono" aria-label="Cambiar tono de la página">
+        <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
     </button>
-    
-    <button id="toggle-oscuro" class="btn-header" title="Modo Oscuro">🌙</button>
 </div>
 
 
@@ -51,6 +50,7 @@
     <div class="overlay"></div>
     <h1>Asesoría Legal Sindical</h1>
     <p>SITRAINA ofrece apoyo jurídico gratuito a sus afiliados en temas laborales.</p>
+    <a class="btn" href="solicitar-cita.html">Solicitar cita con el asesor legal</a>
   </section>
 
 
@@ -83,25 +83,14 @@
 
       </div> <!-- ✅ Cierre del contenedor de cards -->
 
-      <!-- ✨ MENSAJE DE AGENDAMIENTO ✨ -->
-      <div style="text-align: center; padding: 25px; margin-top: 30px; background: #f8f9fa; border-radius: 10px; max-width: 800px; margin: 30px auto 0 auto;">
-        <p style="font-size: 1.1rem; color: #333; line-height: 1.6; margin: 0;">
-          Puedes agendar tu cita a nuestro correo </p>
-          <a href="mailto:asesorialegalsitraina@gmail.com" style="color: #c00; text-decoration: none; font-weight: bold;">asesorialegalsitraina@gmail.com</a> 
-                  
+      <h1 class="titulo-consultores">Además disponemos de consultores especializados</h1>
+      <div class="lawyer-card">
+          <img src="img/mainor-castillo.jpg" alt="Mainor Castillo">
+          <h3>Lic. Mainor Castillo</h3>
+          <p>Especialista en derecho penal y derecho procesal</p>
       </div>
 
-      <!-- ✨ NUEVA SECCIÓN: CONSULTORES ✨ -->
-      <h1 style="text-align: center; color: rgb(29, 14, 186); margin: 40px 0 20px; font-size: 2.5rem;">Además disponemos de consultores especializados</h1>
-       <center><div class="lawyer-card" style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); width: 300px; text-align: center;">
-          <img src="img/mainor-castillo.jpg" alt="Mainor Castillo" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid #c00; object-fit: cover; margin: 0 auto 20px; display: block;">
-          <h3 style="margin: 10px 0 5px; color: #333;">Lic. Mainor Castillo</h3>
-          <p style="color: #666; margin: 0; font-style: italic;">Especialista en derecho penal y derecho procesal</p>
-        </div>
-      </center> 
-      </div>
-
-    </div> <!-- Cierre del contenedor principal -->
+    </div>
   </section> <!-- Cierre de la sección -->
 
   <!-- Pie de página -->
@@ -155,7 +144,7 @@
 </footer>
 
   <!-- Script -->
-<script src="js/script.js?v=5"></script>
+<script src="js/script.js?v=2.12"></script>
 
   
 </body>

@@ -20,7 +20,7 @@
 }
 /* 2. Cabecera y Título */
 .titulo-pagina {
-    color: #000000; /* Título cambiado a negro solicitado */
+    color: #2b211f;
     font-family: 'Roboto', sans-serif;
     font-size: 2.5rem;
     font-weight: 700;
@@ -41,8 +41,8 @@
 
 .btn-categoria {
     background-color: #ffffff;
-    color: #000000;             /* Texto negro */
-    border: 2px solid #000000;  /* Borde negro solicitado */
+    color: #6e1218;
+    border: 2px solid #6e1218;
     padding: 12px 25px;
     font-weight: bold;
     cursor: pointer;
@@ -56,9 +56,9 @@
 /* Estado al pasar el mouse (Hover) y botón seleccionado (Active) */
 .btn-categoria:hover, 
 .btn-categoria.active {
-    background-color: #000000 !important; /* Fondo negro al activarse */
-    color: #ffffff !important;            /* Texto blanco para contraste sobre el fondo negro */
-    border-color: #000000 !important;
+    background-color: #6e1218 !important;
+    color: #ffffff !important;
+    border-color: #6e1218 !important;
 }
 
 /* 4. Grid de Revista (Horizontal en Escritorio) */
@@ -116,7 +116,7 @@
 }
 
 .pie-pagina p {
-    color: #6
+    color: #4a403c;
 }
 
 /* ==========================================================================
@@ -186,23 +186,28 @@ body.dark-mode .btn-categoria {
 
 body.dark-mode .btn-categoria:hover,
 body.dark-mode .btn-categoria.active {
-    background-color: #004a99 !important; 
+    background-color: #c81d25 !important;
     color: #ffffff !important;
 }
 
-/* Cuando el body tiene la clase de accesibilidad (ajusta '.daltonismo' al nombre de tu clase) */
-body.daltonismo .titulo-pagina {
-    color: #004a99 !important; /* Azul cobalto de accesibilidad */
+body.dark-mode .tarjeta-pagina {
+    background: #2c2320;
+    border-color: #4a3d38;
 }
 
-body.daltonismo .btn-categoria {
-    border-color: #004a99;
-    color: #004a99;
+body.dark-mode .foto-convenio {
+    background: #1c1614;
 }
 
-body.daltonismo .btn-categoria.active,
-body.daltonismo .btn-categoria:hover {
-    background-color: #004a99 !important;
-    color: #ffffff !important;
-    border-color: #004a99 !important;
+body.dark-mode .pie-pagina {
+    border-top-color: #4a3d38;
+}
+
+body.dark-mode .pie-pagina h3,
+body.dark-mode .titulo-pagina {
+    color: #fff7f4 !important;
+}
+
+body.dark-mode .pie-pagina p {
+    color: #f0e8e2;
 }

@@ -15,7 +15,7 @@
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
 
-  <link rel="stylesheet" href="css/estilo.css?v=1.8">
+  <link rel="stylesheet" href="css/estilo.css?v=2.22">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -72,366 +72,177 @@
 
 <nav class="navbar" id="menu-principal" role="navigation" aria-label="Menú Principal">
   <a href="index.html">Inicio</a>
-  <a href="quiensomos.html">Quiénes Somos</a>
-  <a href="mision-vision.html">Misión y Visión</a>
+  <a href="quiensomos.html">Conócenos</a>
   <a href="afiliacion.html">Afiliación</a>
-  <a href="asesoria-legal.html">Asesoría Legal</a>
+  <a href="asesoria-legal.html">Asesoría</a>
+  <a href="documentos.html">Documentos</a>
   <a href="contacto.html">Contacto</a>
 </nav>
 
 <div class="acciones-header">
-    <button id="toggle-daltonismo" class="btn-header" title="Modo Accesibilidad">
-        <i class="fas fa-wheelchair"></i>
+    <button id="toggle-oscuro" class="btn-header" title="Cambiar tono" aria-label="Cambiar tono de la página">
+        <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
     </button>
-    
-    <button id="toggle-oscuro" class="btn-header" title="Modo Oscuro">🌙</button>
 </div>
 
 
 
 </header>
 
-  <!-- Hero -->
   <section class="hero">
-    <div class="overlay"></div>
+    <div class="hero-logo" role="img" aria-label="SITRAINA"></div>
     <h1>Defendiendo los derechos de las personas trabajadoras del INA</h1>
-  </br>
-    <p>Unidad, lucha y solidaridad por
-    condiciones laborales dignas</p>
-    <a href="quiensomos.html" class="btn">Conócenos</a><br>
-    <a href="legales.html" class="btn">Documentos Legales</a><br>
-    
+    <p>Unidad, lucha y solidaridad por condiciones laborales dignas</p>
+    <a href="quiensomos.html" class="btn">Conócenos</a>
   </section>
 
-<section class="servicios-seccion">
-    <div class="contenedor-botones-servicios">
-        <a href="efemerides.html" class="btn-servicio">Efemérides</a>
-        <a href="hojamier/galeria.html" class="btn-servicio">Hoja del Miércoles</a>
-        <a href="convenios/convenios.html" class="btn-servicio">Convenios</a>
-        </div>
-</section>
 
 
+  <section class="noticias">
+    <div class="comunicados">
+      <h2>Últimos comunicados</h2>
+      <p class="comunicados-intro">Avisos y actividades recientes del sindicato.</p>
+      <div class="cards comunicados-grid">
+        <article class="card">
+          <div class="imagen-noticia">
+            <img src="comunicados/concursoarte.png" alt="Concurso de Artesanía Colectiva">
+          </div>
+          <p class="comunicado-fecha">14 de julio de 2026</p>
+          <h3>Concurso de Artesanía Colectiva: participa con tu centro</h3>
+          <p>En conmemoración del 25 de julio, te invitamos a crear una artesanía colectiva con material reciclado e identidad regional. Hay premios en efectivo para los tres primeros lugares.</p>
+        </article>
 
-  <!-- Noticias -->
-<section class="noticias">
-      <div class="cont-selector">
-        <h2>Últimos Comunicados</h2>
+        <article class="card">
+          <div class="imagen-noticia">
+            <img src="comunicados/concursobomba.png" alt="Concurso Grabá una Bomba">
+          </div>
+          <p class="comunicado-fecha">14 de julio de 2026</p>
+          <h3>Concurso: grabá una bomba y celebrá nuestra historia</h3>
+          <p>Por el 202 aniversario de la Anexión del Partido de Nicoya, grabá un video en vertical con una bomba alusiva, mencioná a SITRAINA y envialo por correo.</p>
+        </article>
+
+        <article class="card">
+          <div class="imagen-noticia">
+            <img src="comunicados/concursoretaj.png" alt="Concurso Grabá una Retahíla">
+          </div>
+          <p class="comunicado-fecha">14 de julio de 2026</p>
+          <h3>Concurso: grabá una retahíla y ganá</h3>
+          <p>Iniciá con el grito típico guanacasteco, grabá tu retahíla en formato vertical, mencioná a SITRAINA y enviala por correo. Hay premios para los tres primeros lugares.</p>
+        </article>
+
+        <article class="card">
+          <div class="imagen-noticia">
+            <img src="comunicados/AfiliateSitraina.png" alt="Afíliate a SITRAINA">
+          </div>
+          <p class="comunicado-fecha">9 de julio de 2026</p>
+          <h3>Un sindicato fuerte nace de trabajadores unidos</h3>
+          <p>Afiliarse a SITRAINA es defender nuestros derechos, nuestra dignidad y el futuro del personal del INA.</p>
+        </article>
+
+        <article class="card">
+          <div class="imagen-noticia">
+            <img src="comunicados/vidrioxvidrio.jpeg" alt="Canje vidrio por vidrio">
+          </div>
+          <p class="comunicado-fecha">30 de junio de 2026</p>
+          <h3>Canje vidrio por vidrio</h3>
+          <p>Mes del Ambiente: sumate a la jornada vidrio por vidrio y transformemos juntos el futuro.</p>
+        </article>
+
+        <article class="card">
+          <div class="imagen-noticia">
+            <img src="comunicados/convasamblea2026.png" alt="Asamblea Ordinaria 2026">
+          </div>
+          <p class="comunicado-fecha">15 de mayo de 2026</p>
+          <h3>Asamblea Ordinaria 2026</h3>
+          <p>Invitación a la Asamblea General Ordinaria del 15 de mayo de 2026, uno de los encuentros anuales del sindicato.</p>
+        </article>
       </div>
-
-<div class="contenedor-boton-central">
-    <a href="informes-secretaria.html" class="btn-negro">Informe de la Junta Directiva y Secretarías</a> 
-</div>
-<div class="contenedor-boton-central"></div> 
-    <a href="actas.html" class="btn-negro">Actas de Asamblea</a>
-</div>
-
-    <div class="cards">
- <!--
-    <div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/concursoarte.png" width="90%" alt="Concurso de Artesanía Colectiva - SITRAINA">
-        </div>
-        <h3>Concurso de Artesanía Colectiva: ¡Participa con tu Centro!</h3>
-        <p><small>Enviado 14 de julio de 2026</small></p>
-        <p>En conmemoración del 25 de julio (Anexión del Partido de Nicoya a Guanacaste), te invitamos a crear una artesanía colectiva hecha con material reciclado e identidad regional. ¡Demostremos nuestro talento, creatividad y amor por nuestra tierra! Hay premios en efectivo para los tres primeros lugares.</p>
     </div>
+  </section>
 
-
-    <div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/concursobomba.png" width="90%" alt="Concurso Grabá una Bomba - SITRAINA">
-        </div>
-        <h3>Concurso: ¡Grabá una Bomba y celebrá nuestra historia!</h3>
-        <p><small>Enviado 14 de julio de 2026</small></p>
-        <p>Conmemorando el 202 Aniversario de la Anexión del Partido de Nicoya a Guanacaste, te invitamos a participar con tu creatividad. Grabá tu video en formato vertical diciendo una bomba alusiva, iniciá con el grito típico ¡BOMBAAAAA!, mencioná a SITRAINA y envíalo por correo. ¡Habrá premios en efectivo para los ganadores!</p>
-    </div>
-
-    <div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/concursoretaj.png" width="90%" alt="Concurso Grabá una Retahíla - SITRAINA">
-        </div>
-        <h3>Concurso: ¡Grabá una Retahíla y ganá!</h3>
-        <p><small>Enviado 14 de julio de 2026</small></p>
-        <p>Siguiendo con las celebraciones del 202 Aniversario de la Anexión del Partido de Nicoya a Guanacaste, te invitamos a participar en el concurso de retahílas. Iniciá con el grito típico guanacasteco, grabá tu video en formato vertical con una retahíla alusiva, mencioná a SITRAINA y envíalo por correo. ¡Hay premios en efectivo para los tres primeros lugares!</p>
-    </div> -->
-
-    </div>
-
-
-    <div class="cards" style="margin-top: 35px;">
-
-
-      <div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/AfiliateSitraina.png" width="90%" alt="¡Afíliate a SITRAINA!">
-        </div>
-        <h3>Un Sindicato fuerte nace de trabajadores unidos</h3>
-        <p><small>Jueves 9 de julio de 2026</small></p>
-        <p>Afiliarse a SITRAINA es defender nuestros derechos, nuestra dignidad y el futuro del personal del INA. Defendemos tus derechos, luchamos por tu dignidad y construimos juntos el futuro.</p>
-      </div>
-
-
-      <div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/vidrioxvidrio.jpeg" width="90%" alt="Canje vidrio x vidrio">
-        </div>
-        <h3>Canje vidrio x vidrio</h3>
-        <p><small>Martes 30 de junio de 2026</small></p>
-        <p>Mes del Ambiente: ¡Súmate a nuestra jornada vidrio x vidrio y transformemos juntos el futuro!</p>
-      </div>
-      
-
-
-      <div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/convasamblea2026.png" width="90%" alt="Asamblea Ordinaria">
-        </div>
-        <h3>Asamblea Ordinaria 2026</h3>
-        <p><small>Viernes 15 de mayo de 2026</small></p>
-        <p> Nos honra comunicarles que ha llegado uno de los eventos anuales más esperados de nuestra organización. Les extendemos la más cordial invitación a participar en nuestra Asamblea General Ordinaria, el 15 de mayo, 2026</p>
-      </div>
-      
-
-       <!--<div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/imagen_webinar1.jpg" alt="Webinar Informativo">
-        </div>
-        <h3>Webinar informativo</h3>
-        <p><small>Viernes 27 de marzo de 2026</small></p>
-        <p>Agradecemos a las personas participantes de nuestra sesión virtual, sobre el tema: Estado actual de la convención.</p>
-      </div>-->
-
-
-      <!--<div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/imagen_poesia.jpg" alt="Ganadores de Poesía">
-        </div>
-        <h3>Ganadores de poesía</h3>
-        <p><small>Lunes 23 de marzo de 2026</small></p>
-        <p>Felicitamos a los compañeros que destacaron en el concurso cultural del día de la amistad.</p>
-      </div>-->
-
-
-     <!--  <div class="card">
-        <div class="imagen-noticia">
-          <img src="comunicados/imagen_mujer.jpg" alt="Día de la Mujer">
-        </div>
-        <h3>En conmemoración del día internacional de la mujer</h3>
-        <p><small>Domingo 8 de marzo de 2026</small></p>
-        <p>Reconocemos la labor fundamental de las trabajadoras en nuestra institución.</p>
-      </div>-->
-
-
-
-
-
-
-
-  </div>
-
-
-
-
-
-
-</section>
-
-  <!-- Junta Directiva -->
   <section class="directiva">
     <div class="contenedor">
-      <h2><center>Junta Directiva</center></h2></br>
-      <p style="text-align: center; margin-bottom: 30px; color: #555;">
-        Representantes que velan por los derechos laborales de las personas trabajadores del INA.
-      </p>
+      <h2>Junta Directiva</h2>
+      <p class="directiva-intro">Representantes que velan por los derechos laborales de las personas trabajadoras del INA.</p>
 
-      <div class="cards">
-        <!-- Miembro: Secretaria General -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría General</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/I-secretaria-general.jpg" alt="I Secretaria General" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Luzmilda Cerdas Rojas</h3>
-             <p><small>Responsable de la dirección estratégica del sindicato, representación legal y coordinación general.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:lcerdasrojas@ina.ac.cr">lcerdasrojas@ina.ac.cr</a></p>
-          </div>
+      <div class="directiva-carrusel">
+        <button type="button" class="directiva-flecha" data-dir="-1" aria-label="Anterior">‹</button>
+        <div class="directiva-pista" tabindex="0">
+          <button type="button" class="directivo-card" data-puesto="Secretaría General" data-nombre="Luzmilda Cerdas Rojas" data-correo="lcerdasrojas@ina.ac.cr" data-foto="img/I-secretaria-general.jpg" data-info="Responsable de la dirección estratégica del sindicato, representación legal y coordinación general.">
+            <span class="directivo-puesto">Secretaría General</span>
+            <img src="img/I-secretaria-general.jpg" alt="">
+            <strong>Luzmilda Cerdas Rojas</strong>
+            <span class="directivo-resumen">Responsable de la dirección estratégica del sindicato, representación legal y coordinación general.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Secretaría de la mujer" data-nombre="Raquel Uribe Berrios" data-correo="ruribeberrios@ina.ac.cr" data-foto="img/secretaria-mujer.jpg" data-info="Motiva y promueve la participación, representatividad y organización de las mujeres trabajadoras, defendiendo sus derechos laborales.">
+            <span class="directivo-puesto">Secretaría de la mujer</span>
+            <img src="img/secretaria-mujer.jpg" alt="">
+            <strong>Raquel Uribe Berrios</strong>
+            <span class="directivo-resumen">Motiva y promueve la participación, representatividad y organización de las mujeres trabajadoras, defendiendo sus derechos laborales.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Secretaría de Investigación" data-nombre="Carlos González Castro" data-correo="cgonzalezcastro@ina.ac.cr" data-foto="img/secretaria-de-investigacion.jpg" data-info="Estudios sobre condiciones laborales y propuestas de mejora.">
+            <span class="directivo-puesto">Secretaría de Investigación</span>
+            <img src="img/secretaria-de-investigacion.jpg" alt="">
+            <strong>Carlos González Castro</strong>
+            <span class="directivo-resumen">Estudios sobre condiciones laborales y propuestas de mejora.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Secretaría de la Educación y Docencia" data-nombre="Luis Diego González Esquivel" data-correo="lgonzalezesquivel@ina.ac.cr" data-foto="img/secretaria-de-la-educacion-y-docencia.jpg" data-info="Capacitación sindical, talleres y formación en derechos laborales.">
+            <span class="directivo-puesto">Secretaría de la Educación y Docencia</span>
+            <img src="img/secretaria-de-la-educacion-y-docencia.jpg" alt="">
+            <strong>Luis Diego González Esquivel</strong>
+            <span class="directivo-resumen">Capacitación sindical, talleres y formación en derechos laborales.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Secretaría de Finanzas" data-nombre="Eunice Villalobos Sanchez" data-correo="EVillalobosSanchez@ina.ac.cr" data-foto="img/secretaria-de-finanzas.jpg" data-info="Administración presupuestaria, gestión de cuotas, redención de cuentas y control financiero.">
+            <span class="directivo-puesto">Secretaría de Finanzas</span>
+            <img src="img/secretaria-de-finanzas.jpg" alt="">
+            <strong>Eunice Villalobos Sanchez</strong>
+            <span class="directivo-resumen">Administración presupuestaria, gestión de cuotas, redención de cuentas y control financiero.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Secretaría de Afiliación" data-nombre="Miguel Vargas Arias" data-correo="mvargasarias@ina.ac.cr" data-foto="img/secretario-de-afiliacion.jpg" data-info="Se encarga de procesar las nuevas solicitudes, validar la documentación y mantener actualizada la base de datos.">
+            <span class="directivo-puesto">Secretaría de Afiliación</span>
+            <img src="img/secretario-de-afiliacion.jpg" alt="">
+            <strong>Miguel Vargas Arias</strong>
+            <span class="directivo-resumen">Se encarga de procesar las nuevas solicitudes, validar la documentación y mantener actualizada la base de datos.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Secretaría de Conflictos" data-nombre="Eduardo Ortega Rodríguez" data-correo="eortegarodriguez@ina.ac.cr" data-foto="img/secretaria-conflictos.jpg" data-info="Previene conflictos de trabajo, atiende y asesora los reclamos individuales o colectivos de los afiliados y vela por el cumplimiento del Convenio Colectivo.">
+            <span class="directivo-puesto">Secretaría de Conflictos</span>
+            <img src="img/secretaria-conflictos.jpg" alt="">
+            <strong>Eduardo Ortega Rodríguez</strong>
+            <span class="directivo-resumen">Previene conflictos de trabajo, atiende y asesora los reclamos individuales o colectivos de los afiliados y vela por el cumplimiento del Convenio Colectivo.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Secretaría de Propaganda" data-nombre="Vanessa Monge Castillo" data-correo="VMongeCastillo@ina.ac.cr" data-foto="img/secretaria-de-propaganda.jpg" data-info="Planifica, coordina y administra las campañas de comunicación, publicaciones, redes sociales y estrategias de afiliación del sindicato.">
+            <span class="directivo-puesto">Secretaría de Propaganda</span>
+            <img src="img/secretaria-de-propaganda.jpg" alt="">
+            <strong>Vanessa Monge Castillo</strong>
+            <span class="directivo-resumen">Planifica, coordina y administra las campañas de comunicación, publicaciones, redes sociales y estrategias de afiliación del sindicato.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Fiscal" data-nombre="Maribel Garcia Fonseca" data-correo="mgarciafonseca@ina.ac.cr" data-foto="img/Fiscal.jpeg" data-info="Vigila y supervisa la correcta administración del sindicato, garantizando que tanto la Junta Directiva como las personas afiliadas cumplan con los estatutos y las normativas vigentes.">
+            <span class="directivo-puesto">Fiscal</span>
+            <img src="img/Fiscal.jpeg" alt="">
+            <strong>Maribel Garcia Fonseca</strong>
+            <span class="directivo-resumen">Vigila y supervisa la correcta administración del sindicato, garantizando que tanto la Junta Directiva como las personas afiliadas cumplan con los estatutos y las normativas vigentes.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Vocal 1" data-nombre="Aisha Blackwood Barret" data-correo="ABlackwoodBarret@ina.ac.cr" data-foto="img/vocal1-aisha.jpg" data-info="Sustituye de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.">
+            <span class="directivo-puesto">Vocal 1</span>
+            <img src="img/vocal1-aisha.jpg" alt="">
+            <strong>Aisha Blackwood Barret</strong>
+            <span class="directivo-resumen">Sustituye de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Vocal 2" data-nombre="Marielos Bermúdez Araya" data-correo="MBermudezAraya@ina.ac.cr" data-foto="img/vocal2-mari.jpeg" data-info="Sustituye de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.">
+            <span class="directivo-puesto">Vocal 2</span>
+            <img src="img/vocal2-mari.jpeg" alt="">
+            <strong>Marielos Bermúdez Araya</strong>
+            <span class="directivo-resumen">Sustituye de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.</span>
+          </button>
+          <button type="button" class="directivo-card" data-puesto="Vocal 3" data-nombre="Cristhofer Hernández Guzmán" data-correo="chernandezguzman@ina.ac.cr" data-foto="img/vocal3-cris.jpg" data-info="Sustituye de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.">
+            <span class="directivo-puesto">Vocal 3</span>
+            <img src="img/vocal3-cris.jpg" alt="">
+            <strong>Cristhofer Hernández Guzmán</strong>
+            <span class="directivo-resumen">Sustituye de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.</span>
+          </button>
         </div>
-
-                <!-- Miembro: Secretaria de la mujer -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de la mujer</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/secretaria-mujer.jpg" alt="Secretaria de la mujer" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Raquel Uribe Berrios</h3>
-             <p><small>Motiva y promueve la participación, representatividad y organización de las mujeres trabajadoras, defendiendo sus derechos laborales.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:ruribeberrios@ina.ac.cr">ruribeberrios@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-                        <!-- Miembro: Secretaria de Investigación -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de Investigación</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/secretaria-de-investigacion.jpg" alt="Secretaria de Investigación" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Carlos González Castro</h3>
-             <p><small>Estudios sobre condiciones laborales, propuestas de mejora.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:cgonzalescastro@ina.ac.cr">cgonzalezcastro@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-        <!-- Miembro: Secretaria de la Educación y Docencia -->
-        <div class="card">
-          <div style="background:#0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de la Educación y Docencia</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/secretaria-de-la-educacion-y-docencia.jpg" alt="Secretaria de Educación" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Luis Diego González Esquivel</h3>
-             <p><small>Capacitación sindical, talleres, formación en derechos laborales.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:lgonzalezesquivel@ina.ac.cr">lgonzalezesquivel@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-         <!-- Miembro: Secretaria de cultura -->
-         <!--<div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de Asuntos Sociales y Culturales</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/secretaria-de-cultura.jpeg" alt="Secretaria de cultura" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Veronica Mora Badilla</h3>
-             <p><small>Promueve el desarrollo integral de los trabajadores organizando actividades e intercambios sociales, culturales y deportivos.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:MMoraBadilla@ina.ac.cr">MMoraBadilla@ina.ac.cr</a></p>
-          </div>
-        </div>-->
-
-        <!-- Miembro: Secretaria Finanzas -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de Finanzas</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/secretaria-de-finanzas.jpg" alt="Secretaria Finanzas" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Eunice Villalobos Sanchez</h3>
-             <p><small>Administración presupuestaria, gestión de cuotas, redención de cuentas y control financiero.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:EVillalobosSanchez@ina.ac.cr">EVillalobosSanchez@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-
-        <!-- Miembro: Secretaría de Afiliación -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de Afiliación</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/secretario-de-afiliacion.jpg" alt="Suplente" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Miguel Vargas Arias</h3>
-             <p><small>Se encarga de procesar las nuevas solicitudes, validar la documentación y mantener actualizada la base de datos</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:mvargasarias@ina.ac.cr">mvargasarias@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-        <!-- Miembro: Secretaría de conflictos -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de Conflictos</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/secretaria-conflictos.jpg" alt="Suplente" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Eduardo Ortega Rodríguez</h3>
-             <p><small>Previene conflictos de trabajo, atiende y asesora los reclamos individuales o colectivos de los afiliados y vela por el cumplimiento del Convenio Colectivo.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:eortegarodriguez@ina.ac.cr">eortegarodrigez@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-                <!-- Miembro: Secretaría de Propaganda -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de Propaganda</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/secretaria-de-propaganda.jpg" alt="Suplente" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Vanessa Monge Castillo</h3>
-             <p><small>Planifica, coordina y administra las campañas de comunicación, publicaciones, redes sociales y estrategias de afiliación del sindicato.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:VMongeCastillo@ina.ac.cr">VMongeCastillo@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-
- <!--
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Secretaría de Actas</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/actas.-walia.jpg" alt="Suplente" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Walia Baltodano Fernandez</h3>
-             <p><small>Redactar, registrar lo acordado en las reuniones, custodiando los libros de actas oficiales.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:WBaltodanoFernandez@ina.ac.cr">WBaltodanoFernandez@ina.ac.cr</a></p>
-          </div>
-        </div> 
-
-    -->
-
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Fiscal</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/Fiscal.jpeg" alt="Suplente" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Maribel Garcia Fonseca</h3>
-             <p><small>Su propósito principal es vigilar y supervisar la correcta administración del sindicato, garantizando que tanto la Junta Directiva como los afiliados cumplan fielmente con los estatutos y las normativas vigentes.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:mgarciafonseca@ina.ac.cr">mgarciafonseca@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-          <!-- Miembro: Suplencia -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Vocal 1</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/vocal1-aisha.jpg" alt="Suplente" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Aisha Blackwood Barret</h3>
-             <p><small>Sustituir de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:ABlackwoodBarret@ina.ac.cr">ABlackwoodBarret@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-              <!-- Miembro: Suplencia -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Vocal 2</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/vocal2-mari.jpeg" alt="Suplente" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Marielos Bermúdez Araya</h3>
-             <p><small>Sustituir de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:MBermudezAraya@ina.ac.cr">MBermudezAraya@ina.ac.cr</a></p>
-          </div>
-        </div>
-
-
-        <!-- Miembro: Suplencia -->
-        <div class="card">
-          <div style="background: #0a0a0a; color: white; padding: 10px; border-radius: 8px 8px 0 0;">
-            <strong>Vocal 3</strong>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/vocal3-cris.jpg" alt="Suplente" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 10px auto; display: block;">
-            <h3 style="color: #c81d25; margin: 10px 0;">Cristhofer Hernández Guzmán</h3>
-             <p><small>Sustituir de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.</small></p>
-             <p><strong>✉️ Correo:</strong> <a href="mailto:chernandezguzman@ina.ac.cr">chernandezguzman@ina.ac.cr</a></p>
-          </div>
-        </div>
-
+        <button type="button" class="directiva-flecha" data-dir="1" aria-label="Siguiente">›</button>
       </div>
     </div>
   </section>
@@ -522,24 +333,19 @@
     </div>
 </footer>
 
-  <!-- Script -->
-<script src="js/script.js?v=1.8"></script>
+<div class="directiva-popup" id="directiva-popup" aria-hidden="true">
+  <div class="directiva-popup-panel" role="dialog" aria-modal="true" aria-labelledby="directiva-popup-nombre">
+    <button type="button" class="directiva-cerrar" aria-label="Cerrar">×</button>
+    <img id="directiva-popup-foto" alt="">
+    <p class="directiva-popup-puesto" id="directiva-popup-puesto"></p>
+    <h3 id="directiva-popup-nombre"></h3>
+    <p class="directiva-popup-info" id="directiva-popup-info"></p>
+    <p class="directiva-popup-correo"><a id="directiva-popup-correo" href="#"></a></p>
+  </div>
+</div>
 
-<!-- Script del Widget SITRABOT (Escritorio + Móvil) -->
-<!-- Script de SITRABOT (Sólido para Escritorio y Móvil) -->
-<script type="text/javascript">
-  (function(d, t) {
-      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-      v.onload = function() {
-        window.voiceflow.chat.load({
-          verify: { projectID: '6a6430122d588910c3573a70' }
-        });
-      }
-      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; 
-      v.type = "text/javascript"; 
-      s.parentNode.insertBefore(v, s);
-  })(document, 'script');
-</script>
+  <!-- Script -->
+<script src="js/script.js?v=2.12"></script>
   
 </body>
 </html>

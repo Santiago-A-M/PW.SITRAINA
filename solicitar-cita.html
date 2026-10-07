@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SITRAINA | Conócenos</title>
+  <title>SITRAINA | Solicitar cita</title>
   <link rel="stylesheet" href="css/estilo.css?v=2.22">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
 
   <header class="header">
@@ -18,9 +17,7 @@
         <img src="img/logo.png" alt="SITRAINA">
       </a>
     </div>
-
     <button class="menu-toggle" id="btn-menu">☰</button>
-
     <nav class="navbar" id="menu-principal">
       <a href="index.html">Inicio</a>
       <a href="quiensomos.html">Conócenos</a>
@@ -29,7 +26,6 @@
       <a href="documentos.html">Documentos</a>
       <a href="contacto.html">Contacto</a>
     </nav>
-
     <div class="acciones-header">
       <button id="toggle-oscuro" class="btn-header" title="Cambiar tono" aria-label="Cambiar tono de la página">
         <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -38,58 +34,64 @@
     </div>
   </header>
 
-  <main class="conocenos">
+  <main class="pagina-cita">
     <div class="contenedor">
-      <h1>Conócenos</h1>
-
-      <section class="quiensomos conocenos-bloque" id="quienes">
-        <h2>Quiénes somos</h2>
-        <div class="contenedor-flex">
-          <div class="caja texto-quienes">
-            <p>
-              <strong>SITRAINA</strong> es el Sindicato de Trabajadores del Instituto Nacional de Aprendizaje (INA), una organización comprometida con la defensa de los derechos laborales y el bienestar de sus afiliados.
-            </p>
-            <p>
-              Desde nuestra fundación, hemos trabajado con compromiso para defender los intereses colectivos de los empleados del INA, promoviendo la unidad, la solidaridad y la participación activa en la defensa del trabajo digno.
-            </p>
-            <p>
-              Representamos a instructores, personal administrativo, técnicos y funcionarios que contribuyen al éxito del Instituto Nacional de Aprendizaje. Creemos en el diálogo, la negociación colectiva y la acción organizada como herramientas para lograr justicia social y equidad en el entorno laboral.
-            </p>
-            <p>
-              Nuestro compromiso es exceder las expectativas de nuestros afiliados, ofreciendo apoyo legal, formación sindical y representación efectiva ante la institución.
-            </p>
+      <a class="volver-asesoria" href="asesoria-legal.html">Volver a asesoría</a>
+      <h1>Solicitar cita con el asesor legal</h1>
+      <p class="cita-intro">Elige un día hábil y una hora. La solicitud llega a sitraina@ina.ac.cr y a asesorialegalsitraina@gmail.com, y tú recibes un correo de confirmación.</p>
+      <form class="form-cita" id="form-cita" action="cita.php" method="POST">
+        <div class="cita-layout">
+          <div class="cita-calendario">
+            <div class="cita-mes">
+              <button type="button" class="cita-nav" id="cita-mes-anterior" aria-label="Mes anterior">‹</button>
+              <strong id="cita-mes-titulo"></strong>
+              <button type="button" class="cita-nav" id="cita-mes-siguiente" aria-label="Mes siguiente">›</button>
+            </div>
+            <div class="cita-semana" aria-hidden="true">
+              <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+            </div>
+            <div class="cita-dias" id="cita-dias"></div>
+            <div class="cita-horas" id="cita-horas" hidden>
+              <p>Hora de la cita</p>
+              <div class="cita-hora-lista" id="cita-hora-lista"></div>
+            </div>
+            <p class="cita-resumen" id="cita-resumen"></p>
+            <input type="hidden" name="fecha" id="cita-fecha">
+            <input type="hidden" name="hora" id="cita-hora">
           </div>
-          <div class="caja imagen-quienes">
-            <img src="img/foto1.jpg" alt="Equipo de trabajo SITRAINA">
+          <div class="cita-datos">
+            <label>Nombre completo
+              <input type="text" name="nombre" required maxlength="120" autocomplete="name">
+            </label>
+            <label>Cédula
+              <input type="text" name="cedula" required maxlength="20" autocomplete="off">
+            </label>
+            <label>Correo electrónico
+              <input type="email" name="email" required maxlength="120" autocomplete="email">
+            </label>
+            <label>Teléfono
+              <input type="tel" name="telefono" required maxlength="20" autocomplete="tel">
+            </label>
+            <label>¿Es persona afiliada?
+              <select name="afiliado" required>
+                <option value="">Selecciona</option>
+                <option value="Sí">Sí</option>
+                <option value="No">No</option>
+              </select>
+            </label>
+            <label>Sede o centro de trabajo
+              <input type="text" name="sede" required maxlength="120">
+            </label>
+            <label class="ancho">Motivo de la consulta
+              <textarea name="motivo" rows="4" required maxlength="800"></textarea>
+            </label>
+            <label class="cita-trampa" aria-hidden="true">Sitio web
+              <input type="text" name="sitio" tabindex="-1" autocomplete="off">
+            </label>
           </div>
         </div>
-      </section>
-
-      <section class="mision-vision conocenos-bloque" id="identidad">
-        <h2>Nuestra identidad</h2>
-        <div class="contenedor-flex">
-          <div class="caja texto-mision">
-            <h3>Misión</h3>
-            <p>
-              Promover la unidad y defender los derechos laborales de los trabajadores del Instituto Nacional de Aprendizaje (INA), garantizando condiciones de trabajo dignas, mediante la negociación colectiva y la representación efectiva.
-            </p>
-            <h3>Visión</h3>
-            <p>
-              Ser el sindicato líder y referente a nivel nacional, que impulse el desarrollo profesional de sus afiliados y contribuya al mejoramiento continuo del sistema educativo técnico en Costa Rica.
-            </p>
-            <h3>Nuestros valores</h3>
-            <ul>
-              <li><strong>Unidad:</strong> Trabajo conjunto por objetivos comunes.</li>
-              <li><strong>Justicia:</strong> Equidad en los derechos laborales.</li>
-              <li><strong>Solidaridad:</strong> Apoyo mutuo entre afiliados.</li>
-              <li><strong>Transparencia:</strong> Honestidad en cada acción.</li>
-            </ul>
-          </div>
-          <div class="caja imagen-mision">
-            <img src="img/juntos.jpg" alt="Personas trabajadoras del INA reunidas">
-          </div>
-        </div>
-      </section>
+        <button type="submit" class="btn">Enviar solicitud de cita</button>
+      </form>
     </div>
   </main>
 

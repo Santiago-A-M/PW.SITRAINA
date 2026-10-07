@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=15">
+  <link rel="stylesheet" href="css/estilo.css?v=2.22">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -26,19 +26,18 @@
 
 <nav class="navbar" id="menu-principal">
   <a href="index.html">Inicio</a>
-  <a href="quiensomos.html">Quiénes Somos</a>
-  <a href="mision-vision.html">Misión y Visión</a>
+  <a href="quiensomos.html">Conócenos</a>
   <a href="afiliacion.html">Afiliación</a>
   <a href="asesoria-legal.html">Asesoría</a>
+  <a href="documentos.html">Documentos</a>
   <a href="contacto.html">Contacto</a>
 </nav>
 
 <div class="acciones-header">
-    <button id="toggle-daltonismo" class="btn-header" title="Modo Accesibilidad">
-        <i class="fas fa-wheelchair"></i>
+    <button id="toggle-oscuro" class="btn-header" title="Cambiar tono" aria-label="Cambiar tono de la página">
+        <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
     </button>
-    
-    <button id="toggle-oscuro" class="btn-header" title="Modo Oscuro">🌙</button>
 </div>
 
 </header>
@@ -75,29 +74,43 @@
         </section>
 
         <section class="seccion-info-contacto">
-            <h2>Información de Contacto</h2>
+            <h2>Información de contacto</h2>
             <div class="info-item">
-                <span class="icono">📍</span>
-                <p>Dirección: [Avenida 59, Calle 106, Barrio Finca La Caja, Uruca, San José, Costa Rica, código postal 10107]<br>Uruca, San José</p>
-            </div>
-            <div class="info-item">
-                <span class="icono">📧</span>
-                <p>Email: <a href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a></p>
-            </div>
-            <div class="info-item">
-                <span class="icono">📱</span>
-                <p>Teléfono: [+506 22202480]</p>
+                <span class="icono" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></span>
+                <div>
+                    <span class="info-etiqueta">Dirección</span>
+                    <p>Avenida 59, Calle 106, Barrio Finca La Caja, Uruca, San José. Código postal 10107.</p>
+                </div>
             </div>
             <div class="info-item">
-                <span class="icono">🕘</span>
-                <p>Horario: Lunes a Viernes<br>7:00 AM - 3:00 PM</p>
+                <span class="icono" aria-hidden="true"><i class="fas fa-envelope"></i></span>
+                <div>
+                    <span class="info-etiqueta">Correo</span>
+                    <p><a href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a></p>
+                </div>
             </div>
-
-             <div class="info-item">
-                <span class="icono">📱</span>
-                <p>WhatsApp: [+506 84481450]</p>
+            <div class="info-item">
+                <span class="icono" aria-hidden="true"><i class="fas fa-phone-alt"></i></span>
+                <div>
+                    <span class="info-etiqueta">Teléfono</span>
+                    <p><a href="tel:+50622202480">+506 2220-2480</a></p>
+                </div>
             </div>
-            </section>
+            <div class="info-item">
+                <span class="icono" aria-hidden="true"><i class="fas fa-clock"></i></span>
+                <div>
+                    <span class="info-etiqueta">Horario</span>
+                    <p>Lunes a viernes, de 7:00 a. m. a 3:00 p. m.</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="icono" aria-hidden="true"><i class="fab fa-whatsapp"></i></span>
+                <div>
+                    <span class="info-etiqueta">WhatsApp</span>
+                    <p><a href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a></p>
+                </div>
+            </div>
+        </section>
     </main>
 
   <!-- Pie de página -->
@@ -151,7 +164,7 @@
 </footer>
 
 
-<script src="js/script.js?v=5"></script>
+<script src="js/script.js?v=2.12"></script>
 
 
 </html>

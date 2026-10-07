@@ -96,7 +96,7 @@
 .info-video h3 {
     margin: 0 0 8px 0;
     font-size: 1.2rem;
-    color: #004b8d;
+    color: #c81d25;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -107,10 +107,23 @@
 }
 
 /* Botón de Copiar Vínculo */
+body.dark-mode .tarjeta-video {
+    background: #2c2320;
+}
+
+body.dark-mode .info-video h3 {
+    color: #ffc4bc;
+}
+
+body.dark-mode .info-video p {
+    color: #f0e8e2;
+}
+
 .btn-copiar {
-    background-color: #004b8d;
-    color: white;
+    background-color: #c81d25;
+    color: #ffffff;
     border: none;
     padding: 12px;
     border-radius: 8px;
     cursor: pointer;
+}

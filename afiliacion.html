@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=15">
+  <link rel="stylesheet" href="css/estilo.css?v=2.22">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -26,19 +26,18 @@
 
 <nav class="navbar" id="menu-principal">
   <a href="index.html">Inicio</a>
-  <a href="quiensomos.html">Quiénes Somos</a>
-  <a href="mision-vision.html">Misión y Visión</a>
+  <a href="quiensomos.html">Conócenos</a>
   <a href="afiliacion.html">Afiliación</a>
   <a href="asesoria-legal.html">Asesoría</a>
+  <a href="documentos.html">Documentos</a>
   <a href="contacto.html">Contacto</a>
 </nav>
 
  <div class="acciones-header">
-    <button id="toggle-daltonismo" class="btn-header" title="Modo Accesibilidad">
-        <i class="fas fa-wheelchair"></i>
+    <button id="toggle-oscuro" class="btn-header" title="Cambiar tono" aria-label="Cambiar tono de la página">
+        <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
     </button>
-    
-    <button id="toggle-oscuro" class="btn-header" title="Modo Oscuro">🌙</button>
 </div>
 
 
@@ -49,82 +48,60 @@
   <!-- Sección: Formulario de Afiliación -->
   <section class="afiliacion">
     <div class="contenedor">
-      <h2 style="text-align: center; color: var(--color-principal); margin-bottom: 40px;">Boleta de Afiliación SITRAINA</h2>
-      
-      <!-- FORMULARIO CORREGIDO -->
-      <form id="form-afiliacion" action="afiliacion.php" method="POST" style="max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: var(--sombra-suave);">
-        
-        <!-- Datos Personales -->
-        <fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-          <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Datos Personales</legend>
+      <h2 class="titulo-afiliacion">Boleta de Afiliación SITRAINA</h2>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+      <form id="form-afiliacion" class="boleta-afiliacion" action="afiliacion.php" method="POST">
+        <fieldset>
+          <legend>Datos Personales</legend>
+          <div class="fila-afiliacion">
             <input type="text" name="nombre" placeholder="Nombre completo" required>
             <input type="text" name="cedula" placeholder="Número de cédula" required>
           </div>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+          <div class="fila-afiliacion">
             <input type="email" name="correo_ina" placeholder="Correo INA">
             <input type="email" name="correo_personal" placeholder="Correo personal">
           </div>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
-            <div>
-              <label>Fecha de nacimiento</label>
+          <div class="fila-afiliacion">
+            <label class="campo-fecha">
+              Fecha de nacimiento
               <input type="date" name="fecha_nacimiento">
-            </div>
-            <div>
-          
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+            </label>
             <input type="text" name="nombramiento" placeholder="Tipo de nombramiento">
           </div>
         </fieldset>
 
-        <!-- Ubicación Laboral -->
-        <fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-          <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Ubicación Laboral</legend>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+        <fieldset>
+          <legend>Ubicación Laboral</legend>
+          <div class="fila-afiliacion">
             <input type="text" name="unidad" placeholder="Unidad regional">
             <input type="text" name="centro" placeholder="Centro o núcleo">
           </div>
-          <input type="text" name="puesto" placeholder="Puesto desempeñado" style="width: 100%; margin-bottom: 15px;">
+          <div class="fila-afiliacion">
+            <input type="text" name="puesto" placeholder="Puesto desempeñado">
+          </div>
         </fieldset>
 
-        <!-- Teléfonos -->
-        <fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-          <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Teléfonos</legend>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+        <fieldset>
+          <legend>Teléfonos</legend>
+          <div class="fila-afiliacion">
             <input type="text" name="telefono_trabajo" placeholder="Trabajo / Ext">
             <input type="text" name="telefono_domicilio" placeholder="Domicilio">
             <input type="text" name="telefono_celular" placeholder="Celular">
           </div>
         </fieldset>
 
-        <!-- Autorización -->
-        <fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px; background: var(--color-fondo-claro);">
-          <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Autorización</legend>
-          <p style="text-align: center; color: #23108f; font-weight: bold;">
-            Autorizo a la Unidad de Recursos Humanos del INA para que deduzca de mi
-            salario el 1% mensual a favor de SITRAINA.
-          </p> 
+        <fieldset class="nota-afiliacion">
+          <legend>Autorización</legend>
+          <p>Autorizo a la Unidad de Recursos Humanos del INA para que deduzca de mi salario el 1% mensual a favor de SITRAINA.</p>
         </fieldset>
 
-        <!-- Firma Digital -->
-<fieldset style="border: 2px solid var(--color-principal); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-  <legend style="font-weight: bold; color: var(--color-principal); font-size: 1.2rem; padding: 0 10px;">Firma Digital</legend>
-  <p style="text-align: center; color: #23108f; font-weight: bold;">
-    Una vez enviada tu afiliación, se generará un PDF con tus datos. 
-    <strong>Debes descargarlo y firmarlo con la aplicación Gaudi usando tu certificado digital.</strong>
-  </p> 
-  <p style="text-align: center; color: #23108f; font-weight: bold;">
-    ⚠️ Recuerda: sin la firma digital en Gaudi, la afiliación no es válida legalmente.
-  </p>
-</fieldset>
+        <fieldset class="nota-afiliacion">
+          <legend>Firma Digital</legend>
+          <p>Una vez enviada tu afiliación, se generará un PDF con tus datos. Debes descargarlo y firmarlo con la aplicación Gaudi usando tu certificado digital.</p>
+          <p>Sin la firma digital en Gaudi, la afiliación no es válida legalmente.</p>
+        </fieldset>
 
-
-        <!-- Botón de envío -->
-        <button type="submit" class="btn" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-top: 20px;">Enviar Afiliación</button>
+        <button type="submit" class="btn">Enviar Afiliación</button>
       </form>
     </div>
   </section>
@@ -180,7 +157,7 @@
 </footer>
 
   <!-- Script -->
-<script src="js/script.js?v=05"></script>
+<script src="js/script.js?v=2.12"></script>
 
   
 </body>
