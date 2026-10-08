@@ -3,9 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('modoOscuro') === 'true') {
+          document.documentElement.classList.add('dark-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
  <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=2.26">
+  <link rel="stylesheet" href="css/estilo.css?v=2.29">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
@@ -14,6 +24,7 @@
 
 
 <body>
+  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
 
   <header class="header">
   <div class="logo">
@@ -157,7 +168,7 @@
 </footer>
 
   <!-- Script -->
-<script src="js/script.js?v=2.16"></script>
+<script src="js/script.js?v=2.21"></script>
 
   
 </body>

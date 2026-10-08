@@ -17,8 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleDark = document.getElementById("toggle-oscuro");
     localStorage.removeItem("modoDaltonismo");
 
+    const aplicarOscuro = (activo) => {
+        document.documentElement.classList.toggle("dark-mode", activo);
+        document.body.classList.toggle("dark-mode", activo);
+    };
+
     if (localStorage.getItem("modoOscuro") === "true") {
-        document.body.classList.add("dark-mode");
+        aplicarOscuro(true);
     }
 
     if (toggleDark) {
@@ -31,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         actualizarTono();
         toggleDark.onclick = () => {
-            document.body.classList.toggle("dark-mode");
+            aplicarOscuro(!document.body.classList.contains("dark-mode"));
             localStorage.setItem("modoOscuro", document.body.classList.contains("dark-mode"));
             actualizarTono();
         };

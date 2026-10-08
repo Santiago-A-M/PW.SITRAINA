@@ -9,6 +9,16 @@ html, body {
   overflow-x: hidden;
 }
 
+html {
+  background-color: #f6f0ec;
+  color-scheme: light;
+}
+
+html.dark-mode {
+  background-color: #1c1614 !important;
+  color-scheme: dark;
+}
+
 /* ======================================== */
 /*          VARIABLES CSS                   */
 /* ======================================== */
