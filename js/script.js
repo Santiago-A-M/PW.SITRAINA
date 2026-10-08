@@ -292,6 +292,14 @@ document.addEventListener('DOMContentLoaded', () => {
             pintarMes();
         });
 
+        const avisoCita = document.getElementById('cita-resultado');
+        if (avisoCita && new URLSearchParams(location.search).get('enviada') === '1') {
+            avisoCita.hidden = false;
+            avisoCita.textContent = 'Recibimos la solicitud. La cita fue enviada para su revisión.';
+            avisoCita.classList.add('ok');
+            history.replaceState(null, '', location.pathname);
+        }
+
         formCita.addEventListener('submit', (evento) => {
             if (!campoFecha.value || !campoHora.value) {
                 evento.preventDefault();

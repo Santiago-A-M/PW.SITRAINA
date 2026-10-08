@@ -38,11 +38,13 @@
     <div class="contenedor">
       <a class="volver-asesoria" href="asesoria-legal.html">Volver a asesoría</a>
       <h1>Solicitar cita con el asesor legal</h1>
-      <p class="cita-intro">Elige un día hábil y una hora. Al enviar, se abre la confirmación del correo: cuando esa página aparece, la cita ya fue enviada.</p>
+      <p class="cita-intro">Elige un día hábil y una hora. Al enviar, la confirmación vuelve a esta página.</p>
       <form class="form-cita" id="form-cita" action="https://formsubmit.co/682fee38da5d55209efa8a7d240cf00f" method="POST">
         <input type="hidden" name="_subject" id="cita-asunto" value="Solicitud de cita legal">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://santiago-a-m.github.io/PW.SITRAINA/solicitar-cita.html?enviada=1">
+        <input type="hidden" name="Pagina" value="https://santiago-a-m.github.io/PW.SITRAINA/solicitar-cita.html">
         <input type="hidden" name="_replyto" id="cita-replyto">
         <div class="cita-layout">
           <div class="cita-calendario">
@@ -146,6 +148,6 @@
     </div>
   </footer>
 
-  <script src="js/script.js?v=2.19"></script>
+  <script src="js/script.js?v=2.20"></script>
 </body>
 </html>
