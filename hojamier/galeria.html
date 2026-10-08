@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hoja del Miércoles | SITRAINA</title>
   
- <link rel="stylesheet" href="../css/estilo.css?v=2.22">
- <link rel="stylesheet" href="../css/estilo-hoja.css?v=2.1">
+ <link rel="stylesheet" href="../css/estilo.css?v=2.26">
+ <link rel="stylesheet" href="../css/estilo-hoja.css?v=2.3">
   <link rel="icon" type="image/x-icon" href="../img/ley.png">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
@@ -39,444 +39,67 @@
   </header>
 
 <div class="contenedor-titulo-galeria">
-    <img src="../img/hojamier.png" alt="SITRAINA Galería" class="imagen-titulo">
+  <div class="marca-hoja">
+    <img src="../img/hojamier.png" alt="Hoja del Miércoles" class="imagen-titulo">
+    <p>Ediciones en video de la hoja semanal. Elige un volumen para ver el video y su descripción.</p>
+  </div>
+</div>
 
-<main class="contenedor-galeria"> 
-    <div class="grid-videos">
+<main class="contenedor-galeria">
+  <div class="grid-videos">
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 33" data-src="Videos/hojadelmiércoles16-09-2026.mp4" data-desc="Edición del miércoles 16 de setiembre.">Volumen 33</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 32" data-src="Videos/Hojadelmiércoles9-9-26.mp4" data-desc="Edición del miércoles 9 de setiembre.">Volumen 32</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 31" data-src="Videos/Hojadelmiércoles2-9-26.mp4" data-desc="Edición del miércoles 2 de setiembre.">Volumen 31</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 30" data-src="Videos/Hojadelmiércoles26-8-26.mp4" data-desc="Edición del miércoles 26 de agosto.">Volumen 30</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 29" data-src="Videos/Hojadelmiercoles19-08-2026.mp4" data-desc="Edición del miércoles 19 de agosto.">Volumen 29</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 28" data-src="Videos/Hojadelmiércoles12-8-26.mp4" data-desc="Edición del miércoles 12 de agosto.">Volumen 28</button>
+    <button type="button" class="hoja-titulo" data-titulo="Victorias que protegen al INA" data-src="Videos/Victorias2026-08-11.mp4" data-desc="Publicación del martes 11 de agosto.">Victorias que protegen al INA</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 27" data-src="Videos/Hojadelmiércoles5-8-26.mp4" data-desc="Edición del miércoles 5 de agosto.">Volumen 27</button>
+    <button type="button" class="hoja-titulo" data-titulo="Victorias que protegen al INA" data-src="Videos/Victorias2026-07-31.mp4" data-desc="Publicación del viernes 31 de julio.">Victorias que protegen al INA</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 26" data-src="Videos/Hojadelmiércoles29-7-26.mp4" data-desc="Edición del miércoles 29 de julio.">Volumen 26</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 25" data-src="Videos/Hojadelmiércoles22-7-26.mp4" data-desc="Edición del miércoles 22 de julio.">Volumen 25</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 24" data-src="Videos/Hojadelmiércoles15-7-26.mp4" data-desc="Edición del miércoles 15 de julio.">Volumen 24</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 23" data-src="Videos/Hojadelmiércoles8-7-26.mp4" data-desc="Edición del miércoles 8 de julio.">Volumen 23</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 22" data-src="Videos/hojadelmiercoles1-7-26.mp4" data-desc="Edición del miércoles 1 de julio.">Volumen 22</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 21" data-src="Videos/Hojadelmiércoles24-6-26.mp4" data-desc="Edición del miércoles 24 de junio.">Volumen 21</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 20" data-src="Videos/Hojadelmiércoles-17-06-26.mp4" data-desc="Edición del miércoles 17 de junio, con el informe del estado de la educación técnica en el INA." data-pdf="../documentos/InformeEstadodelaEducaciónTécnicaenelINA2025-SITRAINA.pdf" data-pdf-nombre="Descargar: Estado de la Educación Técnica en el INA">Volumen 20</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 19" data-src="Videos/Hojadelmiércoles10-6-26.mp4" data-desc="Edición del miércoles 10 de junio.">Volumen 19</button>
+    <button type="button" class="hoja-titulo" data-titulo="Edición Especial" data-src="Videos/Mesambiente.mp4" data-desc="Edición especial del Mes del Ambiente.">Edición Especial</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 18" data-src="Videos/Hojadelmiércoles3-6-26.mp4" data-desc="Edición del miércoles 3 de junio.">Volumen 18</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 17" data-src="Videos/Hojadelmiércoles-27-05-26.mp4" data-desc="Edición del miércoles 27 de mayo.">Volumen 17</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 16" data-src="Videos/Hojadelmiércoles-20-05-26.mp4" data-desc="Edición del miércoles 20 de mayo.">Volumen 16</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 15" data-src="Videos/Hojadelmiércoles13-5-26.mp4" data-desc="Edición del miércoles 13 de mayo.">Volumen 15</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 14" data-src="Videos/hojadelmiércoles6-5-26.mp4" data-desc="Edición del miércoles 6 de mayo.">Volumen 14</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 13" data-src="Videos/Hojadelmiércoles29-4-26.mp4" data-desc="Edición del miércoles 29 de abril.">Volumen 13</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 12" data-src="Videos/Hojadelmiércoles22-4-26.mp4" data-desc="Edición del miércoles 22 de abril.">Volumen 12</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 11" data-src="Videos/Hojadelmiércoles-15-04-26.mp4" data-desc="Edición del miércoles 15 de abril.">Volumen 11</button>
+  </div>
 
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/hojadelmiércoles16-09-2026.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 33</h3>
-                <p>Fecha: Miércoles 16 de setiembre</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/hojadelmiércoles16-09-2026.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
+  <div class="hoja-volver">
+    <a href="../index.html" class="btn-volver">Volver al Inicio</a>
+  </div>
+</main>
 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles9-9-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 32</h3>
-                <p>Fecha: Miércoles 9 de setiembre</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles9-9-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles2-9-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 31</h3>
-                <p>Fecha: Miércoles 2 de setiembre</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles2-9-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles26-8-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 30</h3>
-                <p>Fecha: Miércoles 26 de agosto</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles26-8-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiercoles19-08-2026.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 29</h3>
-                <p>Fecha: Miércoles 19 de agosto</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiercoles19-08-2026.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles12-8-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 28</h3>
-                <p>Fecha: Miércoles 12 de agosto</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles12-8-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Victorias2026-08-11.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Victorias que protegen al INA</h3>
-                <p>Fecha: Martes 11 de agosto</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Victorias2026-08-11.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles5-8-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 27</h3>
-                <p>Fecha: Miércoles 5 de agosto</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles5-8-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Victorias2026-07-31.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Victorias que protegen al INA</h3>
-                <p>Fecha: Viernes 31 de julio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Victorias2026-07-31.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles29-7-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 26</h3>
-                <p>Fecha: Miércoles 29 de julio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles29-7-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles22-7-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 25</h3>
-                <p>Fecha: Miércoles 22 de julio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles22-7-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles15-7-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 24</h3>
-                <p>Fecha: Miércoles 15 de julio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles15-7-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles8-7-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 23</h3>
-                <p>Fecha: Miércoles 8 de julio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles8-7-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/hojadelmiercoles1-7-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 22</h3>
-                <p>Fecha: Miércoles 1 de julio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/hojadelmiercoles1-7-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles24-6-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 21</h3>
-                <p>Fecha: Miércoles 24 de junio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles24-6-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
- <div class="tarjeta-video">
-    <div class="video-wrapper">
-        <video src="Videos/Hojadelmiércoles-17-06-26.mp4" 
-               poster="../img/logo.png" 
-               controls></video>
+<div class="hoja-popup" id="hoja-popup" aria-hidden="true">
+  <div class="hoja-popup-panel" role="dialog" aria-modal="true" aria-labelledby="hoja-popup-titulo">
+    <button type="button" class="hoja-cerrar" aria-label="Cerrar">×</button>
+    <h2 id="hoja-popup-titulo"></h2>
+    <div class="hoja-popup-cuerpo">
+      <div class="video-wrapper">
+        <video id="hoja-popup-video" poster="../img/logo.png" controls preload="none"></video>
+      </div>
+      <div class="hoja-popup-texto">
+        <p id="hoja-popup-desc"></p>
+        <div class="hoja-popup-acciones">
+          <button type="button" class="btn-copiar" id="hoja-popup-copiar"><i class="fas fa-link"></i> Copiar vínculo</button>
+          <a class="btn-descarga" id="hoja-popup-pdf" hidden target="_blank"></a>
+        </div>
+      </div>
     </div>
-    <div class="info-video">
-        <h3>Volumen 20</h3>
-        <p>Fecha: Miércoles 17 de junio</p>
-        <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles-17-06-26.mp4', this)">
-            <i class="fas fa-link"></i> Copiar Vínculo
-        </button>
+  </div>
+</div>
 
-       <div class="contenedor-descarga" style="margin-top: 10px; display: flex; justify-content: center;">
-            <a href="../documentos/InformeEstadodelaEducaciónTécnicaenelINA2025-SITRAINA.pdf" target="_blank" class="btn-descarga">
-                <i class="fas fa-file-pdf"></i> Descargar: Estado de la Educación Técnica en el INA
-            </a>
-            </div>
-       </div>
-        </div>
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles10-6-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 19</h3>
-                <p>Fecha: Miércoles 10 de junio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles10-6-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Mesambiente.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Edición Especial</h3>
-                <p>Fecha: Mes del Ambiente</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Mesambiente.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles3-6-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 18</h3>
-                <p>Fecha: Miércoles 3 de junio</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles3-6-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles-27-05-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 17</h3>
-                <p>Fecha: Miércoles 27 de mayo</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles-27-05-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles-20-05-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 16</h3>
-                <p>Fecha: Miércoles 20 de mayo</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles-20-05-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles13-5-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 15</h3>
-                <p>Fecha: Miércoles 13 de mayo</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles13-5-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div> 
-    
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/hojadelmiércoles6-5-26.mp4"
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 14</h3>
-                <p>Fecha: Miércoles 6 de mayo</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/hojadelmiércoles6-5-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles29-4-26.mp4" 
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 13</h3>
-                <p>Fecha: Miércoles 29 de abril</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles29-4-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div>
-
-
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles22-4-26.mp4" 
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 12</h3>
-                <p>Fecha: Miércoles 22 de abril</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles22-4-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div>
-
-        <div class="tarjeta-video">
-            <div class="video-wrapper">
-                <video src="Videos/Hojadelmiércoles-15-04-26.mp4" 
-                poster="../img/logo.png" 
-                controls></video>
-            </div>
-            <div class="info-video">
-                <h3>Volumen 11</h3>
-                <p>Fecha: Miércoles 15 de abril</p>
-                <button class="btn-copiar" onclick="copiarVinculo('Videos/Hojadelmiércoles-15-04-26.mp4', this)">
-                    <i class="fas fa-link"></i> Copiar Vínculo
-                </button>
-            </div>
-        </div>
-
-
-
-
-
-
-    </div> </main>
-
-
-    </div>
-  </main>
-
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="../index.html" class="btn-volver">Volver al Inicio</a>
-        </div></br>
-
-
-
-  <footer class="footer-franja">
+<footer class="footer-franja">
     <div class="contenedor footer-grid-compacto">
         <div class="datos-contacto-premium">
             <div class="dato">
@@ -525,6 +148,6 @@
     </div>
 </footer>
 
-<script src="../js/script.js?v=2.12"></script>
-<script src="../js/script-hoja.js?v=1.9"></script>
+<script src="../js/script.js?v=2.16"></script>
+<script src="../js/script-hoja.js?v=2.1"></script>
 </html>

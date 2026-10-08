@@ -16,8 +16,8 @@ function pagina($titulo, $cuerpo) {
     echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>' . h($titulo) . '</title>';
-    echo '<link rel="stylesheet" href="css/estilo.css?v=2.18">';
-    echo '<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">';
+    echo '<link rel="stylesheet" href="css/estilo.css?v=2.27">';
+    echo '<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">';
     echo '</head><body>';
     echo '<header class="header"><div class="logo"><a href="index.html"><img src="img/logo.png" alt="SITRAINA"></a></div></header>';
     echo '<main class="cita-aviso">' . $cuerpo . '</main></body></html>';
@@ -112,36 +112,37 @@ $preparar = function () {
     return $mail;
 };
 
+$correoPrueba = $preparar();
+if ($correoPrueba->Password === 'TU_CONTRASEÑA') {
+    pagina(
+        'No se pudo enviar la cita',
+        '<h1>La cita está lista, pero el correo aún no sale</h1>'
+        . '<p>La solicitud está dirigida a <strong>santiagoabarcamateo@gmail.com</strong>. El servidor sigue usando la clave de relleno del correo sitraina@ina.ac.cr, así que el mensaje no puede salir.</p>'
+        . '<p><a class="btn" href="solicitar-cita.html">Volver al formulario</a></p>'
+    );
+    exit;
+}
+
 try {
     $oficina = $preparar();
-    $oficina->addAddress('sitraina@ina.ac.cr');
-    $oficina->addAddress('asesorialegalsitraina@gmail.com');
+    $oficina->addAddress('santiagoabarcamateo@gmail.com');
     $oficina->addReplyTo($email, $nombre);
     $oficina->Subject = 'Solicitud de cita legal: ' . $fechaTexto . ' ' . $horaTexto;
     $oficina->Body = '<h2>Nueva solicitud de cita con el asesor legal</h2>' . $filas;
     $oficina->send();
 
-    $aviso = $preparar();
-    $aviso->addAddress($email, $nombre);
-    $aviso->Subject = 'Recibimos tu solicitud de cita con el asesor legal';
-    $aviso->Body = '<h2>Recibimos tu solicitud</h2>'
-        . '<p>Hola ' . h($nombre) . ', SITRAINA recibió tu solicitud de cita con el asesor legal.</p>'
-        . '<p><strong>Fecha:</strong> ' . h($fechaTexto) . '<br><strong>Hora:</strong> ' . h($horaTexto) . '</p>'
-        . '<p>La solicitud también llegó a sitraina@ina.ac.cr y a asesorialegalsitraina@gmail.com. El equipo te contactará para confirmar la cita.</p>';
-    $aviso->send();
-
     pagina(
         'Cita recibida',
         '<h1>Recibimos tu solicitud de cita</h1>'
         . '<p>Hola <strong>' . h($nombre) . '</strong>. La cita quedó registrada para el <strong>' . h($fechaTexto) . '</strong> a las <strong>' . h($horaTexto) . '</strong>.</p>'
-        . '<p>Enviamos este mismo aviso a <strong>' . h($email) . '</strong>. La solicitud llegó a SITRAINA y a Asesoría Legal.</p>'
+        . '<p>La solicitud fue enviada para su revisión.</p>'
         . '<p><a class="btn" href="asesoria-legal.html">Volver a asesoría</a></p>'
     );
 } catch (Exception $e) {
     pagina(
         'No se pudo enviar la cita',
         '<h1>No se pudo entregar la solicitud</h1>'
-        . '<p>Escríbela directamente a <a href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a> y a <a href="mailto:asesorialegalsitraina@gmail.com">asesorialegalsitraina@gmail.com</a>.</p>'
+        . '<p>Vuelve a intentarlo en unos minutos.</p>'
         . '<p><a class="btn" href="solicitar-cita.html">Volver al formulario</a></p>'
     );
 }

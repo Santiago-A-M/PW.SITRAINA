@@ -2,128 +2,294 @@
    ESTILOS ESPECÍFICOS DE LA GALERÍA (estilo-hoja.css)
    ========================================================================== */
 
-/* Solo aplicamos el reseteo a los elementos dentro de la galería 
-   para no dañar el menú principal ni el footer */
-.contenedor-galeria, 
+.contenedor-galeria,
 .contenedor-galeria *,
 .contenedor-titulo-galeria,
 .contenedor-titulo-galeria * {
     box-sizing: border-box;
 }
 
-/* Título de la página (Imagen central) */
 .contenedor-titulo-galeria {
-    text-align: center;
-    padding: 100px 20px 40px 20px; /* Espacio amplio arriba para no chocar con el menú */
+    padding: 118px 20px 8px;
     width: 100%;
+}
+
+.marca-hoja {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    width: min(860px, 100%);
+    margin: 0 auto;
+    padding: 18px 28px;
+    background: #fff;
+    border: 1px solid #eadfd8;
+    border-left: 6px solid #c81d25;
+    border-radius: 18px;
+    box-shadow: 0 12px 28px rgba(110, 18, 24, 0.08);
 }
 
 .imagen-titulo {
-    display: inline-block;
-    max-width: 90%;
+    display: block;
+    width: min(320px, 42%);
     height: auto;
-    width: 450px; /* Tamaño del título visual */
+    flex: 0 0 auto;
 }
 
-/* Contenedor Principal de la Galería */
+.marca-hoja p {
+    margin: 0;
+    color: #4a403c;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    text-align: left;
+}
+
 .contenedor-galeria {
-    padding: 20px;
-    max-width: 1200px;
+    padding: 12px 20px 28px;
+    max-width: 1100px;
     margin: 0 auto;
-    min-height: 60vh;
 }
 
-/* GRID: Esto permite que las tarjetas se pongan una al lado de la otra */
 .grid-videos {
     display: grid;
-    /* En escritorio permite varias columnas, en móvil baja a una */
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 40px; 
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
     width: 100%;
-    justify-items: center; 
     align-items: start;
-    padding: 20px 0;
 }
 
-/* Tarjeta de Video */
-.tarjeta-video {
-    background: #fff;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-    width: 100%; 
-    max-width: 320px; 
-    display: flex;
-    flex-direction: column;
-}
-
-.tarjeta-video:hover {
-    transform: translateY(-5px);
-}
-
-/* Este contenedor ahora se ajustará al tamaño real del video */
-.video-wrapper {
+.hoja-titulo {
     width: 100%;
-    background: #000; /* Fondo de seguridad si la imagen es distinta */
-    border-radius: 15px 15px 0 0;
+    margin: 0;
+    padding: 16px 18px;
+    border: none;
+    border-radius: 14px;
+    background: #6e1218;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.hoja-titulo:hover {
+    background: #8e1a20;
+}
+
+.hoja-titulo::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg);
+    flex: 0 0 auto;
+}
+
+.hoja-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(28, 16, 16, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.32s ease, visibility 0.32s ease;
+}
+
+.hoja-popup.abierta {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+body.hoja-abierta {
     overflow: hidden;
+}
+
+body.hoja-abierta > :not(.hoja-popup):not(script) {
+    filter: blur(7px);
+}
+
+.hoja-popup-panel {
+    position: relative;
+    width: min(980px, 100%);
+    max-height: min(92vh, 860px);
+    overflow: auto;
+    padding: 28px 28px 24px;
+    border-radius: 18px;
+    background: #fff;
+    color: #2b211f;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    transform: translateY(16px) scale(0.97);
+    transition: transform 0.32s ease;
+}
+
+.hoja-popup.abierta .hoja-popup-panel {
+    transform: none;
+}
+
+.hoja-cerrar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    border: 2px solid #6e1218;
+    border-radius: 50%;
+    background: #fff;
+    color: #6e1218;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.hoja-popup-panel h2 {
+    margin: 0 46px 18px 0;
+    color: #6e1218;
+    font-size: 1.6rem;
+}
+
+.hoja-popup-cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+    gap: 24px;
+    align-items: center;
+}
+
+.video-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* El video dictará el tamaño de la tarjeta de forma natural */
 .video-wrapper video {
     display: block;
-    width: 100%;
-    height: auto; /* IMPORTANTE: Esto mantiene la proporción original */
-    max-height: 80vh; /* Evita que videos muy largos se salgan de la pantalla */
-    
-    /* Mantiene la imagen del poster y el video con su forma original */
-    object-fit: contain; 
+    max-width: 100%;
+    max-height: min(68vh, 640px);
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    background: #1c1614;
 }
 
-/* Información de la tarjeta */
-.info-video {
-    padding: 20px;
+.hoja-popup-texto p {
+    margin: 0;
+    color: #4a403c;
+    font-size: 1.05rem;
+    line-height: 1.5;
+}
+
+.hoja-popup-acciones {
     display: flex;
     flex-direction: column;
-    text-align: left;
-    flex-grow: 1;
+    gap: 10px;
+    margin-top: 18px;
 }
 
-.info-video h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.2rem;
-    color: #c81d25;
-    font-family: 'Roboto', sans-serif;
+.btn-copiar,
+.btn-descarga {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #c81d25;
+    color: #fff !important;
+    font: inherit;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
 }
 
-.info-video p {
-    font-size: 0.95rem;
-    color: #555;
-    margin: 0 0 20px 0;
+.btn-descarga {
+    background: #6e1218;
 }
 
-/* Botón de Copiar Vínculo */
-body.dark-mode .tarjeta-video {
+.btn-descarga[hidden] {
+    display: none;
+}
+
+.btn-copiar.copiado {
+    background: #6e1218;
+}
+
+.hoja-volver {
+    text-align: center;
+    margin-top: 36px;
+}
+
+body.dark-mode .marca-hoja {
+    background: #fff !important;
+    border-color: #eadfd8;
+    border-left-color: #c81d25;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode .marca-hoja p {
+    color: #2b211f !important;
+}
+
+body.dark-mode .hoja-popup-panel {
     background: #2c2320;
+    color: #f7f2ee;
 }
 
-body.dark-mode .info-video h3 {
+body.dark-mode .hoja-popup-panel h2 {
     color: #ffc4bc;
 }
 
-body.dark-mode .info-video p {
-    color: #f0e8e2;
+body.dark-mode .hoja-popup-texto p {
+    color: #f0e8e2 !important;
 }
 
-.btn-copiar {
-    background-color: #c81d25;
-    color: #ffffff;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
+body.dark-mode .hoja-cerrar {
+    background: #2c2320;
+    color: #fff7f4;
+    border-color: #ffc4bc;
+}
+
+@media (max-width: 700px) {
+    .marca-hoja {
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px 18px 18px;
+        text-align: center;
+    }
+
+    .imagen-titulo {
+        width: min(280px, 100%);
+    }
+
+    .marca-hoja p {
+        text-align: center;
+    }
+
+    .hoja-popup-cuerpo {
+        grid-template-columns: 1fr;
+    }
+
+    .hoja-popup-panel {
+        padding: 48px 16px 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hoja-popup,
+    .hoja-popup-panel {
+        transition: none;
+    }
 }

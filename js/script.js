@@ -74,12 +74,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return tarjeta.getBoundingClientRect().width + espacio;
         };
 
-        document.querySelectorAll('.directiva-flecha').forEach((boton) => {
+        const flechasDirectiva = document.querySelectorAll('.directiva-flecha');
+        const actualizarFlechas = () => {
+            const alInicio = pistaDirectiva.scrollLeft <= 2;
+            const alFinal = pistaDirectiva.scrollLeft + pistaDirectiva.clientWidth >= pistaDirectiva.scrollWidth - 2;
+            flechasDirectiva.forEach((boton) => {
+                const direccion = Number(boton.dataset.dir) || 1;
+                boton.disabled = direccion < 0 ? alInicio : alFinal;
+            });
+        };
+
+        flechasDirectiva.forEach((boton) => {
             boton.addEventListener('click', () => {
                 const direccion = Number(boton.dataset.dir) || 1;
                 pistaDirectiva.scrollBy({ left: pasoTarjeta() * direccion, behavior: 'smooth' });
             });
         });
+
+        pistaDirectiva.addEventListener('scroll', actualizarFlechas);
+        actualizarFlechas();
 
         pistaDirectiva.addEventListener('keydown', (evento) => {
             if (evento.key === 'ArrowRight') {
@@ -91,15 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 pistaDirectiva.scrollBy({ left: -pasoTarjeta(), behavior: 'smooth' });
             }
         });
-
-        pistaDirectiva.addEventListener('wheel', (evento) => {
-            if (evento.deltaY === 0) return;
-            const alInicio = pistaDirectiva.scrollLeft <= 0;
-            const alFinal = pistaDirectiva.scrollLeft + pistaDirectiva.clientWidth >= pistaDirectiva.scrollWidth - 2;
-            if ((evento.deltaY < 0 && alInicio) || (evento.deltaY > 0 && alFinal)) return;
-            evento.preventDefault();
-            pistaDirectiva.scrollLeft += evento.deltaY;
-        }, { passive: false });
 
         const fotoPopup = document.getElementById('directiva-popup-foto');
         const puestoPopup = document.getElementById('directiva-popup-puesto');
@@ -292,7 +296,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!campoFecha.value || !campoHora.value) {
                 evento.preventDefault();
                 resumenCita.textContent = 'Elige el día y la hora de la cita antes de enviarla.';
+                return;
             }
+            const trampa = formCita.elements._honey;
+            if (trampa && trampa.value.trim() !== '') {
+                evento.preventDefault();
+                return;
+            }
+            document.getElementById('cita-asunto').value = 'Solicitud de cita legal: ' + etiquetaFecha(campoFecha.value) + ' ' + campoHora.value;
+            document.getElementById('cita-replyto').value = formCita.elements.email.value;
         });
 
         pintarMes();
@@ -339,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var estilo = document.createElement('style');
     estilo.textContent = [
-        '#sitrabot{position:fixed;right:20px;bottom:20px;z-index:4000;font-family:Roboto,Arial,sans-serif}',
+        '#sitrabot{position:fixed;right:20px;bottom:20px;z-index:4000;font-family:"Source Sans 3",sans-serif}',
         '#sitrabot *{box-sizing:border-box}',
         '.sitrabot-abrir{width:64px;height:64px;border:0;border-radius:50%;padding:0;cursor:pointer;background:#397dff;box-shadow:0 8px 22px rgba(28,22,20,.28);overflow:hidden}',
         '.sitrabot-abrir img{width:100%;height:100%;object-fit:cover;display:block}',
@@ -484,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 enl('Asesoría', 'asesoria-legal.html'),
                 txt(' o directo en '),
                 enl('solicitar cita', 'solicitar-cita.html'),
-                txt('. Elige un día hábil y una hora entre 7:00 a. m. y 2:00 p. m. La solicitud llega a sitraina@ina.ac.cr y a asesorialegalsitraina@gmail.com.')
+                txt('. Elige un día hábil y una hora entre 7:00 a. m. y 2:00 p. m. La solicitud queda registrada para la asesoría legal.')
             ]);
         }
 
