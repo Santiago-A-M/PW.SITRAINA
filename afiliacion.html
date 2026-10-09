@@ -364,22 +364,16 @@
     try {
       sessionStorage.setItem('afiliacionPdf', JSON.stringify({ nombre: archivoNombre, base64: btoa(pdf.binario) }));
     } catch (error) {}
-    var datos = new FormData();
-    datos.append('accion', 'guardar');
-    datos.append('cedula', cedula);
-    datos.append('correo', replyto.value);
-    fetch('php/afiliados.php', { method: 'POST', body: datos })
-      .then(function (respuesta) { return respuesta.json(); })
-      .then(function (data) {
-        if (!data.ok) {
-          mostrar(data.mensaje || 'No se pudo guardar la afiliación.', false);
-          return;
-        }
-        form.submit();
-      })
-      .catch(function () {
-        mostrar('No se pudo guardar la afiliación en la base de datos. Intenta de nuevo.', false);
-      });
+    var campoAccion = form.querySelector('input[name="accion"]');
+    if (!campoAccion) {
+      campoAccion = document.createElement('input');
+      campoAccion.type = 'hidden';
+      campoAccion.name = 'accion';
+      form.appendChild(campoAccion);
+    }
+    campoAccion.value = 'guardar';
+    form.action = 'php/afiliados.php';
+    form.submit();
   });
 })();
 </script>

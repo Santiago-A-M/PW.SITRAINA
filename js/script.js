@@ -373,30 +373,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             evento.preventDefault();
             const cedulaCita = (formCita.elements.cedula.value || '').replace(/\D/g, '');
-            const datosAfiliado = new FormData();
-            datosAfiliado.append('accion', 'verificar');
-            datosAfiliado.append('cedula', cedulaCita);
-            datosAfiliado.append('correo', campoCorreo.value);
-            fetch('php/afiliados.php', { method: 'POST', body: datosAfiliado })
-                .then((respuesta) => respuesta.json())
-                .then((data) => {
-                    if (!data.ok) {
-                        avisoCita.hidden = false;
-                        avisoCita.textContent = data.mensaje || 'Esa cédula y ese correo no figuran como persona afiliada activa.';
-                        avisoCita.classList.add('error');
-                        avisoCita.classList.remove('ok');
-                        return;
-                    }
-                    document.getElementById('cita-asunto').value = 'Solicitud de cita legal: ' + etiquetaFecha(campoFecha.value) + ' ' + campoHora.value;
-                    document.getElementById('cita-replyto').value = campoCorreo.value;
-                    formCita.submit();
-                })
-                .catch(() => {
-                    avisoCita.hidden = false;
-                    avisoCita.textContent = 'No se pudo comprobar la afiliación. Intenta de nuevo.';
-                    avisoCita.classList.add('error');
-                    avisoCita.classList.remove('ok');
-                });
+            if (!/^[0-9]{9}$/.test(cedulaCita)) {
+                avisoCita.hidden = false;
+                avisoCita.textContent = 'La cédula debe tener 9 dígitos.';
+                avisoCita.classList.add('error');
+                avisoCita.classList.remove('ok');
+                return;
+            }
+            formCita.elements.cedula.value = cedulaCita;
+            document.getElementById('cita-asunto').value = 'Solicitud de cita legal: ' + etiquetaFecha(campoFecha.value) + ' ' + campoHora.value;
+            document.getElementById('cita-replyto').value = campoCorreo.value;
+            let campoAccion = formCita.querySelector('input[name="accion"]');
+            if (!campoAccion) {
+                campoAccion = document.createElement('input');
+                campoAccion.type = 'hidden';
+                campoAccion.name = 'accion';
+                formCita.appendChild(campoAccion);
+            }
+            campoAccion.value = 'verificar';
+            formCita.action = 'php/afiliados.php';
+            formCita.submit();
         });
 
         pintarMes();
