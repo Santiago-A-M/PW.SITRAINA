@@ -1,4 +1,5 @@
 <?php
+mysqli_report(MYSQLI_REPORT_OFF);
 header('Content-Type: application/json; charset=utf-8');
 
 function responder($ok, $mensaje, $codigo = 200) {
@@ -28,9 +29,13 @@ if (!preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA
     responder(false, 'Escribe un correo válido.');
 }
 
-$mysqli = @new mysqli($config['host'], $config['usuario'], $config['clave'], $config['nombre']);
+try {
+    $mysqli = new mysqli($config['host'], $config['usuario'], $config['clave'], $config['nombre']);
+} catch (Throwable $e) {
+    responder(false, 'No se pudo conectar con la base de datos. Revisa el nombre de la base en config.php.', 500);
+}
 if ($mysqli->connect_errno) {
-    responder(false, 'No se pudo conectar con la base de datos.', 500);
+    responder(false, 'No se pudo conectar con la base de datos. Revisa el nombre de la base en config.php.', 500);
 }
 $mysqli->set_charset('utf8mb4');
 
