@@ -371,8 +371,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 evento.preventDefault();
                 return;
             }
-            document.getElementById('cita-asunto').value = 'Solicitud de cita legal: ' + etiquetaFecha(campoFecha.value) + ' ' + campoHora.value;
-            document.getElementById('cita-replyto').value = campoCorreo.value;
+            evento.preventDefault();
+            const cedulaCita = (formCita.elements.cedula.value || '').replace(/\D/g, '');
+            const datosAfiliado = new FormData();
+            datosAfiliado.append('accion', 'verificar');
+            datosAfiliado.append('cedula', cedulaCita);
+            datosAfiliado.append('correo', campoCorreo.value);
+            fetch('php/afiliados.php', { method: 'POST', body: datosAfiliado })
+                .then((respuesta) => respuesta.json())
+                .then((data) => {
+                    if (!data.ok) {
+                        avisoCita.hidden = false;
+                        avisoCita.textContent = data.mensaje || 'Esa cédula y ese correo no figuran como persona afiliada activa.';
+                        avisoCita.classList.add('error');
+                        avisoCita.classList.remove('ok');
+                        return;
+                    }
+                    document.getElementById('cita-asunto').value = 'Solicitud de cita legal: ' + etiquetaFecha(campoFecha.value) + ' ' + campoHora.value;
+                    document.getElementById('cita-replyto').value = campoCorreo.value;
+                    formCita.submit();
+                })
+                .catch(() => {
+                    avisoCita.hidden = false;
+                    avisoCita.textContent = 'No se pudo comprobar la afiliación. Intenta de nuevo.';
+                    avisoCita.classList.add('error');
+                    avisoCita.classList.remove('ok');
+                });
         });
 
         pintarMes();

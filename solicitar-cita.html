@@ -14,7 +14,7 @@
   </script>
   <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
   <title>SITRAINA | Solicitar cita</title>
-  <link rel="stylesheet" href="css/estilo.css?v=2.34">
+  <link rel="stylesheet" href="css/estilo.css?v=2.36">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -95,13 +95,7 @@
               <input type="tel" name="telefono" required inputmode="numeric" autocomplete="tel" maxlength="11" pattern="[0-9]{8}" title="El teléfono debe tener 8 dígitos">
               <span class="cita-ayuda">8 dígitos, sin espacios ni código de país.</span>
             </label>
-            <label>¿Es persona afiliada?
-              <select name="afiliado" required>
-                <option value="">Selecciona</option>
-                <option value="Sí">Sí</option>
-                <option value="No">No</option>
-              </select>
-            </label>
+            <input type="hidden" name="afiliado" value="Sí">
             <label>Sede o centro de trabajo
               <input type="text" name="sede" required maxlength="120">
             </label>
@@ -165,6 +159,136 @@
     </div>
   </footer>
 
-  <script src="js/script.js?v=2.26"></script>
+  <div class="cita-puerta" id="cita-puerta" role="dialog" aria-modal="true" aria-labelledby="cita-puerta-titulo" hidden>
+    <div class="cita-puerta-panel">
+      <h2 id="cita-puerta-titulo"></h2>
+      <p id="cita-puerta-texto"></p>
+      <div id="cita-puerta-extra"></div>
+      <div class="cita-puerta-acciones" id="cita-puerta-acciones"></div>
+    </div>
+  </div>
+
+  <script src="js/script.js?v=2.27"></script>
+  <script>
+    (function () {
+      var puerta = document.getElementById('cita-puerta');
+      var titulo = document.getElementById('cita-puerta-titulo');
+      var texto = document.getElementById('cita-puerta-texto');
+      var acciones = document.getElementById('cita-puerta-acciones');
+      var extra = document.getElementById('cita-puerta-extra');
+      var campoCedula = document.querySelector('input[name="cedula"]');
+      var main = document.querySelector('main');
+      if (!puerta || !titulo || !texto || !acciones || !extra) return;
+
+      var enviada = false;
+      try {
+        enviada = new URLSearchParams(location.search).get('enviada') === '1';
+      } catch (e) {}
+
+      var cedulaGuardada = '';
+      var yaConfirmada = false;
+      try {
+        cedulaGuardada = sessionStorage.getItem('citaCedula') || '';
+        yaConfirmada = sessionStorage.getItem('citaAfiliado') === 'si' && /^[0-9]{9}$/.test(cedulaGuardada);
+      } catch (e) {}
+
+      if (yaConfirmada && campoCedula) campoCedula.value = cedulaGuardada;
+
+      function cerrar() {
+        puerta.hidden = true;
+        document.body.classList.remove('cita-bloqueada');
+        if (main) main.removeAttribute('aria-hidden');
+      }
+
+      function boton(etiqueta, clase, alPulsar) {
+        var botonEl = document.createElement('button');
+        botonEl.type = 'button';
+        botonEl.className = clase;
+        botonEl.textContent = etiqueta;
+        botonEl.addEventListener('click', alPulsar);
+        return botonEl;
+      }
+
+      function mostrar(paso) {
+        acciones.innerHTML = '';
+        extra.innerHTML = '';
+        if (paso === 'afiliado') {
+          titulo.textContent = '¿Es persona afiliada?';
+          texto.textContent = 'La asesoría legal de SITRAINA se ofrece a las personas afiliadas. Indique si ya forma parte del sindicato.';
+          acciones.appendChild(boton('Sí, soy persona afiliada', 'btn', function () {
+            mostrar('cedula');
+          }));
+          acciones.appendChild(boton('No, no estoy afiliada', 'btn btn-contorno', function () {
+            mostrar('ofrecer');
+          }));
+        } else if (paso === 'cedula') {
+          titulo.textContent = 'Cédula de afiliación';
+          texto.textContent = 'Escriba su número de cédula para continuar con la solicitud de cita.';
+          var etiqueta = document.createElement('label');
+          etiqueta.className = 'cita-puerta-label';
+          etiqueta.textContent = 'Cédula';
+          var entrada = document.createElement('input');
+          entrada.type = 'text';
+          entrada.inputMode = 'numeric';
+          entrada.autocomplete = 'off';
+          entrada.maxLength = 11;
+          entrada.placeholder = '9 dígitos';
+          entrada.setAttribute('aria-label', 'Cédula');
+          var aviso = document.createElement('span');
+          aviso.className = 'cita-puerta-error';
+          etiqueta.appendChild(entrada);
+          extra.appendChild(etiqueta);
+          extra.appendChild(aviso);
+          entrada.addEventListener('input', function () {
+            entrada.value = entrada.value.replace(/\D/g, '').slice(0, 9);
+            aviso.textContent = '';
+          });
+          acciones.appendChild(boton('Continuar', 'btn', function () {
+            var digitos = entrada.value.replace(/\D/g, '');
+            if (!/^[0-9]{9}$/.test(digitos)) {
+              aviso.textContent = 'La cédula debe tener 9 dígitos.';
+              entrada.focus();
+              return;
+            }
+            if (campoCedula) campoCedula.value = digitos;
+            try {
+              sessionStorage.setItem('citaAfiliado', 'si');
+              sessionStorage.setItem('citaCedula', digitos);
+            } catch (e) {}
+            cerrar();
+          }));
+          acciones.appendChild(boton('Volver', 'btn btn-contorno', function () {
+            mostrar('afiliado');
+          }));
+          entrada.focus();
+          return;
+        } else if (paso === 'ofrecer') {
+          titulo.textContent = '¿Desea afiliarse?';
+          texto.textContent = 'Para solicitar una cita es necesario estar afiliado. Puede completar la boleta de afiliación o declinar la solicitud.';
+          acciones.appendChild(boton('Sí, deseo afiliarme', 'btn', function () {
+            location.href = 'afiliacion.html';
+          }));
+          acciones.appendChild(boton('No, no deseo afiliarme', 'btn btn-contorno', function () {
+            mostrar('rechazo');
+          }));
+        } else {
+          titulo.textContent = 'Solicitud no procedente';
+          texto.textContent = 'Su pedido de cita no puede aceptarse. La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA. Al manifestar que no desea afiliarse, la solicitud queda rechazada.';
+          acciones.appendChild(boton('Volver a asesoría', 'btn', function () {
+            location.href = 'asesoria-legal.html';
+          }));
+        }
+        var primero = acciones.querySelector('button');
+        if (primero) primero.focus();
+      }
+
+      if (enviada || yaConfirmada) return;
+
+      puerta.hidden = false;
+      document.body.classList.add('cita-bloqueada');
+      if (main) main.setAttribute('aria-hidden', 'true');
+      mostrar('afiliado');
+    })();
+  </script>
 </body>
 </html>

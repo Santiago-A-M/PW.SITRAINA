@@ -15,7 +15,7 @@
   <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
  <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=2.33">
+  <link rel="stylesheet" href="css/estilo.css?v=2.37">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -61,7 +61,17 @@
     <div class="contenedor">
       <h2 class="titulo-afiliacion">Boleta de Afiliación SITRAINA</h2>
 
-      <form id="form-afiliacion" class="boleta-afiliacion" action="afiliacion.php" method="POST">
+      <form id="form-afiliacion" class="boleta-afiliacion" action="https://formsubmit.co/682fee38da5d55209efa8a7d240cf00f" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_subject" id="afiliacion-asunto" value="Boleta de afiliación SITRAINA">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://santiago-a-m.github.io/PW.SITRAINA/afiliacion.html?enviada=1">
+        <input type="hidden" name="Pagina" value="https://santiago-a-m.github.io/PW.SITRAINA/afiliacion.html">
+        <input type="hidden" name="_replyto" id="afiliacion-replyto">
+        <input type="file" name="attachment" id="afiliacion-adjunto" accept="application/pdf" hidden>
+        <label class="cita-trampa" aria-hidden="true">No completar
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off">
+        </label>
         <fieldset>
           <legend>Datos Personales</legend>
           <div class="fila-afiliacion">
@@ -108,11 +118,15 @@
 
         <fieldset class="nota-afiliacion">
           <legend>Firma Digital</legend>
-          <p>Una vez enviada tu afiliación, se generará un PDF con tus datos. Debes descargarlo y firmarlo con la aplicación Gaudi usando tu certificado digital.</p>
+          <p>Al enviar, la boleta se manda por correo en un PDF con los datos que escribiste. En esta página podrás descargar ese mismo PDF para firmarlo con la aplicación Gaudi y tu certificado digital.</p>
           <p>Sin la firma digital en Gaudi, la afiliación no es válida legalmente.</p>
         </fieldset>
 
         <button type="submit" class="btn">Enviar Afiliación</button>
+        <p class="cita-resultado" id="afiliacion-resultado" hidden></p>
+        <p class="descarga-boleta" id="afiliacion-descarga-fila" hidden>
+          <a class="btn" id="afiliacion-descarga">Descargar PDF de afiliación</a>
+        </p>
       </form>
     </div>
   </section>
@@ -169,6 +183,206 @@
 
   <!-- Script -->
 <script src="js/script.js?v=2.25"></script>
+<script>
+(function () {
+  var form = document.getElementById('form-afiliacion');
+  if (!form) return;
+  var aviso = document.getElementById('afiliacion-resultado');
+  var filaDescarga = document.getElementById('afiliacion-descarga-fila');
+  var enlaceDescarga = document.getElementById('afiliacion-descarga');
+  var adjunto = document.getElementById('afiliacion-adjunto');
+  var asunto = document.getElementById('afiliacion-asunto');
+  var replyto = document.getElementById('afiliacion-replyto');
+  var patronCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  var winAnsi = {
+    '¡':161,'¢':162,'£':163,'¥':165,'§':167,'©':169,'ª':170,'«':171,'®':174,'°':176,'±':177,'²':178,'³':179,'µ':181,'·':183,'¹':185,'º':186,'»':187,'¿':191,
+    'À':192,'Á':193,'Â':194,'Ã':195,'Ä':196,'Å':197,'Æ':198,'Ç':199,'È':200,'É':201,'Ê':202,'Ë':203,'Ì':204,'Í':205,'Î':206,'Ï':207,'Ñ':209,'Ò':210,'Ó':211,'Ô':212,'Õ':213,'Ö':214,'Ø':216,'Ù':217,'Ú':218,'Û':219,'Ü':220,
+    'à':224,'á':225,'â':226,'ã':227,'ä':228,'å':229,'æ':230,'ç':231,'è':232,'é':233,'ê':234,'ë':235,'ì':236,'í':237,'î':238,'ï':239,'ñ':241,'ò':242,'ó':243,'ô':244,'õ':245,'ö':246,'ø':248,'ù':249,'ú':250,'û':251,'ü':252,'ÿ':255
+  };
+
+  function mostrar(texto, ok) {
+    aviso.hidden = false;
+    aviso.textContent = texto;
+    aviso.classList.toggle('ok', !!ok);
+    aviso.classList.toggle('error', !ok);
+  }
+
+  function valor(nombre) {
+    return (form.elements[nombre].value || '').trim();
+  }
+
+  function fechaLegible(fecha) {
+    var partes = /^(\d{4})-(\d{2})-(\d{2})$/.exec(fecha);
+    return partes ? partes[3] + '/' + partes[2] + '/' + partes[1] : fecha;
+  }
+
+  function cortar(texto, maximo) {
+    var palabras = texto.split(/\s+/);
+    var lineas = [];
+    var actual = '';
+    palabras.forEach(function (palabra) {
+      var prueba = actual ? actual + ' ' + palabra : palabra;
+      if (prueba.length > maximo && actual) {
+        lineas.push(actual);
+        actual = palabra;
+      } else {
+        actual = prueba;
+      }
+    });
+    if (actual) lineas.push(actual);
+    return lineas;
+  }
+
+  function pdfTexto(texto) {
+    var limpio = String(texto || '').replace(/[\r\n\t]+/g, ' ');
+    var salida = '';
+    for (var i = 0; i < limpio.length; i++) {
+      var caracter = limpio.charAt(i);
+      var codigo = limpio.charCodeAt(i);
+      var byte = codigo < 128 ? codigo : (winAnsi[caracter] || 63);
+      if (byte === 40 || byte === 41 || byte === 92) salida += '\\';
+      salida += String.fromCharCode(byte);
+    }
+    return salida;
+  }
+
+  function bytes(texto) {
+    var datos = new Uint8Array(texto.length);
+    for (var i = 0; i < texto.length; i++) datos[i] = texto.charCodeAt(i) & 255;
+    return datos;
+  }
+
+  function crearPdf(lineas) {
+    var comandos = ['BT', '/F2 16 Tf', '50 750 Td', '(' + pdfTexto(lineas[0]) + ') Tj', '/F1 11 Tf'];
+    for (var i = 1; i < lineas.length; i++) {
+      comandos.push('0 -18 Td', '(' + pdfTexto(lineas[i]) + ') Tj');
+    }
+    comandos.push('ET');
+    var stream = comandos.join('\n');
+    var objetos = [
+      '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n',
+      '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n',
+      '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>\nendobj\n',
+      '4 0 obj\n<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream\nendobj\n',
+      '5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n',
+      '6 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\nendobj\n'
+    ];
+    var cuerpo = '%PDF-1.4\n';
+    var offsets = [0];
+    objetos.forEach(function (objeto) {
+      offsets.push(cuerpo.length);
+      cuerpo += objeto;
+    });
+    var xref = cuerpo.length;
+    cuerpo += 'xref\n0 ' + (objetos.length + 1) + '\n';
+    cuerpo += '0000000000 65535 f \n';
+    for (var n = 1; n < offsets.length; n++) {
+      cuerpo += ('0000000000' + offsets[n]).slice(-10) + ' 00000 n \n';
+    }
+    cuerpo += 'trailer\n<< /Size ' + (objetos.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF';
+    return { binario: cuerpo, blob: new Blob([bytes(cuerpo)], { type: 'application/pdf' }) };
+  }
+
+  function prepararDescarga(guardado) {
+    if (!guardado) return;
+    var datos;
+    try { datos = JSON.parse(guardado); } catch (e) { return; }
+    if (!datos || !datos.base64 || !datos.nombre) return;
+    var binario = atob(datos.base64);
+    var url = URL.createObjectURL(new Blob([bytes(binario)], { type: 'application/pdf' }));
+    enlaceDescarga.href = url;
+    enlaceDescarga.download = datos.nombre;
+    filaDescarga.hidden = false;
+  }
+
+  if (new URLSearchParams(location.search).get('enviada') === '1') {
+    mostrar('Recibimos la boleta. El PDF con tus datos fue enviado por correo. Descárgalo y fírmalo con Gaudi usando tu certificado digital.', true);
+    prepararDescarga(sessionStorage.getItem('afiliacionPdf'));
+    history.replaceState(null, '', location.pathname);
+  }
+
+  form.addEventListener('submit', function (evento) {
+    evento.preventDefault();
+    if (valor('_honey')) return;
+    var correoIna = valor('correo_ina');
+    var correoPersonal = valor('correo_personal');
+    form.elements.correo_ina.value = correoIna;
+    form.elements.correo_personal.value = correoPersonal;
+    if (!correoIna && !correoPersonal) {
+      mostrar('Escribe al menos un correo, el del INA o el personal.', false);
+      return;
+    }
+    if ((correoIna && !patronCorreo.test(correoIna)) || (correoPersonal && !patronCorreo.test(correoPersonal))) {
+      mostrar('Escribe un correo válido, con @ y un dominio. Ejemplo: nombre@correo.com', false);
+      return;
+    }
+    var nombre = valor('nombre');
+    var cedula = valor('cedula').replace(/\D/g, '');
+    if (!/^[0-9]{9}$/.test(cedula)) {
+      mostrar('La cédula debe tener 9 dígitos.', false);
+      return;
+    }
+    form.elements.cedula.value = cedula;
+    var lineas = ['Boleta de Afiliación SITRAINA', ' '];
+    [
+      ['Nombre', nombre],
+      ['Cédula', cedula],
+      ['Correo INA', correoIna],
+      ['Correo personal', correoPersonal],
+      ['Fecha de nacimiento', fechaLegible(valor('fecha_nacimiento'))],
+      ['Nombramiento', valor('nombramiento')],
+      ['Unidad regional', valor('unidad')],
+      ['Centro o núcleo', valor('centro')],
+      ['Puesto', valor('puesto')],
+      ['Teléfono de trabajo', valor('telefono_trabajo')],
+      ['Teléfono de domicilio', valor('telefono_domicilio')],
+      ['Teléfono celular', valor('telefono_celular')]
+    ].forEach(function (par) {
+      lineas.push(par[0] + ': ' + (par[1] || '—'));
+    });
+    lineas.push(' ');
+    cortar('Autorizo a la Unidad de Recursos Humanos del INA para que deduzca de mi salario el 1% mensual a favor de SITRAINA.', 78).forEach(function (linea) {
+      lineas.push(linea);
+    });
+    lineas.push(' ');
+    cortar('Esta boleta debe firmarse con la aplicación Gaudi y el certificado digital. Sin esa firma, la afiliación no es válida legalmente.', 78).forEach(function (linea) {
+      lineas.push(linea);
+    });
+    var pdf = crearPdf(lineas);
+    var archivoNombre = 'Afiliacion_SITRAINA_' + (cedula.replace(/\D/g, '') || 'boleta') + '.pdf';
+    try {
+      var archivo = new File([pdf.blob], archivoNombre, { type: 'application/pdf' });
+      var transferencia = new DataTransfer();
+      transferencia.items.add(archivo);
+      adjunto.files = transferencia.files;
+    } catch (error) {
+      mostrar('No se pudo preparar el PDF. Intenta de nuevo.', false);
+      return;
+    }
+    asunto.value = 'Boleta de afiliación: ' + nombre;
+    replyto.value = correoPersonal || correoIna;
+    try {
+      sessionStorage.setItem('afiliacionPdf', JSON.stringify({ nombre: archivoNombre, base64: btoa(pdf.binario) }));
+    } catch (error) {}
+    var datos = new FormData();
+    datos.append('accion', 'guardar');
+    datos.append('cedula', cedula);
+    datos.append('correo', replyto.value);
+    fetch('php/afiliados.php', { method: 'POST', body: datos })
+      .then(function (respuesta) { return respuesta.json(); })
+      .then(function (data) {
+        if (!data.ok) {
+          mostrar(data.mensaje || 'No se pudo guardar la afiliación.', false);
+          return;
+        }
+        form.submit();
+      })
+      .catch(function () {
+        mostrar('No se pudo guardar la afiliación en la base de datos. Intenta de nuevo.', false);
+      });
+  });
+})();
+</script>
 
   
 </body>

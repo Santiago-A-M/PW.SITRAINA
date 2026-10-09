@@ -4028,3 +4028,145 @@ body.dark-mode .cita-hora.elegida {
   }
 }
 
+.cita-puerta {
+  position: fixed;
+  inset: 0;
+  z-index: 4500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(43, 33, 31, 0.55);
+}
+
+.cita-puerta[hidden] {
+  display: none;
+}
+
+.cita-puerta-panel {
+  width: min(520px, 100%);
+  background: #fffdfb;
+  color: #2b211f;
+  border-radius: 16px;
+  border-top: 6px solid #c81d25;
+  padding: 28px 26px 24px;
+  box-shadow: 0 18px 40px rgba(43, 33, 31, 0.28);
+}
+
+.cita-puerta-panel h2 {
+  margin: 0 0 10px;
+  color: #6e1218;
+  font-size: 1.45rem;
+}
+
+.cita-puerta-panel p {
+  margin: 0;
+  line-height: 1.5;
+  color: #4a403c;
+}
+
+.cita-puerta-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  font-weight: 700;
+}
+
+.cita-puerta-label input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d9cdc6;
+  border-radius: 8px;
+  background: #fffdfb;
+  color: #2b211f;
+  font: inherit;
+  font-weight: 400;
+}
+
+.cita-puerta-label input:focus {
+  outline: 2px solid #c81d25;
+  border-color: #c81d25;
+}
+
+.cita-puerta-error {
+  display: block;
+  min-height: 1.2em;
+  margin-top: 8px;
+  color: #8e1a20;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.cita-puerta-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.cita-puerta-acciones .btn {
+  border: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-contorno {
+  background: transparent;
+  color: #6e1218;
+  border: 2px solid #8e1a20;
+}
+
+.btn-contorno:hover {
+  background: #f3ebe6;
+  color: #6e1218;
+}
+
+body.cita-bloqueada {
+  overflow: hidden;
+}
+
+body.dark-mode .cita-puerta-panel {
+  background: #2c2320;
+  color: #f7f2ee;
+}
+
+body.dark-mode .cita-puerta-panel h2 {
+  color: #ffc4bc;
+}
+
+body.dark-mode .cita-puerta-panel p,
+body.dark-mode .cita-puerta-label {
+  color: #f0e8e2;
+}
+
+body.dark-mode .cita-puerta-label input {
+  background: #1c1614;
+  color: #f7f2ee;
+  border-color: #6a564e;
+}
+
+body.dark-mode .cita-puerta-error {
+  color: #ffc4bc;
+}
+
+body.dark-mode .btn-contorno {
+  color: #ffc4bc;
+  border-color: #ffc4bc;
+  background: transparent;
+}
+
+body.dark-mode .btn-contorno:hover {
+  background: #3a2e2a;
+  color: #fff7f4;
+}
+
+.boleta-afiliacion .cita-resultado {
+  margin-top: 18px;
+}
+
+.descarga-boleta {
+  margin: 14px 0 0;
+  text-align: center;
+}
+
