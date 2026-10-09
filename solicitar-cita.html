@@ -14,9 +14,9 @@
   </script>
   <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
   <title>SITRAINA | Solicitar cita</title>
-  <link rel="stylesheet" href="css/estilo.css?v=2.29">
+  <link rel="stylesheet" href="css/estilo.css?v=2.34">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -45,9 +45,13 @@
     </div>
   </header>
 
+  <a class="btn-atras" href="asesoria-legal.html">
+    <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <span class="btn-atras-texto">Volver a asesoría</span>
+  </a>
+
   <main class="pagina-cita">
     <div class="contenedor">
-      <a class="volver-asesoria" href="asesoria-legal.html">Volver a asesoría</a>
       <h1>Solicitar cita con el asesor legal</h1>
       <p class="cita-intro">Elige un día hábil y una hora. Al enviar, la confirmación vuelve a esta página.</p>
       <form class="form-cita" id="form-cita" action="https://formsubmit.co/682fee38da5d55209efa8a7d240cf00f" method="POST">
@@ -84,10 +88,12 @@
               <input type="text" name="cedula" required maxlength="20" autocomplete="off">
             </label>
             <label>Correo electrónico
-              <input type="email" name="email" required maxlength="120" autocomplete="email">
+              <input type="email" name="email" required maxlength="120" autocomplete="email" inputmode="email" spellcheck="false" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Escribe un correo válido con @ y un dominio, por ejemplo nombre@correo.com">
+              <span class="cita-ayuda">Debe incluir @ y un dominio, por ejemplo nombre@correo.com.</span>
             </label>
             <label>Teléfono
-              <input type="tel" name="telefono" required maxlength="20" autocomplete="tel">
+              <input type="tel" name="telefono" required inputmode="numeric" autocomplete="tel" maxlength="11" pattern="[0-9]{8}" title="El teléfono debe tener 8 dígitos">
+              <span class="cita-ayuda">8 dígitos, sin espacios ni código de país.</span>
             </label>
             <label>¿Es persona afiliada?
               <select name="afiliado" required>
@@ -146,19 +152,19 @@
         </div>
       </div>
       <div class="redes-contacto-premium">
-        <a href="https://facebook.com/sitraina.cr" target="_blank" class="btn-social">
-          <img src="img/facebook.png" alt="Facebook">
+        <a href="https://facebook.com/sitraina.cr" target="_blank" class="btn-social" aria-label="Facebook">
+          <i class="fab fa-facebook-f" aria-hidden="true"></i>
         </a>
-        <a href="https://www.instagram.com/sitrainacr" target="_blank" class="btn-social">
-          <img src="img/instagram.png" alt="Instagram">
+        <a href="https://www.instagram.com/sitrainacr" target="_blank" class="btn-social" aria-label="Instagram">
+          <i class="fab fa-instagram" aria-hidden="true"></i>
         </a>
-        <a href="https://www.tiktok.com/@sitraina" target="_blank" class="btn-social">
-          <img src="img/tik-tok.png" alt="TikTok">
+        <a href="https://www.tiktok.com/@sitraina" target="_blank" class="btn-social" aria-label="TikTok">
+          <i class="fab fa-tiktok" aria-hidden="true"></i>
         </a>
       </div>
     </div>
   </footer>
 
-  <script src="js/script.js?v=2.21"></script>
+  <script src="js/script.js?v=2.26"></script>
 </body>
 </html>

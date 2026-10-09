@@ -305,10 +305,65 @@ document.addEventListener('DOMContentLoaded', () => {
             history.replaceState(null, '', location.pathname);
         }
 
+        const campoCorreo = formCita.elements.email;
+        const campoTelefono = formCita.elements.telefono;
+        const correoValido = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+
+        const revisarCorreo = () => {
+            const valor = campoCorreo.value.trim();
+            campoCorreo.value = valor;
+            if (!valor) {
+                campoCorreo.setCustomValidity('Escribe tu correo electrónico.');
+                return false;
+            }
+            if (valor.indexOf('@') === -1 || !correoValido.test(valor)) {
+                campoCorreo.setCustomValidity('Escribe un correo válido, con @ y un dominio. Ejemplo: nombre@correo.com');
+                return false;
+            }
+            campoCorreo.setCustomValidity('');
+            return true;
+        };
+
+        const revisarTelefono = () => {
+            let digitos = campoTelefono.value.replace(/\D/g, '');
+            if (digitos.indexOf('506') === 0 && digitos.length === 11) digitos = digitos.slice(3);
+            campoTelefono.value = digitos;
+            if (!/^[0-9]{8}$/.test(digitos)) {
+                campoTelefono.setCustomValidity('El teléfono debe tener exactamente 8 dígitos.');
+                return false;
+            }
+            campoTelefono.setCustomValidity('');
+            return true;
+        };
+
+        campoCorreo.addEventListener('input', () => {
+            if (campoCorreo.value.trim() === '') campoCorreo.setCustomValidity('');
+            else revisarCorreo();
+        });
+        campoCorreo.addEventListener('blur', () => {
+            if (campoCorreo.value.trim() !== '') revisarCorreo();
+        });
+        campoTelefono.addEventListener('input', () => {
+            let digitos = campoTelefono.value.replace(/\D/g, '');
+            if (digitos.indexOf('506') === 0 && digitos.length === 11) digitos = digitos.slice(3);
+            if (campoTelefono.value !== digitos) campoTelefono.value = digitos;
+            if (digitos.length === 0) campoTelefono.setCustomValidity('');
+            else if (!/^[0-9]{8}$/.test(digitos)) campoTelefono.setCustomValidity('El teléfono debe tener exactamente 8 dígitos.');
+            else campoTelefono.setCustomValidity('');
+        });
+
         formCita.addEventListener('submit', (evento) => {
+            const correoOk = revisarCorreo();
+            const telefonoOk = revisarTelefono();
             if (!campoFecha.value || !campoHora.value) {
                 evento.preventDefault();
                 resumenCita.textContent = 'Elige el día y la hora de la cita antes de enviarla.';
+                return;
+            }
+            if (!correoOk || !telefonoOk) {
+                evento.preventDefault();
+                if (!correoOk) campoCorreo.reportValidity();
+                else campoTelefono.reportValidity();
                 return;
             }
             const trampa = formCita.elements._honey;
@@ -317,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             document.getElementById('cita-asunto').value = 'Solicitud de cita legal: ' + etiquetaFecha(campoFecha.value) + ' ' + campoHora.value;
-            document.getElementById('cita-replyto').value = formCita.elements.email.value;
+            document.getElementById('cita-replyto').value = campoCorreo.value;
         });
 
         pintarMes();
@@ -364,26 +419,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var estilo = document.createElement('style');
     estilo.textContent = [
-        '#sitrabot{position:fixed;right:20px;bottom:20px;z-index:4000;font-family:"Source Sans 3",sans-serif}',
+        '#sitrabot{position:fixed;right:20px;bottom:20px;z-index:4000;font-family:"Public Sans",sans-serif}',
         '#sitrabot *{box-sizing:border-box}',
-        '.sitrabot-abrir{width:64px;height:64px;border:0;border-radius:50%;padding:0;cursor:pointer;background:#397dff;box-shadow:0 8px 22px rgba(28,22,20,.28);overflow:hidden}',
-        '.sitrabot-abrir img{width:100%;height:100%;object-fit:cover;display:block}',
+        '.sitrabot-abrir{width:56px;height:56px;border:0;border-radius:50%;padding:0;cursor:pointer;background:#8e1a20;color:#f6f0ec;box-shadow:0 8px 18px rgba(110,18,24,.28);display:flex;align-items:center;justify-content:center}',
+        '.sitrabot-abrir svg{width:26px;height:26px;display:block}',
+        '.sitrabot-abrir:hover{background:#6e1218}',
         '.sitrabot-panel{position:fixed;right:20px;bottom:20px;width:min(380px,calc(100vw - 32px));height:min(520px,calc(100vh - 108px));max-height:calc(100vh - 108px);background:#fff;color:#2b211f;border-radius:18px;box-shadow:0 16px 40px rgba(28,22,20,.28);display:flex;flex-direction:column;overflow:hidden}',
         '.sitrabot-panel[hidden]{display:none}',
-        '.sitrabot-cabeza{position:relative;flex:0 0 auto;display:flex;align-items:center;gap:10px;min-height:72px;padding:14px 58px 14px 16px;background:#397dff;color:#fff}',
-        '.sitrabot-cabeza img{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#fff;flex:0 0 auto}',
+        '.sitrabot-cabeza{position:relative;flex:0 0 auto;display:flex;align-items:center;gap:10px;min-height:72px;padding:14px 58px 14px 16px;background:#8e1a20;color:#f6f0ec}',
+        '.sitrabot-marca{width:42px;height:42px;border-radius:50%;background:#f6f0ec;color:#8e1a20;display:flex;align-items:center;justify-content:center;flex:0 0 auto}',
+        '.sitrabot-marca svg{width:22px;height:22px;display:block}',
         '.sitrabot-cabeza strong{display:block;font-size:15px;letter-spacing:.04em}',
         '.sitrabot-cabeza span{display:block;font-size:12px;opacity:.92}',
         '.sitrabot-cerrar{position:absolute;top:16px;right:14px;width:36px;height:36px;border:0;border-radius:50%;background:#fff;color:#6e1218;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}',
         '.sitrabot-cerrar svg{width:16px;height:16px;display:block}',
-        '.sitrabot-mensajes{position:relative;flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;padding:16px;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;gap:10px;background:#f7f8fb}',
+        '.sitrabot-mensajes{position:relative;flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;padding:16px;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;gap:10px;background:#f6f0ec;scrollbar-color:#c81d25 #f3ebe6}',
         '.sitrabot-burbuja{flex:0 0 auto;max-width:86%;padding:10px 12px;border-radius:14px;line-height:1.45;font-size:14.5px;white-space:pre-wrap}',
-        '.sitrabot-bot{align-self:flex-start;background:#fff;color:#2b211f;border:1px solid #e4e8f0}',
-        '.sitrabot-user{align-self:flex-end;background:#397dff;color:#fff}',
-        '.sitrabot-bot a{color:#264eb4;font-weight:700}',
-        '.sitrabot-form{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px;border-top:1px solid #e4e8f0;background:#fff}',
-        '.sitrabot-form input{flex:1;min-width:0;border:1px solid #d5dbe6;border-radius:999px;padding:11px 14px;font:inherit;color:#2b211f;background:#fff}',
-        '.sitrabot-form button{flex:0 0 auto;width:42px;height:42px;border:0;border-radius:50%;background:#397dff;color:#fff;cursor:pointer;font-size:18px}',
+        '.sitrabot-bot{align-self:flex-start;background:#fff;color:#2b211f;border:1px solid #e7ddd6}',
+        '.sitrabot-user{align-self:flex-end;background:#8e1a20;color:#f6f0ec}',
+        '.sitrabot-bot a{color:#8e1a20;font-weight:700}',
+        '.sitrabot-form{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px;border-top:1px solid #e7ddd6;background:#fff}',
+        '.sitrabot-form input{flex:1;min-width:0;border:1px solid #e0d2cb;border-radius:999px;padding:11px 14px;font:inherit;color:#2b211f;background:#fff}',
+        '.sitrabot-form input:focus{outline:2px solid #c81d25;border-color:#c81d25}',
+        '.sitrabot-form button{flex:0 0 auto;width:42px;height:42px;border:0;border-radius:50%;background:#8e1a20;color:#f6f0ec;cursor:pointer;font-size:18px}',
+        '.sitrabot-form button:hover{background:#6e1218}',
         '.sitrabot-espera{opacity:.7}',
         '@media (max-width:768px){#sitrabot{right:12px;bottom:12px}.sitrabot-panel{right:12px;bottom:12px;width:calc(100vw - 24px);height:min(520px,calc(100vh - 96px));max-height:calc(100vh - 96px)}}'
     ].join('');
@@ -391,13 +450,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var raiz = /\/(hojamier|convenios)\//.test(location.pathname) ? '../' : '';
     var clave = 'sitrabot-mensajes';
-    var avatar = 'https://cm4-production-assets.s3.amazonaws.com/1784954535696-sitrabot.png';
+    var marca = '<span class="sitrabot-marca" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H10l-3.2 2.6c-.5.4-1.3 0-1.3-.7V16H7.5A2.5 2.5 0 0 1 5 13.5v-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>';
     var historial = [];
     try { historial = JSON.parse(sessionStorage.getItem(clave) || '[]'); } catch (e) { historial = []; }
 
     var caja = document.createElement('div');
     caja.id = 'sitrabot';
-    caja.innerHTML = '<section class="sitrabot-panel" hidden><header class="sitrabot-cabeza"><img src="' + avatar + '" alt=""><div><strong>SITRABOT</strong><span>Asistente virtual de SITRAINA</span></div><button type="button" class="sitrabot-cerrar" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></header><div class="sitrabot-mensajes" role="log" aria-live="polite"></div><form class="sitrabot-form"><input type="text" aria-label="Tu pregunta o duda laboral" placeholder="Tu pregunta o duda laboral..." autocomplete="off"><button type="submit" aria-label="Enviar mensaje">↑</button></form></section><button type="button" class="sitrabot-abrir" aria-label="Abrir Sitrabot" aria-expanded="false"><img src="' + avatar + '" alt=""></button>';
+    caja.innerHTML = '<section class="sitrabot-panel" hidden><header class="sitrabot-cabeza">' + marca + '<div><strong>SITRABOT</strong><span>Asistente virtual de SITRAINA</span></div><button type="button" class="sitrabot-cerrar" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></header><div class="sitrabot-mensajes" role="log" aria-live="polite"></div><form class="sitrabot-form"><input type="text" aria-label="Tu pregunta o duda laboral" placeholder="Tu pregunta o duda laboral..." autocomplete="off"><button type="submit" aria-label="Enviar mensaje">↑</button></form></section><button type="button" class="sitrabot-abrir" aria-label="Abrir Sitrabot" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H10l-3.2 2.6c-.5.4-1.3 0-1.3-.7V16H7.5A2.5 2.5 0 0 1 5 13.5v-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>';
     document.body.appendChild(caja);
 
     var panel = caja.querySelector('.sitrabot-panel');

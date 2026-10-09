@@ -44,7 +44,7 @@ html.dark-mode {
 body {
   background-color: var(--color-fondo-claro);
   color: var(--color-texto-oscuro);
-  font-family: "Source Sans 3", sans-serif;
+  font-family: "Public Sans", sans-serif;
 }
 
 button,
@@ -503,7 +503,7 @@ body.dark-mode .btn-header {
     color: #000000; /* Se cambia de rojo a negro */
     margin-bottom: 50px;
     font-size: 2.5rem;
-    font-family: "Source Sans 3", sans-serif;
+    font-family: "Public Sans", sans-serif;
 }
 
 .noticias h2 {
@@ -528,7 +528,7 @@ body.dark-mode .btn-header {
     text-decoration: none !important; /* Elimina el subrayado azul */
     border-radius: 8px;        /* Bordes redondeados */
     font-weight: bold;
-    font-family: "Source Sans 3", sans-serif;
+    font-family: "Public Sans", sans-serif;
     transition: all 0.3s ease;
     border: 2px solid transparent;
     text-align: center;
@@ -656,27 +656,28 @@ body.dark-mode .btn-header {
 }
 
 .btn-social {
-    background: #ffffff; /* Fondo blanco para que el icono resalte */
-    width: 38px;
-    height: 38px;
+    background: rgba(0, 0, 0, 0.1);
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px; /* Cuadrado redondeado moderno */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, background 0.3s ease;
 }
 
-.btn-social img {
-    width: 22px;
-    height: 22px;
-    object-fit: contain;
+.btn-social i {
+    color: #ffffff;
+    line-height: 1;
 }
 
 .btn-social:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-    background: #f0f0f0;
+    transform: translateY(-4px);
+    background: rgba(0, 0, 0, 0.22);
+    color: #ffffff;
 }
 
 /* --- RESPONSIVO PARA MÓVIL --- */
@@ -768,7 +769,7 @@ body.dark-mode .btn-header {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
-  font-family: "Source Sans 3", sans-serif;
+  font-family: "Public Sans", sans-serif;
 }
 
 .modal button.btn {
@@ -846,7 +847,7 @@ body.dark-mode .btn-header {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
-  font-family: "Source Sans 3", sans-serif;
+  font-family: "Public Sans", sans-serif;
   transition: border-color 0.3s ease;
 }
 
@@ -2173,7 +2174,7 @@ body .noticias .contenedor .cards .card {
     text-decoration: none;
     font-weight: bold;
     border-radius: 8px;
-    font-family: "Source Sans 3", sans-serif;
+    font-family: "Public Sans", sans-serif;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
@@ -2191,7 +2192,7 @@ body .noticias .contenedor .cards .card {
 
 .contenedor-efemerides {
     max-width: 900px;
-    margin: 120px auto 50px; /* Margen superior para no quedar bajo el header */
+    margin: 152px auto 50px; /* Margen superior para no quedar bajo el header ni el botón de volver */
     padding: 0 20px;
 }
 
@@ -2201,7 +2202,7 @@ body .noticias .contenedor .cards .card {
     color: #000000; /* Cambiado de #c81d25 a negro */
     margin-bottom: 50px;
     font-size: 2.5rem;
-    font-family: "Source Sans 3", sans-serif;
+    font-family: "Public Sans", sans-serif;
 }
 
 /* Línea de Tiempo */
@@ -2235,7 +2236,7 @@ body .noticias .contenedor .cards .card {
     color: #000000;
     font-size: 1.3rem;
     margin-bottom: 15px;
-    font-family: "Source Sans 3", sans-serif;
+    font-family: "Public Sans", sans-serif;
 }
 
 .evento-contenido {
@@ -2298,6 +2299,98 @@ body .noticias .contenedor .cards .card {
 
 .btn-volver:hover {
     background-color: #333;
+}
+
+.btn-atras {
+    position: fixed;
+    top: 92px;
+    left: 16px;
+    z-index: 2900;
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #8e1a20;
+    color: #f6f0ec !important;
+    text-decoration: none;
+    box-shadow: 0 8px 18px rgba(110, 18, 24, 0.28);
+    overflow: hidden;
+}
+
+.btn-atras:hover,
+.btn-atras:focus-visible {
+    background: #6e1218;
+    color: #f6f0ec !important;
+    outline: 2px solid #f6f0ec;
+    outline-offset: 2px;
+}
+
+.btn-atras-icono {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.btn-atras-icono svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+.btn-atras-texto {
+    display: inline-block;
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    font-weight: 700;
+    font-size: 0.92rem;
+    transition: max-width 0.35s ease, opacity 0.25s ease, margin-left 0.35s ease;
+}
+
+.btn-atras:hover .btn-atras-texto,
+.btn-atras:focus-visible .btn-atras-texto {
+    max-width: 16rem;
+    margin-left: 8px;
+    opacity: 1;
+}
+
+body.dark-mode a.btn-atras,
+body.dark-mode a.btn-atras:hover,
+body.dark-mode a.btn-atras:focus-visible {
+    background: #8e1a20 !important;
+    color: #f6f0ec !important;
+}
+
+body.dark-mode a.btn-atras:hover,
+body.dark-mode a.btn-atras:focus-visible {
+    background: #6e1218 !important;
+}
+
+@media (max-width: 768px) {
+    .btn-atras {
+        top: 76px;
+        left: 12px;
+    }
+}
+
+@media (hover: none) {
+    .btn-atras-texto {
+        max-width: 16rem;
+        margin-left: 8px;
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-atras-texto {
+        transition: none;
+    }
 }
 
 /* ==========================================================================
@@ -3614,7 +3707,7 @@ body.dark-mode .asesoria-legal .contenedor {
 }
 
 .pagina-cita {
-  padding: 128px 32px 80px;
+  padding: 156px 32px 80px;
 }
 
 .pagina-cita .contenedor,
@@ -3783,6 +3876,17 @@ body.dark-mode .pagina-cita .contenedor {
   grid-column: 1 / -1;
 }
 
+.cita-ayuda {
+  font-weight: 400;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #6b5b55;
+}
+
+.cita-datos input:user-invalid {
+  border-color: #c81d25;
+}
+
 .cita-datos input,
 .cita-datos select,
 .cita-datos textarea {
@@ -3853,6 +3957,10 @@ body.dark-mode .cita-resultado.error {
 .cita-aviso h1 {
   margin: 0 0 12px;
   color: #6e1218;
+}
+
+body.dark-mode .cita-ayuda {
+  color: #f0e8e2 !important;
 }
 
 body.dark-mode .pagina-cita h1,
