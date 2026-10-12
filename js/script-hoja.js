@@ -13,14 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const abrir = (boton) => {
         origen = boton;
-        rutaActual = boton.dataset.src || '';
+        rutaActual = rutaSegunLugar(boton.dataset.src || '');
         titulo.textContent = boton.dataset.titulo || boton.textContent;
         descripcion.textContent = boton.dataset.desc || '';
         video.pause();
         video.src = rutaActual;
         if (boton.dataset.pdf) {
             pdf.hidden = false;
-            pdf.href = boton.dataset.pdf;
+            pdf.href = rutaSegunLugar(boton.dataset.pdf);
             pdf.innerHTML = '<i class="fas fa-file-pdf"></i> ' + (boton.dataset.pdfNombre || 'Descargar');
         } else {
             pdf.hidden = true;
@@ -58,6 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (rutaActual) copiarVinculo(rutaActual, copiar);
     });
 });
+
+function rutaSegunLugar(ruta) {
+    if (!ruta || /\/hojamier\//.test(location.pathname)) return ruta || '';
+    if (ruta.indexOf('../') === 0) ruta = ruta.slice(3);
+    if (ruta.indexOf('Videos/') === 0) return 'hojamier/' + ruta;
+    return ruta;
+}
 
 function copiarVinculo(rutaVideo, boton) {
     const urlCompleta = window.location.origin + window.location.pathname.replace('galeria.html', '') + rutaVideo;

@@ -622,7 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (/hoja del miercoles|hoja semanal|volumen/.test(q)) {
             return bot([
                 txt('La Hoja del Miércoles reúne las ediciones semanales del sindicato. Se consulta en '),
-                enl('Hoja del Miércoles', 'hojamier/galeria.html'),
+                enl('Hoja del Miércoles', 'galeria.html'),
                 txt('.')
             ]);
         }
