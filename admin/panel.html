@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administración | SITRAINA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=2.47">
+</head>
+<body class="pagina-panel">
+  <main class="caja caja-panel">
+    <h1>Administración</h1>
+    <p class="sesion" hidden>{{usuario}}</p>
+    <p>Sigue el orden: primero el mes, después el día de ese mes y al final la hora exacta. Si todavía no agregas meses, las citas siguen de lunes a viernes, de 7:00 a. m. a 2:00 p. m., durante los próximos 3 meses.</p>
+    <!-- Paso 1: elige y agrega los meses que tendrán horario. -->
+    <section class="paso">
+      <h2><span>1</span> Meses disponibles</h2>
+      <p class="ayuda">Elige el mes y agrégalo. Puedes agregar varios. Al tocar uno, el calendario de abajo muestra ese mes.</p>
+      <form id="form-mes">
+        <label for="mes">Mes</label>
+        <div class="fila">
+          <input id="mes" name="valor" type="month" required>
+          <button type="submit">Agregar mes</button>
+        </div>
+      </form>
+      <div class="chips" id="lista-mes"></div>
+    </section>
+
+    <!-- Paso 2: pinta cada día con el pincel hábil, no disponible u ocupada. -->
+    <section class="paso despliegue" id="paso-dia">
+      <h2><span>2</span> Día de ese mes</h2>
+      <p class="ayuda" id="dia-ayuda">Elige un pincel y después toca los días. Hábil los pinta de verde, No disponible con X y Ocupada de gris con un reloj.</p>
+      <div class="pinceles" role="group" aria-label="Pincel para los días">
+        <button type="button" class="pincel" data-pincel="abierta" aria-pressed="true">
+          <span class="muestra muestra-habil" aria-hidden="true"></span> Hábil
+        </button>
+        <button type="button" class="pincel" data-pincel="bloqueada" aria-pressed="false">
+          <span class="muestra muestra-x" aria-hidden="true">×</span> No disponible
+        </button>
+        <button type="button" class="pincel" data-pincel="ocupada" aria-pressed="false">
+          <span class="muestra muestra-ocupada" aria-hidden="true"><svg class="icono-reloj" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"></circle><path d="M12 8v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span> Ocupada
+        </button>
+      </div>
+      <p class="aviso" id="agenda-aviso" hidden></p>
+      <p class="mes-activo" id="mes-activo"></p>
+      <div class="semana" aria-hidden="true">
+        <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+      </div>
+      <div class="dias" id="dias-mes"></div>
+    </section>
+
+    <!-- Paso 3: escribe la hora exacta, de 1 a 12, con minutos de 00 a 59. -->
+    <section class="paso">
+      <h2><span>3</span> Hora y minutos</h2>
+      <p class="ayuda">Escribe la hora y los minutos, y elige a. m. o p. m. La hora llega hasta 12 y los minutos hasta 59. Si no agregas ninguna, se usan de 7:00 a. m. a 2:00 p. m. en punto.</p>
+      <form id="form-hora">
+        <div class="fila-hora">
+          <label for="hora-12">Hora
+            <input id="hora-12" inputmode="numeric" maxlength="2" pattern="[0-9]{1,2}" required value="7" autocomplete="off">
+          </label>
+          <label for="minuto">Minutos
+            <input id="minuto" inputmode="numeric" maxlength="2" pattern="[0-9]{1,2}" required value="00" autocomplete="off">
+          </label>
+          <div class="periodo" role="group" aria-label="a. m. o p. m.">
+            <button type="button" id="periodo-am" aria-pressed="true">a. m.</button>
+            <button type="button" id="periodo-pm" aria-pressed="false">p. m.</button>
+          </div>
+        </div>
+        <button type="submit">Agregar hora</button>
+      </form>
+      <ul class="reglas" id="lista-hora"><li class="vacio">Sin horas agregadas.</li></ul>
+    </section>
+
+    <a class="salir" href="salir.php">Cerrar sesión</a>
+  </main>
+  <input type="hidden" id="agenda-token" value="{{token}}">
+  <script src="agenda.js?v=2.46"></script>
+</body>
+</html>

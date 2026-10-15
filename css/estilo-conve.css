@@ -46,7 +46,7 @@
     padding: 12px 25px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1), color 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     border-radius: 30px;        /* Esquinas redondeadas */
     min-width: 140px;
     font-size: 0.9rem;
@@ -76,7 +76,7 @@
     border: 1px solid #eee;
     padding: 10px;
     box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     display: flex;
     flex-direction: column;
 }
@@ -139,25 +139,38 @@
 .modal-lightbox img {
     max-width: 90%;
     max-height: 85vh;
-    border: 3px solid #fff;
+    border: 2px solid rgba(255, 253, 251, 0.92);
     border-radius: 5px;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-    transition: transform 0.3s ease;
+    box-shadow: 0 0 16px rgba(255, 253, 251, 0.18);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.cerrar-lightbox {
-    position: absolute;
-    top: 30px;
-    right: 40px;
+body.dark-mode .modal-lightbox img {
+    border-color: #4a3d38;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.55);
+}
+
+.modal-lightbox .cerrar-lightbox {
+    top: 18px;
+    right: 22px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: #6e1218;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.modal-lightbox .cerrar-lightbox:hover {
+    background: #c81d25;
     color: #fff;
-    font-size: 50px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.cerrar-lightbox:hover {
-    color: #c81d25; /* Cambia a rojo SITRAINA al pasar el mouse */
 }
 
 /* Animación de apertura */
@@ -167,7 +180,7 @@
 }
 
 #imagen-maximizada {
-    animation: zoom 0.3s ease-out;
+    animation: zoom 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 

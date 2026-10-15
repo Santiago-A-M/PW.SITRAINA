@@ -25,7 +25,7 @@
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
 
-  <link rel="stylesheet" href="css/estilo.css?v=2.33">
+  <link rel="stylesheet" href="css/estilo.css?v=2.59">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -69,20 +69,22 @@
 
 </head>
 
-<body>
+<body class="pagina-inicio">
+  <!-- Barra fija: logo, menú y botón de tono. -->
   <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
 
   <header class="header">
+  <!-- Logo, menú de seis páginas y botón de tono. -->
   <div class="logo">
     <a href="index.html">
         <img src="img/logo.png" alt="SITRAINA">
     </a>
   </div>
 
-  <button class="menu-toggle" id="btn-menu">☰</button>
+  <button class="menu-toggle" id="btn-menu" type="button" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menú">☰</button>
 
 <nav class="navbar" id="menu-principal" role="navigation" aria-label="Menú Principal">
-  <a href="index.html">Inicio</a>
+  <a href="index.html" class="active">Inicio</a>
   <a href="quiensomos.html">Conócenos</a>
   <a href="afiliacion.html">Afiliación</a>
   <a href="asesoria-legal.html">Asesoría</a>
@@ -101,6 +103,7 @@
 
 </header>
 
+  <!-- Portada: logo, título y botón hacia Conócenos. -->
   <section class="hero">
     <div class="hero-logo" role="img" aria-label="SITRAINA"></div>
     <h1>Defendiendo los derechos de las personas trabajadoras del INA</h1>
@@ -110,6 +113,7 @@
 
 
 
+  <!-- Comunicados recientes, con fecha, título y texto. -->
   <section class="noticias">
     <div class="comunicados">
       <h2>Últimos comunicados</h2>
@@ -172,6 +176,7 @@
     </div>
   </section>
 
+  <!-- Carrusel de la Junta. Cada tarjeta abre la ficha de esa persona. -->
   <section class="directiva">
     <div class="contenedor">
       <h2>Junta Directiva</h2>
@@ -259,42 +264,44 @@
   </section>
 
 <!-- Nuestra Labor -->
+<!-- Tres tareas del sindicato: defensa, negociación y capacitación. -->
 <section class="mision">
   <div class="contenedor">
     <h2>Nuestra Labor</h2></br>
     <div class="cards">
       
       <!-- Defensa Laboral -->
-      <div class="card">
+      <button type="button" class="card tarjeta-labor" data-foto="img/foto4.jpg" data-titulo="Defensa Laboral" data-info="SITRAINA cuida que se respeten los derechos que ya están en el contrato y en las normas de trabajo. Si una persona afiliada tiene una duda sobre su estabilidad, sobre las condiciones en las que trabaja o sobre algo que se le prometió y no se está cumpliendo, el sindicato la orienta y le da seguimiento. La defensa laboral existe para que nadie enfrente solo un problema de trabajo y para que la relación con el INA se mantenga justa.">
         <div class="imagen-servicio">
-          <img src="img/foto4.jpg" alt="Defensa Laboral" style="width: 100%; height: auto; border-radius: 8px;">
+          <img src="img/foto4.jpg" alt="">
         </div>
         <h3>Defensa Laboral</h3>
         <p>Velamos por el cumplimiento de derechos contractuales, estabilidad laboral y condiciones justas de trabajo.</p>
-      </div>
+      </button>
 
       <!-- Negociación Colectiva -->
-      <div class="card">
+      <button type="button" class="card tarjeta-labor" data-foto="img/foto6.jpg" data-titulo="Negociación Colectiva" data-info="El sindicato habla en nombre de las personas trabajadoras del INA cuando hay que acordar condiciones de trabajo con la institución. Ese acuerdo queda escrito en la convención colectiva: qué se negoció, qué se aceptó y qué se puede pedir después. SITRAINA lleva a esa mesa la voz del personal, para que lo conversado no se quede en palabras y quede claro para todas las partes.">
         <div class="imagen-servicio">
-          <img src="img/foto6.jpg" alt="Negociación Colectiva" style="width: 100%; height: auto; border-radius: 8px;">
+          <img src="img/foto6.jpg" alt="">
         </div>
         <h3>Negociación Colectiva</h3>
         <p>Representamos a los trabajadores en la negociación de convenios colectivos con el INA.</p>
-      </div>
+      </button>
 
       <!-- Capacitación Sindical -->
-      <div class="card">
+      <button type="button" class="card tarjeta-labor" data-foto="img/foto3.jpg" data-titulo="Capacitación Sindical" data-info="Formar parte del sindicato también es aprender. En talleres y espacios de formación, las personas afiliadas conocen sus derechos laborales, practican el liderazgo y ven cómo se participa en las decisiones del sindicato. Así la defensa no depende de unas pocas personas: más afiliados entienden el camino y pueden tomar parte con conocimiento.">
         <div class="imagen-servicio">
-          <img src="img/foto3.jpg" alt="Capacitación Sindical" style="width: 100%; height: auto; border-radius: 8px;">
+          <img src="img/foto3.jpg" alt="">
         </div>
         <h3>Capacitación Sindical</h3>
         <p>Formamos a nuestros afiliados en derechos laborales, liderazgo y participación democrática.</p>
-      </div>
+      </button>
 
     </div>
   </div>
 </section>
 
+<!-- Pie: mapa, correo, teléfonos y redes. -->
 <footer class="footer-franja">
     <div class="contenedor footer-grid-compacto">
         
@@ -303,28 +310,28 @@
                 <i class="fas fa-map-marker-alt"></i>
                 <div class="dato-texto">
                     <span class="label">Dirección</span>
-                    <span class="valor">La Uruca, San José</span>
+                    <a class="valor" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener">La Uruca, San José</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fas fa-envelope"></i>
                 <div class="dato-texto">
                     <span class="label">Email</span>
-                    <span class="valor">sitraina@ina.ac.cr</span>
+                    <a class="valor" href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fas fa-phone-alt"></i>
                 <div class="dato-texto">
                     <span class="label">Teléfono</span>
-                    <span class="valor">+506 2220-2480</span>
+                    <a class="valor" href="tel:+50622202480">+506 2220-2480</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fab fa-whatsapp"></i>
                 <div class="dato-texto">
                     <span class="label">WhatsApp</span>
-                    <span class="valor">+506 8448-1450</span>
+                    <a class="valor" href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a>
                 </div>
             </div>
         </div>
@@ -355,8 +362,17 @@
   </div>
 </div>
 
+<div class="directiva-popup labor-popup" id="labor-popup" aria-hidden="true">
+  <div class="directiva-popup-panel" role="dialog" aria-modal="true" aria-labelledby="labor-popup-titulo">
+    <button type="button" class="directiva-cerrar" aria-label="Cerrar">×</button>
+    <img id="labor-popup-foto" alt="">
+    <h3 id="labor-popup-titulo"></h3>
+    <p class="directiva-popup-info" id="labor-popup-info"></p>
+  </div>
+</div>
+
   <!-- Script -->
-<script src="js/script.js?v=2.25"></script>
+<script src="js/script.js?v=2.48"></script>
   
 </body>
 </html>

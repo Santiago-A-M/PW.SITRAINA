@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Cifrar clave | Administración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main class="caja caja-ancha">
+    <h1>Cifrar una clave</h1>
+    <p>Esto no crea la cuenta. Copia el resultado y pégalo en la columna clave_hash desde phpMyAdmin.</p>
+    <p class="aviso" hidden>{{aviso}}</p>
+    <form method="post" action="generar.php">
+      <input type="hidden" name="token" value="{{token}}">
+      <label for="clave">Clave</label>
+      <input id="clave" name="clave" type="password" autocomplete="new-password" required>
+      <button type="submit">Generar hash</button>
+    </form>
+    <div class="hash" data-hash hidden>
+      <label for="hash">Hash para la base</label>
+      <textarea id="hash" readonly>{{hash}}</textarea>
+    </div>
+  </main>
+</body>
+</html>

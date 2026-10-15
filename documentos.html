@@ -14,7 +14,7 @@
   </script>
   <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
   <title>SITRAINA | Documentos</title>
-  <link rel="stylesheet" href="css/estilo.css?v=2.33">
+  <link rel="stylesheet" href="css/estilo.css?v=2.54">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -51,39 +51,53 @@
     <p>Elegí un tipo. Se abre la sección con sus documentos.</p>
   </div>
 
+  <!-- Seis tipos. Efemérides, Hoja y convenios abren otra página. Los otros tres abren una sección de esta misma página. -->
   <div class="tipos-documentos">
     <a class="tipo-doc" href="efemerides.html">
-      <h2>Efemérides</h2>
-      <p>Fechas y conmemoraciones del sindicato.</p>
-      <span>Abrir</span>
+      <span class="tipo-doc-cuerpo">
+        <h2>Efemérides</h2>
+        <p>Fechas y conmemoraciones del sindicato.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
     </a>
-    <a class="tipo-doc" href="galeria.html">
-      <h2>Hoja del Miércoles</h2>
-      <p>Ediciones y materiales de la hoja semanal.</p>
-      <span>Abrir</span>
+    <a class="tipo-doc" href="hojamier/galeria.html">
+      <span class="tipo-doc-cuerpo">
+        <h2>Hoja del Miércoles</h2>
+        <p>Ediciones y materiales de la hoja semanal.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
     </a>
     <a class="tipo-doc" href="convenios/convenios.html">
-      <h2>Convenios</h2>
-      <p>Beneficios y alianzas para personas afiliadas.</p>
-      <span>Abrir</span>
+      <span class="tipo-doc-cuerpo">
+        <h2>Convenios</h2>
+        <p>Beneficios y alianzas para personas afiliadas.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
     </a>
     <a class="tipo-doc" href="#legales">
-      <h2>Documentos legales</h2>
-      <p>Leyes, convención, reglamento y estatutos.</p>
-      <span>Abrir</span>
+      <span class="tipo-doc-cuerpo">
+        <h2>Documentos legales</h2>
+        <p>Leyes, convención, reglamento y estatutos.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
     </a>
     <a class="tipo-doc" href="#informes">
-      <h2>Informes de labores</h2>
-      <p>Informes de la Junta Directiva y las secretarías.</p>
-      <span>Abrir</span>
+      <span class="tipo-doc-cuerpo">
+        <h2>Informes de labores</h2>
+        <p>Informes de la Junta Directiva y las secretarías.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
     </a>
     <a class="tipo-doc" href="#actas">
-      <h2>Actas de asamblea</h2>
-      <p>Actas ordinarias y extraordinarias.</p>
-      <span>Abrir</span>
+      <span class="tipo-doc-cuerpo">
+        <h2>Actas de asamblea</h2>
+        <p>Actas ordinarias y extraordinarias.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
     </a>
   </div>
 
+  <!-- Leyes, convención, reglamento, estatutos y machote. -->
   <section class="seccion-archivos" id="legales">
     <a class="btn-atras" href="documentos.html">
       <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -179,6 +193,7 @@
     </div>
   </section>
 
+  <!-- Informes de la Junta y de cada secretaría. -->
   <section class="seccion-archivos" id="informes">
     <a class="btn-atras" href="documentos.html">
       <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -295,6 +310,7 @@
     </div>
   </section>
 
+  <!-- Actas de asambleas ordinarias y extraordinarias. -->
   <section class="seccion-archivos" id="actas">
     <a class="btn-atras" href="documentos.html">
       <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -342,28 +358,28 @@
         <i class="fas fa-map-marker-alt"></i>
         <div class="dato-texto">
           <span class="label">Dirección</span>
-          <span class="valor">La Uruca, San José</span>
+          <a class="valor" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener">La Uruca, San José</a>
         </div>
       </div>
       <div class="dato">
         <i class="fas fa-envelope"></i>
         <div class="dato-texto">
           <span class="label">Email</span>
-          <span class="valor">sitraina@ina.ac.cr</span>
+          <a class="valor" href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a>
         </div>
       </div>
       <div class="dato">
         <i class="fas fa-phone-alt"></i>
         <div class="dato-texto">
           <span class="label">Teléfono</span>
-          <span class="valor">+506 2220-2480</span>
+          <a class="valor" href="tel:+50622202480">+506 2220-2480</a>
         </div>
       </div>
       <div class="dato">
         <i class="fab fa-whatsapp"></i>
         <div class="dato-texto">
           <span class="label">WhatsApp</span>
-          <span class="valor">+506 8448-1450</span>
+          <a class="valor" href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a>
         </div>
       </div>
     </div>
@@ -381,6 +397,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=2.29"></script>
+<script src="js/script.js?v=2.46"></script>
 </body>
 </html>

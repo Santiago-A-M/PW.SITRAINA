@@ -1,3 +1,4 @@
+/* Muestra las tarjetas de la categoría elegida y marca ese botón. */
 function filtrar(categoria) {
     // 1. Seleccionar todos los botones de categoría y todas las tarjetas
     const botones = document.querySelectorAll('.btn-categoria');
@@ -19,12 +20,13 @@ function filtrar(categoria) {
             setTimeout(() => { tarjeta.style.opacity = '1'; }, 10);
         } else {
             tarjeta.style.opacity = '0'; // Efecto de desvanecer
-            setTimeout(() => { tarjeta.style.display = 'none'; }, 300); // Ocultar
+            setTimeout(() => { tarjeta.style.display = 'none'; }, 500); // Ocultar
         }
     });
 }
 
 
+/* Abre la imagen del convenio en grande y detiene el desplazamiento de la página. */
 function abrirImagen(src) {
     const modal = document.getElementById('modal-imagen');
     const imgMax = document.getElementById('imagen-maximizada');
@@ -37,6 +39,7 @@ function abrirImagen(src) {
     document.body.style.overflow = 'hidden';
 }
 
+/* Cierra la imagen grande y devuelve el desplazamiento de la página. */
 function cerrarImagen() {
     const modal = document.getElementById('modal-imagen');
     modal.style.display = 'none';

@@ -1,10 +1,13 @@
 <?php
+/* Recibe la cita o la afiliación, las revisa y reenvía el correo por FormSubmit. */
 mysqli_report(MYSQLI_REPORT_OFF);
 
+/* Escapa un texto antes de mostrarlo en HTML. */
 function h($texto) {
     return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 }
 
+/* Muestra una página corta de aviso y detiene el proceso. */
 function pagina($titulo, $mensaje, $volver) {
     echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
@@ -17,6 +20,7 @@ function pagina($titulo, $mensaje, $volver) {
     exit;
 }
 
+/* Página a la que se vuelve cuando la cita o la afiliación se envió. */
 function destino($accion) {
     if ($accion === 'verificar') {
         return '../solicitar-cita.html?enviada=1';
@@ -24,6 +28,7 @@ function destino($accion) {
     return '../afiliacion.html?enviada=1';
 }
 
+/* Página del formulario al que se regresa si hay un error. */
 function volver($accion) {
     if ($accion === 'verificar') {
         return '../solicitar-cita.html';
@@ -31,11 +36,67 @@ function volver($accion) {
     return '../afiliacion.html';
 }
 
+/* Lee un texto de la boleta. Vacío queda null. Si supera el máximo, devuelve false. */
+function campo($clave, $maximo) {
+    $valor = trim((string) ($_POST[$clave] ?? ''));
+    if ($valor === '') {
+        return null;
+    }
+    $largo = function_exists('mb_strlen') ? mb_strlen($valor, 'UTF-8') : strlen($valor);
+    if ($largo > $maximo) {
+        return false;
+    }
+    return $valor;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     pagina('Afiliados', 'Esta dirección solo recibe el formulario.', '../afiliacion.html');
 }
 
 $accion = $_POST['accion'] ?? '';
+
+/* Busca la cédula ya guardada. No inserta ni actualiza la tabla. */
+if ($accion === 'consultar') {
+    header('Content-Type: application/json; charset=UTF-8');
+    header('Cache-Control: no-store');
+    $cedulaConsulta = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
+    $responder = function ($ok, $mensaje) {
+        echo json_encode(array('ok' => $ok, 'mensaje' => $mensaje), JSON_UNESCAPED_UNICODE);
+        exit;
+    };
+    if (!preg_match('/^[0-9]{9}$/', $cedulaConsulta)) {
+        $responder(false, 'La cédula debe tener 9 dígitos.');
+    }
+    $configConsulta = __DIR__ . '/config.php';
+    if (!is_file($configConsulta)) {
+        $responder(false, 'No se pudo comprobar la cédula.');
+    }
+    try {
+        $datosConsulta = require $configConsulta;
+        $baseConsulta = new mysqli($datosConsulta['host'], $datosConsulta['usuario'], $datosConsulta['clave'], $datosConsulta['nombre']);
+    } catch (Throwable $e) {
+        $responder(false, 'No se pudo comprobar la cédula.');
+    }
+    if ($baseConsulta->connect_errno) {
+        $responder(false, 'No se pudo comprobar la cédula.');
+    }
+    $baseConsulta->set_charset('utf8mb4');
+    $busqueda = $baseConsulta->prepare('SELECT id FROM afiliaciones WHERE cedula = ? AND activo = 1 LIMIT 1');
+    if (!$busqueda) {
+        $baseConsulta->close();
+        $responder(false, 'No se pudo comprobar la cédula.');
+    }
+    $busqueda->bind_param('s', $cedulaConsulta);
+    $busqueda->execute();
+    $busqueda->store_result();
+    $registrada = $busqueda->num_rows === 1;
+    $busqueda->close();
+    $baseConsulta->close();
+    if (!$registrada) {
+        $responder(false, 'Esa cédula no está registrada. Debe existir en el registro de afiliación antes de pedir la cita.');
+    }
+    $responder(true, '');
+}
 $cedula = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
 $correo = strtolower(trim((string) ($_POST['correo'] ?? '')));
 if ($correo === '') {
@@ -72,11 +133,11 @@ if ($mysqli->connect_errno) {
 $mysqli->set_charset('utf8mb4');
 
 if ($accion === 'verificar') {
-    $consulta = $mysqli->prepare('SELECT id FROM afiliados WHERE cedula = ? AND correo = ? AND activo = 1 LIMIT 1');
+    $consulta = $mysqli->prepare('SELECT id FROM afiliaciones WHERE cedula = ? AND correo = ? AND activo = 1 LIMIT 1');
     if (!$consulta) {
         $error = $mysqli->error;
         $mysqli->close();
-        pagina('Afiliación', 'No se pudo consultar la tabla afiliados. ' . $error, volver($accion));
+        pagina('Afiliación', 'No se pudo consultar la tabla afiliaciones. ' . $error, volver($accion));
     }
     $consulta->bind_param('ss', $cedula, $correo);
     $consulta->execute();
@@ -87,64 +148,136 @@ if ($accion === 'verificar') {
     if (!$encontrado) {
         pagina('Solicitud no procedente', 'Esa cédula y ese correo no figuran como persona afiliada activa.', volver($accion));
     }
+    require_once __DIR__ . '/disponibilidad.php';
+    $fechaCita = (string) ($_POST['fecha'] ?? '');
+    $horaCita = (string) ($_POST['hora'] ?? '');
+    $agenda = abrir_agenda();
+    $reglasCita = $agenda ? leer_agenda($agenda) : ['fechas' => [], 'meses' => [], 'horas' => []];
+    if (!is_array($reglasCita)) {
+        $reglasCita = ['fechas' => [], 'meses' => [], 'horas' => []];
+    }
+    if (!cita_permitida($fechaCita, $horaCita, $reglasCita)) {
+        if ($agenda) {
+            $agenda->close();
+        }
+        pagina('Cita', 'Esa fecha u hora no está disponible.', volver($accion));
+    }
+    $reservada = null;
+    if ($agenda) {
+        $reservada = reservar_cita($agenda, $fechaCita, $horaCita);
+        if ($reservada === false) {
+            $agenda->close();
+            pagina('Cita', 'Esa hora ya está agendada.', volver($accion));
+        }
+    }
     if (!reenviarCorreo()) {
+        if ($agenda && $reservada === true) {
+            liberar_cita($agenda, $fechaCita, $horaCita);
+        }
+        if ($agenda) {
+            $agenda->close();
+        }
         pagina('Correo', 'La persona sí está afiliada, pero el correo de la cita no se pudo enviar.', volver($accion));
+    }
+    if ($agenda) {
+        $agenda->close();
     }
     header('Location: ' . destino($accion));
     exit;
 }
 
 if ($accion === 'guardar') {
-    $consulta = $mysqli->prepare('SELECT cedula, correo FROM afiliados WHERE cedula = ? OR correo = ?');
+    /* Guarda la boleta en la tabla boletas. No toca la lista afiliaciones. */
+    $nombre = campo('nombre', 120);
+    $correoIna = campo('correo_ina', 120);
+    $correoPersonal = campo('correo_personal', 120);
+    $nombramiento = campo('nombramiento', 80);
+    $unidad = campo('unidad', 120);
+    $centro = campo('centro', 120);
+    $puesto = campo('puesto', 120);
+    $telefonoTrabajo = campo('telefono_trabajo', 20);
+    $telefonoDomicilio = campo('telefono_domicilio', 20);
+    $telefonoCelular = campo('telefono_celular', 20);
+    $fechaNacimiento = trim((string) ($_POST['fecha_nacimiento'] ?? ''));
+    if ($nombre === false || $correoIna === false || $correoPersonal === false || $nombramiento === false || $unidad === false || $centro === false || $puesto === false || $telefonoTrabajo === false || $telefonoDomicilio === false || $telefonoCelular === false) {
+        $mysqli->close();
+        pagina('Afiliación', 'Uno de los datos es demasiado largo.', volver($accion));
+    }
+    if ($nombre === null) {
+        $mysqli->close();
+        pagina('Afiliación', 'Escribe el nombre completo.', volver($accion));
+    }
+    if (is_string($correoIna)) {
+        $correoIna = strtolower($correoIna);
+    }
+    if (is_string($correoPersonal)) {
+        $correoPersonal = strtolower($correoPersonal);
+    }
+    $patronCorreo = '/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/';
+    if ((is_string($correoIna) && !preg_match($patronCorreo, $correoIna)) || (is_string($correoPersonal) && !preg_match($patronCorreo, $correoPersonal))) {
+        $mysqli->close();
+        pagina('Correo', 'Escribe un correo válido.', volver($accion));
+    }
+    if ($fechaNacimiento === '') {
+        $fechaNacimiento = null;
+    } else {
+        $fechaOk = DateTime::createFromFormat('Y-m-d', $fechaNacimiento);
+        if (!$fechaOk || $fechaOk->format('Y-m-d') !== $fechaNacimiento) {
+            $mysqli->close();
+            pagina('Afiliación', 'La fecha de nacimiento no es válida.', volver($accion));
+        }
+    }
+
+    $consulta = $mysqli->prepare('SELECT id FROM boletas WHERE cedula = ? LIMIT 1');
     if (!$consulta) {
         $error = $mysqli->error;
         $mysqli->close();
-        pagina('Afiliación', 'No se pudo consultar la tabla afiliados. ' . $error, volver($accion));
+        pagina('Afiliación', 'No se pudo consultar la tabla boletas. ' . $error, volver($accion));
     }
-    $consulta->bind_param('ss', $cedula, $correo);
+    $consulta->bind_param('s', $cedula);
     $consulta->execute();
-    $consulta->bind_result($cedulaFila, $correoFila);
-    $existeCedula = false;
-    $correoOcupado = false;
-    while ($consulta->fetch()) {
-        if ($cedulaFila === $cedula) {
-            $existeCedula = true;
-        } elseif ($correoFila === $correo) {
-            $correoOcupado = true;
-        }
-    }
+    $consulta->store_result();
+    $yaEnviada = $consulta->num_rows === 1;
     $consulta->close();
-
-    if ($correoOcupado) {
+    if ($yaEnviada) {
         $mysqli->close();
-        pagina('Afiliación', 'Ese correo ya está registrado con otra cédula.', volver($accion));
+        pagina('Afiliación', 'Esa cédula ya envió una boleta. No puede enviarse otra vez.', volver($accion));
     }
 
-    if ($existeCedula) {
-        $cambio = $mysqli->prepare('UPDATE afiliados SET correo = ?, activo = 1 WHERE cedula = ?');
-        if ($cambio) {
-            $cambio->bind_param('ss', $correo, $cedula);
-        }
-    } else {
-        $cambio = $mysqli->prepare('INSERT INTO afiliados (cedula, correo, activo) VALUES (?, ?, 1)');
-        if ($cambio) {
-            $cambio->bind_param('ss', $cedula, $correo);
-        }
-    }
+    $cambio = $mysqli->prepare('INSERT INTO boletas (nombre, cedula, correo_ina, correo_personal, fecha_nacimiento, nombramiento, unidad, centro, puesto, telefono_trabajo, telefono_domicilio, telefono_celular) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     if (!$cambio) {
         $error = $mysqli->error;
         $mysqli->close();
         pagina('Afiliación', 'No se pudo preparar el guardado. ' . $error, volver($accion));
     }
+    $cambio->bind_param(
+        'ssssssssssss',
+        $nombre,
+        $cedula,
+        $correoIna,
+        $correoPersonal,
+        $fechaNacimiento,
+        $nombramiento,
+        $unidad,
+        $centro,
+        $puesto,
+        $telefonoTrabajo,
+        $telefonoDomicilio,
+        $telefonoCelular
+    );
     $guardado = $cambio->execute();
     $error = $cambio->error;
+    $codigo = $cambio->errno;
     $cambio->close();
     $mysqli->close();
     if (!$guardado) {
+        if ($codigo === 1062) {
+            pagina('Afiliación', 'Esa cédula ya envió una boleta. No puede enviarse otra vez.', volver($accion));
+        }
         pagina('Afiliación', 'No se pudo guardar la afiliación. ' . $error, volver($accion));
     }
     if (!reenviarCorreo()) {
-        pagina('Afiliación guardada', 'La cédula y el correo ya quedaron en la base. El correo con el PDF no se pudo enviar.', destino($accion));
+        pagina('Afiliación guardada', 'Los datos ya quedaron en la base. El correo con el PDF no se pudo enviar.', destino($accion));
     }
     header('Location: ' . destino($accion));
     exit;
@@ -153,6 +286,7 @@ if ($accion === 'guardar') {
 $mysqli->close();
 pagina('Afiliación', 'No se reconoció el formulario.', '../afiliacion.html');
 
+/* Reenvía los datos del formulario al correo activado en FormSubmit. */
 function reenviarCorreo() {
     if (!function_exists('curl_init')) {
         return false;

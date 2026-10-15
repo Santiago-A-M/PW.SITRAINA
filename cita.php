@@ -1,4 +1,5 @@
 <?php
+/* Intento antiguo de enviar la cita por SMTP. Pedir cita ya no usa este archivo. */
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 

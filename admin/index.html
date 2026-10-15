@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administración | SITRAINA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main class="caja">
+    <h1>Administración</h1>
+    <p>Entra con una cuenta cargada en la base de administración.</p>
+    <p class="error" hidden>{{error}}</p>
+    <form method="post" action="index.php" autocomplete="off">
+      <input type="hidden" name="token" value="{{token}}">
+      <label for="usuario">Usuario</label>
+      <input id="usuario" name="usuario" type="text" maxlength="60" autocomplete="username" required>
+      <label for="clave">Clave</label>
+      <input id="clave" name="clave" type="password" autocomplete="current-password" required>
+      <button type="submit">Entrar</button>
+    </form>
+  </main>
+</body>
+</html>

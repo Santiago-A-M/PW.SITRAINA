@@ -1,4 +1,5 @@
 <?php
+/* Intento antiguo de crear el PDF en el servidor. La boleta ahora lo arma en el navegador. */
 require('fpdf/fpdf.php'); // Asegúrate de tener la librería FPDF
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){

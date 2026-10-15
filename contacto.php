@@ -1,4 +1,5 @@
 <?php
+/* Intento antiguo de enviar el contacto por SMTP. El formulario de contacto.html todavía apunta aquí. */
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 

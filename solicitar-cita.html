@@ -14,7 +14,7 @@
   </script>
   <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
   <title>SITRAINA | Solicitar cita</title>
-  <link rel="stylesheet" href="css/estilo.css?v=2.36">
+  <link rel="stylesheet" href="css/estilo.css?v=2.54">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -53,7 +53,7 @@
   <main class="pagina-cita">
     <div class="contenedor">
       <h1>Solicitar cita con el asesor legal</h1>
-      <p class="cita-intro">Elige un día hábil y una hora. Al enviar, la confirmación vuelve a esta página.</p>
+      <p class="cita-intro">Elige un día y una hora disponibles. Al enviar, la confirmación vuelve a esta página.</p>
       <form class="form-cita" id="form-cita" action="https://formsubmit.co/682fee38da5d55209efa8a7d240cf00f" method="POST">
         <input type="hidden" name="_subject" id="cita-asunto" value="Solicitud de cita legal">
         <input type="hidden" name="_template" value="table">
@@ -120,28 +120,28 @@
           <i class="fas fa-map-marker-alt"></i>
           <div class="dato-texto">
             <span class="label">Dirección</span>
-            <span class="valor">La Uruca, San José</span>
+            <a class="valor" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener">La Uruca, San José</a>
           </div>
         </div>
         <div class="dato">
           <i class="fas fa-envelope"></i>
           <div class="dato-texto">
             <span class="label">Email</span>
-            <span class="valor">sitraina@ina.ac.cr</span>
+            <a class="valor" href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a>
           </div>
         </div>
         <div class="dato">
           <i class="fas fa-phone-alt"></i>
           <div class="dato-texto">
             <span class="label">Teléfono</span>
-            <span class="valor">+506 2220-2480</span>
+            <a class="valor" href="tel:+50622202480">+506 2220-2480</a>
           </div>
         </div>
         <div class="dato">
           <i class="fab fa-whatsapp"></i>
           <div class="dato-texto">
             <span class="label">WhatsApp</span>
-            <span class="valor">+506 8448-1450</span>
+            <a class="valor" href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a>
           </div>
         </div>
       </div>
@@ -168,8 +168,9 @@
     </div>
   </div>
 
-  <script src="js/script.js?v=2.28"></script>
+  <script src="js/script.js?v=2.46"></script>
   <script>
+    /* Pregunta si la persona está afiliada antes de dejar usar el formulario de la cita. */
     (function () {
       var puerta = document.getElementById('cita-puerta');
       var titulo = document.getElementById('cita-puerta-titulo');
@@ -192,14 +193,53 @@
         yaConfirmada = sessionStorage.getItem('citaAfiliado') === 'si' && /^[0-9]{9}$/.test(cedulaGuardada);
       } catch (e) {}
 
-      if (yaConfirmada && campoCedula) campoCedula.value = cedulaGuardada;
-
+      /* Cierra la pregunta y deja usar el formulario. */
       function cerrar() {
         puerta.hidden = true;
         document.body.classList.remove('cita-bloqueada');
         if (main) main.removeAttribute('aria-hidden');
       }
 
+      /* Mantiene el formulario tapado mientras se pregunta o se comprueba la cédula. */
+      function bloquear() {
+        puerta.hidden = false;
+        document.body.classList.add('cita-bloqueada');
+        if (main) main.setAttribute('aria-hidden', 'true');
+      }
+
+      /* Deja la cédula en el formulario solo después de confirmar que ya estaba registrada. */
+      function aceptar(digitos) {
+        if (campoCedula) campoCedula.value = digitos;
+        try {
+          sessionStorage.setItem('citaAfiliado', 'si');
+          sessionStorage.setItem('citaCedula', digitos);
+        } catch (e) {}
+        cerrar();
+      }
+
+      function olvidar() {
+        try {
+          sessionStorage.removeItem('citaAfiliado');
+          sessionStorage.removeItem('citaCedula');
+        } catch (e) {}
+      }
+
+      /* Consulta la cédula en la base. La consulta no crea ni modifica el registro. */
+      function consultarCedula(digitos) {
+        var datos = new FormData();
+        datos.append('accion', 'consultar');
+        datos.append('cedula', digitos);
+        return fetch('php/afiliados.php', {
+          method: 'POST',
+          body: datos,
+          cache: 'no-store',
+          credentials: 'same-origin'
+        }).then(function (respuesta) {
+          return respuesta.json();
+        });
+      }
+
+      /* Crea un botón de la pregunta, con su texto y lo que hace al pulsarlo. */
       function boton(etiqueta, clase, alPulsar) {
         var botonEl = document.createElement('button');
         botonEl.type = 'button';
@@ -209,6 +249,7 @@
         return botonEl;
       }
 
+      /* Cambia el paso: afiliado, cédula, ofrecer afiliación o rechazo. */
       function mostrar(paso) {
         acciones.innerHTML = '';
         extra.innerHTML = '';
@@ -223,7 +264,7 @@
           }));
         } else if (paso === 'cedula') {
           titulo.textContent = 'Cédula de afiliación';
-          texto.textContent = 'Escriba su número de cédula para continuar con la solicitud de cita.';
+          texto.textContent = 'Escriba la cédula con la que ya está afiliado. Esa cédula debe estar registrada de antemano.';
           var etiqueta = document.createElement('label');
           etiqueta.className = 'cita-puerta-label';
           etiqueta.textContent = 'Cédula';
@@ -250,12 +291,22 @@
               entrada.focus();
               return;
             }
-            if (campoCedula) campoCedula.value = digitos;
-            try {
-              sessionStorage.setItem('citaAfiliado', 'si');
-              sessionStorage.setItem('citaCedula', digitos);
-            } catch (e) {}
-            cerrar();
+            var botones = acciones.querySelectorAll('button');
+            for (var i = 0; i < botones.length; i++) botones[i].disabled = true;
+            aviso.textContent = 'Comprobando la cédula…';
+            consultarCedula(digitos).then(function (resultado) {
+              for (var j = 0; j < botones.length; j++) botones[j].disabled = false;
+              if (!resultado || !resultado.ok) {
+                aviso.textContent = (resultado && resultado.mensaje) || 'Esa cédula no está registrada. Debe existir en el registro de afiliación antes de pedir la cita.';
+                entrada.focus();
+                return;
+              }
+              aceptar(digitos);
+            }).catch(function () {
+              for (var k = 0; k < botones.length; k++) botones[k].disabled = false;
+              aviso.textContent = 'No se pudo comprobar la cédula. Intenta de nuevo.';
+              entrada.focus();
+            });
           }));
           acciones.appendChild(boton('Volver', 'btn btn-contorno', function () {
             mostrar('afiliado');
@@ -282,11 +333,25 @@
         if (primero) primero.focus();
       }
 
-      if (enviada || yaConfirmada) return;
+      if (enviada) return;
 
-      puerta.hidden = false;
-      document.body.classList.add('cita-bloqueada');
-      if (main) main.setAttribute('aria-hidden', 'true');
+      bloquear();
+      if (yaConfirmada) {
+        consultarCedula(cedulaGuardada).then(function (resultado) {
+          if (resultado && resultado.ok) {
+            aceptar(cedulaGuardada);
+            return;
+          }
+          olvidar();
+          mostrar('cedula');
+          var avisoPrevio = extra.querySelector('.cita-puerta-error');
+          if (avisoPrevio) avisoPrevio.textContent = (resultado && resultado.mensaje) || 'Esa cédula no está registrada. Debe existir en el registro de afiliación antes de pedir la cita.';
+        }).catch(function () {
+          olvidar();
+          mostrar('afiliado');
+        });
+        return;
+      }
       mostrar('afiliado');
     })();
   </script>

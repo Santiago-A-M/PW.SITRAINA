@@ -15,7 +15,7 @@
   <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
  <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=2.37">
+  <link rel="stylesheet" href="css/estilo.css?v=2.54">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -140,28 +140,28 @@
                 <i class="fas fa-map-marker-alt"></i>
                 <div class="dato-texto">
                     <span class="label">Dirección</span>
-                    <span class="valor">La Uruca, San José</span>
+                    <a class="valor" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener">La Uruca, San José</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fas fa-envelope"></i>
                 <div class="dato-texto">
                     <span class="label">Email</span>
-                    <span class="valor">sitraina@ina.ac.cr</span>
+                    <a class="valor" href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fas fa-phone-alt"></i>
                 <div class="dato-texto">
                     <span class="label">Teléfono</span>
-                    <span class="valor">+506 2220-2480</span>
+                    <a class="valor" href="tel:+50622202480">+506 2220-2480</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fab fa-whatsapp"></i>
                 <div class="dato-texto">
                     <span class="label">WhatsApp</span>
-                    <span class="valor">+506 8448-1450</span>
+                    <a class="valor" href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a>
                 </div>
             </div>
         </div>
@@ -182,8 +182,9 @@
 </footer>
 
   <!-- Script -->
-<script src="js/script.js?v=2.25"></script>
+<script src="js/script.js?v=2.46"></script>
 <script>
+/* Arma el PDF de la boleta en el navegador y lo adjunta al envío. */
 (function () {
   var form = document.getElementById('form-afiliacion');
   if (!form) return;
@@ -200,6 +201,7 @@
     'à':224,'á':225,'â':226,'ã':227,'ä':228,'å':229,'æ':230,'ç':231,'è':232,'é':233,'ê':234,'ë':235,'ì':236,'í':237,'î':238,'ï':239,'ñ':241,'ò':242,'ó':243,'ô':244,'õ':245,'ö':246,'ø':248,'ù':249,'ú':250,'û':251,'ü':252,'ÿ':255
   };
 
+  /* Muestra el aviso de éxito o de error debajo de la boleta. */
   function mostrar(texto, ok) {
     aviso.hidden = false;
     aviso.textContent = texto;
@@ -207,15 +209,18 @@
     aviso.classList.toggle('error', !ok);
   }
 
+  /* Lee y recorta el valor de un campo del formulario. */
   function valor(nombre) {
     return (form.elements[nombre].value || '').trim();
   }
 
+  /* Pasa una fecha AAAA-MM-DD a DD/MM/AAAA. */
   function fechaLegible(fecha) {
     var partes = /^(\d{4})-(\d{2})-(\d{2})$/.exec(fecha);
     return partes ? partes[3] + '/' + partes[2] + '/' + partes[1] : fecha;
   }
 
+  /* Parte un texto largo en líneas que quepan en el PDF. */
   function cortar(texto, maximo) {
     var palabras = texto.split(/\s+/);
     var lineas = [];
@@ -233,6 +238,7 @@
     return lineas;
   }
 
+  /* Prepara un texto para que el PDF acepte tildes y eñes. */
   function pdfTexto(texto) {
     var limpio = String(texto || '').replace(/[\r\n\t]+/g, ' ');
     var salida = '';
@@ -246,12 +252,14 @@
     return salida;
   }
 
+  /* Convierte el texto del PDF en bytes. */
   function bytes(texto) {
     var datos = new Uint8Array(texto.length);
     for (var i = 0; i < texto.length; i++) datos[i] = texto.charCodeAt(i) & 255;
     return datos;
   }
 
+  /* Construye el archivo PDF con las líneas de la boleta. */
   function crearPdf(lineas) {
     var comandos = ['BT', '/F2 16 Tf', '50 750 Td', '(' + pdfTexto(lineas[0]) + ') Tj', '/F1 11 Tf'];
     for (var i = 1; i < lineas.length; i++) {
@@ -283,6 +291,7 @@
     return { binario: cuerpo, blob: new Blob([bytes(cuerpo)], { type: 'application/pdf' }) };
   }
 
+  /* Muestra el enlace para descargar el mismo PDF que se envió. */
   function prepararDescarga(guardado) {
     if (!guardado) return;
     var datos;

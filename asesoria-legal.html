@@ -15,7 +15,7 @@
   <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
  <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=2.33">
+  <link rel="stylesheet" href="css/estilo.css?v=2.58">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -79,27 +79,27 @@
       <div class="cards-abogados">
 
         <!-- Abogado 1 -->
-        <div class="card-abogado">
-          <img src="img/Alonso_abogado.jpg" alt="Lic. Alonso Arley Alvarado">
+        <button type="button" class="card-abogado tarjeta-asesor" data-foto="img/Alonso_abogado.jpg" data-puesto="Asesor legal" data-nombre="Lic. Alonso Arley Alvarado" data-info="Especialista en derecho laboral">
+          <img src="img/Alonso_abogado.jpg" alt="">
           <h3>Lic. Alonso Arley Alvarado</h3>
           <p>Especialista en derecho laboral</p>
-        </div>
+        </button>
 
         <!-- Abogado 2 -->
-        <div class="card-abogado">
-          <img src="img/esteban-calvo.jpg" alt="Lic. Esteban Calvo">
+        <button type="button" class="card-abogado tarjeta-asesor" data-foto="img/esteban-calvo.jpg" data-puesto="Asesor legal" data-nombre="Lic. Esteban Calvo" data-info="Especialista en derecho laboral y en Convención Colectiva">
+          <img src="img/esteban-calvo.jpg" alt="">
           <h3>Lic. Esteban Calvo</h3>
           <p>Especialista en derecho laboral y en Convención Colectiva</p>
-        </div>
+        </button>
 
       </div> <!-- ✅ Cierre del contenedor de cards -->
 
       <h1 class="titulo-consultores">Además disponemos de consultores especializados</h1>
-      <div class="lawyer-card">
-          <img src="img/mainor-castillo.jpg" alt="Mainor Castillo">
+      <button type="button" class="lawyer-card tarjeta-asesor" data-foto="img/mainor-castillo.jpg" data-puesto="Consultor especializado" data-nombre="Lic. Mainor Castillo" data-info="Especialista en derecho penal y derecho procesal">
+          <img src="img/mainor-castillo.jpg" alt="">
           <h3>Lic. Mainor Castillo</h3>
           <p>Especialista en derecho penal y derecho procesal</p>
-      </div>
+      </button>
 
     </div>
   </section> <!-- Cierre de la sección -->
@@ -113,28 +113,28 @@
                 <i class="fas fa-map-marker-alt"></i>
                 <div class="dato-texto">
                     <span class="label">Dirección</span>
-                    <span class="valor">La Uruca, San José</span>
+                    <a class="valor" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener">La Uruca, San José</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fas fa-envelope"></i>
                 <div class="dato-texto">
                     <span class="label">Email</span>
-                    <span class="valor">sitraina@ina.ac.cr</span>
+                    <a class="valor" href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fas fa-phone-alt"></i>
                 <div class="dato-texto">
                     <span class="label">Teléfono</span>
-                    <span class="valor">+506 2220-2480</span>
+                    <a class="valor" href="tel:+50622202480">+506 2220-2480</a>
                 </div>
             </div>
             <div class="dato">
                 <i class="fab fa-whatsapp"></i>
                 <div class="dato-texto">
                     <span class="label">WhatsApp</span>
-                    <span class="valor">+506 8448-1450</span>
+                    <a class="valor" href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a>
                 </div>
             </div>
         </div>
@@ -154,8 +154,18 @@
     </div>
 </footer>
 
+<div class="directiva-popup" id="asesoria-popup" aria-hidden="true">
+  <div class="directiva-popup-panel" role="dialog" aria-modal="true" aria-labelledby="asesoria-popup-nombre">
+    <button type="button" class="directiva-cerrar" aria-label="Cerrar">×</button>
+    <img id="asesoria-popup-foto" alt="">
+    <p class="directiva-popup-puesto" id="asesoria-popup-puesto"></p>
+    <h3 id="asesoria-popup-nombre"></h3>
+    <p class="directiva-popup-info" id="asesoria-popup-info"></p>
+  </div>
+</div>
+
   <!-- Script -->
-<script src="js/script.js?v=2.25"></script>
+<script src="js/script.js?v=2.47"></script>
 
   
 </body>

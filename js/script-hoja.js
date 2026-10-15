@@ -1,3 +1,4 @@
+/* Hoja del Miércoles: abre la edición con un clic y reproduce el video en el panel. */
 document.addEventListener('DOMContentLoaded', () => {
     const popup = document.getElementById('hoja-popup');
     if (!popup) return;
@@ -11,16 +12,53 @@ document.addEventListener('DOMContentLoaded', () => {
     let origen = null;
     let rutaActual = '';
 
+    /* Muestra el primer cuadro del video para que no se vea en negro. */
+    const mostrarCuadro = () => {
+        if (!popup.classList.contains('abierta') || !video.getAttribute('src')) return;
+        video.removeEventListener('loadeddata', mostrarCuadro);
+        if (video.readyState < 2 || video.currentTime > 0) return;
+        const detener = () => video.pause();
+        video.addEventListener('seeked', detener, { once: true });
+        try {
+            video.currentTime = 0.05;
+        } catch (error) {
+            video.removeEventListener('seeked', detener);
+        }
+    };
+
+    video.addEventListener('click', (evento) => {
+        if (evento.target !== video) return;
+        const desdeAbajo = video.clientHeight - evento.offsetY;
+        if (desdeAbajo < 16) return;
+        const estabaPausado = video.paused || video.ended;
+        setTimeout(() => {
+            if (!popup.classList.contains('abierta')) return;
+            const sigueIgual = (video.paused || video.ended) === estabaPausado;
+            if (!sigueIgual) return;
+            if (estabaPausado) {
+                const reproduccion = video.play();
+                if (reproduccion) reproduccion.catch(() => {});
+            } else {
+                video.pause();
+            }
+        }, 0);
+    });
+
+    /* Abre el panel de una edición, carga su video y, si tiene, el PDF. */
     const abrir = (boton) => {
         origen = boton;
-        rutaActual = rutaSegunLugar(boton.dataset.src || '');
+        rutaActual = boton.dataset.src || '';
         titulo.textContent = boton.dataset.titulo || boton.textContent;
         descripcion.textContent = boton.dataset.desc || '';
         video.pause();
+        video.preload = 'auto';
+        video.removeEventListener('loadeddata', mostrarCuadro);
+        video.addEventListener('loadeddata', mostrarCuadro);
         video.src = rutaActual;
+        video.load();
         if (boton.dataset.pdf) {
             pdf.hidden = false;
-            pdf.href = rutaSegunLugar(boton.dataset.pdf);
+            pdf.href = boton.dataset.pdf;
             pdf.innerHTML = '<i class="fas fa-file-pdf"></i> ' + (boton.dataset.pdfNombre || 'Descargar');
         } else {
             pdf.hidden = true;
@@ -32,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cerrar.focus();
     };
 
+    /* Cierra el panel, detiene el video y devuelve el foco a la edición. */
     const cerrarPopup = () => {
         if (!popup.classList.contains('abierta')) return;
         video.pause();
@@ -59,13 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function rutaSegunLugar(ruta) {
-    if (!ruta || /\/hojamier\//.test(location.pathname)) return ruta || '';
-    if (ruta.indexOf('../') === 0) ruta = ruta.slice(3);
-    if (ruta.indexOf('Videos/') === 0) return 'hojamier/' + ruta;
-    return ruta;
-}
-
+/* Copia la dirección del video y cambia el botón a "Copiado" por dos segundos. */
 function copiarVinculo(rutaVideo, boton) {
     const urlCompleta = window.location.origin + window.location.pathname.replace('galeria.html', '') + rutaVideo;
 
