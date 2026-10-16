@@ -1,4 +1,14 @@
 /* Estilos del ingreso, del panel y de la página que cifra la clave. */
+html {
+  color-scheme: light;
+  background: #f6f0ec;
+}
+
+html.dark-mode {
+  color-scheme: dark;
+  background: #1c1614;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -8,6 +18,107 @@ body {
   background: #f6f0ec;
   color: #2b211f;
   font-family: "Public Sans", sans-serif;
+}
+
+/* Cabecera del panel: título + botón de tono. */
+.panel-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 8px;
+}
+
+.panel-cabeza h1 {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Botón de tono (misma animación sol/luna del sitio público). */
+button.admin-tono.btn-header {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 50%;
+  background: #c81d25 !important;
+  color: #fff !important;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+  box-shadow: 0 6px 14px rgba(110, 18, 24, 0.22);
+  transition: background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+button.admin-tono.btn-header .icono-tono {
+  grid-area: 1 / 1;
+  width: 24px;
+  height: 24px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+button.admin-tono.btn-header .icono-luna {
+  fill: #fff !important;
+  stroke: none !important;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+button.admin-tono.btn-header .icono-luna path {
+  fill: #fff !important;
+  stroke: none !important;
+}
+
+button.admin-tono.btn-header .icono-sol circle {
+  fill: currentColor;
+  stroke: none;
+}
+
+button.admin-tono.btn-header .icono-sol {
+  opacity: 0;
+  transform: rotate(-70deg) scale(0.55);
+}
+
+body.dark-mode button.admin-tono.btn-header .icono-luna {
+  opacity: 0;
+  transform: rotate(70deg) scale(0.55);
+}
+
+body.dark-mode button.admin-tono.btn-header .icono-sol {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+button.admin-tono.btn-header:hover .icono-luna {
+  transform: rotate(-18deg) scale(1.08);
+}
+
+body.dark-mode button.admin-tono.btn-header:hover .icono-luna {
+  transform: rotate(70deg) scale(0.55);
+}
+
+body.dark-mode button.admin-tono.btn-header:hover .icono-sol {
+  transform: rotate(18deg) scale(1.08);
+}
+
+body.dark-mode button.admin-tono.btn-header {
+  background: #8e1a20 !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.admin-tono.btn-header .icono-tono {
+    transition: none;
+  }
 }
 
 .caja {
@@ -345,6 +456,32 @@ select {
   color: #6e1218;
 }
 
+/* Hábil: verde = casillas accesibles / disponibles. */
+.pincel[data-pincel="abierta"] {
+  color: #146338;
+  border-color: #9dceb3;
+}
+
+.pincel[data-pincel="abierta"][aria-pressed="true"] {
+  color: #0f4f2c;
+  border-color: #1b7f4a;
+  background: #e8f6ee;
+  box-shadow: 0 0 0 3px rgba(27, 127, 74, 0.2);
+}
+
+/* Ocupada: gris = casillas con cita / reloj. */
+.pincel[data-pincel="ocupada"] {
+  color: #5a5552;
+  border-color: #c4bfbb;
+}
+
+.pincel[data-pincel="ocupada"][aria-pressed="true"] {
+  color: #3f3b39;
+  border-color: #8a8480;
+  background: #eceae8;
+  box-shadow: 0 0 0 3px rgba(138, 132, 128, 0.28);
+}
+
 .muestra {
   display: inline-grid;
   place-items: center;
@@ -472,5 +609,226 @@ select {
 
   .periodo {
     grid-column: auto;
+  }
+}
+
+/* Textos del panel: transición fluida al cambiar de tono. */
+body.pagina-panel,
+body.pagina-panel .caja,
+body.pagina-panel h1,
+body.pagina-panel h2,
+body.pagina-panel p,
+body.pagina-panel label,
+body.pagina-panel span,
+body.pagina-panel li,
+body.pagina-panel a,
+body.pagina-panel .ayuda,
+body.pagina-panel .vacio,
+body.pagina-panel .sesion,
+body.pagina-panel .mes-activo,
+body.pagina-panel .semana span,
+body.pagina-panel .chip,
+body.pagina-panel .chip button,
+body.pagina-panel .pincel,
+body.pagina-panel .regla,
+body.pagina-panel .regla button,
+body.pagina-panel .periodo button,
+body.pagina-panel .dia-mes,
+body.pagina-panel .aviso,
+body.pagina-panel .error,
+body.pagina-panel .salir,
+body.pagina-panel input,
+body.pagina-panel select,
+body.pagina-panel textarea {
+  transition:
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Modo oscuro del panel de administración. */
+body.dark-mode {
+  background: #1c1614;
+  color: #f6f0ec;
+}
+
+body.dark-mode .caja {
+  background: #2b211f;
+  border-color: #4a3d38;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode h1,
+body.dark-mode .panel-cabeza h1,
+body.dark-mode .caja-panel h2,
+body.dark-mode .paso h2,
+body.dark-mode .mes-activo,
+body.dark-mode .semana span {
+  color: #f6d3be;
+}
+
+body.dark-mode p,
+body.dark-mode .vacio,
+body.dark-mode .ayuda,
+body.dark-mode .sesion,
+body.dark-mode label,
+body.dark-mode .regla,
+body.dark-mode li {
+  color: #d9cdc6;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background: #1c1614;
+  color: #f6f0ec;
+  border-color: #6a564e;
+}
+
+body.dark-mode input:focus,
+body.dark-mode textarea:focus,
+body.dark-mode select:focus {
+  outline-color: #f0a06a;
+  border-color: #f0a06a;
+}
+
+body.dark-mode .despliegue {
+  background: #241c1a;
+  border-color: #4a3d38;
+}
+
+body.dark-mode .dia-mes {
+  background: #1c1614;
+  border-color: #4a3d38;
+  color: #f6f0ec;
+}
+
+body.dark-mode .dia-mes.habil {
+  background: #1b7f4a;
+  border-color: #146338;
+  color: #fff;
+}
+
+body.dark-mode .dia-mes.ocupada {
+  background: #6e6864;
+  border-color: #56514e;
+  color: #fff;
+}
+
+body.dark-mode .pincel,
+body.dark-mode .chip,
+body.dark-mode .chip button,
+body.dark-mode .regla button,
+body.dark-mode .periodo button,
+body.dark-mode .btn-linea,
+body.dark-mode .btn-linea:hover {
+  background: #1c1614;
+  color: #f6d3be;
+  border-color: #6a564e;
+}
+
+body.dark-mode .chip button {
+  background: transparent;
+}
+
+body.dark-mode .pincel[aria-pressed="true"],
+body.dark-mode .chip.activo,
+body.dark-mode .chip.activo button {
+  border-color: #c81d25;
+  background: #3a241c;
+  color: #f6d3be;
+}
+
+body.dark-mode .pincel[data-pincel="abierta"] {
+  color: #6fcf97;
+  border-color: #2d6a4f;
+  background: #1c1614;
+}
+
+body.dark-mode .pincel[data-pincel="abierta"][aria-pressed="true"] {
+  color: #8ee4b0;
+  border-color: #1b7f4a;
+  background: #143528;
+  box-shadow: 0 0 0 3px rgba(27, 127, 74, 0.28);
+}
+
+body.dark-mode .pincel[data-pincel="ocupada"] {
+  color: #c8c2bc;
+  border-color: #6e6864;
+  background: #1c1614;
+}
+
+body.dark-mode .pincel[data-pincel="ocupada"][aria-pressed="true"] {
+  color: #e4dfd9;
+  border-color: #a8a29c;
+  background: #3a3633;
+  box-shadow: 0 0 0 3px rgba(168, 162, 156, 0.28);
+}
+
+body.dark-mode .chip.activo button {
+  background: transparent;
+}
+
+body.dark-mode .marca-x {
+  color: #ff8a80;
+}
+
+body.dark-mode .periodo button[aria-pressed="true"] {
+  background: #c81d25;
+  color: #fff;
+  border-color: #c81d25;
+}
+
+body.dark-mode .muestra {
+  background: #2b211f;
+  border-color: #6a564e;
+}
+
+body.dark-mode .muestra-habil {
+  background: #1b7f4a;
+  border-color: #6fcf97;
+}
+
+body.dark-mode .muestra-ocupada {
+  background: #8a8480;
+  border-color: #6e6864;
+  color: #fff;
+}
+
+body.dark-mode .error,
+body.dark-mode .aviso {
+  background: #3a241c;
+  color: #f6d3be;
+}
+
+body.dark-mode .regla {
+  border-bottom-color: #4a3d38;
+}
+
+body.dark-mode .salir {
+  background: #8e1a20;
+}
+
+/* Fundido unificado al cambiar de tono. */
+html.tema-animando,
+html.tema-animando body,
+html.tema-animando body *:not(script):not(style):not(br):not(wbr) {
+  transition-property: background-color, color, border-color, outline-color, box-shadow, fill, stroke, opacity !important;
+  transition-duration: 0.45s !important;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+html.tema-animando button.admin-tono.btn-header .icono-tono {
+  transition-property: opacity, transform !important;
+  transition-duration: 0.45s !important;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.tema-animando,
+  html.tema-animando body,
+  html.tema-animando body *:not(script):not(style):not(br):not(wbr) {
+    transition: none !important;
   }
 }

@@ -10,12 +10,21 @@
           document.documentElement.classList.add('dark-mode');
         }
       } catch (e) {}
+      try {
+        var nav = sessionStorage.getItem('sitrainaNav');
+        if (!nav) return;
+        sessionStorage.removeItem('sitrainaNav');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var datoNav = JSON.parse(nav);
+        document.documentElement.style.setProperty('--nav-desde-x', datoNav.dir === 'izquierda' ? '-100vw' : '100vw');
+        document.documentElement.classList.add('nav-llegando');
+      } catch (eNav) {}
     })();
   </script>
-  <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
+  <style>html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:fixed;background-position:center 30%}html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:fixed;background-position:center 30%}body.pagina-fondo{background:transparent}</style>
   <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=2.54">
+  <link rel="stylesheet" href="css/estilo.css?v=3.00">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -23,7 +32,7 @@
 </head>
 
 
-<body>
+<body class="pagina-fondo">
   <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
 
   <header class="header">
@@ -61,26 +70,55 @@
             <form id="formulario-contacto-pagina" action="contacto.php" method="POST">
     <div class="form-grupo">
         <label for="nombre">Nombre Completo</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required maxlength="120">
     </div>
 
     <div class="form-grupo">
         <label for="email">Correo Electrónico</label>
-        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+        <input type="email" id="email" name="email" placeholder="tu@email.com" required maxlength="120" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Escribe un correo válido con @ y un dominio">
     </div>
 
     <div class="form-grupo">
         <label for="asunto">Asunto</label>
-        <input type="text" id="asunto" name="asunto" placeholder="Motivo de tu mensaje">
+        <input type="text" id="asunto" name="asunto" placeholder="Motivo de tu mensaje" maxlength="120">
     </div>
 
     <div class="form-grupo">
         <label for="mensaje">Mensaje</label>
-        <textarea id="mensaje" name="mensaje" rows="7" placeholder="Escribe tu mensaje aquí..." required></textarea>
+        <textarea id="mensaje" name="mensaje" rows="7" placeholder="Escribe tu mensaje aquí..." required maxlength="2000"></textarea>
     </div>
 
     <button type="submit" class="btn">Enviar Mensaje</button>
+    <p class="cita-resultado" id="contacto-resultado" hidden></p>
 </form>
+<script>
+(function () {
+  var form = document.getElementById('formulario-contacto-pagina');
+  if (!form) return;
+  var aviso = document.getElementById('contacto-resultado');
+  var correo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  form.addEventListener('submit', function (evento) {
+    var nombre = form.elements.nombre;
+    var email = form.elements.email;
+    var mensaje = form.elements.mensaje;
+    nombre.value = nombre.value.trim();
+    email.value = email.value.trim();
+    mensaje.value = mensaje.value.trim();
+    nombre.setCustomValidity(nombre.value ? '' : 'Escribe tu nombre.');
+    email.setCustomValidity(correo.test(email.value) ? '' : 'Escribe un correo válido, con @ y un dominio.');
+    mensaje.setCustomValidity(mensaje.value ? '' : 'Escribe el mensaje.');
+    if (!form.checkValidity()) {
+      evento.preventDefault();
+      form.reportValidity();
+      if (aviso) {
+        aviso.hidden = false;
+        aviso.textContent = 'Revisa los datos antes de enviar.';
+        aviso.classList.add('error');
+      }
+    }
+  });
+})();
+</script>
 
         </section>
 
@@ -90,7 +128,7 @@
                 <span class="icono" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></span>
                 <div>
                     <span class="info-etiqueta">Dirección</span>
-                    <p>Avenida 59, Calle 106, Barrio Finca La Caja, Uruca, San José. Código postal 10107.</p>
+                    <p><a href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener" title="Ver ubicación de SITRAINA en el mapa">Avenida 59, Calle 106, Barrio Finca La Caja, Uruca, San José. Código postal 10107.</a></p>
                 </div>
             </div>
             <div class="info-item">
@@ -175,7 +213,7 @@
 </footer>
 
 
-<script src="js/script.js?v=2.46"></script>
+<script src="js/script.js?v=2.80"></script>
 
 
 </html>

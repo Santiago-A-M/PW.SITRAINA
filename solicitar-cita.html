@@ -10,16 +10,25 @@
           document.documentElement.classList.add('dark-mode');
         }
       } catch (e) {}
+      try {
+        var nav = sessionStorage.getItem('sitrainaNav');
+        if (!nav) return;
+        sessionStorage.removeItem('sitrainaNav');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var datoNav = JSON.parse(nav);
+        document.documentElement.style.setProperty('--nav-desde-x', datoNav.dir === 'izquierda' ? '-100vw' : '100vw');
+        document.documentElement.classList.add('nav-llegando');
+      } catch (eNav) {}
     })();
   </script>
-  <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
+  <style>html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:fixed;background-position:center 30%}html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:fixed;background-position:center 30%}body.pagina-fondo{background:transparent}</style>
   <title>SITRAINA | Solicitar cita</title>
-  <link rel="stylesheet" href="css/estilo.css?v=2.54">
+  <link rel="stylesheet" href="css/estilo.css?v=3.00">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="pagina-fondo">
   <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
 
   <header class="header">
@@ -168,7 +177,7 @@
     </div>
   </div>
 
-  <script src="js/script.js?v=2.46"></script>
+  <script src="js/script.js?v=2.80"></script>
   <script>
     /* Pregunta si la persona está afiliada antes de dejar usar el formulario de la cita. */
     (function () {

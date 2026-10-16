@@ -10,16 +10,40 @@
           document.documentElement.classList.add('dark-mode');
         }
       } catch (e) {}
+      try {
+        var nav = sessionStorage.getItem('sitrainaNav');
+        if (nav && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          var datoNav = JSON.parse(nav);
+          document.documentElement.style.setProperty('--nav-desde-x', datoNav.dir === 'izquierda' ? '-100vw' : '100vw');
+          document.documentElement.classList.add('nav-llegando');
+        }
+        if (nav) sessionStorage.removeItem('sitrainaNav');
+      } catch (eNav) {}
+      try {
+        var pendiente = sessionStorage.getItem('sitrainaDoc');
+        if (!pendiente) return;
+        sessionStorage.removeItem('sitrainaDoc');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var dato = JSON.parse(pendiente);
+        if (dato.dir) sessionStorage.setItem('sitrainaDocDir', dato.dir);
+        var desde = dato.volver
+          ? { derecha: ['100vw', '0px'], izquierda: ['-100vw', '0px'], abajo: ['0px', '100vh'], arriba: ['0px', '-100vh'] }
+          : { derecha: ['-100vw', '0px'], izquierda: ['100vw', '0px'], abajo: ['0px', '-100vh'], arriba: ['0px', '100vh'] };
+        var par = desde[dato.dir] || ['-100vw', '0px'];
+        document.documentElement.style.setProperty('--doc-desde-x', par[0]);
+        document.documentElement.style.setProperty('--doc-desde-y', par[1]);
+        document.documentElement.classList.add('doc-llegando');
+      } catch (e2) {}
     })();
   </script>
-  <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
+  <style>html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:fixed;background-position:center 30%}html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:fixed;background-position:center 30%}body.pagina-fondo{background:transparent}</style>
   <title>SITRAINA | Documentos</title>
-  <link rel="stylesheet" href="css/estilo.css?v=2.54">
+  <link rel="stylesheet" href="css/estilo.css?v=3.00">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="pagina-fondo">
   <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
 
 <header class="header">
@@ -46,12 +70,13 @@
 </header>
 
 <main class="contenedor pagina-documentos">
+  <div class="documentos-panel">
   <div class="intro-documentos">
     <h1>Documentos</h1>
     <p>Elegí un tipo. Se abre la sección con sus documentos.</p>
   </div>
 
-  <!-- Seis tipos. Efemérides, Hoja y convenios abren otra página. Los otros tres abren una sección de esta misma página. -->
+  <!-- Seis tipos. Los tres primeros abren su página con el mismo deslice. Los otros tres abren una sección aquí. -->
   <div class="tipos-documentos">
     <a class="tipo-doc" href="efemerides.html">
       <span class="tipo-doc-cuerpo">
@@ -95,6 +120,7 @@
       </span>
       <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
     </a>
+  </div>
   </div>
 
   <!-- Leyes, convención, reglamento, estatutos y machote. -->
@@ -397,6 +423,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=2.46"></script>
+<script src="js/script.js?v=2.80"></script>
 </body>
 </html>

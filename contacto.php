@@ -15,12 +15,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mensaje = htmlspecialchars(trim($_POST['mensaje'] ?? ''), ENT_QUOTES, 'UTF-8');
 
     // Validación mínima
-    if (empty($nombre) || empty($email) || empty($mensaje)) {
-        die("<h2>❌ Error: Todos los campos obligatorios deben estar completos.</h2>");
+    if ($nombre === '' || $email === '' || $mensaje === '') {
+        die("<h2>Error: el nombre, el correo y el mensaje son obligatorios.</h2>");
     }
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die("<h2>❌ Error: Correo electrónico no válido.</h2>");
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/', $email)) {
+        die("<h2>Error: correo electrónico no válido.</h2>");
+    }
+    if (strlen($nombre) > 120 || strlen($asunto) > 120 || strlen($mensaje) > 2000) {
+        die("<h2>Error: uno de los datos es demasiado largo.</h2>");
     }
 
     $mail = new PHPMailer(true);

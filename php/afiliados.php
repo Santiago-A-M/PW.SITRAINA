@@ -116,6 +116,31 @@ if (!preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA
     pagina('Correo', 'Escribe un correo válido.', volver($accion));
 }
 
+if ($accion === 'verificar') {
+    $nombreCita = trim((string) ($_POST['nombre'] ?? ''));
+    $sedeCita = trim((string) ($_POST['sede'] ?? ''));
+    $motivoCita = trim((string) ($_POST['motivo'] ?? ''));
+    $telefonoCita = preg_replace('/\D/', '', (string) ($_POST['telefono'] ?? ''));
+    if (strpos($telefonoCita, '506') === 0 && strlen($telefonoCita) === 11) {
+        $telefonoCita = substr($telefonoCita, 3);
+    }
+    $largoNombre = function_exists('mb_strlen') ? mb_strlen($nombreCita, 'UTF-8') : strlen($nombreCita);
+    $largoSede = function_exists('mb_strlen') ? mb_strlen($sedeCita, 'UTF-8') : strlen($sedeCita);
+    $largoMotivo = function_exists('mb_strlen') ? mb_strlen($motivoCita, 'UTF-8') : strlen($motivoCita);
+    if ($nombreCita === '' || $largoNombre > 120) {
+        pagina('Cita', 'Escribe el nombre completo.', volver($accion));
+    }
+    if (!preg_match('/^[0-9]{8}$/', $telefonoCita)) {
+        pagina('Cita', 'El teléfono debe tener 8 dígitos.', volver($accion));
+    }
+    if ($sedeCita === '' || $largoSede > 120) {
+        pagina('Cita', 'Escribe la sede o el centro de trabajo.', volver($accion));
+    }
+    if ($motivoCita === '' || $largoMotivo > 800) {
+        pagina('Cita', 'Escribe el motivo de la consulta.', volver($accion));
+    }
+}
+
 $configArchivo = __DIR__ . '/config.php';
 if (!is_file($configArchivo)) {
     pagina('Base de datos', 'Falta php/config.php en el servidor.', volver($accion));
@@ -207,6 +232,23 @@ if ($accion === 'guardar') {
         $mysqli->close();
         pagina('Afiliación', 'Escribe el nombre completo.', volver($accion));
     }
+    if ($nombramiento === null || $unidad === null || $centro === null || $puesto === null) {
+        $mysqli->close();
+        pagina('Afiliación', 'Completa el nombramiento, la unidad, el centro y el puesto.', volver($accion));
+    }
+    if ($fechaNacimiento === '') {
+        $mysqli->close();
+        pagina('Afiliación', 'Escribe la fecha de nacimiento.', volver($accion));
+    }
+    $celular = preg_replace('/\D/', '', (string) $telefonoCelular);
+    if (strpos($celular, '506') === 0 && strlen($celular) === 11) {
+        $celular = substr($celular, 3);
+    }
+    if (!preg_match('/^[0-9]{8}$/', $celular)) {
+        $mysqli->close();
+        pagina('Afiliación', 'El celular debe tener 8 dígitos.', volver($accion));
+    }
+    $telefonoCelular = $celular;
     if (is_string($correoIna)) {
         $correoIna = strtolower($correoIna);
     }
@@ -222,7 +264,8 @@ if ($accion === 'guardar') {
         $fechaNacimiento = null;
     } else {
         $fechaOk = DateTime::createFromFormat('Y-m-d', $fechaNacimiento);
-        if (!$fechaOk || $fechaOk->format('Y-m-d') !== $fechaNacimiento) {
+        $hoy = new DateTime('today');
+        if (!$fechaOk || $fechaOk->format('Y-m-d') !== $fechaNacimiento || $fechaOk > $hoy || $fechaOk < new DateTime('1900-01-01')) {
             $mysqli->close();
             pagina('Afiliación', 'La fecha de nacimiento no es válida.', volver($accion));
         }

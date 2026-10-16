@@ -10,12 +10,21 @@
           document.documentElement.classList.add('dark-mode');
         }
       } catch (e) {}
+      try {
+        var nav = sessionStorage.getItem('sitrainaNav');
+        if (!nav) return;
+        sessionStorage.removeItem('sitrainaNav');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var datoNav = JSON.parse(nav);
+        document.documentElement.style.setProperty('--nav-desde-x', datoNav.dir === 'izquierda' ? '-100vw' : '100vw');
+        document.documentElement.classList.add('nav-llegando');
+      } catch (eNav) {}
     })();
   </script>
-  <style>html{background-color:#f6f0ec;color-scheme:light}html.dark-mode{background-color:#1c1614;color-scheme:dark}</style>
+  <style>html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:fixed;background-position:center 30%}html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:fixed;background-position:center 30%}body.pagina-fondo{background:transparent}</style>
  <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=2.54">
+  <link rel="stylesheet" href="css/estilo.css?v=3.00">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -23,7 +32,7 @@
 </head>
 
 
-<body>
+<body class="pagina-fondo">
   <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
 
   <header class="header">
@@ -75,39 +84,39 @@
         <fieldset>
           <legend>Datos Personales</legend>
           <div class="fila-afiliacion">
-            <input type="text" name="nombre" placeholder="Nombre completo" required>
-            <input type="text" name="cedula" placeholder="Número de cédula" required>
+            <input type="text" name="nombre" placeholder="Nombre completo" required maxlength="120">
+            <input type="text" name="cedula" placeholder="Número de cédula" required maxlength="20" inputmode="numeric">
           </div>
           <div class="fila-afiliacion">
-            <input type="email" name="correo_ina" placeholder="Correo INA">
-            <input type="email" name="correo_personal" placeholder="Correo personal">
+            <input type="email" name="correo_ina" placeholder="Correo INA" maxlength="120">
+            <input type="email" name="correo_personal" placeholder="Correo personal" maxlength="120">
           </div>
           <div class="fila-afiliacion">
             <label class="campo-fecha">
               Fecha de nacimiento
-              <input type="date" name="fecha_nacimiento">
+              <input type="date" name="fecha_nacimiento" required>
             </label>
-            <input type="text" name="nombramiento" placeholder="Tipo de nombramiento">
+            <input type="text" name="nombramiento" placeholder="Tipo de nombramiento" required maxlength="80">
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Ubicación Laboral</legend>
           <div class="fila-afiliacion">
-            <input type="text" name="unidad" placeholder="Unidad regional">
-            <input type="text" name="centro" placeholder="Centro o núcleo">
+            <input type="text" name="unidad" placeholder="Unidad regional" required maxlength="120">
+            <input type="text" name="centro" placeholder="Centro o núcleo" required maxlength="120">
           </div>
           <div class="fila-afiliacion">
-            <input type="text" name="puesto" placeholder="Puesto desempeñado">
+            <input type="text" name="puesto" placeholder="Puesto desempeñado" required maxlength="120">
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Teléfonos</legend>
           <div class="fila-afiliacion">
-            <input type="text" name="telefono_trabajo" placeholder="Trabajo / Ext">
-            <input type="text" name="telefono_domicilio" placeholder="Domicilio">
-            <input type="text" name="telefono_celular" placeholder="Celular">
+            <input type="text" name="telefono_trabajo" placeholder="Trabajo / Ext" maxlength="20" inputmode="numeric">
+            <input type="text" name="telefono_domicilio" placeholder="Domicilio" maxlength="20" inputmode="numeric">
+            <input type="text" name="telefono_celular" placeholder="Celular" required maxlength="11" inputmode="numeric">
           </div>
         </fieldset>
 
@@ -182,7 +191,7 @@
 </footer>
 
   <!-- Script -->
-<script src="js/script.js?v=2.46"></script>
+<script src="js/script.js?v=2.80"></script>
 <script>
 /* Arma el PDF de la boleta en el navegador y lo adjunta al envío. */
 (function () {
@@ -327,10 +336,30 @@
     }
     var nombre = valor('nombre');
     var cedula = valor('cedula').replace(/\D/g, '');
+    if (!nombre) {
+      mostrar('Escribe el nombre completo.', false);
+      return;
+    }
     if (!/^[0-9]{9}$/.test(cedula)) {
       mostrar('La cédula debe tener 9 dígitos.', false);
       return;
     }
+    var nacimiento = valor('fecha_nacimiento');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(nacimiento) || nacimiento > new Date().toISOString().slice(0, 10)) {
+      mostrar('Escribe una fecha de nacimiento válida.', false);
+      return;
+    }
+    if (!valor('nombramiento') || !valor('unidad') || !valor('centro') || !valor('puesto')) {
+      mostrar('Completa el nombramiento, la unidad, el centro y el puesto.', false);
+      return;
+    }
+    var celular = valor('telefono_celular').replace(/\D/g, '');
+    if (celular.indexOf('506') === 0 && celular.length === 11) celular = celular.slice(3);
+    if (!/^[0-9]{8}$/.test(celular)) {
+      mostrar('El celular debe tener 8 dígitos.', false);
+      return;
+    }
+    form.elements.telefono_celular.value = celular;
     form.elements.cedula.value = cedula;
     var lineas = ['Boleta de Afiliación SITRAINA', ' '];
     [

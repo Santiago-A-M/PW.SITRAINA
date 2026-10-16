@@ -1,5 +1,12 @@
 /* Comportamiento de las páginas públicas: menú, tono, documentos, Junta, efemérides y cita. */
 document.addEventListener('DOMContentLoaded', () => {
+
+    /* Sube la página de inmediato, sin el desplazamiento suave del sitio. */
+    const subirPagina = (valor) => {
+        const raiz = document.documentElement;
+        raiz.style.scrollBehavior = 'auto';
+        window.scrollTo(0, valor || 0);
+    };
     
     // --- 1. MENÚ HAMBURGUESA ---
     const btnMenu = document.getElementById('btn-menu');
@@ -44,11 +51,32 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleDark.setAttribute("aria-label", etiqueta);
         };
 
-        actualizarTono();
-        toggleDark.onclick = () => {
+        let temaAnimTimer = null;
+        const preferirMenosMovimiento = () =>
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        /* Aplica el tono y guarda la preferencia. */
+        const cambiarTono = () => {
             aplicarOscuro(!document.body.classList.contains("dark-mode"));
             localStorage.setItem("modoOscuro", document.body.classList.contains("dark-mode"));
             actualizarTono();
+        };
+
+        actualizarTono();
+        toggleDark.onclick = () => {
+            if (preferirMenosMovimiento()) {
+                cambiarTono();
+                return;
+            }
+            /* El fundido de página no debe capturar el botón: el sol y la luna siguen su propio giro. */
+            document.documentElement.classList.add("tema-animando");
+            /* Fuerza un marco de estilo antes del cambio para que todos animen a la vez. */
+            void document.documentElement.offsetWidth;
+            cambiarTono();
+            clearTimeout(temaAnimTimer);
+            temaAnimTimer = setTimeout(() => {
+                document.documentElement.classList.remove("tema-animando");
+            }, 480);
         };
     }
 
@@ -58,24 +86,379 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (tiposDocumentos && seccionesArchivos.length) {
         /* En Documentos, abre la sección del enlace (#legales, #informes o #actas). */
-        const mostrarSeccion = () => {
-            const id = location.hash.replace('#', '');
-            const seccion = id ? document.getElementById(id) : null;
-            const esArchivo = seccion && seccion.classList.contains('seccion-archivos');
+        const panelDocumentos = document.querySelector('.documentos-panel');
+        const menosMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        /* Separa el botón fijo del bloque que se desliza, para que no cambie de sitio. */
+        const cuerpoDe = (seccion) => {
+            let cuerpo = seccion.querySelector(':scope > .seccion-cuerpo');
+            if (cuerpo) return cuerpo;
+            cuerpo = document.createElement('div');
+            cuerpo.className = 'seccion-cuerpo';
+            const boton = seccion.querySelector(':scope > .btn-atras');
+            let nodo = boton ? boton.nextSibling : seccion.firstChild;
+            while (nodo) {
+                const siguiente = nodo.nextSibling;
+                cuerpo.appendChild(nodo);
+                nodo = siguiente;
+            }
+            seccion.appendChild(cuerpo);
+            return cuerpo;
+        };
+        seccionesArchivos.forEach(cuerpoDe);
+        let direccionAbierta = 'derecha';
+        let animando = false;
+
+        /* Lee hacia dónde apunta la flecha de Abrir en este momento. */
+        const direccionDe = (enlace) => {
+            const flecha = enlace && enlace.querySelector('.tipo-doc-abrir svg');
+            if (!flecha) return 'derecha';
+            const transform = getComputedStyle(flecha).transform;
+            if (!transform || transform === 'none') return 'derecha';
+            const numeros = transform.match(/matrix\(([^)]+)\)/);
+            if (!numeros) return 'derecha';
+            const partes = numeros[1].split(',');
+            const ejeX = parseFloat(partes[0]);
+            const ejeY = parseFloat(partes[1]);
+            const angulo = Math.atan2(ejeY, ejeX) * 180 / Math.PI;
+            if (angulo > 45 && angulo < 135) return 'abajo';
+            if (angulo < -45 && angulo > -135) return 'arriba';
+            if (Math.abs(angulo) >= 135) return 'izquierda';
+            return 'derecha';
+        };
+
+        const aplicarSeccion = (esArchivo, seccion) => {
+            document.body.classList.remove('documentos-animando', 'documentos-eje-x', 'documentos-eje-y');
+            const capas = [panelDocumentos, tiposDocumentos];
+            seccionesArchivos.forEach((item) => {
+                capas.push(item);
+                const cuerpo = item.querySelector(':scope > .seccion-cuerpo');
+                if (cuerpo) capas.push(cuerpo);
+            });
+            capas.forEach((item) => {
+                if (!item) return;
+                item.classList.remove('doc-sale', 'doc-entra', 'doc-reverso');
+                item.style.removeProperty('--doc-x');
+                item.style.removeProperty('--doc-y');
+                item.style.removeProperty('--doc-desde-x');
+                item.style.removeProperty('--doc-desde-y');
+            });
+            document.documentElement.style.removeProperty('overflow-anchor');
+            document.documentElement.style.removeProperty('scroll-behavior');
+            document.querySelector('.pagina-documentos')?.style.removeProperty('min-height');
             document.body.classList.toggle('vista-archivos', Boolean(esArchivo));
             seccionesArchivos.forEach((item) => {
                 item.classList.toggle('activa', item === seccion);
+                item.style.removeProperty('top');
+                item.style.removeProperty('left');
+                item.style.removeProperty('width');
+                item.style.removeProperty('height');
             });
-
-            if (esArchivo) {
-                window.scrollTo(0, 0);
-            }
         };
 
-        mostrarSeccion();
-        window.addEventListener('hashchange', mostrarSeccion);
+        /* Desliza la lista de tipos y la sección en la dirección de la flecha. */
+        const deslizar = (seccion, direccion, volver) => {
+            const actual = document.querySelector('.seccion-archivos.activa');
+            const destino = volver ? actual : seccion;
+            const pagina = panelDocumentos && panelDocumentos.closest('.pagina-documentos');
+            if (!destino || !panelDocumentos || !pagina) {
+                aplicarSeccion(!volver, seccion);
+                return;
+            }
+            animando = true;
+            let termino = false;
+            document.documentElement.style.overflowAnchor = 'none';
+            subirPagina(0);
+            const scroll = 0;
+            if (!volver) {
+                seccionesArchivos.forEach((item) => item.classList.toggle('activa', item === seccion));
+            }
+            const margenLista = parseFloat(getComputedStyle(destino).marginBottom) || 0;
+            const rellenoPagina = parseFloat(getComputedStyle(pagina).paddingBottom) || 0;
+            document.body.classList.add('documentos-animando');
+            const base = pagina.getBoundingClientRect();
+            const origen = panelDocumentos.getBoundingClientRect();
+            const ancho = Math.round(origen.width);
+            destino.style.top = (origen.top - base.top) + 'px';
+            destino.style.left = (origen.left - base.left) + 'px';
+            destino.style.width = ancho + 'px';
+            destino.style.height = 'auto';
+            pagina.style.minHeight = Math.ceil(destino.getBoundingClientRect().bottom - base.top + margenLista + rellenoPagina) + 'px';
+            subirPagina(0);
+            const alto = Math.max(Math.round(origen.height), Math.round(cuerpoDe(destino).offsetHeight));
+            const par = direccion === 'izquierda'
+                ? ['-' + ancho + 'px', '0px']
+                : direccion === 'abajo'
+                    ? ['0px', alto + 'px']
+                    : direccion === 'arriba'
+                        ? ['0px', '-' + alto + 'px']
+                        : [ancho + 'px', '0px'];
+            const marcar = (item, clase) => {
+                const contrario = (valor) => (valor.charAt(0) === '-' ? valor.slice(1) : '-' + valor);
+                item.style.setProperty('--doc-x', par[0]);
+                item.style.setProperty('--doc-y', par[1]);
+                item.style.setProperty('--doc-desde-x', contrario(par[0]));
+                item.style.setProperty('--doc-desde-y', contrario(par[1]));
+                item.classList.add(clase);
+                if (volver) item.classList.add('doc-reverso');
+            };
+            const capa = cuerpoDe(destino);
+            marcar(panelDocumentos, 'doc-sale');
+            marcar(capa, 'doc-entra');
+            const fijar = () => {
+                if (Math.abs(window.scrollY - scroll) > 1) subirPagina(scroll);
+            };
+            window.addEventListener('scroll', fijar);
+            fijar();
+            const fin = () => {
+                if (termino) return;
+                termino = true;
+                animando = false;
+                aplicarSeccion(!volver, volver ? null : seccion);
+                fijar();
+                window.requestAnimationFrame(() => {
+                    fijar();
+                    window.removeEventListener('scroll', fijar);
+                    document.documentElement.style.removeProperty('scroll-behavior');
+                });
+            };
+            capa.addEventListener('animationend', fin, { once: true });
+            window.setTimeout(fin, 750);
+        };
+
+        const mostrarSeccion = (animar) => {
+            const id = location.hash.replace('#', '');
+            const seccion = id ? document.getElementById(id) : null;
+            const esArchivo = Boolean(seccion && seccion.classList.contains('seccion-archivos'));
+            const abierto = document.body.classList.contains('vista-archivos');
+            if (animando || !animar || menosMovimiento()) {
+                if (!animando) {
+                    aplicarSeccion(esArchivo, esArchivo ? seccion : null);
+                    subirPagina(0);
+                }
+                return;
+            }
+            if (esArchivo && !abierto) {
+                const enlace = tiposDocumentos.querySelector('.tipo-doc[href="#' + id + '"]');
+                direccionAbierta = direccionDe(enlace);
+                deslizar(seccion, direccionAbierta, false);
+                return;
+            }
+            if (!esArchivo && abierto) {
+                deslizar(null, direccionAbierta, true);
+                return;
+            }
+            aplicarSeccion(esArchivo, esArchivo ? seccion : null);
+        };
+
+        mostrarSeccion(false);
+        window.addEventListener('hashchange', () => mostrarSeccion(true));
+        document.querySelectorAll('.seccion-archivos .btn-atras').forEach((volver) => {
+            volver.addEventListener('click', (evento) => {
+                evento.preventDefault();
+                if (animando) return;
+                history.pushState(null, '', location.pathname + location.search);
+                mostrarSeccion(true);
+            });
+        });
+
+        /* Efemérides, Hoja y Convenios se deslizan hacia su página y luego entran. */
+        const recorrido = (direccion, volver) => {
+            if (direccion === 'izquierda') return volver ? ['-100vw', '0px'] : ['100vw', '0px'];
+            if (direccion === 'abajo') return volver ? ['0px', '100vh'] : ['0px', '-100vh'];
+            if (direccion === 'arriba') return volver ? ['0px', '-100vh'] : ['0px', '100vh'];
+            return volver ? ['100vw', '0px'] : ['-100vw', '0px'];
+        };
+        tiposDocumentos.querySelectorAll('.tipo-doc').forEach((enlace) => {
+            const href = enlace.getAttribute('href') || '';
+            if (!href) return;
+            if (href.charAt(0) === '#') {
+                enlace.addEventListener('click', (evento) => {
+                    if (evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey || evento.button !== 0) return;
+                    evento.preventDefault();
+                    if (animando) return;
+                    if (location.hash !== href) history.pushState(null, '', href);
+                    subirPagina(0);
+                    mostrarSeccion(true);
+                });
+                return;
+            }
+            enlace.addEventListener('click', (evento) => {
+                if (evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey || evento.button !== 0) return;
+                if (menosMovimiento() || animando) return;
+                evento.preventDefault();
+                subirPagina(0);
+                const direccion = direccionDe(enlace);
+                const par = recorrido(direccion, true);
+                const pagina = document.querySelector('body > main');
+                if (!pagina) {
+                    location.href = enlace.href;
+                    return;
+                }
+                animando = true;
+                pagina.style.setProperty('--doc-x', par[0]);
+                pagina.style.setProperty('--doc-y', par[1]);
+                pagina.classList.add('doc-sale');
+                document.documentElement.style.overflow = 'hidden';
+                let listo = false;
+                const ir = () => {
+                    if (listo) return;
+                    listo = true;
+                    try {
+                        sessionStorage.setItem('sitrainaDoc', JSON.stringify({ dir: direccion, volver: false }));
+                    } catch (e) {}
+                    location.href = enlace.href;
+                };
+                pagina.addEventListener('animationend', (fin) => {
+                    if (fin.animationName === 'doc-sale') ir();
+                });
+                window.setTimeout(ir, 750);
+            });
+        });
     }
+
+    /* La página de destino entra deslizándose; el botón de volver hace el camino inverso. */
+    if (document.querySelector('.pagina-documentos, .contenedor-efemerides, .contenedor-galeria, .contenedor-catalogo')) {
+        try { history.scrollRestoration = 'manual'; } catch (e) {}
+        subirPagina(0);
+        window.addEventListener('pageshow', () => subirPagina(0));
+    }
+
+    if (document.documentElement.classList.contains('doc-llegando')) {
+        const quitarLlegada = () => document.documentElement.classList.remove('doc-llegando');
+        const pieza = document.querySelector('body > main');
+        if (pieza) {
+            pieza.addEventListener('animationend', (evento) => {
+                if (evento.animationName === 'doc-entra') quitarLlegada();
+            });
+        }
+        window.setTimeout(quitarLlegada, 800);
+    }
+
+    /* El menú desliza la página hacia la sección de la derecha o de la izquierda. */
+    const indiceNav = (ruta) => {
+        const nombre = (ruta || '').split('/').pop() || 'index.html';
+        const mapa = {
+            '': 0,
+            'index.html': 0,
+            'quiensomos.html': 1,
+            'mision-vision.html': 1,
+            'afiliacion.html': 2,
+            'asesoria-legal.html': 3,
+            'solicitar-cita.html': 3,
+            'documentos.html': 4,
+            'efemerides.html': 4,
+            'galeria.html': 4,
+            'convenios.html': 4,
+            'actas.html': 4,
+            'legales.html': 4,
+            'informes-secretaria.html': 4,
+            'contacto.html': 5
+        };
+        return Object.prototype.hasOwnProperty.call(mapa, nombre) ? mapa[nombre] : -1;
+    };
+    const piezasNav = () => document.querySelectorAll('body > *:not(header):not(script):not(.btn-atras):not(.directiva-popup):not(.hoja-popup):not(#sitrabot):not(.visor-pdf)');
+    document.querySelectorAll('.navbar a').forEach((enlace) => {
+        enlace.addEventListener('click', (evento) => {
+            if (evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey || evento.button !== 0) return;
+            if (evento.defaultPrevented || enlace.target === '_blank') return;
+            let url;
+            try {
+                url = new URL(enlace.href, location.href);
+            } catch (e) {
+                return;
+            }
+            if (url.origin !== location.origin) return;
+            const destino = indiceNav(url.pathname);
+            const actual = indiceNav(location.pathname);
+            if (destino < 0 || actual < 0 || destino === actual) return;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            evento.preventDefault();
+            const haciaDerecha = destino > actual;
+            subirPagina(0);
+            document.documentElement.style.setProperty('--nav-x', haciaDerecha ? '-100vw' : '100vw');
+            const piezas = piezasNav();
+            piezas.forEach((item) => item.classList.add('nav-sale'));
+            let listo = false;
+            const ir = () => {
+                if (listo) return;
+                listo = true;
+                try {
+                    sessionStorage.setItem('sitrainaNav', JSON.stringify({ dir: haciaDerecha ? 'derecha' : 'izquierda' }));
+                } catch (e) {}
+                location.href = enlace.href;
+            };
+            const primera = piezas[0];
+            if (primera) {
+                primera.addEventListener('animationend', (fin) => {
+                    if (fin.animationName === 'nav-sale') ir();
+                });
+            } else {
+                ir();
+            }
+            window.setTimeout(ir, 480);
+        });
+    });
+
+    if (document.documentElement.classList.contains('nav-llegando')) {
+        subirPagina(0);
+        const quitarNav = () => {
+            document.documentElement.classList.remove('nav-llegando');
+            document.documentElement.style.removeProperty('scroll-behavior');
+        };
+        const piezaNav = piezasNav()[0];
+        if (piezaNav) {
+            piezaNav.addEventListener('animationend', (evento) => {
+                if (evento.animationName === 'nav-entra') quitarNav();
+            });
+        }
+        window.setTimeout(quitarNav, 480);
+    }
+
+    document.querySelectorAll('body > a.btn-atras').forEach((volver) => {
+        volver.addEventListener('click', (evento) => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            if (evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey || evento.button !== 0) return;
+            evento.preventDefault();
+            subirPagina(0);
+            let direccion = 'derecha';
+            try {
+                direccion = sessionStorage.getItem('sitrainaDocDir') || 'derecha';
+            } catch (e) {}
+            const par = direccion === 'izquierda'
+                ? ['100vw', '0px']
+                : direccion === 'abajo'
+                    ? ['0px', '-100vh']
+                    : direccion === 'arriba'
+                        ? ['0px', '100vh']
+                        : ['-100vw', '0px'];
+            const piezas = document.querySelectorAll('body > main, .contenedor-titulo-galeria');
+            piezas.forEach((item) => {
+                item.style.setProperty('--doc-x', par[0]);
+                item.style.setProperty('--doc-y', par[1]);
+                item.classList.add('doc-sale');
+            });
+            document.documentElement.style.overflow = 'hidden';
+            let listo = false;
+            const ir = () => {
+                if (listo) return;
+                listo = true;
+                try {
+                    sessionStorage.setItem('sitrainaDoc', JSON.stringify({ dir: direccion, volver: true }));
+                } catch (e) {}
+                location.href = volver.href;
+            };
+            const primera = piezas[0];
+            if (primera) {
+                primera.addEventListener('animationend', (fin) => {
+                    if (fin.animationName === 'doc-sale') ir();
+                });
+            } else {
+                ir();
+            }
+            window.setTimeout(ir, 750);
+        });
+    });
 
     // --- 4. CARRUSEL Y FICHA DE LA JUNTA DIRECTIVA ---
     const pistaDirectiva = document.querySelector('.directiva-pista');
@@ -571,35 +954,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         formCita.addEventListener('submit', (evento) => {
-            /* Revisa correo, teléfono, día, hora y cédula. Si todo está bien, envía a php/afiliados.php. */
+            /* Revisa los datos importantes. form.submit() no usa la revisión del navegador. */
+            evento.preventDefault();
+            const trampa = formCita.elements._honey;
+            if (trampa && trampa.value.trim() !== '') return;
+
+            const campoNombre = formCita.elements.nombre;
+            const campoSede = formCita.elements.sede;
+            const campoMotivo = formCita.elements.motivo;
+            const campoCedula = formCita.elements.cedula;
+            campoNombre.value = campoNombre.value.trim();
+            campoSede.value = campoSede.value.trim();
+            campoMotivo.value = campoMotivo.value.trim();
+            campoNombre.setCustomValidity(campoNombre.value ? '' : 'Escribe el nombre completo.');
+            campoSede.setCustomValidity(campoSede.value ? '' : 'Escribe la sede o el centro de trabajo.');
+            campoMotivo.setCustomValidity(campoMotivo.value ? '' : 'Escribe el motivo de la consulta.');
+
+            const cedulaCita = (campoCedula.value || '').replace(/\D/g, '');
+            campoCedula.value = cedulaCita;
+            campoCedula.setCustomValidity(/^[0-9]{9}$/.test(cedulaCita) ? '' : 'La cédula debe tener 9 dígitos.');
+
             const correoOk = revisarCorreo();
             const telefonoOk = revisarTelefono();
             if (!campoFecha.value || !campoHora.value) {
-                evento.preventDefault();
                 resumenCita.textContent = 'Elige el día y la hora de la cita antes de enviarla.';
-                return;
             }
-            if (!correoOk || !telefonoOk) {
-                evento.preventDefault();
+            if (!correoOk || !telefonoOk || !formCita.checkValidity()) {
                 if (!correoOk) campoCorreo.reportValidity();
-                else campoTelefono.reportValidity();
+                else if (!telefonoOk) campoTelefono.reportValidity();
+                else formCita.reportValidity();
                 return;
             }
-            const trampa = formCita.elements._honey;
-            if (trampa && trampa.value.trim() !== '') {
-                evento.preventDefault();
-                return;
-            }
-            evento.preventDefault();
-            const cedulaCita = (formCita.elements.cedula.value || '').replace(/\D/g, '');
-            if (!/^[0-9]{9}$/.test(cedulaCita)) {
-                avisoCita.hidden = false;
-                avisoCita.textContent = 'La cédula debe tener 9 dígitos.';
-                avisoCita.classList.add('error');
-                avisoCita.classList.remove('ok');
-                return;
-            }
-            formCita.elements.cedula.value = cedulaCita;
+            if (!campoFecha.value || !campoHora.value) return;
             document.getElementById('cita-asunto').value = 'Solicitud de cita legal: ' + etiquetaFecha(campoFecha.value) + ', ' + etiquetaHora(campoHora.value);
             document.getElementById('cita-replyto').value = campoCorreo.value;
             let campoAccion = formCita.querySelector('input[name="accion"]');
@@ -660,13 +1046,13 @@ document.addEventListener('DOMContentLoaded', () => {
             lightbox = document.createElement('div');
             lightbox.id = 'lightbox';
             lightbox.className = 'lightbox';
-            lightbox.innerHTML = '<button type="button" class="cerrar-lightbox" aria-label="Cerrar imagen">&times;</button><img class="lightbox-contenido" id="img-expandida" alt=""><div class="luz-controles"><button type="button" data-zoom="menos" aria-label="Alejar">&minus;</button><button type="button" data-zoom="normal" aria-label="Tamaño inicial">1×</button><button type="button" data-zoom="mas" aria-label="Acercar">+</button></div>';
+            lightbox.innerHTML = '<button type="button" class="cerrar-lightbox" aria-label="Cerrar imagen">&times;</button><img class="lightbox-contenido" id="img-expandida" alt=""><div class="luz-controles"><button type="button" data-zoom="menos" aria-label="Alejar">&minus;</button><button type="button" class="luz-magnitud" data-zoom="normal" aria-label="Magnitud 1×, volver al tamaño inicial">1×</button><button type="button" data-zoom="mas" aria-label="Acercar">+</button></div>';
             document.body.appendChild(lightbox);
         }
         if (!lightbox.querySelector('.luz-controles')) {
             var barra = document.createElement('div');
             barra.className = 'luz-controles';
-            barra.innerHTML = '<button type="button" data-zoom="menos" aria-label="Alejar">&minus;</button><button type="button" data-zoom="normal" aria-label="Tamaño inicial">1×</button><button type="button" data-zoom="mas" aria-label="Acercar">+</button>';
+            barra.innerHTML = '<button type="button" data-zoom="menos" aria-label="Alejar">&minus;</button><button type="button" class="luz-magnitud" data-zoom="normal" aria-label="Magnitud 1×, volver al tamaño inicial">1×</button><button type="button" data-zoom="mas" aria-label="Acercar">+</button>';
             lightbox.appendChild(barra);
         }
         var imgExpandida = document.getElementById('img-expandida');
@@ -681,6 +1067,23 @@ document.addEventListener('DOMContentLoaded', () => {
         var inicioY = 0;
         var baseX = 0;
         var baseY = 0;
+        var dedos = {};
+        var pinzaInicio = 0;
+        var escalaPinza = 1;
+
+        /* Escribe en el botón la magnitud real de la imagen. */
+        var mostrarMagnitud = function () {
+            var indicador = lightbox.querySelector('.luz-magnitud');
+            if (!indicador) return;
+            var visible = Math.round(Math.min(4, Math.max(1, escala)) * 10) / 10;
+            var cifra = visible.toFixed(1).replace(/\.0$/, '').replace('.', ',');
+            indicador.textContent = cifra + '\u00d7';
+            indicador.setAttribute('aria-label', 'Magnitud ' + cifra + '\u00d7, volver al tamaño inicial');
+            var menos = lightbox.querySelector('[data-zoom="menos"]');
+            var mas = lightbox.querySelector('[data-zoom="mas"]');
+            if (menos) menos.disabled = visible <= 1;
+            if (mas) mas.disabled = visible >= 4;
+        };
 
         /* Coloca la imagen ampliada según el acercamiento y el arrastre. */
         var pintarZoom = function () {
@@ -691,6 +1094,7 @@ document.addEventListener('DOMContentLoaded', () => {
             posY = Math.max(-topeY, Math.min(topeY, posY));
             imgExpandida.style.transform = 'translate(' + posX + 'px,' + posY + 'px) scale(' + escala + ')';
             imgExpandida.classList.toggle('luz-cerca', escala > 1);
+            mostrarMagnitud();
         };
 
         /* Vuelve la imagen al tamaño con el que se abrió. */
@@ -700,6 +1104,9 @@ document.addEventListener('DOMContentLoaded', () => {
             posY = 0;
             imgExpandida.style.transform = '';
             imgExpandida.classList.remove('luz-cerca');
+            dedos = {};
+            pinzaInicio = 0;
+            mostrarMagnitud();
         };
 
         /* Cierra la imagen ampliada y devuelve el desplazamiento de la página. */
@@ -760,6 +1167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lightbox.style.display !== 'flex') return;
             evento.preventDefault();
             escala = Math.min(4, Math.max(1, escala * (evento.deltaY < 0 ? 1.12 : 0.89)));
+            if (escala < 1.05) escala = 1;
             if (escala === 1) { posX = 0; posY = 0; }
             pintarZoom();
         }, { passive: false });
@@ -772,20 +1180,47 @@ document.addEventListener('DOMContentLoaded', () => {
         imgExpandida.addEventListener('dragstart', function (evento) {
             evento.preventDefault();
         });
+        /* Distancia entre los dos dedos que están sobre la imagen. */
+        var distanciaPinza = function () {
+            var ids = Object.keys(dedos);
+            if (ids.length < 2) return 0;
+            var a = dedos[ids[0]];
+            var b = dedos[ids[1]];
+            return Math.hypot(a.x - b.x, a.y - b.y);
+        };
+
         /* Mueve la imagen siguiendo el cursor mientras el clic sigue presionado. */
         imgExpandida.addEventListener('pointerdown', function (evento) {
             if (evento.button !== 0) return;
             evento.preventDefault();
-            arrastrando = true;
-            movio = false;
-            inicioX = evento.clientX;
-            inicioY = evento.clientY;
-            baseX = posX;
-            baseY = posY;
-            imgExpandida.classList.add('luz-arrastre');
+            dedos[evento.pointerId] = { x: evento.clientX, y: evento.clientY };
+            if (Object.keys(dedos).length >= 2) {
+                pinzaInicio = distanciaPinza();
+                escalaPinza = escala;
+                arrastrando = false;
+                imgExpandida.classList.remove('luz-arrastre');
+            } else {
+                arrastrando = true;
+                movio = false;
+                inicioX = evento.clientX;
+                inicioY = evento.clientY;
+                baseX = posX;
+                baseY = posY;
+                imgExpandida.classList.add('luz-arrastre');
+            }
             try { imgExpandida.setPointerCapture(evento.pointerId); } catch (error) {}
         });
         imgExpandida.addEventListener('pointermove', function (evento) {
+            if (!dedos[evento.pointerId]) return;
+            dedos[evento.pointerId] = { x: evento.clientX, y: evento.clientY };
+            if (Object.keys(dedos).length >= 2 && pinzaInicio > 0) {
+                escala = Math.min(4, Math.max(1, escalaPinza * (distanciaPinza() / pinzaInicio)));
+                if (escala < 1.05) escala = 1;
+                if (escala === 1) { posX = 0; posY = 0; }
+                movio = true;
+                pintarZoom();
+                return;
+            }
             if (!arrastrando) return;
             var dx = evento.clientX - inicioX;
             var dy = evento.clientY - inicioY;
@@ -794,7 +1229,9 @@ document.addEventListener('DOMContentLoaded', () => {
             posY = baseY + dy;
             pintarZoom();
         });
-        var soltar = function () {
+        var soltar = function (evento) {
+            if (evento && evento.pointerId != null) delete dedos[evento.pointerId];
+            if (Object.keys(dedos).length < 2) pinzaInicio = 0;
             arrastrando = false;
             imgExpandida.classList.remove('luz-arrastre');
         };
@@ -807,6 +1244,387 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, true);
     }
+
+    /* Visor de PDF: abre cualquier PDF del sitio en la página, con páginas y zoom. */
+    (function () {
+        var visor = document.createElement('div');
+        visor.className = 'visor-pdf';
+        visor.hidden = true;
+                visor.innerHTML = '<div class="visor-pdf-marco" role="dialog" aria-modal="true" aria-labelledby="visor-pdf-titulo"><h2 id="visor-pdf-titulo" class="visor-pdf-titulo"></h2><button type="button" class="visor-pdf-cerrar" aria-label="Cerrar documento">&times;</button><div class="visor-pdf-cuerpo"><button type="button" class="visor-pdf-flecha visor-pdf-anterior" aria-label="Página anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="visor-pdf-hoja"><div class="visor-pdf-clip"><p class="visor-pdf-estado">Cargando documento…</p><canvas class="visor-pdf-lienzo" hidden></canvas><iframe class="visor-pdf-respaldo" hidden title="Documento PDF"></iframe></div></div><button type="button" class="visor-pdf-flecha visor-pdf-siguiente" aria-label="Página siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="visor-pdf-controles"><p class="visor-pdf-cuenta"><span class="visor-pdf-cuenta-etiqueta">Página</span> <input type="text" inputmode="numeric" pattern="[0-9]*" class="visor-pdf-pagina" value="" aria-label="Ir a la página" disabled> <span class="visor-pdf-cuenta-de">de</span> <span class="visor-pdf-pagina-total">0</span></p><div class="visor-pdf-zoom"><button type="button" data-pdf-zoom="menos" aria-label="Alejar">&minus;</button><button type="button" class="visor-pdf-zoom-cifra" data-pdf-zoom="normal" aria-label="Volver a 100%">100%</button><button type="button" data-pdf-zoom="mas" aria-label="Acercar">+</button></div><a class="visor-pdf-descarga" href="#" target="_blank" rel="noopener">Abrir en una pestaña</a></div></div>';
+        document.body.appendChild(visor);
+
+        var titulo = visor.querySelector('#visor-pdf-titulo');
+        var cuenta = visor.querySelector('.visor-pdf-cuenta');
+        var paginaInput = visor.querySelector('.visor-pdf-pagina');
+        var paginaTotal = visor.querySelector('.visor-pdf-pagina-total');
+        var estado = visor.querySelector('.visor-pdf-estado');
+        var lienzo = visor.querySelector('.visor-pdf-lienzo');
+        var respaldo = visor.querySelector('.visor-pdf-respaldo');
+        var hoja = visor.querySelector('.visor-pdf-hoja');
+        var clip = visor.querySelector('.visor-pdf-clip');
+        var anterior = visor.querySelector('.visor-pdf-anterior');
+        var siguiente = visor.querySelector('.visor-pdf-siguiente');
+        var descarga = visor.querySelector('.visor-pdf-descarga');
+        var zoomCifra = visor.querySelector('.visor-pdf-zoom-cifra');
+        var botonZoomMenos = visor.querySelector('[data-pdf-zoom="menos"]');
+        var botonZoomMas = visor.querySelector('[data-pdf-zoom="mas"]');
+        var fijarMarco = function () {
+            hoja.scrollLeft = 0;
+            if (clip) clip.scrollLeft = 0;
+        };
+        var puedePanear = function () {
+            return zoom > 2;
+        };
+        var centrarPan = function () {
+            if (!puedePanear()) {
+                fijarMarco();
+                return;
+            }
+            requestAnimationFrame(function () {
+                hoja.scrollLeft = Math.max(0, (hoja.scrollWidth - hoja.clientWidth) / 2);
+                if (clip) clip.scrollLeft = 0;
+            });
+        };
+        var documento = null;
+        var pagina = 1;
+        var total = 0;
+        var zoom = 1;
+        var tarea = null;
+        var origen = null;
+        var usandoLienzo = false;
+        var listo = false;
+        var cargaLibro = null;
+        var arrastre = null;
+
+        /* Actualiza el porcentaje y el estado de los botones de zoom. */
+        var mostrarZoom = function () {
+            var porcentaje = Math.round(zoom * 100);
+            zoomCifra.textContent = porcentaje + '%';
+            zoomCifra.setAttribute('aria-label', 'Zoom ' + porcentaje + '%, volver a 100%');
+            botonZoomMenos.disabled = !listo || zoom <= 1;
+            botonZoomMas.disabled = !listo || zoom >= 3;
+            hoja.classList.toggle('visor-pdf-pan', puedePanear());
+            if (!puedePanear()) fijarMarco();
+        };
+
+        var flecha = function () {
+            anterior.disabled = !usandoLienzo || pagina <= 1;
+            siguiente.disabled = !usandoLienzo || pagina >= total;
+            if (usandoLienzo && total) {
+                cuenta.classList.remove('visor-pdf-cuenta-simple');
+                if (document.activeElement !== paginaInput) paginaInput.value = String(pagina);
+                paginaTotal.textContent = String(total);
+                paginaInput.disabled = !listo;
+                paginaInput.setAttribute('maxlength', String(String(total).length));
+                paginaInput.style.width = (String(total).length + 1.6) + 'ch';
+                paginaInput.setAttribute('aria-label', 'Ir a la página (1 a ' + total + ')');
+            } else {
+                cuenta.classList.add('visor-pdf-cuenta-simple');
+                paginaInput.value = '';
+                paginaInput.disabled = true;
+                paginaInput.style.width = '';
+                paginaTotal.textContent = listo ? 'Documento' : '0';
+            }
+            mostrarZoom();
+        };
+
+        /* Salta a la página pedida, sin pasar del total. */
+        var irAPagina = function (valor) {
+            if (!usandoLienzo || !total) {
+                flecha();
+                return;
+            }
+            var n = parseInt(String(valor).replace(/\D/g, ''), 10);
+            if (!n || n < 1) {
+                paginaInput.value = String(pagina);
+                return;
+            }
+            if (n > total) n = total;
+            paginaInput.value = String(n);
+            if (n === pagina) return;
+            pagina = n;
+            pintar();
+        };
+
+        var cambiarZoom = function (nuevo) {
+            var siguienteZoom = Math.min(3, Math.max(1, Math.round(nuevo * 100) / 100));
+            if (!listo || siguienteZoom === zoom) {
+                mostrarZoom();
+                return;
+            }
+            zoom = siguienteZoom;
+            if (usandoLienzo) pintar();
+            else mostrarZoom();
+        };
+
+        var cerrar = function () {
+            visor.hidden = true;
+            document.body.classList.remove('visor-pdf-abierto');
+            if (tarea && tarea.cancel) tarea.cancel();
+            documento = null;
+            zoom = 1;
+            listo = false;
+            respaldo.hidden = true;
+            respaldo.removeAttribute('src');
+            lienzo.hidden = true;
+            lienzo.style.width = '';
+            lienzo.style.height = '';
+            if (origen && origen.focus) origen.focus();
+        };
+
+        /* Dibuja la página nítida al tamaño del marco y al zoom actual. */
+        var pintar = function () {
+            if (!documento || !usandoLienzo) return;
+            if (tarea && tarea.cancel) tarea.cancel();
+            estado.hidden = false;
+            estado.textContent = 'Cargando página…';
+            lienzo.hidden = true;
+            documento.getPage(pagina).then(function (hojaPdf) {
+                var estiloHoja = getComputedStyle(hoja);
+                var rellenoX = parseFloat(estiloHoja.paddingLeft) + parseFloat(estiloHoja.paddingRight);
+                var rellenoY = parseFloat(estiloHoja.paddingTop) + parseFloat(estiloHoja.paddingBottom);
+                var ancho = Math.max(200, hoja.clientWidth - rellenoX - 8);
+                var alto = Math.max(200, hoja.clientHeight - rellenoY - 8);
+                var base = hojaPdf.getViewport({ scale: 1 });
+                /* Nítido: se redibuja al zoom. Sin transform CSS ni arrastre horizontal. */
+                var escalaBase = Math.min(ancho / base.width, alto / base.height);
+                var escala = escalaBase * zoom;
+                var pixel = Math.max(window.devicePixelRatio || 1, 2);
+                if (pixel > 3) pixel = 3;
+                var vista = hojaPdf.getViewport({ scale: escala * pixel });
+                var anchoCss = Math.floor(base.width * escala);
+                var altoCss = Math.floor(base.height * escala);
+                lienzo.width = Math.floor(vista.width);
+                lienzo.height = Math.floor(vista.height);
+                lienzo.style.width = anchoCss + 'px';
+                lienzo.style.height = altoCss + 'px';
+                var contexto = lienzo.getContext('2d', { alpha: false });
+                contexto.setTransform(1, 0, 0, 1, 0, 0);
+                contexto.clearRect(0, 0, lienzo.width, lienzo.height);
+                contexto.imageSmoothingEnabled = true;
+                contexto.imageSmoothingQuality = 'high';
+                tarea = hojaPdf.render({ canvasContext: contexto, viewport: vista });
+                return tarea.promise.then(function () {
+                    return { altoCss: altoCss };
+                });
+            }).then(function (medidas) {
+                estado.hidden = true;
+                lienzo.hidden = false;
+                listo = true;
+                var pasaAlto = medidas && medidas.altoCss > (hoja.clientHeight - 24);
+                hoja.classList.toggle('visor-pdf-ampliado', (zoom > 1 && pasaAlto) || puedePanear());
+                hoja.classList.toggle('visor-pdf-pan', puedePanear());
+                hoja.scrollTop = 0;
+                centrarPan();
+                flecha();
+            }).catch(function (error) {
+                if (error && error.name === 'RenderingCancelledException') return;
+                estado.hidden = false;
+                estado.textContent = 'No se pudo mostrar esta página.';
+                listo = false;
+                mostrarZoom();
+            });
+            flecha();
+        };
+
+        var abrirConLienzo = function (url) {
+            return cargarPdfJs().then(function (lib) {
+                return lib.getDocument({ url: url, withCredentials: false }).promise;
+            }).then(function (pdf) {
+                documento = pdf;
+                total = pdf.numPages;
+                pagina = 1;
+                zoom = 1;
+                usandoLienzo = true;
+                respaldo.hidden = true;
+                pintar();
+            });
+        };
+
+        var abrirRespaldo = function (url) {
+            usandoLienzo = false;
+            documento = null;
+            zoom = 1;
+            lienzo.hidden = true;
+            estado.hidden = true;
+            respaldo.hidden = false;
+            respaldo.src = url + (url.indexOf('#') === -1 ? '#toolbar=0&navpanes=0&scrollbar=0&view=Fit' : '');
+            listo = true;
+            flecha();
+        };
+
+        var abrir = function (enlace) {
+            origen = document.activeElement;
+            var nombre = '';
+            var item = enlace.closest('.archivo-item, article, li');
+            var encabezado = item ? item.querySelector('h3') : null;
+            if (encabezado) nombre = encabezado.textContent.trim();
+            if (!nombre) nombre = (enlace.textContent || '').trim();
+            if (!nombre || nombre.toLowerCase() === 'abrir') {
+                try { nombre = decodeURIComponent(enlace.href.split('/').pop().split('?')[0]); } catch (error) { nombre = 'Documento'; }
+            }
+            titulo.textContent = nombre;
+            descarga.href = enlace.href;
+            visor.hidden = false;
+            document.body.classList.add('visor-pdf-abierto');
+            estado.hidden = false;
+            estado.textContent = 'Cargando documento…';
+            lienzo.hidden = true;
+            respaldo.hidden = true;
+            usandoLienzo = false;
+            listo = false;
+            zoom = 1;
+            flecha();
+            visor.querySelector('.visor-pdf-cerrar').focus();
+            abrirConLienzo(enlace.href).catch(function () { abrirRespaldo(enlace.href); });
+        };
+
+        function cargarPdfJs() {
+            if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+            if (cargaLibro) return cargaLibro;
+            cargaLibro = new Promise(function (resolve, reject) {
+                var script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                script.onload = function () {
+                    if (!window.pdfjsLib) { reject(); return; }
+                    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                    resolve(window.pdfjsLib);
+                };
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+            return cargaLibro;
+        }
+
+        anterior.addEventListener('click', function () {
+            if (pagina <= 1) return;
+            pagina -= 1;
+            pintar();
+        });
+        siguiente.addEventListener('click', function () {
+            if (pagina >= total) return;
+            pagina += 1;
+            pintar();
+        });
+        botonZoomMenos.addEventListener('click', function (evento) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            cambiarZoom(zoom - 0.25);
+        });
+        botonZoomMas.addEventListener('click', function (evento) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            cambiarZoom(zoom + 0.25);
+        });
+        zoomCifra.addEventListener('click', function (evento) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            cambiarZoom(1);
+        });
+        paginaInput.addEventListener('focus', function () {
+            paginaInput.select();
+        });
+        paginaInput.addEventListener('input', function () {
+            var limpio = paginaInput.value.replace(/\D/g, '');
+            if (limpio !== paginaInput.value) paginaInput.value = limpio;
+            if (!limpio || !total) return;
+            var n = parseInt(limpio, 10);
+            if (n > total) paginaInput.value = String(total);
+        });
+        paginaInput.addEventListener('keydown', function (evento) {
+            if (evento.key === 'Enter') {
+                evento.preventDefault();
+                evento.stopPropagation();
+                irAPagina(paginaInput.value);
+                paginaInput.blur();
+            } else if (evento.key === 'Escape') {
+                evento.preventDefault();
+                evento.stopPropagation();
+                paginaInput.value = String(pagina);
+                paginaInput.blur();
+            }
+        });
+        paginaInput.addEventListener('blur', function () {
+            irAPagina(paginaInput.value);
+        });
+        paginaInput.addEventListener('click', function (evento) {
+            evento.stopPropagation();
+        });
+        visor.querySelector('.visor-pdf-cerrar').addEventListener('click', cerrar);
+        visor.addEventListener('click', function (evento) {
+            if (evento.target === visor) cerrar();
+        });
+        hoja.addEventListener('wheel', function (evento) {
+            if (visor.hidden) return;
+            if (evento.ctrlKey || evento.metaKey) {
+                if (!listo) return;
+                evento.preventDefault();
+                cambiarZoom(evento.deltaY < 0 ? zoom + 0.25 : zoom - 0.25);
+                return;
+            }
+            /* Lateral solo con más de 200%. */
+            if (Math.abs(evento.deltaX) > Math.abs(evento.deltaY) && !puedePanear()) {
+                evento.preventDefault();
+                fijarMarco();
+            }
+        }, { passive: false });
+        hoja.addEventListener('scroll', function () {
+            if (!puedePanear() && hoja.scrollLeft !== 0) hoja.scrollLeft = 0;
+        });
+        if (clip) {
+            clip.addEventListener('scroll', function () {
+                if (clip.scrollLeft !== 0) clip.scrollLeft = 0;
+            });
+        }
+        hoja.addEventListener('pointerdown', function (evento) {
+            if (!puedePanear() || evento.button !== 0) return;
+            if (evento.target.closest('button, a, input, .visor-pdf-controles')) return;
+            arrastre = {
+                id: evento.pointerId,
+                x: evento.clientX,
+                y: evento.clientY,
+                left: hoja.scrollLeft,
+                top: hoja.scrollTop
+            };
+            try { hoja.setPointerCapture(evento.pointerId); } catch (error) { /* ignore */ }
+        });
+        hoja.addEventListener('pointermove', function (evento) {
+            if (!arrastre || arrastre.id !== evento.pointerId || !puedePanear()) return;
+            hoja.scrollLeft = arrastre.left - (evento.clientX - arrastre.x);
+            hoja.scrollTop = arrastre.top - (evento.clientY - arrastre.y);
+        });
+        var soltarArrastre = function (evento) {
+            if (!arrastre || (evento && arrastre.id !== evento.pointerId)) return;
+            arrastre = null;
+        };
+        hoja.addEventListener('pointerup', soltarArrastre);
+        hoja.addEventListener('pointercancel', soltarArrastre);
+        lienzo.addEventListener('dragstart', function (evento) {
+            evento.preventDefault();
+        });
+        document.addEventListener('keydown', function (evento) {
+            if (visor.hidden) return;
+            if (evento.key === 'Escape') { evento.stopPropagation(); cerrar(); }
+            else if (evento.key === 'ArrowLeft' && !anterior.disabled) anterior.click();
+            else if (evento.key === 'ArrowRight' && !siguiente.disabled) siguiente.click();
+            else if ((evento.key === '+' || evento.key === '=') && listo) cambiarZoom(zoom + 0.25);
+            else if ((evento.key === '-' || evento.key === '_') && listo) cambiarZoom(zoom - 0.25);
+            else if (evento.key === '0' && listo) cambiarZoom(1);
+        }, true);
+        document.addEventListener('click', function (evento) {
+            if (evento.defaultPrevented || evento.button !== 0) return;
+            if (evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey) return;
+            var enlace = evento.target.closest ? evento.target.closest('a[href]') : null;
+            if (!enlace || enlace.closest('.visor-pdf')) return;
+            var ruta = enlace.getAttribute('href') || '';
+            var esPdf = /\.pdf($|[?#])/i.test(ruta);
+            try { if (!esPdf) esPdf = /\.pdf$/i.test(enlace.pathname || ''); } catch (error) { /* ignore */ }
+            if (!esPdf) return;
+            evento.preventDefault();
+            evento.stopPropagation();
+            abrir(enlace);
+        }, true);
+    })();
 });
 
 /* Sitrabot: arma el chat, guarda la conversación de esta visita y elige la respuesta. */

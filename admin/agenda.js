@@ -238,7 +238,7 @@
         }
     }
 
-    /* Pinta un día de verde, con X o de gris con reloj, sin borrar el botón. */
+    /* Pinta un día solo si ya tiene marca: verde, X o gris con reloj. Sin marca queda en blanco con el número. */
     function aplicarMarca(boton, dia, iso, valor) {
         var marca = estadoDia(iso);
         var horasCita = citasDelDia(iso);
@@ -250,7 +250,7 @@
         } else if (marca === 'ocupada') {
             boton.classList.add('ocupada');
             texto = ', ocupada';
-        } else if (mesAgregado(valor) || marca === 'bloqueada') {
+        } else if (marca === 'bloqueada') {
             boton.classList.add('cerrado');
             texto = ', no disponible';
         }
@@ -267,7 +267,7 @@
             equis.remove();
         }
         var reloj = boton.querySelector('.icono-reloj');
-        if (marca === 'ocupada' || horasCita.length) {
+        if (marca === 'ocupada') {
             if (!reloj) boton.appendChild(iconoReloj());
         } else if (reloj) {
             reloj.remove();
