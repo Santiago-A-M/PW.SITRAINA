@@ -10,22 +10,25 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Mismo degradado del inicio. Sin background-attachment:fixed: en InfinityFree
+   se vuelve blanco/negro al animar el cambio de sección (transform). */
 html {
-  background-color: #f6f0ec;
+  background-color: #d7e8fb;
+  background-image: linear-gradient(105deg, #8ec4f6 0%, #d7e8fb 34%, #f6d3be 66%, #f0a06a 100%);
+  background-size: 100% 130%;
+  background-attachment: scroll;
+  background-position: center 30%;
   color-scheme: light;
   scroll-behavior: smooth;
 }
 
 html.dark-mode {
-  background-color: #1c1614 !important;
+  background-color: #1b2836 !important;
+  background-image: linear-gradient(105deg, #123056 0%, #1b2836 34%, #3a241c 66%, #6e3014 100%) !important;
+  background-size: 100% 130% !important;
+  background-attachment: scroll !important;
+  background-position: center 30% !important;
   color-scheme: dark;
-}
-
-/* Con el degradado de página, el html no pinta crema/negro encima al cargar el CSS. */
-html:has(body.pagina-fondo),
-html.dark-mode:has(body.pagina-fondo) {
-  background-color: transparent !important;
-  background-image: none !important;
 }
 
 /* ======================================== */
@@ -400,47 +403,7 @@ body.dark-mode .btn-header {
     height: 45px;
   }
   
-  .boton-accesibilidad,
-  .menu-toggle {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  .boton-accesibilidad {
-    left: 15px;
-  }
-  
-  .menu-toggle {
-    right: 15px;
-    display: block;
-  }
-  
-  #navbar {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    background: rgba(200, 29, 37, 0.95);
-    position: absolute;
-    top: 100%;
-    left: 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 15px 0;
-    gap: 0;
-    justify-content: flex-start;
-    margin: 0;
-  }
-  
-  #navbar.active {
-    display: flex;
-  }
-  
-  #navbar a {
-    margin: 8px 0;
-    text-align: center;
-    font-size: 1rem;
-    width: 100%;
-  }
+  /* Menú móvil: layout tono | logo | hamburguesa en el bloque header.header. */
 }
 
 /* ======================================== */
@@ -822,7 +785,7 @@ body.dark-mode .labor-popup .directiva-popup-panel img {
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 4000;
   left: 0;
   top: 0;
   width: 100%;
@@ -1419,38 +1382,38 @@ body.dark-mode .nota-afiliacion p {
   color: #f0e8e2 !important;
 }
 
-#af-formulario fieldset {
+#form-afiliacion fieldset {
   border: 2px solid var(--color-principal);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
 }
 
-#af-formulario legend {
+#form-afiliacion legend {
   font-weight: bold;
   color: var(--color-principal);
   font-size: 1.2rem;
   padding: 0 10px;
 }
 
-#af-formulario input[type="text"],
-#af-formulario input[type="email"],
-#af-formulario input[type="date"],
-#af-formulario select {
+#form-afiliacion input[type="text"],
+#form-afiliacion input[type="email"],
+#form-afiliacion input[type="date"],
+#form-afiliacion select {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100%;
 }
 
-#af-formulario input:focus,
-#af-formulario select:focus {
+#form-afiliacion input:focus,
+#form-afiliacion select:focus {
   border-color: var(--color-principal);
   outline: none;
   box-shadow: 0 0 0 3px rgba(200, 29, 37, 0.2);
 }
 
-#af-formulario button[type="submit"] {
+#form-afiliacion button[type="submit"] {
   background: var(--color-principal);
   color: white;
   padding: 15px;
@@ -1464,7 +1427,7 @@ body.dark-mode .nota-afiliacion p {
   margin-top: 20px;
 }
 
-#af-formulario button[type="submit"]:hover {
+#form-afiliacion button[type="submit"]:hover {
   background: var(--color-secundario);
   transform: translateY(-2px);
 }
@@ -1679,15 +1642,17 @@ body.dark-mode .nota-afiliacion p {
 
 }
 
-.btn-negro {
-        display: block !important;    /* Ocupa todo el ancho disponible */
-        width: 90%;                   /* Deja un pequeño margen a los lados */
-        margin: 20px auto;            /* Lo centra horizontalmente */
-        text-align: center;           /* Centra el texto dentro del botón */
-        padding: 18px;                /* Aumenta el área de toque para dedos */
-        font-size: 1.1rem;            /* Mejora la legibilidad */
-        text-decoration: none !important; /* Elimina cualquier subrayado residual */
-    }
+@media (max-width: 768px) {
+  .btn-negro {
+    display: block !important;
+    width: 90%;
+    margin: 20px auto;
+    text-align: center;
+    padding: 18px;
+    font-size: 1.1rem;
+    text-decoration: none !important;
+  }
+}
 
 
 /* ======================================== */
@@ -1715,53 +1680,7 @@ body.dark-mode .noticias h2 {
     height: 45px;
   }
   
-  /* Menú hamburguesa - botón visible en móviles */
-  .menu-toggle {
-    display: block !important;
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3001;
-    background: #fff;
-    color: #6e1218;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
-    font-size: 1.5rem;
-    transition: background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1), color 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  body.dark-mode .menu-toggle {
-    background: #2b211f;
-    color: #f6d3be;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
-  }
-  
-  /* Esconder menú por defecto en móviles */
-  .navbar {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: rgba(200, 29, 37, 0.98);
-    flex-direction: column;
-    padding: 20px;
-    gap: 15px;
-    z-index: 2999;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Mostrar menú cuando está activo */
-  .navbar.active {
-    display: flex !important;
-  }
+  /* El menú móvil (tono | logo | hamburguesa) lo define el bloque header.header más abajo. */
   
   .navbar a {
     color: white;
@@ -1996,19 +1915,19 @@ body.dark-mode .noticias h2 {
 
 /* ===== 8. AFILIACIÓN ===== */
 @media (max-width: 768px) {
-  #af-formulario fieldset {
+  #form-afiliacion fieldset {
     padding: 15px;
   }
   
-  #af-formulario input[type="text"],
-  #af-formulario input[type="email"],
-  #af-formulario input[type="date"],
-  #af-formulario select {
+  #form-afiliacion input[type="text"],
+  #form-afiliacion input[type="email"],
+  #form-afiliacion input[type="date"],
+  #form-afiliacion select {
     padding: 8px;
     font-size: 0.95rem;
   }
   
-  #af-formulario button[type="submit"] {
+  #form-afiliacion button[type="submit"] {
     padding: 12px;
     font-size: 1rem;
   }
@@ -2079,9 +1998,14 @@ body .noticias .contenedor .cards .card {
     width: 100% !important;
     max-width: 350px !important; /* Ajusta este ancho a tu gusto */
     height: 450px !important;    /* Forzamos una altura total de tarjeta */
-    background: #fff !important;
+    background: #fff;
     border: 1px solid #ddd !important;
     margin: 10px auto !important;
+}
+
+body.dark-mode .noticias .contenedor .cards .card {
+    background: #2c2320;
+    border-color: #4a3d38 !important;
 }
 
 /* ======================================== */
@@ -2116,9 +2040,13 @@ body .noticias .contenedor .cards .card {
   display: flex !important;
   flex-direction: column !important;
   height: 100% !important;
-  background: #fff !important;
+  background: #fff;
   border-radius: 8px !important;
   box-shadow: var(--sombra-suave) !important;
+}
+
+body.dark-mode .noticias .card {
+  background: #2c2320;
 }
 
 .noticias .card-content {
@@ -2150,31 +2078,14 @@ body .noticias .contenedor .cards .card {
   /* 2. Quitar iconos/botones extra del header en móvil */
  
 
-  /* 3. Ajustar el Logo para que no estorbe */
+  /* 3. Logo cuadrado en el header móvil */
   .logo img {
     height: 40px;
-    width: auto;
+    width: 40px;
+    object-fit: cover;
   }
 
-  /* 4. Convertir la Navbar en menú desplegable */
-  .navbar {
-    display: none; /* Oculto por defecto */
-    flex-direction: column;
-    position: absolute;
-    top: 70px; /* Altura del header */
-    left: 0;
-    width: 100%;
-    background-color: var(--color-principal);
-    padding: 20px 0;
-    text-align: center;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-    z-index: 2500;
-  }
-
-  /* Clase para mostrar el menú con JS */
-  .navbar.active {
-    display: flex;
-  }
+  /* 4. Menú desplegable: ver bloque header.header (tono | logo | menú). */
 
   .navbar a {
     padding: 15px;
@@ -3046,6 +2957,12 @@ body.dark-mode .evento::before {
   padding-top: 1.75rem;
 }
 
+@media (max-width: 699px) {
+  .tipos-documentos {
+    padding-inline: 1rem;
+  }
+}
+
 .tipo-doc {
   position: relative;
   display: flex;
@@ -3557,37 +3474,66 @@ html.nav-llegando > body > :not(header):not(script):not(.btn-atras):not(.directi
   transform: rotate(90deg) translateX(4px);
 }
 
-/* En el celular, Abrir queda al costado de la casilla. */
+/* En el celular, la tarjeta envuelve título + Abrir (después de reglas absolute). */
 @media (max-width: 699px) {
   .tipos-documentos {
     padding-top: 0;
+  }
+
+  .tipos-documentos .tipo-doc {
+    background: #fff;
+    border: 1px solid #eadfd9;
+    border-radius: 12px;
+    padding: 16px 18px 14px;
+    box-shadow: 0 4px 14px rgba(80, 30, 20, 0.06);
+  }
+
+  .tipos-documentos .tipo-doc-cuerpo {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  body.dark-mode .tipos-documentos .tipo-doc {
+    background: #2c2320;
+    border-color: #4a3d38;
   }
 
   .tipos-documentos .tipo-doc[href="#informes"] {
     margin-bottom: 0;
   }
 
+  .tipos-documentos .tipo-doc-abrir,
   .tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir,
   .tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir {
-    left: 100%;
+    position: static;
+    left: auto;
     right: auto;
-    top: 50%;
+    top: auto;
     bottom: auto;
-    margin: 0 0 0 10px;
-    transform: translateY(-50%);
+    margin: 10px 0 0;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
   }
 
+  .tipos-documentos .tipo-doc-abrir > span,
   .tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir > span,
   .tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir > span {
     flex-direction: row;
-    transform: translateX(6px);
+    transform: none;
   }
 
+  .tipos-documentos .tipo-doc-abrir svg,
   .tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir svg,
   .tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir svg {
     transform: none;
   }
 
+  .tipos-documentos .tipo-doc:hover .tipo-doc-abrir > span,
+  .tipos-documentos .tipo-doc:focus-visible .tipo-doc-abrir > span,
   .tipos-documentos .tipo-doc[href*="hojamier"]:hover .tipo-doc-abrir > span,
   .tipos-documentos .tipo-doc[href*="hojamier"]:focus-visible .tipo-doc-abrir > span,
   .tipos-documentos .tipo-doc[href="#informes"]:hover .tipo-doc-abrir > span,
@@ -3595,6 +3541,8 @@ html.nav-llegando > body > :not(header):not(script):not(.btn-atras):not(.directi
     transform: none;
   }
 
+  .tipos-documentos .tipo-doc:hover .tipo-doc-abrir svg,
+  .tipos-documentos .tipo-doc:focus-visible .tipo-doc-abrir svg,
   .tipos-documentos .tipo-doc[href*="hojamier"]:hover .tipo-doc-abrir svg,
   .tipos-documentos .tipo-doc[href*="hojamier"]:focus-visible .tipo-doc-abrir svg,
   .tipos-documentos .tipo-doc[href="#informes"]:hover .tipo-doc-abrir svg,
@@ -3771,6 +3719,10 @@ body.dark-mode .comunicado-fecha {
 body.dark-mode .comunicados-grid .card {
   background: #2c2320 !important;
   border-color: #4a3d38 !important;
+}
+
+body.dark-mode .comunicados-grid h3 {
+  color: #f7f2ee !important;
 }
 
 body.dark-mode .comunicados-grid .imagen-noticia {
@@ -4083,11 +4035,11 @@ body.dark-mode .efemeride-media video {
 }
 
 .directiva-flecha[data-dir="-1"] {
-  left: -10px;
+  left: 6px;
 }
 
 .directiva-flecha[data-dir="1"] {
-  right: -10px;
+  right: 6px;
 }
 
 .directiva-flecha svg {
@@ -5152,10 +5104,19 @@ body.pagina-fondo::before {
   background-image: linear-gradient(105deg, #8ec4f6 0%, #d7e8fb 34%, #f6d3be 66%, #f0a06a 100%);
 }
 
-/* Capa oscura encima del degradado claro; al cambiar de tono se funde con opacidad. */
+/* Capa oscura encima del degradado claro. Sin transición al cargar la página
+   (evita el parpadeo claro→oscuro); solo anima al pulsar el botón de tono. */
 body.pagina-fondo::after {
   background-image: linear-gradient(105deg, #123056 0%, #1b2836 34%, #3a241c 66%, #6e3014 100%);
   opacity: 0;
+}
+
+html.dark-mode body.pagina-fondo::after,
+body.dark-mode.pagina-fondo::after {
+  opacity: 1;
+}
+
+html.tema-animando body.pagina-fondo::after {
   transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -5186,10 +5147,6 @@ body.pagina-fondo .contenedor {
 body.dark-mode.pagina-fondo {
   background-color: transparent !important;
   background-image: none !important;
-}
-
-body.dark-mode.pagina-fondo::after {
-  opacity: 1;
 }
 
 body.dark-mode.pagina-fondo .hero,
@@ -5399,9 +5356,9 @@ body.visor-pdf-abierto {
   min-width: 0;
   min-height: 0;
   overflow-x: clip;
-  overflow-y: hidden;
-  overscroll-behavior: none;
-  touch-action: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 12px;
   border: 1px solid rgba(110, 18, 24, 0.22);
   border-radius: 12px;
@@ -5729,8 +5686,11 @@ body.dark-mode .visor-pdf-descarga {
   }
 
   .visor-pdf-controles {
-    gap: 8px;
-    padding: 7px 10px;
+    gap: 6px;
+    padding: 7px 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: calc(100% - 16px);
   }
 
   .visor-pdf-cuenta,
@@ -5739,7 +5699,7 @@ body.dark-mode .visor-pdf-descarga {
   }
 
   .visor-pdf-descarga {
-    display: none;
+    display: inline-flex;
   }
 }
 

@@ -1,5 +1,6 @@
 <?php
-/* Intento antiguo de enviar la cita por SMTP. Pedir cita ya no usa este archivo. */
+/* Intento antiguo de enviar la cita por SMTP. Pedir cita ya no usa este archivo.
+   CORREO DESTINO vivo: php/afiliados.php → reenviarCorreo() (FormSubmit). */
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -126,6 +127,7 @@ if ($correoPrueba->Password === 'TU_CONTRASEÑA') {
 
 try {
     $oficina = $preparar();
+    // >>> CORREO DESTINO (legado; pedir cita ya no usa este archivo, usa php/afiliados.php + FormSubmit)
     $oficina->addAddress('santiagoabarcamateo@gmail.com');
     $oficina->addReplyTo($email, $nombre);
     $oficina->Subject = 'Solicitud de cita legal: ' . $fechaTexto . ' ' . $horaTexto;

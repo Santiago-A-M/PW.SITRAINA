@@ -38,8 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        // Remitente y destinatario
+        // Remitente (cuenta SMTP que envía)
         $mail->setFrom("sitraina@ina.ac.cr", "Formulario Web - SITRAINA");
+        // >>> CORREO DESTINO (formulario de contacto): aquí llega el mensaje de contacto.html
         $mail->addAddress("sitraina@ina.ac.cr");
         $mail->addReplyTo($email, $nombre);
 

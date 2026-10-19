@@ -377,6 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const haciaDerecha = destino > actual;
             subirPagina(0);
             document.documentElement.style.setProperty('--nav-x', haciaDerecha ? '-100vw' : '100vw');
+            document.documentElement.style.overflow = 'hidden';
             const piezas = piezasNav();
             piezas.forEach((item) => item.classList.add('nav-sale'));
             let listo = false;
@@ -386,6 +387,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     sessionStorage.setItem('sitrainaNav', JSON.stringify({ dir: haciaDerecha ? 'derecha' : 'izquierda' }));
                 } catch (e) {}
+                /* Congela el último fotograma del deslizamiento para no ver un flash blanco. */
+                piezas.forEach((item) => {
+                    item.style.transform = 'translate3d(' + (haciaDerecha ? '-100vw' : '100vw') + ',0,0)';
+                });
                 location.href = enlace.href;
             };
             const primera = piezas[0];
@@ -996,6 +1001,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formCita.appendChild(campoAccion);
             }
             campoAccion.value = 'verificar';
+            /* CORREO DESTINO de la cita: php/afiliados.php → reenviarCorreo() (FormSubmit). */
             formCita.action = 'php/afiliados.php';
             formCita.submit();
         });
@@ -1631,21 +1637,37 @@ document.addEventListener('DOMContentLoaded', () => {
 (function () {
     if (document.getElementById('sitrabot')) return;
 
+    /* Logo siempre desde la raíz del sitio (InfinityFree / subcarpetas). */
+    var logoUrl = (function () {
+        var origen = location.origin || '';
+        var nodo = document.currentScript;
+        if (!nodo || !nodo.src) {
+            var lista = document.querySelectorAll('script[src*="script.js"]');
+            nodo = lista[lista.length - 1];
+        }
+        if (nodo && nodo.src) {
+            var base = nodo.src.replace(/js\/script\.js(?:\?[^#]*)?(?:#.*)?$/i, '');
+            if (base && base !== nodo.src) return base + 'img/logo.png';
+        }
+        return origen + '/img/logo.png';
+    })();
+    var logoCss = logoUrl.replace(/'/g, '\\\'');
+
     var estilo = document.createElement('style');
     estilo.textContent = [
         '#sitrabot{position:fixed;right:20px;bottom:20px;z-index:4000;font-family:"Public Sans",sans-serif}',
         '#sitrabot *{box-sizing:border-box}',
-        '.sitrabot-abrir{position:relative;z-index:1;width:64px;height:64px;border:0;border-radius:50%;padding:0;cursor:pointer;background:#fff;color:#f6f0ec;box-shadow:0 8px 18px rgba(110,18,24,.28);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .4s cubic-bezier(0.22,1,0.36,1),box-shadow .4s cubic-bezier(0.22,1,0.36,1),opacity .32s cubic-bezier(0.22,1,0.36,1),visibility .32s}',
+        /* Solo fondo CSS: un <img> roto tapa el logo y se ve el icono del navegador. */
+        '.sitrabot-abrir{position:relative;z-index:1;width:64px;height:64px;border:0;border-radius:50%;padding:0;cursor:pointer;background:#fff url(\'' + logoCss + '\') center / 86% no-repeat;color:#f6f0ec;box-shadow:0 8px 18px rgba(110,18,24,.28);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .4s cubic-bezier(0.22,1,0.36,1),box-shadow .4s cubic-bezier(0.22,1,0.36,1),opacity .32s cubic-bezier(0.22,1,0.36,1),visibility .32s}',
         '#sitrabot.sitrabot-abierto .sitrabot-abrir{opacity:0;visibility:hidden;pointer-events:none;transform:scale(.7)}',
-        '.sitrabot-abrir img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}',
         '.sitrabot-abrir:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(110,18,24,.34)}',
         '.sitrabot-aviso{position:absolute;right:74px;bottom:16px;margin:0;padding:6px 12px;border-radius:999px;background:#6e1218;color:#fff;font-size:13px;font-weight:700;line-height:1.2;white-space:nowrap;pointer-events:none;opacity:0;visibility:hidden;transform:translateX(8px);transition:opacity .4s cubic-bezier(0.22,1,0.36,1),transform .4s cubic-bezier(0.22,1,0.36,1),visibility .4s cubic-bezier(0.22,1,0.36,1)}',
         '.sitrabot-abrir:hover+.sitrabot-aviso,.sitrabot-abrir:focus-visible+.sitrabot-aviso{opacity:1;visibility:visible;transform:none}',
+        '@media (max-width:768px){.sitrabot-aviso{display:none}}',
         '.sitrabot-panel{position:fixed;z-index:2;right:20px;bottom:20px;width:min(380px,calc(100vw - 32px));height:min(520px,calc(100vh - 108px));max-height:calc(100vh - 108px);background:#fff;color:#2b211f;border-radius:18px;box-shadow:0 16px 40px rgba(28,22,20,.28);display:flex;flex-direction:column;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px) scale(.96);transform-origin:right bottom;transition:opacity .42s cubic-bezier(0.22,1,0.36,1),transform .42s cubic-bezier(0.22,1,0.36,1),visibility .42s,background-color .35s cubic-bezier(0.22,1,0.36,1),color .35s cubic-bezier(0.22,1,0.36,1),box-shadow .42s cubic-bezier(0.22,1,0.36,1)}',
         '#sitrabot.sitrabot-abierto .sitrabot-panel{opacity:1;visibility:visible;pointer-events:auto;transform:none}',
         '.sitrabot-cabeza{position:relative;flex:0 0 auto;display:flex;align-items:center;gap:10px;min-height:72px;padding:14px 58px 14px 16px;background:#8e1a20;color:#f6f0ec}',
-        '.sitrabot-marca{width:46px;height:46px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;overflow:hidden}',
-        '.sitrabot-marca img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}',
+        '.sitrabot-marca{width:46px;height:46px;border-radius:50%;background:#fff url(\'' + logoCss + '\') center / 86% no-repeat;display:block;flex:0 0 auto;overflow:hidden}',
         '.sitrabot-cabeza strong{display:block;font-size:15px;letter-spacing:.04em}',
         '.sitrabot-cabeza span{display:block;font-size:12px;opacity:.92}',
         '.sitrabot-cerrar{position:absolute;top:16px;right:14px;width:36px;height:36px;border:0;border-radius:50%;background:#fff;color:#6e1218;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background-color .35s cubic-bezier(0.22,1,0.36,1),color .35s cubic-bezier(0.22,1,0.36,1)}',
@@ -1682,14 +1704,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var raiz = /\/(hojamier|convenios)\//.test(location.pathname) ? '../' : '';
     var clave = 'sitrabot-mensajes';
-    var avatar = '<img src="' + raiz + 'img/logo.png" alt="">';
-    var marca = '<span class="sitrabot-marca" aria-hidden="true">' + avatar + '</span>';
+    var marca = '<span class="sitrabot-marca" role="img" aria-label="SITRABOT"></span>';
     var historial = [];
     try { historial = JSON.parse(sessionStorage.getItem(clave) || '[]'); } catch (e) { historial = []; }
 
+    /* Precarga el logo para que el fondo CSS no llegue vacío al cambiar de página. */
+    try {
+        var precarga = new Image();
+        precarga.src = logoUrl;
+    } catch (eLogo) {}
+
     var caja = document.createElement('div');
     caja.id = 'sitrabot';
-    caja.innerHTML = '<section class="sitrabot-panel" aria-hidden="true"><header class="sitrabot-cabeza">' + marca + '<div><strong>SITRABOT</strong><span>Asistente virtual de SITRAINA</span></div><button type="button" class="sitrabot-cerrar" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></header><div class="sitrabot-mensajes" role="log" aria-live="polite"></div><form class="sitrabot-form"><input type="text" aria-label="Tu pregunta o duda laboral" placeholder="Tu pregunta o duda laboral..." autocomplete="off"><button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form></section><button type="button" class="sitrabot-abrir" aria-label="Bot del SITRAINA" aria-expanded="false">' + avatar + '</button><span class="sitrabot-aviso" aria-hidden="true">Bot del SITRAINA</span>';
+    caja.innerHTML = '<section class="sitrabot-panel" aria-hidden="true"><header class="sitrabot-cabeza">' + marca + '<div><strong>SITRABOT</strong><span>Asistente virtual de SITRAINA</span></div><button type="button" class="sitrabot-cerrar" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></header><div class="sitrabot-mensajes" role="log" aria-live="polite"></div><form class="sitrabot-form"><input type="text" aria-label="Tu pregunta o duda laboral" placeholder="Tu pregunta o duda laboral..." autocomplete="off"><button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form></section><button type="button" class="sitrabot-abrir" aria-label="Bot del SITRAINA" aria-expanded="false"></button><span class="sitrabot-aviso" aria-hidden="true">Bot del SITRAINA</span>';
     document.body.appendChild(caja);
 
     var panel = caja.querySelector('.sitrabot-panel');

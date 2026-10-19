@@ -1,5 +1,12 @@
 <?php
 /* Recibe la cita o la afiliación, las revisa y reenvía el correo por FormSubmit. */
+/*
+ * CORREO DESTINO (citas + afiliaciones en vivo):
+ * Cambia la URL de FormSubmit en reenviarCorreo() más abajo.
+ * Ejemplo: https://formsubmit.co/tu-correo@dominio.com
+ * Activa ese correo una vez en https://formsubmit.co
+ * Mantén la misma URL en afiliacion.html y solicitar-cita.html.
+ */
 mysqli_report(MYSQLI_REPORT_OFF);
 
 /* Escapa un texto antes de mostrarlo en HTML. */
@@ -343,6 +350,8 @@ function reenviarCorreo() {
             $_FILES['attachment']['name'] ?: 'afiliacion.pdf'
         );
     }
+    // >>> CORREO DESTINO: pon aquí el FormSubmit del email que debe recibir citas y afiliaciones.
+    //     Actívalo en formsubmit.co. Debe ser el mismo que en afiliacion.html y solicitar-cita.html.
     $curl = curl_init('https://formsubmit.co/682fee38da5d55209efa8a7d240cf00f');
     curl_setopt_array($curl, [
         CURLOPT_POST => true,

@@ -236,14 +236,14 @@ body.hoja-abierta > :not(.hoja-popup):not(script) {
 }
 
 body.dark-mode .marca-hoja {
-    background: #fff !important;
-    border-color: #eadfd8;
+    background: #2c2320 !important;
+    border-color: #4a3d38;
     border-left-color: #c81d25;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 
 body.dark-mode .marca-hoja p {
-    color: #2b211f !important;
+    color: #f0e8e2 !important;
 }
 
 body.dark-mode .hoja-popup-panel {
