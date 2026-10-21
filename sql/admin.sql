@@ -35,10 +35,21 @@ CREATE TABLE IF NOT EXISTS citas (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   fecha CHAR(10) NOT NULL,
   hora CHAR(5) NOT NULL,
+  persona VARCHAR(120) NOT NULL DEFAULT '',
+  correo VARCHAR(120) NOT NULL DEFAULT '',
+  motivo VARCHAR(800) NOT NULL DEFAULT '',
+  notas VARCHAR(800) NOT NULL DEFAULT '',
   creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uk_citas_fecha_hora (fecha, hora)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Si citas ya existía sin comentarios, agrega las columnas (ejecutá una vez en InfinityFree).
+-- Si alguna ya existe, phpMyAdmin puede mostrar error: ignoralo y seguí con la siguiente.
+ALTER TABLE citas ADD COLUMN persona VARCHAR(120) NOT NULL DEFAULT '' AFTER hora;
+ALTER TABLE citas ADD COLUMN correo VARCHAR(120) NOT NULL DEFAULT '' AFTER persona;
+ALTER TABLE citas ADD COLUMN motivo VARCHAR(800) NOT NULL DEFAULT '' AFTER correo;
+ALTER TABLE citas ADD COLUMN notas VARCHAR(800) NOT NULL DEFAULT '' AFTER motivo;
 
 CREATE TABLE IF NOT EXISTS agenda (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,

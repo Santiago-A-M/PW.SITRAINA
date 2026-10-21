@@ -5,12 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Administración | SITRAINA</title>
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('modoOscuro') === 'true') {
+          document.documentElement.classList.add('dark-mode');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}
+    html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}
+    body{background:transparent}
+  </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css?v=2.92">
 </head>
 <body>
+  <script>if (document.documentElement.classList.contains('dark-mode')) document.body.classList.add('dark-mode');</script>
   <main class="caja">
-    <h1>Administración</h1>
+    <header class="panel-cabeza">
+      <div class="admin-marca">
+        <img src="../img/logo.png" alt="" width="52" height="52" decoding="async">
+        <div class="admin-marca-texto">
+          <p class="admin-marca-nombre">SITRAINA</p>
+          <h1>Administración</h1>
+        </div>
+      </div>
+      <button id="toggle-oscuro" class="admin-tono btn-header" type="button" title="Cambiar tono" aria-label="Cambiar tono de la página">
+        <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
+      </button>
+    </header>
     <p>Entra con una cuenta cargada en la base de administración.</p>
     <p class="error" hidden>{{error}}</p>
     <form method="post" action="index.php" autocomplete="off">
@@ -22,5 +49,6 @@
       <button type="submit">Entrar</button>
     </form>
   </main>
+  <script src="tono.js?v=1.0"></script>
 </body>
 </html>

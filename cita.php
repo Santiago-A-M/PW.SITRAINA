@@ -4,9 +4,9 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'phpmailer/src/exeption.php';
+require 'phpmailer/src/exception.php';
 require 'phpmailer/src/phpmailer.php';
-require 'phpmailer/src/smpt.php';
+require 'phpmailer/src/smtp.php';
 
 date_default_timezone_set('America/Costa_Rica');
 
@@ -119,7 +119,7 @@ if ($correoPrueba->Password === 'TU_CONTRASEÑA') {
     pagina(
         'No se pudo enviar la cita',
         '<h1>La cita está lista, pero el correo aún no sale</h1>'
-        . '<p>La solicitud está dirigida a <strong>santiagoabarcamateo@gmail.com</strong>. El servidor sigue usando la clave de relleno del correo sitraina@ina.ac.cr, así que el mensaje no puede salir.</p>'
+        . '<p>La solicitud está dirigida a <strong>sitraina@ina.ac.cr</strong>. El servidor sigue usando la clave de relleno del correo sitraina@ina.ac.cr, así que el mensaje no puede salir.</p>'
         . '<p><a class="btn" href="solicitar-cita.html">Volver al formulario</a></p>'
     );
     exit;
@@ -128,7 +128,7 @@ if ($correoPrueba->Password === 'TU_CONTRASEÑA') {
 try {
     $oficina = $preparar();
     // >>> CORREO DESTINO (legado; pedir cita ya no usa este archivo, usa php/afiliados.php + FormSubmit)
-    $oficina->addAddress('santiagoabarcamateo@gmail.com');
+    $oficina->addAddress('sitraina@ina.ac.cr');
     $oficina->addReplyTo($email, $nombre);
     $oficina->Subject = 'Solicitud de cita legal: ' . $fechaTexto . ' ' . $horaTexto;
     $oficina->Body = '<h2>Nueva solicitud de cita con el asesor legal</h2>' . $filas;

@@ -88,7 +88,7 @@ if ($accion === 'consultar') {
         $responder(false, 'No se pudo comprobar la cédula.');
     }
     $baseConsulta->set_charset('utf8mb4');
-    $busqueda = $baseConsulta->prepare('SELECT id FROM afiliaciones WHERE cedula = ? AND activo = 1 LIMIT 1');
+    $busqueda = $baseConsulta->prepare('SELECT id FROM afiliacion WHERE cedula = ? AND activo = 1 LIMIT 1');
     if (!$busqueda) {
         $baseConsulta->close();
         $responder(false, 'No se pudo comprobar la cédula.');
@@ -165,11 +165,11 @@ if ($mysqli->connect_errno) {
 $mysqli->set_charset('utf8mb4');
 
 if ($accion === 'verificar') {
-    $consulta = $mysqli->prepare('SELECT id FROM afiliaciones WHERE cedula = ? AND correo = ? AND activo = 1 LIMIT 1');
+    $consulta = $mysqli->prepare('SELECT id FROM afiliacion WHERE cedula = ? AND correo = ? AND activo = 1 LIMIT 1');
     if (!$consulta) {
         $error = $mysqli->error;
         $mysqli->close();
-        pagina('Afiliación', 'No se pudo consultar la tabla afiliaciones. ' . $error, volver($accion));
+        pagina('Afiliación', 'No se pudo consultar la tabla afiliacion. ' . $error, volver($accion));
     }
     $consulta->bind_param('ss', $cedula, $correo);
     $consulta->execute();
@@ -196,7 +196,9 @@ if ($accion === 'verificar') {
     }
     $reservada = null;
     if ($agenda) {
-        $reservada = reservar_cita($agenda, $fechaCita, $horaCita);
+        $nombreCita = trim((string) ($_POST['nombre'] ?? ''));
+        $motivoCita = trim((string) ($_POST['motivo'] ?? ''));
+        $reservada = reservar_cita($agenda, $fechaCita, $horaCita, $nombreCita, $motivoCita, '', $correo);
         if ($reservada === false) {
             $agenda->close();
             pagina('Cita', 'Esa hora ya está agendada.', volver($accion));
@@ -219,7 +221,7 @@ if ($accion === 'verificar') {
 }
 
 if ($accion === 'guardar') {
-    /* Guarda la boleta en la tabla boletas. No toca la lista afiliaciones. */
+    /* Guarda la boleta en la tabla boletas. No toca la lista afiliacion. */
     $nombre = campo('nombre', 120);
     $correoIna = campo('correo_ina', 120);
     $correoPersonal = campo('correo_personal', 120);
@@ -352,7 +354,7 @@ function reenviarCorreo() {
     }
     // >>> CORREO DESTINO: pon aquí el FormSubmit del email que debe recibir citas y afiliaciones.
     //     Actívalo en formsubmit.co. Debe ser el mismo que en afiliacion.html y solicitar-cita.html.
-    $curl = curl_init('https://formsubmit.co/682fee38da5d55209efa8a7d240cf00f');
+    $curl = curl_init('https://formsubmit.co/sitraina@ina.ac.cr');
     curl_setopt_array($curl, [
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => $campos,

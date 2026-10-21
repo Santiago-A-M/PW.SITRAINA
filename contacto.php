@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require 'phpmailer/src/exception.php';
 require 'phpmailer/src/phpmailer.php';
-require 'phpmailer/src/smpt.php';
+require 'phpmailer/src/smtp.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitización básica
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Host = "smtp.ina.ac.cr";
         $mail->SMTPAuth = true;
         $mail->Username = "sitraina@ina.ac.cr";
-        $mail->Password = "TU_CONTRASEÑA"; // ⚠️ Reemplaza o usa $_ENV
+        $mail->Password = "Prueb@2026"; // ⚠️ Reemplaza o usa $_ENV
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 

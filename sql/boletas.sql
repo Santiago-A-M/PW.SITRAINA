@@ -1,6 +1,6 @@
 -- Boletas enviadas desde el formulario de afiliación.
--- Es otra tabla, dentro de la misma base que afiliaciones.
--- afiliaciones sigue siendo la lista para comprobar la cita.
+-- Es otra tabla, dentro de la misma base que afiliacion.
+-- afiliacion sigue siendo la lista para comprobar la cita.
 -- Aquí se guarda lo que la persona escribe. La fecha de envío se llena sola.
 -- Una cédula no puede enviar la boleta otra vez.
 --

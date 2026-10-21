@@ -1647,18 +1647,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (nodo && nodo.src) {
             var base = nodo.src.replace(/js\/script\.js(?:\?[^#]*)?(?:#.*)?$/i, '');
-            if (base && base !== nodo.src) return base + 'img/logo.png';
+            if (base && base !== nodo.src) return base + 'img/logo-bot.png';
         }
-        return origen + '/img/logo.png';
+        return origen + '/img/logo-bot.png';
     })();
-    var logoCss = logoUrl.replace(/'/g, '\\\'');
-
     var estilo = document.createElement('style');
     estilo.textContent = [
         '#sitrabot{position:fixed;right:20px;bottom:20px;z-index:4000;font-family:"Public Sans",sans-serif}',
         '#sitrabot *{box-sizing:border-box}',
-        /* Solo fondo CSS: un <img> roto tapa el logo y se ve el icono del navegador. */
-        '.sitrabot-abrir{position:relative;z-index:1;width:64px;height:64px;border:0;border-radius:50%;padding:0;cursor:pointer;background:#fff url(\'' + logoCss + '\') center / 86% no-repeat;color:#f6f0ec;box-shadow:0 8px 18px rgba(110,18,24,.28);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .4s cubic-bezier(0.22,1,0.36,1),box-shadow .4s cubic-bezier(0.22,1,0.36,1),opacity .32s cubic-bezier(0.22,1,0.36,1),visibility .32s}',
+        '.sitrabot-abrir{position:relative;z-index:1;width:64px;height:64px;border:2px solid #c81d25;border-radius:50%;padding:0;cursor:pointer;background:#f6f0ec;color:#f6f0ec;box-shadow:0 8px 18px rgba(110,18,24,.28);display:grid;place-items:center;overflow:hidden;transition:transform .4s cubic-bezier(0.22,1,0.36,1),box-shadow .4s cubic-bezier(0.22,1,0.36,1),opacity .32s cubic-bezier(0.22,1,0.36,1),visibility .32s,background-color .35s cubic-bezier(0.22,1,0.36,1),border-color .35s cubic-bezier(0.22,1,0.36,1)}',
+        '.sitrabot-abrir img,.sitrabot-marca img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;border:0;pointer-events:none;user-select:none}',
         '#sitrabot.sitrabot-abierto .sitrabot-abrir{opacity:0;visibility:hidden;pointer-events:none;transform:scale(.7)}',
         '.sitrabot-abrir:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(110,18,24,.34)}',
         '.sitrabot-aviso{position:absolute;right:74px;bottom:16px;margin:0;padding:6px 12px;border-radius:999px;background:#6e1218;color:#fff;font-size:13px;font-weight:700;line-height:1.2;white-space:nowrap;pointer-events:none;opacity:0;visibility:hidden;transform:translateX(8px);transition:opacity .4s cubic-bezier(0.22,1,0.36,1),transform .4s cubic-bezier(0.22,1,0.36,1),visibility .4s cubic-bezier(0.22,1,0.36,1)}',
@@ -1667,7 +1665,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '.sitrabot-panel{position:fixed;z-index:2;right:20px;bottom:20px;width:min(380px,calc(100vw - 32px));height:min(520px,calc(100vh - 108px));max-height:calc(100vh - 108px);background:#fff;color:#2b211f;border-radius:18px;box-shadow:0 16px 40px rgba(28,22,20,.28);display:flex;flex-direction:column;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(18px) scale(.96);transform-origin:right bottom;transition:opacity .42s cubic-bezier(0.22,1,0.36,1),transform .42s cubic-bezier(0.22,1,0.36,1),visibility .42s,background-color .35s cubic-bezier(0.22,1,0.36,1),color .35s cubic-bezier(0.22,1,0.36,1),box-shadow .42s cubic-bezier(0.22,1,0.36,1)}',
         '#sitrabot.sitrabot-abierto .sitrabot-panel{opacity:1;visibility:visible;pointer-events:auto;transform:none}',
         '.sitrabot-cabeza{position:relative;flex:0 0 auto;display:flex;align-items:center;gap:10px;min-height:72px;padding:14px 58px 14px 16px;background:#8e1a20;color:#f6f0ec}',
-        '.sitrabot-marca{width:46px;height:46px;border-radius:50%;background:#fff url(\'' + logoCss + '\') center / 86% no-repeat;display:block;flex:0 0 auto;overflow:hidden}',
+        '.sitrabot-marca{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.55);background:#f6f0ec;display:grid;place-items:center;flex:0 0 auto;overflow:hidden;transition:background-color .35s cubic-bezier(0.22,1,0.36,1),border-color .35s cubic-bezier(0.22,1,0.36,1)}',
         '.sitrabot-cabeza strong{display:block;font-size:15px;letter-spacing:.04em}',
         '.sitrabot-cabeza span{display:block;font-size:12px;opacity:.92}',
         '.sitrabot-cerrar{position:absolute;top:16px;right:14px;width:36px;height:36px;border:0;border-radius:50%;background:#fff;color:#6e1218;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background-color .35s cubic-bezier(0.22,1,0.36,1),color .35s cubic-bezier(0.22,1,0.36,1)}',
@@ -1685,8 +1683,11 @@ document.addEventListener('DOMContentLoaded', () => {
         '.sitrabot-form button:hover{background:#8e1a20;transform:translateY(-1px)}',
         '.sitrabot-espera{opacity:.7}',
         '.sitrabot-mensajes,.sitrabot-bot,.sitrabot-form,.sitrabot-form input{transition:background-color .35s cubic-bezier(0.22,1,0.36,1),color .35s cubic-bezier(0.22,1,0.36,1),border-color .35s cubic-bezier(0.22,1,0.36,1)}',
-        'body.dark-mode .sitrabot-abrir{box-shadow:0 8px 18px rgba(0,0,0,.45)}',
-        'body.dark-mode .sitrabot-abrir:hover{box-shadow:0 12px 22px rgba(0,0,0,.55)}',
+        /* El logo lleva azul oscuro: en tono oscuro se mantiene sobre círculo claro. */
+        'body.dark-mode .sitrabot-abrir{background:#f6f0ec;border-color:#000;box-shadow:0 8px 20px rgba(0,0,0,.5)}',
+        'body.dark-mode .sitrabot-abrir:hover{box-shadow:0 12px 24px rgba(0,0,0,.58)}',
+        'body.dark-mode .sitrabot-marca{background:#f6f0ec;border-color:#000}',
+        'body.dark-mode .sitrabot-cerrar{background:#f6f0ec;color:#6e1218}',
         'body.dark-mode .sitrabot-panel{background:#2c2320;color:#f7f2ee;box-shadow:0 16px 40px rgba(0,0,0,.5)}',
         'body.dark-mode .sitrabot-cabeza{background:#8e1a20 !important;color:#f6f0ec !important}',
         'body.dark-mode .sitrabot-mensajes{background:#1c1614;scrollbar-color:#c81d25 #2c2320}',
@@ -1704,11 +1705,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var raiz = /\/(hojamier|convenios)\//.test(location.pathname) ? '../' : '';
     var clave = 'sitrabot-mensajes';
-    var marca = '<span class="sitrabot-marca" role="img" aria-label="SITRABOT"></span>';
+    var logoImg = '<img src="' + logoUrl.replace(/"/g, '&quot;') + '" alt="" width="64" height="64" decoding="async">';
+    var marca = '<span class="sitrabot-marca" role="img" aria-label="SITRABOT">' + logoImg + '</span>';
     var historial = [];
     try { historial = JSON.parse(sessionStorage.getItem(clave) || '[]'); } catch (e) { historial = []; }
 
-    /* Precarga el logo para que el fondo CSS no llegue vacío al cambiar de página. */
+    /* Precarga el logo para que no llegue vacío al cambiar de página. */
     try {
         var precarga = new Image();
         precarga.src = logoUrl;
@@ -1716,7 +1718,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var caja = document.createElement('div');
     caja.id = 'sitrabot';
-    caja.innerHTML = '<section class="sitrabot-panel" aria-hidden="true"><header class="sitrabot-cabeza">' + marca + '<div><strong>SITRABOT</strong><span>Asistente virtual de SITRAINA</span></div><button type="button" class="sitrabot-cerrar" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></header><div class="sitrabot-mensajes" role="log" aria-live="polite"></div><form class="sitrabot-form"><input type="text" aria-label="Tu pregunta o duda laboral" placeholder="Tu pregunta o duda laboral..." autocomplete="off"><button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form></section><button type="button" class="sitrabot-abrir" aria-label="Bot del SITRAINA" aria-expanded="false"></button><span class="sitrabot-aviso" aria-hidden="true">Bot del SITRAINA</span>';
+    caja.innerHTML = '<section class="sitrabot-panel" aria-hidden="true"><header class="sitrabot-cabeza">' + marca + '<div><strong>SITRABOT</strong><span>Asistente virtual de SITRAINA</span></div><button type="button" class="sitrabot-cerrar" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></header><div class="sitrabot-mensajes" role="log" aria-live="polite"></div><form class="sitrabot-form"><input type="text" aria-label="Tu pregunta o duda laboral" placeholder="Tu pregunta o duda laboral..." autocomplete="off"><button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form></section><button type="button" class="sitrabot-abrir" aria-label="Bot del SITRAINA" aria-expanded="false">' + logoImg + '</button><span class="sitrabot-aviso" aria-hidden="true">Bot del SITRAINA</span>';
     document.body.appendChild(caja);
 
     var panel = caja.querySelector('.sitrabot-panel');
@@ -1831,6 +1833,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (/cancelar (la |una )?cita|cambiar (la |una )?cita|reprogramar|mover la cita/.test(q)) {
             return bot('Esta página no tiene un formulario para cancelar o cambiar una cita. Escribe a sitraina@ina.ac.cr o llama al +506 2220-2480.');
+        }
+        if (/formsubmit|como (me )?llega (el )?correo|de donde llega (el )?correo|spam de la cita|remitente (del )?correo|respuesta (de la |a la )?cita|guia (del )?correo/.test(q)) {
+            return bot([
+                txt('Las citas usan FormSubmit. En '),
+                enl('Solicitar cita', 'solicitar-cita.html'),
+                txt(' abrí la guía con popups: botón «Cómo te llega el correo» o «Guía correo» abajo a la izquierda. Revisá también spam; la respuesta llega al mismo correo del formulario.')
+            ]);
         }
         if (/puedo pedir cita si no|cita sin estar afiliad|no estoy afiliad|no soy afiliad/.test(q)) {
             return bot([

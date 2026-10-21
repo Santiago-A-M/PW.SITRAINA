@@ -3349,12 +3349,14 @@ html.nav-llegando > body > :not(header):not(script):not(.btn-atras):not(.directi
     transform: translateX(4px);
   }
 
-  /* 3 columnas: izquierda y derecha por el margen libre; centro por abajo. */
+  /* 3 columnas: laterales afuera; centro arriba → ↑ y centro abajo → ↓. */
   .tipos-documentos .tipo-doc:nth-child(3n + 1) .tipo-doc-abrir {
     left: auto;
     right: 100%;
-    margin-left: 0;
-    margin-right: 10px;
+    top: 50%;
+    bottom: auto;
+    margin: 0 10px 0 0;
+    transform: translateY(-50%);
   }
 
   .tipos-documentos .tipo-doc:nth-child(3n + 1) .tipo-doc-abrir > span {
@@ -3379,99 +3381,92 @@ html.nav-llegando > body > :not(header):not(script):not(.btn-atras):not(.directi
   .tipos-documentos .tipo-doc:nth-child(3n) .tipo-doc-abrir {
     left: 100%;
     right: auto;
-    margin-left: 10px;
-    margin-right: 0;
+    top: 50%;
+    bottom: auto;
+    margin: 0 0 0 10px;
+    transform: translateY(-50%);
   }
 
-  .tipos-documentos .tipo-doc:nth-child(3n + 2) .tipo-doc-abrir {
-    left: 50%;
-    right: auto;
-    top: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 8px;
-    transform: translate(-50%, 0);
+  .tipos-documentos .tipo-doc:nth-child(3n) .tipo-doc-abrir > span {
+    flex-direction: row;
+    transform: translateX(6px);
   }
 
-  .tipos-documentos .tipo-doc:nth-child(3n + 2) .tipo-doc-abrir > span {
-    transform: translateY(6px);
-  }
-
-  .tipos-documentos .tipo-doc:nth-child(3n + 2):hover .tipo-doc-abrir > span,
-  .tipos-documentos .tipo-doc:nth-child(3n + 2):focus-visible .tipo-doc-abrir > span {
+  .tipos-documentos .tipo-doc:nth-child(3n):hover .tipo-doc-abrir > span,
+  .tipos-documentos .tipo-doc:nth-child(3n):focus-visible .tipo-doc-abrir > span {
     transform: none;
   }
 
-  .tipos-documentos .tipo-doc:nth-child(3n + 2) .tipo-doc-abrir svg {
+  .tipos-documentos .tipo-doc:nth-child(3n) .tipo-doc-abrir svg {
+    transform: none;
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n):hover .tipo-doc-abrir svg,
+  .tipos-documentos .tipo-doc:nth-child(3n):focus-visible .tipo-doc-abrir svg {
+    transform: translateX(4px);
+  }
+
+  /* Centro fila 1 (casilla 2): flecha arriba. */
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(-n + 3) .tipo-doc-abrir {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 100%;
+    margin: 0 0 8px;
+    transform: translateX(-50%);
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(-n + 3) .tipo-doc-abrir > span {
+    flex-direction: row;
+    transform: translateY(-6px);
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(-n + 3):hover .tipo-doc-abrir > span,
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(-n + 3):focus-visible .tipo-doc-abrir > span {
+    transform: none;
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(-n + 3) .tipo-doc-abrir svg {
+    transform: rotate(-90deg);
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(-n + 3):hover .tipo-doc-abrir svg,
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(-n + 3):focus-visible .tipo-doc-abrir svg {
+    transform: rotate(-90deg) translateX(4px);
+  }
+
+  /* Centro fila 2+ (casilla 5…): flecha abajo. */
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(n + 4) {
+    margin-bottom: 28px;
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(n + 4) .tipo-doc-abrir {
+    left: 50%;
+    right: auto;
+    top: 100%;
+    bottom: auto;
+    margin: 8px 0 0;
+    transform: translateX(-50%);
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(n + 4) .tipo-doc-abrir > span {
+    flex-direction: row;
+    transform: translateY(6px);
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(n + 4):hover .tipo-doc-abrir > span,
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(n + 4):focus-visible .tipo-doc-abrir > span {
+    transform: none;
+  }
+
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(n + 4) .tipo-doc-abrir svg {
     transform: rotate(90deg);
   }
 
-  .tipos-documentos .tipo-doc:nth-child(3n + 2):hover .tipo-doc-abrir svg,
-  .tipos-documentos .tipo-doc:nth-child(3n + 2):focus-visible .tipo-doc-abrir svg {
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(n + 4):hover .tipo-doc-abrir svg,
+  .tipos-documentos .tipo-doc:nth-child(3n + 2):nth-child(n + 4):focus-visible .tipo-doc-abrir svg {
     transform: rotate(90deg) translateX(4px);
   }
-}
-
-/* Hoja del Miércoles: Abrir siempre arriba de la casilla. */
-.tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir {
-  left: 50%;
-  right: auto;
-  top: auto;
-  bottom: 100%;
-  margin: 0 0 8px;
-  transform: translateX(-50%);
-}
-
-.tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir > span {
-  flex-direction: row;
-  transform: translateY(-6px);
-}
-
-.tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir svg {
-  transform: rotate(-90deg);
-}
-
-.tipos-documentos .tipo-doc[href*="hojamier"]:hover .tipo-doc-abrir > span,
-.tipos-documentos .tipo-doc[href*="hojamier"]:focus-visible .tipo-doc-abrir > span {
-  transform: none;
-}
-
-.tipos-documentos .tipo-doc[href*="hojamier"]:hover .tipo-doc-abrir svg,
-.tipos-documentos .tipo-doc[href*="hojamier"]:focus-visible .tipo-doc-abrir svg {
-  transform: rotate(-90deg) translateX(4px);
-}
-
-/* Informes de labores: Abrir debajo de la casilla y la flecha hacia abajo. */
-.tipos-documentos .tipo-doc[href="#informes"] {
-  margin-bottom: 28px;
-}
-
-.tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir {
-  left: 50%;
-  right: auto;
-  top: 100%;
-  bottom: auto;
-  margin: 8px 0 0;
-  transform: translateX(-50%);
-}
-
-.tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir > span {
-  flex-direction: row;
-  transform: translateY(6px);
-}
-
-.tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir svg {
-  transform: rotate(90deg);
-}
-
-.tipos-documentos .tipo-doc[href="#informes"]:hover .tipo-doc-abrir > span,
-.tipos-documentos .tipo-doc[href="#informes"]:focus-visible .tipo-doc-abrir > span {
-  transform: none;
-}
-
-.tipos-documentos .tipo-doc[href="#informes"]:hover .tipo-doc-abrir svg,
-.tipos-documentos .tipo-doc[href="#informes"]:focus-visible .tipo-doc-abrir svg {
-  transform: rotate(90deg) translateX(4px);
 }
 
 /* En el celular, la tarjeta envuelve título + Abrir (después de reglas absolute). */
@@ -3505,9 +3500,7 @@ html.nav-llegando > body > :not(header):not(script):not(.btn-atras):not(.directi
     margin-bottom: 0;
   }
 
-  .tipos-documentos .tipo-doc-abrir,
-  .tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir,
-  .tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir {
+  .tipos-documentos .tipo-doc-abrir {
     position: static;
     left: auto;
     right: auto;
@@ -3519,34 +3512,22 @@ html.nav-llegando > body > :not(header):not(script):not(.btn-atras):not(.directi
     visibility: visible;
   }
 
-  .tipos-documentos .tipo-doc-abrir > span,
-  .tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir > span,
-  .tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir > span {
+  .tipos-documentos .tipo-doc-abrir > span {
     flex-direction: row;
     transform: none;
   }
 
-  .tipos-documentos .tipo-doc-abrir svg,
-  .tipos-documentos .tipo-doc[href*="hojamier"] .tipo-doc-abrir svg,
-  .tipos-documentos .tipo-doc[href="#informes"] .tipo-doc-abrir svg {
+  .tipos-documentos .tipo-doc-abrir svg {
     transform: none;
   }
 
   .tipos-documentos .tipo-doc:hover .tipo-doc-abrir > span,
-  .tipos-documentos .tipo-doc:focus-visible .tipo-doc-abrir > span,
-  .tipos-documentos .tipo-doc[href*="hojamier"]:hover .tipo-doc-abrir > span,
-  .tipos-documentos .tipo-doc[href*="hojamier"]:focus-visible .tipo-doc-abrir > span,
-  .tipos-documentos .tipo-doc[href="#informes"]:hover .tipo-doc-abrir > span,
-  .tipos-documentos .tipo-doc[href="#informes"]:focus-visible .tipo-doc-abrir > span {
+  .tipos-documentos .tipo-doc:focus-visible .tipo-doc-abrir > span {
     transform: none;
   }
 
   .tipos-documentos .tipo-doc:hover .tipo-doc-abrir svg,
-  .tipos-documentos .tipo-doc:focus-visible .tipo-doc-abrir svg,
-  .tipos-documentos .tipo-doc[href*="hojamier"]:hover .tipo-doc-abrir svg,
-  .tipos-documentos .tipo-doc[href*="hojamier"]:focus-visible .tipo-doc-abrir svg,
-  .tipos-documentos .tipo-doc[href="#informes"]:hover .tipo-doc-abrir svg,
-  .tipos-documentos .tipo-doc[href="#informes"]:focus-visible .tipo-doc-abrir svg {
+  .tipos-documentos .tipo-doc:focus-visible .tipo-doc-abrir svg {
     transform: translateX(4px);
   }
 }
@@ -3578,6 +3559,30 @@ body.dark-mode .archivo-item {
 body.dark-mode .tipo-doc:hover .tipo-doc-cuerpo,
 body.dark-mode .tipo-doc:focus-visible .tipo-doc-cuerpo {
   border-color: #c81d25 !important;
+}
+
+/* Móvil: la casilla entera usa el mismo negro; el cuerpo no pinta un bloque aparte. */
+@media (max-width: 699px) {
+  body.dark-mode .tipos-documentos .tipo-doc {
+    background: #2c2320 !important;
+    border-color: #4a3d38 !important;
+  }
+
+  body.dark-mode .tipos-documentos .tipo-doc-cuerpo {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body.dark-mode .tipos-documentos .tipo-doc:hover,
+  body.dark-mode .tipos-documentos .tipo-doc:focus-visible {
+    border-color: #c81d25 !important;
+  }
+
+  body.dark-mode .tipos-documentos .tipo-doc:hover .tipo-doc-cuerpo,
+  body.dark-mode .tipos-documentos .tipo-doc:focus-visible .tipo-doc-cuerpo {
+    border-color: transparent !important;
+  }
 }
 
 body.dark-mode .tipo-doc p,
@@ -4395,6 +4400,445 @@ body.dark-mode .pagina-cita .contenedor {
   margin: 0 auto 4px;
   color: #4a403c;
   line-height: 1.5;
+}
+
+.cita-guia-llamada {
+  text-align: center;
+  margin: 12px auto 0;
+}
+
+.cita-guia-abrir-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 11px 18px;
+  border: 2px solid #c81d25;
+  border-radius: 999px;
+  background: #fff;
+  color: #6e1218;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(110, 18, 24, 0.12);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s, color 0.3s;
+}
+
+.cita-guia-abrir-inline:hover {
+  background: #c81d25;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.cita-guia-abrir-inline:focus-visible {
+  outline: 3px solid #c81d25;
+  outline-offset: 3px;
+}
+
+/* Guía FormSubmit: botón fijo + popups. */
+#guia-cita {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 3900;
+  font-family: "Public Sans", sans-serif;
+}
+
+.guia-cita-boton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 56px;
+  height: 56px;
+  margin: 0;
+  padding: 0 16px 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #c81d25;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(110, 18, 24, 0.28);
+  cursor: pointer;
+  overflow: visible;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s, background-color 0.35s;
+}
+
+.guia-cita-icono {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.guia-cita-texto {
+  font-size: 0.92rem;
+}
+
+.guia-cita-anillo {
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 2px solid rgba(200, 29, 37, 0.45);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.guia-cita-boton:hover {
+  transform: translateY(-2px);
+  background: #8e1a20;
+  box-shadow: 0 12px 22px rgba(110, 18, 24, 0.34);
+}
+
+.guia-cita-boton:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.guia-cita-click {
+  animation: guia-cita-golpe 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-nuevo .guia-cita-anillo {
+  animation: guia-cita-anillo 1.8s ease-out infinite;
+}
+
+.guia-cita-activo {
+  background: #8e1a20;
+}
+
+@keyframes guia-cita-golpe {
+  0% { transform: scale(1); }
+  35% { transform: scale(0.9); }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes guia-cita-anillo {
+  0% { opacity: 0.9; transform: scale(0.92); }
+  70% { opacity: 0; transform: scale(1.25); }
+  100% { opacity: 0; transform: scale(1.25); }
+}
+
+.guia-cita-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.guia-cita-overlay[hidden] {
+  display: none !important;
+}
+
+.guia-cita-fondo {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 22, 20, 0.58);
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-ventana {
+  position: relative;
+  z-index: 1;
+  width: min(440px, 100%);
+  max-height: min(88vh, 640px);
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 28px 24px 20px;
+  border-radius: 22px;
+  border: 1px solid #eadfd8;
+  border-left: 8px solid #c81d25;
+  background: #fffdfb;
+  box-shadow: 0 24px 60px rgba(28, 22, 20, 0.3);
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1), transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-visible .guia-cita-fondo {
+  opacity: 1;
+}
+
+.guia-cita-visible .guia-cita-ventana {
+  opacity: 1;
+  transform: none;
+}
+
+.guia-cita-ventana.guia-cita-entra-der {
+  animation: guia-cita-paso-der 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-ventana.guia-cita-entra-izq {
+  animation: guia-cita-paso-izq 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes guia-cita-paso-der {
+  from { opacity: 0.35; transform: translateX(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes guia-cita-paso-izq {
+  from { opacity: 0.35; transform: translateX(-22px); }
+  to { opacity: 1; transform: none; }
+}
+
+.guia-cita-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid #c81d25;
+  background: #fff;
+  color: #6e1218;
+  font-size: 1.45rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.guia-cita-progreso {
+  margin: 0 0 10px;
+  color: #8e1a20;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.guia-cita-icono-paso {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 0 12px;
+  border-radius: 16px;
+  background: #fff4f2;
+  color: #6e1218;
+  font-size: 1.35rem;
+  font-weight: 700;
+  border: 1px solid #e8b4b0;
+}
+
+.guia-cita-titulo {
+  margin: 0 0 10px;
+  padding-right: 36px;
+  color: #6e1218;
+  font-size: 1.4rem;
+  line-height: 1.25;
+}
+
+.guia-cita-cuerpo {
+  margin: 0 0 18px;
+  color: #4a403c;
+  line-height: 1.55;
+  font-size: 1rem;
+}
+
+.guia-cita-puntos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.guia-cita-punto {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #d8c8be;
+  cursor: pointer;
+}
+
+.guia-cita-punto.activo {
+  width: 22px;
+  border-radius: 999px;
+  background: #c81d25;
+}
+
+.guia-cita-punto:focus-visible {
+  outline: 2px solid #c81d25;
+  outline-offset: 2px;
+}
+
+.guia-cita-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.guia-cita-flecha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 46px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 0;
+  background: #c81d25;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.guia-cita-flecha svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.guia-cita-flecha:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.guia-cita-flecha-izq {
+  background: #fff;
+  color: #6e1218;
+  border: 1.5px solid #c81d25;
+}
+
+.guia-cita-omitir {
+  margin: 0;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #6e1218;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.guia-cita-flecha:focus-visible,
+.guia-cita-omitir:focus-visible,
+.guia-cita-cerrar:focus-visible {
+  outline: 3px solid #c81d25;
+  outline-offset: 2px;
+}
+
+body.guia-cita-abierta {
+  overflow: hidden;
+}
+
+body.dark-mode .cita-guia-abrir-inline {
+  background: #1c1614;
+  color: #f6d3be;
+  border-color: #c81d25;
+}
+
+body.dark-mode .cita-guia-abrir-inline:hover {
+  background: #c81d25;
+  color: #fff;
+}
+
+body.dark-mode .guia-cita-ventana {
+  background: #2c2320;
+  border-color: #4a3d38;
+  border-left-color: #c81d25;
+  color: #f7f2ee;
+}
+
+body.dark-mode .guia-cita-titulo,
+body.dark-mode .guia-cita-progreso,
+body.dark-mode .guia-cita-omitir {
+  color: #f6d3be;
+}
+
+body.dark-mode .guia-cita-cuerpo {
+  color: #d9cdc6;
+}
+
+body.dark-mode .guia-cita-icono-paso {
+  background: #3a241c;
+  border-color: #8e1a20;
+  color: #ffc4bc;
+}
+
+body.dark-mode .guia-cita-cerrar {
+  background: #1c1614;
+  color: #f6d3be;
+  border-color: #c81d25;
+}
+
+body.dark-mode .guia-cita-flecha-izq {
+  background: #1c1614;
+  color: #f6d3be;
+  border-color: #c81d25;
+}
+
+body.dark-mode .guia-cita-punto {
+  background: #4a3d38;
+}
+
+body.dark-mode .guia-cita-punto.activo {
+  background: #c81d25;
+}
+
+@media (max-width: 640px) {
+  #guia-cita {
+    left: 12px;
+    bottom: 12px;
+  }
+
+  .guia-cita-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .guia-cita-boton {
+    width: 56px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .guia-cita-acciones {
+    flex-direction: column;
+  }
+
+  .guia-cita-flecha,
+  .guia-cita-omitir {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guia-cita-boton,
+  .guia-cita-fondo,
+  .guia-cita-ventana,
+  .guia-cita-anillo,
+  .cita-guia-abrir-inline {
+    transition: none;
+    animation: none !important;
+  }
 }
 
 .volver-asesoria {
