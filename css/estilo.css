@@ -4436,13 +4436,36 @@ body.dark-mode .pagina-cita .contenedor {
   outline-offset: 3px;
 }
 
-/* Guía FormSubmit: botón fijo + popups. */
-#guia-cita {
+/* Guía correo: botón fijo + popups (oculto en demo; la ayuda inline basta). */
+#guia-cita,
+#guia-formsubmit {
   position: fixed;
   left: 20px;
   bottom: 20px;
   z-index: 3900;
   font-family: "Public Sans", sans-serif;
+  display: none !important;
+}
+
+/* Hueco inferior para Sitrabot en formularios. */
+.pagina-cita,
+.pagina-contacto,
+main.boleta-pagina,
+.contenedor-afiliacion,
+form.boleta-afiliacion {
+  scroll-padding-bottom: 120px;
+}
+
+.pagina-cita,
+.pagina-contacto {
+  padding-bottom: 120px !important;
+}
+
+/* Afiliación / boletas: el envío no queda detrás del Sitrabot. */
+body[data-guia-formsubmit="afiliacion"] section.afiliacion,
+.boleta-pagina,
+.contenedor-afiliacion {
+  padding-bottom: 120px;
 }
 
 .guia-cita-boton {
@@ -4801,7 +4824,8 @@ body.dark-mode .guia-cita-punto.activo {
 }
 
 @media (max-width: 640px) {
-  #guia-cita {
+  #guia-cita,
+  #guia-formsubmit {
     left: 12px;
     bottom: 12px;
   }
@@ -5160,7 +5184,7 @@ body.dark-mode .cita-hora.elegida {
 
 @media (max-width: 800px) {
   .pagina-cita {
-    padding: 108px 16px 56px;
+    padding: 108px 16px 120px;
   }
 
   .cita-layout,
@@ -5626,10 +5650,28 @@ body.dark-mode.pagina-fondo .mision .contenedor {
 }
 
 /* El emblema de la portada queda nítido y sin disco propio. */
-body.pagina-inicio .hero-logo,
+body.pagina-inicio .hero-logo {
+  width: min(340px, 76vw);
+  background: url("../img/emblema-inicio.png?v=3") center / contain no-repeat;
+  filter: none;
+  animation: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+/* Modo oscuro: mismo tamaño que modo claro; logo completo y círculo rojo. */
 body.dark-mode.pagina-inicio .hero-logo {
   width: min(340px, 76vw);
-  background: url("../img/emblema-inicio.png?v=2") center / contain no-repeat;
+  aspect-ratio: 1;
+  background-color: #fff;
+  background-image: url("../img/logo-hero.png?v=1");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+  border-radius: 50%;
+  border: clamp(3px, 1.2vw, 7px) solid #8b151c;
+  box-sizing: border-box;
+  overflow: hidden;
   filter: none;
   animation: none;
   -webkit-mask-image: none;
@@ -5660,7 +5702,7 @@ html.tema-animando {
 
 html.tema-animando body,
 html.tema-animando body *:not(script):not(style):not(br):not(wbr) {
-  transition-property: background-color, color, border-color, outline-color, box-shadow, fill, stroke, text-decoration-color, caret-color, opacity !important;
+  transition-property: background-color, background-image, color, border-color, outline-color, box-shadow, fill, stroke, text-decoration-color, caret-color, opacity, filter !important;
   transition-duration: 0.45s !important;
   transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
@@ -6147,3 +6189,187 @@ body.dark-mode .visor-pdf-descarga {
   }
 }
 
+/* ========== Modo daltónico: cambio inmediato vía variables (detalle en daltonico.css) ========== */
+html.daltonico {
+  --color-principal: #0072b2;
+  --color-secundario: #005a8c;
+}
+html.daltonico.dark-mode {
+  --color-principal: #56b4e9;
+  --color-secundario: #2b8cbe;
+}
+/* Refuerzo inmediato para que el primer clic pinte sin esperar la hoja extra. */
+html.daltonico header,
+html.daltonico header.header,
+html.daltonico .header {
+  background: #0072b2 !important;
+}
+html.daltonico .btn,
+html.daltonico a.btn,
+html.daltonico button.btn {
+  background: #0072b2 !important;
+  border-color: #005a8c !important;
+}
+html.daltonico .btn:hover,
+html.daltonico a.btn:hover,
+html.daltonico button.btn:hover {
+  background: #005a8c !important;
+}
+html.daltonico .btn-negro {
+  background-color: #0a3d5c !important;
+}
+html.daltonico .btn-negro:hover {
+  background-color: #005a8c !important;
+}
+html.daltonico a {
+  color: #0b4f7a;
+}
+html.daltonico a:hover {
+  color: #0072b2;
+}
+html.daltonico .logo img {
+  border-color: #0b4f7a;
+}
+html.daltonico input[type="checkbox"],
+html.daltonico input[type="radio"] {
+  accent-color: #0072b2;
+}
+.nav-opciones {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.nav-opciones-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-opciones-btn:hover,
+.nav-opciones-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.24);
+  outline: none;
+}
+.nav-opciones-btn svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-opciones-btn:hover svg { transform: rotate(45deg); }
+.nav-opciones-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+  padding: 8px;
+  border-radius: 14px;
+  background: #fff;
+  color: #2b211f;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s;
+}
+.nav-opciones.abierto .nav-opciones-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+.nav-opciones-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.nav-opciones-item:hover,
+.nav-opciones-item:focus-visible {
+  background: rgba(200, 29, 37, 0.1);
+  color: #8b1218;
+  outline: none;
+}
+.nav-opciones-item-icono {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: rgba(200, 29, 37, 0.12);
+  color: #c81d25;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.nav-opciones-item.activo {
+  background: rgba(200, 29, 37, 0.14);
+  color: #8b1218;
+}
+.nav-opciones-item-estado {
+  margin-left: auto;
+  font-size: 0.78rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+body.dark-mode .nav-opciones-menu {
+  background: #2c2320;
+  color: #f7f2ee;
+}
+body.dark-mode .nav-opciones-item:hover,
+body.dark-mode .nav-opciones-item:focus-visible,
+body.dark-mode .nav-opciones-item.activo {
+  background: rgba(200, 29, 37, 0.22);
+  color: #ffb4b8;
+}
+body.dark-mode .nav-opciones-item-icono {
+  background: rgba(200, 29, 37, 0.22);
+  color: #ff8a90;
+}
+html.daltonico .nav-opciones-item:hover,
+html.daltonico .nav-opciones-item:focus-visible,
+html.daltonico .nav-opciones-item.activo {
+  background: rgba(0, 114, 178, 0.1);
+  color: #005a8c;
+}
+html.daltonico .nav-opciones-item-icono {
+  background: rgba(0, 114, 178, 0.12);
+  color: #0072b2;
+}
+html.daltonico.dark-mode .nav-opciones-item:hover,
+html.daltonico.dark-mode .nav-opciones-item:focus-visible,
+html.daltonico.dark-mode .nav-opciones-item.activo {
+  background: rgba(86, 180, 233, 0.16);
+  color: #9ad0f5;
+}
+html.daltonico.dark-mode .nav-opciones-item-icono {
+  background: rgba(86, 180, 233, 0.16);
+  color: #9ad0f5;
+}
+.acciones-header { gap: 8px; }

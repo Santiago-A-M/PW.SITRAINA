@@ -1,1 +1,7 @@
 DirectoryIndex index.php
+
+# El panel debe entrar por index.php (inyecta token de sesión).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^panel\.html$ index.php [L,R=302]
+</IfModule>

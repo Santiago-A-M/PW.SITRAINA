@@ -3,6 +3,7 @@
 ob_start();
 require __DIR__ . '/sesion.php';
 require dirname(__DIR__) . '/php/disponibilidad.php';
+require dirname(__DIR__) . '/php/respuestas.php';
 ob_end_clean();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -40,15 +41,20 @@ if (empty($_SESSION['admin_usuario'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $mysqli = abrir_agenda();
-    if (!$mysqli) {
+    $admin = abrir_admin();
+    if (!$admin) {
         responder(500, ['ok' => false, 'mensaje' => 'Falta la conexión de la base de administración.']);
     }
-    $reglas = leer_agenda($mysqli);
-    $citas = is_array($reglas) ? leer_citas($mysqli) : [];
-    $mysqli->close();
+    $reglas = leer_agenda($admin);
+    $admin->close();
     if (!is_array($reglas)) {
-        responder(500, ['ok' => false, 'mensaje' => 'Falta la tabla agenda. Ejecuta sql/admin.sql en esa base.']);
+        responder(500, ['ok' => false, 'mensaje' => 'Falta la tabla Agenda. Ejecuta sql/03_Info_Cuentas_Admins.sql.']);
+    }
+    $citas = [];
+    $usuarios = abrir_usuarios();
+    if ($usuarios) {
+        $citas = leer_citas($usuarios);
+        $usuarios->close();
     }
     responder(200, ['ok' => true, 'reglas' => $reglas['filas'], 'citas' => $citas]);
 }
@@ -67,11 +73,11 @@ $valor = trim((string) ($_POST['valor'] ?? ''));
 $estado = (string) ($_POST['estado'] ?? '');
 $accion = (string) ($_POST['accion'] ?? '');
 
-/* Gestión de citas reservadas (con comentarios). */
+/* Gestión de citas reservadas (viven en la base de usuarios). */
 if ($tipo === 'cita') {
-    $mysqli = abrir_agenda();
+    $mysqli = abrir_usuarios();
     if (!$mysqli) {
-        responder(500, ['ok' => false, 'mensaje' => 'No se pudo conectar con la base de administración.']);
+        responder(500, ['ok' => false, 'mensaje' => 'No se pudo conectar con la base de usuarios.']);
     }
 
     if ($accion === 'quitar') {
@@ -81,6 +87,7 @@ if ($tipo === 'cita') {
             responder(400, ['ok' => false, 'mensaje' => 'No se pudo eliminar la cita.']);
         }
         $mysqli->close();
+        borrar_respuesta_enviada('cita', $id);
         responder(200, ['ok' => true]);
     }
 
@@ -129,12 +136,23 @@ if ($tipo === 'cita') {
             $mysqli->close();
             responder(400, ['ok' => false, 'mensaje' => 'Esa cita no tiene correo guardado. Solo las solicitudes nuevas lo traen.']);
         }
-        if (!enviar_respuesta_cita($correo, $cita['persona'] ?? '', $cita['fecha'] ?? '', $cita['hora'] ?? '', $mensaje)) {
-            $mysqli->close();
-            responder(500, ['ok' => false, 'mensaje' => 'No se pudo enviar el correo de respuesta a la persona. Revisá SMTP de sitraina@ina.ac.cr.']);
-        }
         $mysqli->close();
-        responder(200, ['ok' => true, 'mensaje' => 'Respuesta enviada a ' . $correo]);
+        $adminUser = (string) ($_SESSION['admin_usuario'] ?? '');
+        if (!guardar_respuesta_enviada('cita', $id, 'neutral', $mensaje, $adminUser)) {
+            responder(500, [
+                'ok' => false,
+                'mensaje' => 'No se pudo guardar la respuesta en Info_Respuestas.',
+            ]);
+        }
+        $correoOk = enviar_respuesta_cita($correo, $cita['persona'] ?? '', $cita['fecha'] ?? '', $cita['hora'] ?? '', $mensaje);
+        if ($correoOk) {
+            responder(200, ['ok' => true, 'mensaje' => 'Respuesta guardada y enviada a ' . $correo . '.', 'correo_ok' => true]);
+        }
+        responder(200, [
+            'ok' => true,
+            'mensaje' => 'Respuesta guardada. El correo a ' . $correo . ' no se pudo enviar ahora (SMTP bloqueado o no disponible en el hosting).',
+            'correo_ok' => false,
+        ]);
     }
 
     $mysqli->close();
@@ -172,17 +190,17 @@ if (!$mysqli) {
 }
 
 if ($accion === 'quitar') {
-    $consulta = $mysqli->prepare('DELETE FROM agenda WHERE tipo = ? AND valor = ?');
+    $consulta = $mysqli->prepare('DELETE FROM Agenda WHERE tipo = ? AND valor = ?');
     if (!$consulta) {
         $mysqli->close();
-        responder(500, ['ok' => false, 'mensaje' => 'Falta la tabla agenda. Ejecuta sql/admin.sql en esa base.']);
+        responder(500, ['ok' => false, 'mensaje' => 'Falta la tabla Agenda. Ejecuta sql/03_Info_Cuentas_Admins.sql.']);
     }
     $consulta->bind_param('ss', $tipo, $valor);
 } else {
-    $consulta = $mysqli->prepare('INSERT INTO agenda (tipo, valor, estado) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE estado = ?');
+    $consulta = $mysqli->prepare('INSERT INTO Agenda (tipo, valor, estado) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE estado = ?');
     if (!$consulta) {
         $mysqli->close();
-        responder(500, ['ok' => false, 'mensaje' => 'Falta la tabla agenda. Ejecuta sql/admin.sql en esa base.']);
+        responder(500, ['ok' => false, 'mensaje' => 'Falta la tabla Agenda. Ejecuta sql/03_Info_Cuentas_Admins.sql.']);
     }
     $consulta->bind_param('ssss', $tipo, $valor, $estado, $estado);
 }

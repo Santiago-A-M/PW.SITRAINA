@@ -11,6 +11,14 @@
         if (localStorage.getItem('modoOscuro') === 'true') {
           document.documentElement.classList.add('dark-mode');
         }
+        if (localStorage.getItem('modoDaltonico') === 'true') {
+          document.documentElement.classList.add('daltonico');
+          var __dl = document.createElement('link');
+          __dl.id = 'daltonico-css';
+          __dl.rel = 'stylesheet';
+          __dl.href = 'daltonico-admin.css?v=1.1';
+          document.head.appendChild(__dl);
+        }
       } catch (e) {}
     })();
   </script>
@@ -20,10 +28,10 @@
     body{background:transparent}
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=2.92">
+  <link rel="stylesheet" href="admin.css?v=6.10">
 </head>
 <body>
-  <script>if (document.documentElement.classList.contains('dark-mode')) document.body.classList.add('dark-mode');</script>
+  <script>if (document.documentElement.classList.contains('dark-mode')) document.body.classList.add('dark-mode'); if (document.documentElement.classList.contains('daltonico')) document.body.classList.add('daltonico');</script>
   <main class="caja">
     <header class="panel-cabeza">
       <div class="admin-marca">
@@ -38,17 +46,45 @@
         <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
       </button>
     </header>
-    <p>Entra con una cuenta cargada en la base de administración.</p>
+    <p>Cuenta institucional <strong>sitraina@ina.ac.cr</strong> (sin cédula) o tu Gmail con cédula.</p>
     <p class="error" hidden>{{error}}</p>
-    <form method="post" action="index.php" autocomplete="off">
+    <form method="post" action="index.php" autocomplete="off" id="form-login-admin">
       <input type="hidden" name="token" value="{{token}}">
-      <label for="usuario">Usuario</label>
-      <input id="usuario" name="usuario" type="text" maxlength="60" autocomplete="username" required>
+      <label for="cuenta">Cuenta</label>
+      <input id="cuenta" name="cuenta" type="email" maxlength="120" autocomplete="username" placeholder="sitraina@ina.ac.cr o tu@gmail.com" required>
+      <div id="bloque-cedula">
+        <label for="cedula">Cédula</label>
+        <input id="cedula" name="cedula" type="text" inputmode="numeric" maxlength="9" pattern="[0-9]{9}" autocomplete="off">
+      </div>
       <label for="clave">Clave</label>
       <input id="clave" name="clave" type="password" autocomplete="current-password" required>
       <button type="submit">Entrar</button>
     </form>
   </main>
-  <script src="tono.js?v=1.0"></script>
+  <script>
+    (function () {
+      var cuenta = document.getElementById('cuenta');
+      var cedula = document.getElementById('cedula');
+      var bloque = document.getElementById('bloque-cedula');
+      if (!cuenta || !cedula || !bloque) return;
+
+      function esSitraina(valor) {
+        return String(valor || '').trim().toLowerCase() === 'sitraina@ina.ac.cr';
+      }
+
+      function sincronizar() {
+        var institucional = esSitraina(cuenta.value);
+        bloque.hidden = institucional;
+        cedula.required = !institucional;
+        cedula.disabled = institucional;
+        if (institucional) cedula.value = '';
+      }
+
+      cuenta.addEventListener('input', sincronizar);
+      cuenta.addEventListener('change', sincronizar);
+      sincronizar();
+    })();
+  </script>
+  <script src="tono.js?v=1.4"></script>
 </body>
 </html>

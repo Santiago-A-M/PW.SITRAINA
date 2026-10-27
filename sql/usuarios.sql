@@ -1,0 +1,2 @@
+-- OBSOLETO. Usá sql/02_Info_Consultas.sql (base Info_Consultas).
+-- Este archivo se deja solo como referencia del esquema anterior.

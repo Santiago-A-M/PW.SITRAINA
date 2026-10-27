@@ -9,6 +9,14 @@
         if (localStorage.getItem('modoOscuro') === 'true') {
           document.documentElement.classList.add('dark-mode');
         }
+        if (localStorage.getItem('modoDaltonico') === 'true') {
+          document.documentElement.classList.add('daltonico');
+          var __dl = document.createElement('link');
+          __dl.id = 'daltonico-css';
+          __dl.rel = 'stylesheet';
+          __dl.href = 'css/daltonico.css?v=1.1';
+          document.head.appendChild(__dl);
+        }
       } catch (e) {}
       try {
         var nav = sessionStorage.getItem('sitrainaNav');
@@ -34,7 +42,7 @@
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
 
-  <link rel="stylesheet" href="css/estilo.css?v=3.10">
+  <link rel="stylesheet" href="css/estilo.css?v=3.32">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -79,7 +87,7 @@
 </head>
 
 <body class="pagina-fondo">
-  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
+  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');if(document.documentElement.classList.contains('daltonico'))document.body.classList.add('daltonico');</script>
 
   <header class="header">
   <div class="logo">
@@ -95,7 +103,7 @@
   <a href="quiensomos.html">Conócenos</a>
   <a href="afiliacion.html">Afiliación</a>
   <a href="asesoria-legal.html">Asesoría</a>
-  <a href="documentos.html">Documentos</a>
+  <a href="documentos.html" class="active">Documentos</a>
   <a href="contacto.html">Contacto</a>
 </nav>
 
@@ -203,7 +211,7 @@
 </footer>
 
   <!-- Script -->
-<script src="js/script.js?v=2.91"></script>
+<script src="js/script.js?v=2.98"></script>
 
  
   

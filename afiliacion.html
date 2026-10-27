@@ -9,6 +9,14 @@
         if (localStorage.getItem('modoOscuro') === 'true') {
           document.documentElement.classList.add('dark-mode');
         }
+        if (localStorage.getItem('modoDaltonico') === 'true') {
+          document.documentElement.classList.add('daltonico');
+          var __dl = document.createElement('link');
+          __dl.id = 'daltonico-css';
+          __dl.rel = 'stylesheet';
+          __dl.href = 'css/daltonico.css?v=1.1';
+          document.head.appendChild(__dl);
+        }
       } catch (e) {}
       try {
         var nav = sessionStorage.getItem('sitrainaNav');
@@ -24,7 +32,7 @@
   <style>html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}body.pagina-fondo{background:transparent}html.nav-llegando,html.doc-llegando{overflow:hidden}html.nav-llegando>body>:not(header):not(script):not(.btn-atras):not(.directiva-popup):not(.hoja-popup):not(#sitrabot):not(.visor-pdf){transform:translate3d(var(--nav-desde-x,100vw),0,0)}html.doc-llegando>body>main,html.doc-llegando .contenedor-titulo-galeria{transform:translate3d(var(--doc-desde-x,100vw),var(--doc-desde-y,0px),0)}</style>
  <title>SITRAINA | Sindicato INA</title>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/estilo.css?v=3.10">
+  <link rel="stylesheet" href="css/estilo.css?v=3.32">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -32,8 +40,8 @@
 </head>
 
 
-<body class="pagina-fondo">
-  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
+<body class="pagina-fondo" data-guia-formsubmit="afiliacion">
+  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');if(document.documentElement.classList.contains('daltonico'))document.body.classList.add('daltonico');</script>
 
   <header class="header">
   <div class="logo">
@@ -47,7 +55,7 @@
 <nav class="navbar" id="menu-principal">
   <a href="index.html">Inicio</a>
   <a href="quiensomos.html">Conócenos</a>
-  <a href="afiliacion.html">Afiliación</a>
+  <a href="afiliacion.html" class="active">Afiliación</a>
   <a href="asesoria-legal.html">Asesoría</a>
   <a href="documentos.html">Documentos</a>
   <a href="contacto.html">Contacto</a>
@@ -196,7 +204,7 @@
 </footer>
 
   <!-- Script -->
-<script src="js/script.js?v=2.91"></script>
+<script src="js/script.js?v=2.98"></script>
 <script>
 /* Arma el PDF de la boleta en el navegador y lo adjunta al envío. */
 (function () {
@@ -421,7 +429,6 @@
   });
 })();
 </script>
-
-  
+  <script src="js/guia-formsubmit.js?v=1.1"></script>
 </body>
 </html>

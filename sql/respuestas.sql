@@ -1,0 +1,1 @@
+-- OBSOLETO. Usá sql/04_Info_Respuestas.sql (tres tablas Respuesta_*).

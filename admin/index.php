@@ -1,5 +1,5 @@
 <?php
-/* Ingreso al panel. Si la clave coincide, muestra panel.html; si no, el formulario. */
+/* Ingreso al panel: sitraina (sin cédula) o cuenta personal con cédula. */
 require __DIR__ . '/sesion.php';
 
 mysqli_report(MYSQLI_REPORT_OFF);
@@ -29,17 +29,22 @@ function conectar_admin() {
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = (string) ($_POST['token'] ?? '');
-    $usuario = trim((string) ($_POST['usuario'] ?? ''));
+    $cuenta = strtolower(trim((string) ($_POST['cuenta'] ?? '')));
+    $cedula = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
     $clave = (string) ($_POST['clave'] ?? '');
     $fallos = (int) ($_SESSION['admin_fallos'] ?? 0);
+    $esSitraina = ($cuenta === 'sitraina@ina.ac.cr');
 
     if (!hash_equals(token_admin(), $token)) {
         $error = 'Vuelve a enviar el formulario.';
     } elseif ($fallos >= 8) {
         $error = 'Demasiados intentos. Espera un momento y vuelve a probar.';
-    } elseif ($usuario === '' || $clave === '' || strlen($usuario) > 60) {
+    } elseif ($cuenta === '' || $clave === '' || strlen($cuenta) > 120) {
         $_SESSION['admin_fallos'] = $fallos + 1;
-        $error = 'Usuario o clave incorrectos.';
+        $error = 'Cuenta o clave incorrectos.';
+    } elseif (!$esSitraina && (strlen($cedula) !== 9)) {
+        $_SESSION['admin_fallos'] = $fallos + 1;
+        $error = 'Para esta cuenta la cédula es obligatoria.';
     } else {
         $mysqli = conectar_admin();
         if ($mysqli === null) {
@@ -48,14 +53,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'No se pudo conectar con la base de administración.';
         } else {
             $hashFalso = '$2y$10$SitrainaAdminDummySaltu7eKq8mN3pL2wX9vB4cD6fH1jR5tYaZx';
-            $consulta = $mysqli->prepare('SELECT clave_hash FROM cuentas WHERE usuario = ? AND activo = 1 LIMIT 1');
+            if ($esSitraina) {
+                $consulta = $mysqli->prepare(
+                    'SELECT clave_hash, cedula FROM Admin_Info WHERE cuenta = ? AND activo = 1 LIMIT 1'
+                );
+                if ($consulta) {
+                    $consulta->bind_param('s', $cuenta);
+                }
+            } else {
+                $consulta = $mysqli->prepare(
+                    'SELECT clave_hash, cedula FROM Admin_Info WHERE cuenta = ? AND cedula = ? AND activo = 1 LIMIT 1'
+                );
+                if ($consulta) {
+                    $consulta->bind_param('ss', $cuenta, $cedula);
+                }
+            }
             if (!$consulta) {
                 $mysqli->close();
-                $error = 'No se pudo revisar la cuenta. Confirma que la tabla cuentas existe.';
+                $error = 'No se pudo revisar la cuenta. Confirma que la tabla Admin_Info existe.';
             } else {
-                $consulta->bind_param('s', $usuario);
                 $consulta->execute();
-                $consulta->bind_result($hashGuardado);
+                $consulta->bind_result($hashGuardado, $cedulaGuardada);
                 $hay = $consulta->fetch();
                 $consulta->close();
                 $mysqli->close();
@@ -63,10 +81,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $coincide = password_verify($clave, $hash);
                 if (!$hay || !$coincide) {
                     $_SESSION['admin_fallos'] = $fallos + 1;
-                    $error = 'Usuario o clave incorrectos.';
+                    $error = 'Cuenta, cédula o clave incorrectos.';
                 } else {
                     session_regenerate_id(true);
-                    $_SESSION['admin_usuario'] = $usuario;
+                    $_SESSION['admin_usuario'] = $esSitraina ? 'sitraina@ina.ac.cr' : $cedula;
+                    $_SESSION['admin_cuenta'] = $cuenta;
                     $_SESSION['admin_fallos'] = 0;
                     $_SESSION['admin_token'] = bin2hex(random_bytes(16));
                     header('Location: index.php');
@@ -78,8 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (!empty($_SESSION['admin_usuario'])) {
+    $etiqueta = !empty($_SESSION['admin_cuenta']) ? $_SESSION['admin_cuenta'] : $_SESSION['admin_usuario'];
     vista('panel.html', [
-        'usuario' => 'Sesión de ' . $_SESSION['admin_usuario'] . '.',
+        'usuario' => 'Sesión de ' . $etiqueta . '.',
         'token' => token_admin(),
     ]);
     exit;

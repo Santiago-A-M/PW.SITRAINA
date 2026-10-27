@@ -9,6 +9,14 @@
         if (localStorage.getItem('modoOscuro') === 'true') {
           document.documentElement.classList.add('dark-mode');
         }
+        if (localStorage.getItem('modoDaltonico') === 'true') {
+          document.documentElement.classList.add('daltonico');
+          var __dl = document.createElement('link');
+          __dl.id = 'daltonico-css';
+          __dl.rel = 'stylesheet';
+          __dl.href = 'css/daltonico.css?v=1.1';
+          document.head.appendChild(__dl);
+        }
       } catch (e) {}
       try {
         var nav = sessionStorage.getItem('sitrainaNav');
@@ -23,13 +31,13 @@
   </script>
   <style>html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}body.pagina-fondo{background:transparent}html.nav-llegando,html.doc-llegando{overflow:hidden}html.nav-llegando>body>:not(header):not(script):not(.btn-atras):not(.directiva-popup):not(.hoja-popup):not(#sitrabot):not(.visor-pdf){transform:translate3d(var(--nav-desde-x,100vw),0,0)}html.doc-llegando>body>main,html.doc-llegando .contenedor-titulo-galeria{transform:translate3d(var(--doc-desde-x,100vw),var(--doc-desde-y,0px),0)}</style>
   <title>SITRAINA | Solicitar cita</title>
-  <link rel="stylesheet" href="css/estilo.css?v=3.10">
+  <link rel="stylesheet" href="css/estilo.css?v=3.32">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="pagina-fondo">
-  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
+<body class="pagina-fondo" data-guia-formsubmit="cita">
+  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');if(document.documentElement.classList.contains('daltonico'))document.body.classList.add('daltonico');</script>
 
   <header class="header">
     <div class="logo">
@@ -42,7 +50,7 @@
       <a href="index.html">Inicio</a>
       <a href="quiensomos.html">Conócenos</a>
       <a href="afiliacion.html">Afiliación</a>
-      <a href="asesoria-legal.html">Asesoría</a>
+      <a href="asesoria-legal.html" class="active">Asesoría</a>
       <a href="documentos.html">Documentos</a>
       <a href="contacto.html">Contacto</a>
     </nav>
@@ -64,7 +72,7 @@
       <h1>Solicitar cita con el asesor legal</h1>
       <p class="cita-intro">Elige un día y una hora disponibles. Al enviar, la confirmación vuelve a esta página.</p>
       <p class="cita-guia-llamada">
-        <button type="button" class="cita-guia-abrir-inline" id="cita-guia-abrir-inline">Cómo te llega el correo (FormSubmit)</button>
+        <button type="button" class="cita-guia-abrir-inline" id="cita-guia-abrir-inline">Cómo te llega el correo</button>
       </p>
 
       <!--
@@ -108,7 +116,7 @@
             </label>
             <label>Correo electrónico
               <input type="email" name="email" required maxlength="120" autocomplete="email" inputmode="email" spellcheck="false" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Escribe un correo válido con @ y un dominio, por ejemplo nombre@correo.com">
-              <span class="cita-ayuda">Debe incluir @ y un dominio. A este correo te llegará la respuesta por FormSubmit; revisá también spam.</span>
+              <span class="cita-ayuda">Debe incluir @ y un dominio. A este correo te llegará la respuesta de SITRAINA; revisá también spam.</span>
             </label>
             <label>Teléfono
               <input type="tel" name="telefono" required inputmode="numeric" autocomplete="tel" maxlength="11" pattern="[0-9]{8}" title="El teléfono debe tener 8 dígitos">
@@ -187,8 +195,8 @@
     </div>
   </div>
 
-  <script src="js/script.js?v=2.91"></script>
-  <script src="js/guia-cita.js?v=1.0"></script>
+  <script src="js/script.js?v=2.98"></script>
+  <script src="js/guia-formsubmit.js?v=1.1"></script>
   <script>
     /* Pregunta si la persona está afiliada antes de dejar usar el formulario de la cita. */
     (function () {
@@ -206,33 +214,41 @@
         enviada = new URLSearchParams(location.search).get('enviada') === '1';
       } catch (e) {}
 
-      var cedulaGuardada = '';
+      var campoNombre = document.querySelector('input[name="nombre"]');
+      var campoCorreo = document.querySelector('input[name="email"]');
+      var guardado = { cedula: '', nombre: '', correo: '' };
       var yaConfirmada = false;
       try {
-        cedulaGuardada = sessionStorage.getItem('citaCedula') || '';
-        yaConfirmada = sessionStorage.getItem('citaAfiliado') === 'si' && /^[0-9]{9}$/.test(cedulaGuardada);
+        guardado.cedula = sessionStorage.getItem('citaCedula') || '';
+        guardado.nombre = sessionStorage.getItem('citaNombre') || '';
+        guardado.correo = sessionStorage.getItem('citaCorreo') || '';
+        yaConfirmada = sessionStorage.getItem('citaAfiliado') === 'si'
+          && /^[0-9]{9}$/.test(guardado.cedula)
+          && guardado.nombre
+          && guardado.correo;
       } catch (e) {}
 
-      /* Cierra la pregunta y deja usar el formulario. */
       function cerrar() {
         puerta.hidden = true;
         document.body.classList.remove('cita-bloqueada');
         if (main) main.removeAttribute('aria-hidden');
       }
 
-      /* Mantiene el formulario tapado mientras se pregunta o se comprueba la cédula. */
       function bloquear() {
         puerta.hidden = false;
         document.body.classList.add('cita-bloqueada');
         if (main) main.setAttribute('aria-hidden', 'true');
       }
 
-      /* Deja la cédula en el formulario solo después de confirmar que ya estaba registrada. */
-      function aceptar(digitos) {
-        if (campoCedula) campoCedula.value = digitos;
+      function aceptar(datosOk) {
+        if (campoCedula) campoCedula.value = datosOk.cedula;
+        if (campoNombre) campoNombre.value = datosOk.nombre;
+        if (campoCorreo) campoCorreo.value = datosOk.correo;
         try {
           sessionStorage.setItem('citaAfiliado', 'si');
-          sessionStorage.setItem('citaCedula', digitos);
+          sessionStorage.setItem('citaCedula', datosOk.cedula);
+          sessionStorage.setItem('citaNombre', datosOk.nombre);
+          sessionStorage.setItem('citaCorreo', datosOk.correo);
         } catch (e) {}
         cerrar();
       }
@@ -241,14 +257,18 @@
         try {
           sessionStorage.removeItem('citaAfiliado');
           sessionStorage.removeItem('citaCedula');
+          sessionStorage.removeItem('citaNombre');
+          sessionStorage.removeItem('citaCorreo');
         } catch (e) {}
       }
 
-      /* Consulta la cédula en la base. La consulta no crea ni modifica el registro. */
-      function consultarCedula(digitos) {
+      /* Comprueba cédula + nombre completo + correo en Info_Afiliados.Cuenta (solo lectura). */
+      function consultarCuenta(cedula, nombre, correo) {
         var datos = new FormData();
         datos.append('accion', 'consultar');
-        datos.append('cedula', digitos);
+        datos.append('cedula', cedula);
+        datos.append('nombre_completo', nombre);
+        datos.append('correo', correo);
         return fetch('php/afiliados.php', {
           method: 'POST',
           body: datos,
@@ -259,7 +279,6 @@
         });
       }
 
-      /* Crea un botón de la pregunta, con su texto y lo que hace al pulsarlo. */
       function boton(etiqueta, clase, alPulsar) {
         var botonEl = document.createElement('button');
         botonEl.type = 'button';
@@ -269,7 +288,14 @@
         return botonEl;
       }
 
-      /* Cambia el paso: afiliado, cédula, ofrecer afiliación o rechazo. */
+      function campoLabel(texto, entrada) {
+        var etiqueta = document.createElement('label');
+        etiqueta.className = 'cita-puerta-label';
+        etiqueta.appendChild(document.createTextNode(texto));
+        etiqueta.appendChild(entrada);
+        return etiqueta;
+      }
+
       function mostrar(paso) {
         acciones.innerHTML = '';
         extra.innerHTML = '';
@@ -277,61 +303,83 @@
           titulo.textContent = '¿Es persona afiliada?';
           texto.textContent = 'La asesoría legal de SITRAINA se ofrece a las personas afiliadas. Indique si ya forma parte del sindicato.';
           acciones.appendChild(boton('Sí, soy persona afiliada', 'btn', function () {
-            mostrar('cedula');
+            mostrar('cuenta');
           }));
           acciones.appendChild(boton('No, no estoy afiliada', 'btn btn-contorno', function () {
             mostrar('ofrecer');
           }));
-        } else if (paso === 'cedula') {
-          titulo.textContent = 'Cédula de afiliación';
-          texto.textContent = 'Escriba la cédula con la que ya está afiliado. Esa cédula debe estar registrada de antemano.';
-          var etiqueta = document.createElement('label');
-          etiqueta.className = 'cita-puerta-label';
-          etiqueta.textContent = 'Cédula';
-          var entrada = document.createElement('input');
-          entrada.type = 'text';
-          entrada.inputMode = 'numeric';
-          entrada.autocomplete = 'off';
-          entrada.maxLength = 11;
-          entrada.placeholder = '9 dígitos';
-          entrada.setAttribute('aria-label', 'Cédula');
+        } else if (paso === 'cuenta') {
+          titulo.textContent = 'Datos de afiliado';
+          texto.textContent = 'Escriba cédula, nombre completo y correo exactamente como están cargados en el registro de afiliados (carga manual).';
+          var entradaCedula = document.createElement('input');
+          entradaCedula.type = 'text';
+          entradaCedula.inputMode = 'numeric';
+          entradaCedula.autocomplete = 'off';
+          entradaCedula.maxLength = 9;
+          entradaCedula.placeholder = '9 dígitos';
+          entradaCedula.setAttribute('aria-label', 'Cédula');
+          var entradaNombre = document.createElement('input');
+          entradaNombre.type = 'text';
+          entradaNombre.autocomplete = 'name';
+          entradaNombre.maxLength = 120;
+          entradaNombre.placeholder = 'Nombre completo';
+          entradaNombre.setAttribute('aria-label', 'Nombre completo');
+          var entradaCorreo = document.createElement('input');
+          entradaCorreo.type = 'email';
+          entradaCorreo.autocomplete = 'email';
+          entradaCorreo.maxLength = 120;
+          entradaCorreo.placeholder = 'correo@ejemplo.com';
+          entradaCorreo.setAttribute('aria-label', 'Correo');
           var aviso = document.createElement('span');
           aviso.className = 'cita-puerta-error';
-          etiqueta.appendChild(entrada);
-          extra.appendChild(etiqueta);
+          extra.appendChild(campoLabel('Cédula', entradaCedula));
+          extra.appendChild(campoLabel('Nombre completo', entradaNombre));
+          extra.appendChild(campoLabel('Correo', entradaCorreo));
           extra.appendChild(aviso);
-          entrada.addEventListener('input', function () {
-            entrada.value = entrada.value.replace(/\D/g, '').slice(0, 9);
+          entradaCedula.addEventListener('input', function () {
+            entradaCedula.value = entradaCedula.value.replace(/\D/g, '').slice(0, 9);
             aviso.textContent = '';
           });
+          entradaNombre.addEventListener('input', function () { aviso.textContent = ''; });
+          entradaCorreo.addEventListener('input', function () { aviso.textContent = ''; });
           acciones.appendChild(boton('Continuar', 'btn', function () {
-            var digitos = entrada.value.replace(/\D/g, '');
+            var digitos = entradaCedula.value.replace(/\D/g, '');
+            var nombre = (entradaNombre.value || '').trim();
+            var correo = (entradaCorreo.value || '').trim().toLowerCase();
             if (!/^[0-9]{9}$/.test(digitos)) {
               aviso.textContent = 'La cédula debe tener 9 dígitos.';
-              entrada.focus();
+              entradaCedula.focus();
+              return;
+            }
+            if (!nombre) {
+              aviso.textContent = 'Escribe el nombre completo.';
+              entradaNombre.focus();
+              return;
+            }
+            if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(correo)) {
+              aviso.textContent = 'Escribe un correo válido.';
+              entradaCorreo.focus();
               return;
             }
             var botones = acciones.querySelectorAll('button');
             for (var i = 0; i < botones.length; i++) botones[i].disabled = true;
-            aviso.textContent = 'Comprobando la cédula…';
-            consultarCedula(digitos).then(function (resultado) {
+            aviso.textContent = 'Comprobando la cuenta…';
+            consultarCuenta(digitos, nombre, correo).then(function (resultado) {
               for (var j = 0; j < botones.length; j++) botones[j].disabled = false;
               if (!resultado || !resultado.ok) {
-                aviso.textContent = (resultado && resultado.mensaje) || 'Esa cédula no está registrada. Debe existir en el registro de afiliación antes de pedir la cita.';
-                entrada.focus();
+                aviso.textContent = (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.';
                 return;
               }
-              aceptar(digitos);
+              aceptar({ cedula: digitos, nombre: nombre, correo: correo });
             }).catch(function () {
               for (var k = 0; k < botones.length; k++) botones[k].disabled = false;
-              aviso.textContent = 'No se pudo comprobar la cédula. Intenta de nuevo.';
-              entrada.focus();
+              aviso.textContent = 'No se pudo comprobar la cuenta. Intenta de nuevo.';
             });
           }));
           acciones.appendChild(boton('Volver', 'btn btn-contorno', function () {
             mostrar('afiliado');
           }));
-          entrada.focus();
+          entradaCedula.focus();
           return;
         } else if (paso === 'ofrecer') {
           titulo.textContent = '¿Desea afiliarse?';
@@ -357,15 +405,15 @@
 
       bloquear();
       if (yaConfirmada) {
-        consultarCedula(cedulaGuardada).then(function (resultado) {
+        consultarCuenta(guardado.cedula, guardado.nombre, guardado.correo).then(function (resultado) {
           if (resultado && resultado.ok) {
-            aceptar(cedulaGuardada);
+            aceptar(guardado);
             return;
           }
           olvidar();
-          mostrar('cedula');
+          mostrar('cuenta');
           var avisoPrevio = extra.querySelector('.cita-puerta-error');
-          if (avisoPrevio) avisoPrevio.textContent = (resultado && resultado.mensaje) || 'Esa cédula no está registrada. Debe existir en el registro de afiliación antes de pedir la cita.';
+          if (avisoPrevio) avisoPrevio.textContent = (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.';
         }).catch(function () {
           olvidar();
           mostrar('afiliado');

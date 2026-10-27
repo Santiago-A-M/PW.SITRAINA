@@ -90,14 +90,14 @@
         }
 
         /* Bases de datos y config */
-        if (/dos bases|2 bases|afiliaciones y admin|por que dos|cuantas bases/.test(q)) {
-            return bot('Hay dos bases en InfinityFree: afiliaciones (formularios públicos, php/config.php) y admin (cuentas, agenda y citas, admin/config.php). Cada config.php apunta a una.');
+        if (/dos bases|2 bases|tres bases|3 bases|afiliaciones y admin|por que dos|cuantas bases|respuestas/.test(q)) {
+            return bot('1) Info_Afiliados → Cuenta (manual). 2) Info_Consultas → Consulta_Contacto, Consulta_Afiliacion, Consulta_Asesoria. 3) Info_Cuentas_Admins → Admin_Info y Agenda. 4) Info_Respuestas → Respuesta_Contacto, Respuesta_Afiliacion, Respuesta_Asesoria. SQL en sql/01 a 04.');
         }
         if (/config\.php|config ejemplo|donde (va|esta) (el )?config|como conecto|conexion mysql|host|usuario mysql|clave mysql/.test(q)) {
-            return bot('En el servidor necesitás php/config.php (base afiliaciones) y admin/config.php (base admin). Se copian desde los .ejemplo y se pegan host, nombre, usuario y clave de MySQL Databases en InfinityFree.');
+            return bot('Configs en el servidor: php/config_afiliados.php (Info_Afiliados), php/config.php (Info_Consultas), admin/config.php (Info_Cuentas_Admins), admin/config_respuestas.php (Info_Respuestas). Host, usuario y clave van solo en esos archivos; no los compartas ni los pegues en el chat.');
         }
         if (/sql\/admin|admin\.sql|que tablas|tablas de admin|cuentas|tabla agenda|tabla citas|alter table|columnas persona|motivo|notas/.test(q)) {
-            return bot('En la base admin se ejecuta sql/admin.sql: tablas cuentas, agenda y citas. Si citas ya existía, también los ALTER que agregan persona, motivo y notas. Sin esas tablas el panel no puede guardar.');
+            return bot('En cada base nueva ejecutá: sql/01_Info_Afiliados.sql, 02_Info_Consultas.sql, 03_Info_Cuentas_Admins.sql y 04_Info_Respuestas.sql.');
         }
         if (/no (se )?guarda|no conecta|error (de )?guardar|falta (la )?conexion|no se pudo guardar|falta config/.test(q)) {
             return bot('Si no guarda, revisá: 1) entrar por el login de Administración, 2) admin/config.php en el servidor con la base admin, 3) tablas de sql/admin.sql creadas. En Cursor (vista local) no corre PHP ni MySQL, por eso ahí falla el guardado.');
@@ -106,27 +106,36 @@
             return bot('En Cursor o una vista previa estática no se ejecuta PHP ni MySQL. El diseño sí se ve; guardar fechas o citas funciona en InfinityFree con config.php y las tablas listas.');
         }
         if (/infinityfree|subir|publicar|ftp|filezilla|que archivos (subo|subir)/.test(q)) {
-            return bot('Subí a InfinityFree el sitio completo, incluidos admin/ (panel, agenda.php, agenda.js, admin.css, sitrabot-admin.js, config.php) y php/. No hace falta subir config.ejemplo.php si ya tenés config.php en el servidor.');
+            return bot('Subí a InfinityFree el sitio completo, incluidos admin/ (panel, agenda.php, configs) y php/ (configs de consultas y afiliados).');
         }
 
         /* Panel y opciones */
         if (/agregar fecha|asistente|pasos|como (agrego|abro) (una )?fecha|wizard/.test(q)) {
-            return bot('Tocá «Agregar fecha y hora». El flujo es: mes → tipo (hábil, ocupada o no hábil) → día → hora (si aplica) → vista previa y guardar. Eso se guarda en la tabla agenda.');
+            return bot('En la sección Horario del menú tocá «Agregar fecha y hora». Solo define disponibilidad para citas con asesoría: mes → tipo (hábil, ocupada o no hábil) → día → hora (si aplica) → guardar. Va a la tabla agenda.');
         }
         if (/habil|ocupada|no habil|bloqueada|tipo de fecha/.test(q)) {
             return bot('Hábil: el día queda disponible para citas. Ocupada: ya la tiene alguien (también puede crear una cita en la base). No hábil: el día no se ofrece; en ese caso se salta el paso de la hora.');
         }
+        if (/afiliados|tabla cuenta|lista de afiliados|cedulas registradas|info_afiliados/.test(q)) {
+            return bot('En Afiliados ves Info_Afiliados.Cuenta (cedula, nombre completo, correo). Solo lectura: las altas se hacen a mano en phpMyAdmin. Eso valida la puerta de Solicitar cita. Las boletas nuevas estan en Afiliaciones (Consulta_Afiliacion).');
+        }
+        if (/navbar|menu admin|afiliaciones|citas con asesoria|ver solicitudes|bandeja|aceptar|rechazar|neutral|contacto admin|afilacion admin|respuestas/.test(q)) {
+            return bot('El menu tiene Inicio, Afiliaciones, Afiliados, Citas con Asesoria, Horario y Contacto. En Inicio abris la papelera; ahi seleccionas rechazadas y el boton de borrar de la esquina las elimina de la base. Horario solo define dias y horas para citas con asesoria.');
+        }
         if (/ver fechas|fechas guardadas|editar cita|eliminar cita|comentarios|de quien|para que|notas|citas reservadas|responder|enviar respuesta|correo de la cita|formsubmit/.test(q)) {
-            return bot('En «Ver fechas guardadas» → Citas reservadas revisás turnos ya pedidos, comentás y enviás respuestas desde sitraina@ina.ac.cr al correo que puso la persona en la solicitud.');
+            return bot('En «Ver fechas guardadas» → Citas reservadas revisás turnos y comentarios. Para aceptar, rechazar o contestar de forma neutral usá «Ver solicitudes».');
+        }
+        if (/base respuestas|config_respuestas|sql\/respuestas/.test(q)) {
+            return bot('Creá las 4 bases Info_*, ejecutá sql/01 a 04, y subí php/config.php, php/config_afiliados.php, admin/config.php y admin/config_respuestas.php.');
         }
         if (/cita publica|solicitar cita|pagina de citas|como reserva el usuario/.test(q)) {
             return bot('El público pide cita en solicitar-cita. Las horas abiertas salen de agenda; las ya tomadas están en citas. Si el usuario pone nombre y motivo, se pueden guardar en citas al reservar.');
         }
         if (/cuenta admin|login|entrar|usuario y clave|cifrar|generar hash|password/.test(q)) {
-            return bot('El ingreso es admin/index.php con una fila en la tabla cuentas. Para crear el hash de la clave usá admin/generar.php (o generar.html), copiá el hash y pegalo en phpMyAdmin en clave_hash.');
+            return bot('Las cuentas de acceso están en Info_Cuentas_Admins.Admin_Info (cuenta, cedula si aplica, clave_hash). El hash se genera con admin/generar.php. No compartas correos, cédulas ni claves por este chat.');
         }
-        if (/cerrar sesion|salir/.test(q)) {
-            return bot('Abajo del panel está «Cerrar sesión», que llama a salir.php y termina la sesión de administración.');
+        if (/cerrar sesion|salir|opciones/.test(q)) {
+            return bot('Arriba a la derecha está «Opciones». Ahí abrís Ayuda (la guía del panel) o Cerrar sesión, que llama a salir.php y termina la sesión de administración.');
         }
 
         /* Diseño */
@@ -147,7 +156,7 @@
         }
 
         if (/que mas|otros temas|mas ayuda/.test(q)) {
-            return bot('También puedo hablar de las dos bases, config.php, sql/admin.sql, el asistente de fechas, citas guardadas, modo oscuro, Cursor vs InfinityFree y cómo subir archivos.');
+            return bot('También puedo hablar de las tres bases, los config.php, sql/admin.sql y sql/respuestas.sql, Horario, citas guardadas, modo oscuro, Cursor vs InfinityFree y cómo subir archivos.');
         }
 
         return bot('No tengo esa respuesta exacta. Probá preguntar por: base de datos, config.php, agregar fecha, fechas guardadas, modo oscuro, Cursor o InfinityFree. O escribí «ayuda» para ver los temas.');

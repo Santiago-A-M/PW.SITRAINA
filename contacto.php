@@ -26,25 +26,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("<h2>Error: uno de los datos es demasiado largo.</h2>");
     }
 
+    require_once __DIR__ . '/php/respuestas.php';
+    $guardado = registrar_contacto_consulta(
+        html_entity_decode($nombre, ENT_QUOTES, 'UTF-8'),
+        $email,
+        html_entity_decode($asunto, ENT_QUOTES, 'UTF-8'),
+        html_entity_decode($mensaje, ENT_QUOTES, 'UTF-8')
+    );
+
     $mail = new PHPMailer(true);
 
     try {
-        // Configuración SMTP (¡asegúrate de usar variables de entorno en producción!)
         $mail->isSMTP();
         $mail->Host = "smtp.ina.ac.cr";
         $mail->SMTPAuth = true;
         $mail->Username = "sitraina@ina.ac.cr";
-        $mail->Password = "Prueb@2026"; // ⚠️ Reemplaza o usa $_ENV
+        $mail->Password = "Prueb@2026";
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        // Remitente (cuenta SMTP que envía)
         $mail->setFrom("sitraina@ina.ac.cr", "Formulario Web - SITRAINA");
-        // >>> CORREO DESTINO (formulario de contacto): aquí llega el mensaje de contacto.html
         $mail->addAddress("sitraina@ina.ac.cr");
         $mail->addReplyTo($email, $nombre);
 
-        // Contenido
         $mail->isHTML(true);
         $mail->Subject = "Contacto web: " . ($asunto ?: "Sin asunto");
         $mail->Body = "
@@ -58,11 +62,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->send();
         echo "<h2>✅ Mensaje enviado correctamente</h2>";
         echo "<p>Gracias por contactarnos, <strong>" . $nombre . "</strong>. Te responderemos pronto.</p>";
+        if (!$guardado) {
+            echo "<p>El mensaje se envió, pero no quedó registrado en el panel. Revisá php/config.php y la tabla Consulta_Contacto.</p>";
+        }
         echo '<p><a href="index.html">← Volver al inicio</a></p>';
     } catch (Exception $e) {
-        echo "<h2>❌ Error al enviar el mensaje</h2>";
-        echo "<p>Por favor, inténtalo más tarde o escribe directamente a <a href='mailto:sitraina@ina.ac.cr'>sitraina@ina.ac.cr</a>.</p>";
-        // En producción, evita mostrar $mail->ErrorInfo
+        if ($guardado) {
+            echo "<h2>✅ Mensaje registrado</h2>";
+            echo "<p>Tu mensaje quedó en el panel de administración. El aviso por correo no se pudo enviar ahora.</p>";
+            echo '<p><a href="index.html">← Volver al inicio</a></p>';
+        } else {
+            echo "<h2>❌ Error al enviar el mensaje</h2>";
+            echo "<p>Por favor, inténtalo más tarde o escribe directamente a <a href='mailto:sitraina@ina.ac.cr'>sitraina@ina.ac.cr</a>.</p>";
+        }
     }
 }
 ?>

@@ -1,36 +1,36 @@
-/* Guía del panel admin: botón fijo, popups animados y flechas entre pasos. */
+/* Guía del panel admin: se abre desde Opciones del navbar. */
 (function () {
     if (document.getElementById('guia-admin')) return;
 
     var pasos = [
         {
             titulo: 'Bienvenido al panel',
-            texto: 'Desde aquí configurás la agenda pública: meses, días hábiles, horas y citas. Esta guía te muestra cada parte en pocos pasos.',
+            texto: 'Arriba tenes el menu: Inicio, Afiliaciones, Afiliados, Citas con Asesoria, Horario y Contacto. Inicio es el resumen; Horario solo define dias y horas para citas con asesoria.',
             icono: '1'
         },
         {
-            titulo: 'Agregar fecha y hora',
-            texto: 'El botón «Agregar fecha y hora» abre un asistente. Primero elegís el mes, después el tipo de fecha, luego el día y la hora si aplica.',
+            titulo: 'Afiliaciones, citas y contacto',
+            texto: 'En Afiliaciones ves boletas (Consulta_Afiliacion). En Afiliados ves Cuenta (carga manual). En Citas y Contacto respondés consultas. Abrí una casilla, elegí Aceptar, Rechazar o Respuesta neutral y enviá.',
             icono: '2'
         },
         {
-            titulo: 'Hábil, ocupada o no hábil',
-            texto: 'Antes del día elegís el estado: Hábil (se puede agendar), Ocupada (ya la tiene alguien) o No hábil (ese día no se ofrece).',
+            titulo: 'Seccion Horario',
+            texto: 'En Horario configura unicamente la disponibilidad de citas con asesoria. «Agregar fecha y hora» abre el asistente: mes, tipo de fecha, dia y hora si aplica.',
             icono: '3'
         },
         {
-            titulo: 'Ver fechas guardadas',
-            texto: 'Con «Ver fechas guardadas» revisás lo de la base. En Citas reservadas solo comentás turnos ya pedidos (no creás citas nuevas) y podés eliminarlas.',
+            titulo: 'Hábil, ocupada o no hábil',
+            texto: 'Antes del día elegís el estado: Hábil (se puede agendar), Ocupada (ya la tiene alguien) o No hábil (ese día no se ofrece). Solo afecta Solicitar cita.',
             icono: '4'
         },
         {
-            titulo: 'Responder por correo',
-            texto: 'Al abrir una cita reservada ves el correo de la persona. Escribí la respuesta y usá «Enviar respuesta»: sale desde sitraina@ina.ac.cr a ese correo.',
+            titulo: 'Ver fechas guardadas',
+            texto: 'Con «Ver fechas guardadas» revisás los horarios de asesoria. Para aceptar o rechazar una cita pedida usa la seccion Citas con Asesoria.',
             icono: '5'
         },
         {
-            titulo: 'Resumen del panel',
-            texto: 'Abajo ves casillas con meses, días y horarios. Tocá una casilla para abrirla, ver la información o eliminarla.',
+            titulo: 'Casillas del horario',
+            texto: 'En fechas guardadas ves casillas con meses, dias y horarios. Tocala para abrirla, ver la informacion o eliminarla.',
             icono: '6'
         },
         {
@@ -45,7 +45,7 @@
         },
         {
             titulo: 'Listo para usar',
-            texto: 'Cuando termines, cerrá sesión con el enlace del final. Podés volver a abrir esta guía cuando quieras con el botón «Ayuda».',
+            texto: 'Cuando termines, abrí Opciones arriba a la derecha y elegí Cerrar sesión. Podés volver a abrir esta guía desde Opciones → Ayuda.',
             icono: '✓'
         }
     ];
@@ -56,7 +56,7 @@
     var raiz = document.createElement('div');
     raiz.id = 'guia-admin';
     raiz.innerHTML = [
-        '<button type="button" class="guia-boton" id="guia-abrir" aria-expanded="false" aria-controls="guia-overlay" title="Guía del panel">',
+        '<button type="button" class="guia-boton" id="guia-abrir" aria-expanded="false" aria-controls="guia-overlay" title="Guía del panel" hidden tabindex="-1">',
         '  <span class="guia-boton-anillo" aria-hidden="true"></span>',
         '  <span class="guia-boton-icono" aria-hidden="true">?</span>',
         '  <span class="guia-boton-texto">Ayuda</span>',
@@ -100,8 +100,45 @@
     var puntos = document.getElementById('guia-puntos');
     var ventana = raiz.querySelector('.guia-ventana');
 
+    var cajaOpciones = document.getElementById('admin-opciones');
+    var btnOpciones = document.getElementById('admin-opciones-btn');
+    var menuOpciones = document.getElementById('admin-opciones-menu');
+    var btnAyudaNav = document.getElementById('admin-opcion-ayuda');
+
     function marcarVista() {
         try { localStorage.setItem('admin-guia-vista', '1'); } catch (e) {}
+        if (btnOpciones) btnOpciones.classList.remove('guia-boton-nuevo');
+    }
+
+    function cerrarMenuMovilAlAbrirOpciones() {
+        var nav = document.getElementById('admin-navbar');
+        var toggle = document.getElementById('admin-menu-toggle');
+        if (nav) nav.classList.remove('activo');
+        if (toggle) {
+            toggle.classList.remove('abierto');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    function cerrarMenuOpciones() {
+        if (!cajaOpciones || !btnOpciones || !menuOpciones) return;
+        cajaOpciones.classList.remove('abierto');
+        btnOpciones.setAttribute('aria-expanded', 'false');
+        menuOpciones.hidden = true;
+    }
+
+    function abrirMenuOpciones() {
+        if (!cajaOpciones || !btnOpciones || !menuOpciones) return;
+        cerrarMenuMovilAlAbrirOpciones();
+        cajaOpciones.classList.add('abierto');
+        btnOpciones.setAttribute('aria-expanded', 'true');
+        menuOpciones.hidden = false;
+    }
+
+    function toggleMenuOpciones() {
+        if (!menuOpciones) return;
+        if (menuOpciones.hidden) abrirMenuOpciones();
+        else cerrarMenuOpciones();
     }
 
     function pintarPuntos() {
@@ -141,16 +178,15 @@
         if (abierto) return;
         abierto = true;
         indice = 0;
-        botonAbrir.classList.add('guia-boton-activo');
-        botonAbrir.setAttribute('aria-expanded', 'true');
+        cerrarMenuOpciones();
+        if (botonAbrir) {
+            botonAbrir.classList.add('guia-boton-activo');
+            botonAbrir.setAttribute('aria-expanded', 'true');
+        }
         overlay.hidden = false;
         document.body.classList.add('guia-abierta');
         requestAnimationFrame(function () {
             overlay.classList.add('guia-visible');
-            botonAbrir.classList.add('guia-boton-click');
-            window.setTimeout(function () {
-                botonAbrir.classList.remove('guia-boton-click');
-            }, 480);
         });
         mostrarPaso(0, 'der');
         marcarVista();
@@ -161,19 +197,40 @@
         if (!abierto) return;
         abierto = false;
         overlay.classList.remove('guia-visible');
-        botonAbrir.classList.remove('guia-boton-activo');
-        botonAbrir.setAttribute('aria-expanded', 'false');
+        if (botonAbrir) {
+            botonAbrir.classList.remove('guia-boton-activo');
+            botonAbrir.setAttribute('aria-expanded', 'false');
+        }
         document.body.classList.remove('guia-abierta');
         window.setTimeout(function () {
             overlay.hidden = true;
         }, 320);
-        if (botonAbrir.focus) botonAbrir.focus();
+        if (btnOpciones && btnOpciones.focus) btnOpciones.focus();
     }
 
-    botonAbrir.addEventListener('click', function () {
-        if (abierto) cerrarGuia();
-        else abrirGuia();
+    if (btnOpciones) {
+        btnOpciones.addEventListener('click', function (evento) {
+            evento.stopPropagation();
+            toggleMenuOpciones();
+        });
+    }
+    if (btnAyudaNav) {
+        btnAyudaNav.addEventListener('click', function () {
+            abrirGuia();
+        });
+    }
+    document.addEventListener('click', function (evento) {
+        if (!cajaOpciones || !cajaOpciones.classList.contains('abierto')) return;
+        if (cajaOpciones.contains(evento.target)) return;
+        cerrarMenuOpciones();
     });
+    document.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Escape' && cajaOpciones && cajaOpciones.classList.contains('abierto') && !abierto) {
+            cerrarMenuOpciones();
+            if (btnOpciones && btnOpciones.focus) btnOpciones.focus();
+        }
+    });
+
     botonCerrar.addEventListener('click', cerrarGuia);
     botonOmitir.addEventListener('click', cerrarGuia);
     overlay.addEventListener('click', function (evento) {
@@ -206,10 +263,11 @@
         }
     });
 
-    /* Primera visita al panel: pulso suave en el botón de ayuda. */
     try {
-        if (localStorage.getItem('admin-guia-vista') !== '1') {
-            botonAbrir.classList.add('guia-boton-nuevo');
+        if (localStorage.getItem('admin-guia-vista') !== '1' && btnOpciones) {
+            btnOpciones.classList.add('guia-boton-nuevo');
         }
     } catch (e) {}
+
+    window.abrirGuiaAdmin = abrirGuia;
 })();

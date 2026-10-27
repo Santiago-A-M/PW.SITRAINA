@@ -1,8 +1,17 @@
 /* Panel del administrador: asistente por pasos para mes, día, hora y vista previa. */
 (function () {
     var token = document.getElementById('agenda-token');
-    var aviso = document.getElementById('agenda-aviso');
-    var estadoGuardado = document.getElementById('estado-guardado');
+    var alertaCaja = document.getElementById('admin-alerta');
+    var alertaAbrir = document.getElementById('admin-alerta-abrir');
+    var alertaPopup = document.getElementById('admin-alerta-popup');
+    var alertaFondo = document.getElementById('admin-alerta-fondo');
+    var alertaLista = document.getElementById('admin-alerta-lista');
+    var alertaVacio = document.getElementById('admin-alerta-vacio');
+    var alertaCuenta = document.getElementById('admin-alerta-cuenta');
+    var alertaCerrar = document.getElementById('admin-alerta-cerrar');
+    var alertas = [];
+    var alertaId = 0;
+    var timerAlerta = null;
     var campoMes = document.getElementById('mes');
     var listaHora = document.getElementById('lista-hora');
     var listaMesResumen = document.getElementById('lista-mes-resumen');
@@ -81,44 +90,105 @@
     var paso = 1;
     var diaSeleccionado = '';
     var estadoFinal = 'abierta';
-    var timerGuardado = null;
     var horaAyuda = document.getElementById('hora-ayuda');
+
+    function renderAlertas() {
+        if (!alertaLista) return;
+        alertaLista.innerHTML = '';
+        if (!alertas.length) {
+            var vacio = document.createElement('p');
+            vacio.className = 'admin-alerta-vacio';
+            vacio.id = 'admin-alerta-vacio';
+            vacio.textContent = 'No hay advertencias por ahora.';
+            alertaLista.appendChild(vacio);
+            alertaVacio = vacio;
+        } else {
+            alertaVacio = null;
+            for (var i = 0; i < alertas.length; i++) {
+                var p = document.createElement('p');
+                p.className = 'admin-alerta-item' + (alertas[i].esError ? '' : ' admin-alerta-item-ok');
+                p.textContent = alertas[i].texto;
+                alertaLista.appendChild(p);
+            }
+        }
+        var n = alertas.length;
+        if (alertaCaja) alertaCaja.classList.toggle('admin-alerta-con-avisos', n > 0);
+        if (alertaCuenta) {
+            alertaCuenta.hidden = n < 1;
+            alertaCuenta.textContent = n > 9 ? '9+' : String(n);
+        }
+    }
+
+    function setAlertaAbierta(abierto) {
+        if (!alertaPopup || !alertaAbrir) return;
+        alertaPopup.hidden = !abierto;
+        alertaAbrir.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+        if (abierto && alertaCerrar) alertaCerrar.focus();
+    }
+
+    function quitarAlerta(id) {
+        alertas = alertas.filter(function (item) { return item.id !== id; });
+        renderAlertas();
+    }
+
+    function pintarAlerta(texto, esError, autoCerrarMs) {
+        if (!texto) return;
+        var id = ++alertaId;
+        alertas.unshift({ id: id, texto: String(texto), esError: !!esError });
+        if (alertas.length > 12) alertas.length = 12;
+        renderAlertas();
+        if (autoCerrarMs > 0) {
+            clearTimeout(timerAlerta);
+            timerAlerta = setTimeout(function () {
+                quitarAlerta(id);
+            }, autoCerrarMs);
+        }
+    }
+
+    window.adminMostrarAlerta = pintarAlerta;
+
+    if (alertaAbrir) {
+        alertaAbrir.addEventListener('click', function () {
+            setAlertaAbierta(alertaPopup ? alertaPopup.hidden : true);
+        });
+    }
+    if (alertaCerrar) {
+        alertaCerrar.addEventListener('click', function () {
+            setAlertaAbierta(false);
+        });
+    }
+    if (alertaFondo) {
+        alertaFondo.addEventListener('click', function () {
+            setAlertaAbierta(false);
+        });
+    }
+    document.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Escape' && alertaPopup && !alertaPopup.hidden) {
+            setAlertaAbierta(false);
+        }
+    });
+    renderAlertas();
+
+    function mostrarAviso(texto) {
+        if (!texto) return;
+        pintarAlerta(texto, true, 0);
+    }
+
+    function mostrarGuardado(texto) {
+        if (!texto) return;
+        pintarAlerta(texto, false, 2400);
+    }
+
+    function mostrarErrorGuardado(texto) {
+        if (!texto) return;
+        pintarAlerta(texto, true, 0);
+    }
+
     if (!token || !campoMes || !diasMes || !asistente) return;
 
     var hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
     campoMes.value = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
-
-    function mostrarAviso(texto) {
-        if (!aviso) return;
-        aviso.hidden = !texto;
-        aviso.textContent = texto || '';
-    }
-
-    function mostrarGuardado(texto) {
-        if (!estadoGuardado) return;
-        clearTimeout(timerGuardado);
-        estadoGuardado.hidden = !texto;
-        estadoGuardado.textContent = texto || '';
-        estadoGuardado.classList.remove('error-guardado');
-        if (texto) {
-            timerGuardado = setTimeout(function () {
-                estadoGuardado.hidden = true;
-                estadoGuardado.textContent = '';
-            }, 2400);
-        }
-    }
-
-    function mostrarErrorGuardado(texto) {
-        if (!estadoGuardado) {
-            mostrarAviso(texto);
-            return;
-        }
-        clearTimeout(timerGuardado);
-        estadoGuardado.hidden = !texto;
-        estadoGuardado.textContent = texto || '';
-        estadoGuardado.classList.add('error-guardado');
-    }
 
     function encolar(trabajo) {
         var corre = cola.then(trabajo, trabajo);
@@ -834,7 +904,7 @@
         if (typeof campos.persona === 'string') datos.append('persona', campos.persona);
         if (typeof campos.motivo === 'string') datos.append('motivo', campos.motivo);
         if (typeof campos.notas === 'string') datos.append('notas', campos.notas);
-        return fetch('agenda.php', { method: 'POST', body: datos })
+        return fetch('agenda.php', { method: 'POST', body: datos, credentials: 'same-origin' })
             .then(function (respuesta) {
                 return respuesta.json().catch(function () { return null; });
             })
@@ -919,7 +989,7 @@
             datos.append('valor', id);
             datos.append('id', id);
             datos.append('mensaje', mensaje);
-            return fetch('agenda.php', { method: 'POST', body: datos })
+            return fetch('agenda.php', { method: 'POST', body: datos, credentials: 'same-origin' })
                 .then(function (respuesta) {
                     return respuesta.json().catch(function () { return null; });
                 })
@@ -1119,7 +1189,7 @@
         datos.append('tipo', tipo);
         datos.append('valor', valor);
         datos.append('estado', estado);
-        return fetch('agenda.php', { method: 'POST', body: datos })
+        return fetch('agenda.php', { method: 'POST', body: datos, credentials: 'same-origin' })
             .then(function (respuesta) {
                 return respuesta.json().catch(function () { return null; });
             })
@@ -1287,15 +1357,23 @@
         });
     }
 
-    var linkSalir = document.getElementById('cerrar-sesion');
+    var linkSalir = document.getElementById('cerrar-sesion') || document.querySelector('.admin-opciones-salir');
     if (linkSalir) {
         linkSalir.addEventListener('click', function (evento) {
-            /* En vista previa local (sin PHP) salir.php se descargaba; ir al ingreso HTML. */
-            var host = location.hostname || '';
-            var esLocal = host === '127.0.0.1' || host === 'localhost' || location.protocol === 'file:';
-            if (!esLocal) return;
+            /* Sin PHP (file://, Live Preview, localhost estático) salir.php se descarga como archivo. */
+            var host = (location.hostname || '').toLowerCase();
+            var esLocal =
+                location.protocol === 'file:' ||
+                host === '' ||
+                host === '127.0.0.1' ||
+                host === 'localhost' ||
+                /\.local$/.test(host);
             evento.preventDefault();
-            location.href = 'index.html';
+            if (esLocal) {
+                location.href = 'index.html';
+                return;
+            }
+            location.href = 'salir.php';
         });
     }
 

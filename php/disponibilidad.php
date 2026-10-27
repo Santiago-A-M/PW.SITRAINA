@@ -1,9 +1,7 @@
 <?php
-/* Conexión y reglas de la agenda: qué días y horas se pueden reservar. */
+/* Conexiones: Info_Afiliados, Info_Consultas, Info_Cuentas_Admins. */
 
-/* Abre la base de administración. Si no hay config.php, devuelve null. */
-function abrir_agenda() {
-    $archivo = dirname(__DIR__) . '/admin/config.php';
+function abrir_mysql_desde($archivo) {
     if (!is_file($archivo)) {
         return null;
     }
@@ -29,10 +27,34 @@ function abrir_agenda() {
     return $mysqli;
 }
 
+/* Info_Cuentas_Admins: Admin_Info + Agenda. */
+function abrir_admin() {
+    return abrir_mysql_desde(dirname(__DIR__) . '/admin/config.php');
+}
+
+/* Info_Consultas: Consulta_Contacto, Consulta_Afiliacion, Consulta_Asesoria. */
+function abrir_consultas() {
+    return abrir_mysql_desde(__DIR__ . '/config.php');
+}
+
+/* Alias de compatibilidad. */
+function abrir_usuarios() {
+    return abrir_consultas();
+}
+
+/* Info_Afiliados: tabla Cuenta (carga manual). */
+function abrir_afiliados() {
+    return abrir_mysql_desde(__DIR__ . '/config_afiliados.php');
+}
+
+function abrir_agenda() {
+    return abrir_admin();
+}
+
 /* Lee meses, días y horas guardados y los separa por tipo. */
 function leer_agenda($mysqli) {
     $reglas = ['fechas' => [], 'meses' => [], 'horas' => [], 'filas' => []];
-    $consulta = $mysqli->prepare('SELECT tipo, valor, estado FROM agenda ORDER BY tipo, valor');
+    $consulta = $mysqli->prepare('SELECT tipo, valor, estado FROM Agenda ORDER BY tipo, valor');
     if (!$consulta) {
         return null;
     }
@@ -55,10 +77,12 @@ function leer_agenda($mysqli) {
 /* Lee las citas ya reservadas (con comentarios y correo si existen). */
 function leer_citas($mysqli) {
     $citas = [];
-    $consulta = $mysqli->prepare('SELECT id, fecha, hora, persona, correo, motivo, notas FROM citas ORDER BY fecha, hora');
+    $consulta = $mysqli->prepare(
+        'SELECT id, fecha, hora, persona, correo, motivo, notas, creado_en FROM Consulta_Asesoria ORDER BY creado_en DESC, fecha DESC, hora DESC'
+    );
     if ($consulta) {
         $consulta->execute();
-        $consulta->bind_result($id, $fecha, $hora, $persona, $correo, $motivo, $notas);
+        $consulta->bind_result($id, $fecha, $hora, $persona, $correo, $motivo, $notas, $creadoEn);
         while ($consulta->fetch()) {
             $citas[] = [
                 'id' => (int) $id,
@@ -68,49 +92,13 @@ function leer_citas($mysqli) {
                 'correo' => (string) $correo,
                 'motivo' => (string) $motivo,
                 'notas' => (string) $notas,
+                'creado_en' => (string) $creadoEn,
             ];
         }
         $consulta->close();
         return $citas;
     }
-    $consulta = $mysqli->prepare('SELECT id, fecha, hora, persona, motivo, notas FROM citas ORDER BY fecha, hora');
-    if ($consulta) {
-        $consulta->execute();
-        $consulta->bind_result($id, $fecha, $hora, $persona, $motivo, $notas);
-        while ($consulta->fetch()) {
-            $citas[] = [
-                'id' => (int) $id,
-                'fecha' => $fecha,
-                'hora' => $hora,
-                'persona' => (string) $persona,
-                'correo' => '',
-                'motivo' => (string) $motivo,
-                'notas' => (string) $notas,
-            ];
-        }
-        $consulta->close();
-        return $citas;
-    }
-    /* Respaldo si aún no se agregaron las columnas de comentarios. */
-    $consulta = $mysqli->prepare('SELECT id, fecha, hora FROM citas ORDER BY fecha, hora');
-    if (!$consulta) {
-        return [];
-    }
-    $consulta->execute();
-    $consulta->bind_result($id, $fecha, $hora);
-    while ($consulta->fetch()) {
-        $citas[] = [
-            'id' => (int) $id,
-            'fecha' => $fecha,
-            'hora' => $hora,
-            'persona' => '',
-            'correo' => '',
-            'motivo' => '',
-            'notas' => '',
-        ];
-    }
-    $consulta->close();
-    return $citas;
+    return [];
 }
 
 /* Recorta texto para columnas de la cita. */
@@ -123,31 +111,28 @@ function recortar_cita($texto, $maximo) {
 }
 
 /* Reserva una hora. Devuelve true, false si ya estaba tomada, o null si no se pudo guardar. */
-function reservar_cita($mysqli, $fecha, $hora, $persona = '', $motivo = '', $notas = '', $correo = '') {
+function reservar_cita($mysqli, $fecha, $hora, $persona = '', $motivo = '', $notas = '', $correo = '', $cedula = '') {
     $persona = recortar_cita($persona, 120);
     $motivo = recortar_cita($motivo, 800);
     $notas = recortar_cita($notas, 800);
     $correo = strtolower(recortar_cita($correo, 120));
-    $consulta = $mysqli->prepare('INSERT INTO citas (fecha, hora, persona, correo, motivo, notas) VALUES (?, ?, ?, ?, ?, ?)');
-    if ($consulta) {
-        $consulta->bind_param('ssssss', $fecha, $hora, $persona, $correo, $motivo, $notas);
-    } else {
-        $consulta = $mysqli->prepare('INSERT INTO citas (fecha, hora, persona, motivo, notas) VALUES (?, ?, ?, ?, ?)');
-        if ($consulta) {
-            $consulta->bind_param('sssss', $fecha, $hora, $persona, $motivo, $notas);
-        } else {
-            $consulta = $mysqli->prepare('INSERT INTO citas (fecha, hora) VALUES (?, ?)');
-            if (!$consulta) {
-                return null;
-            }
-            $consulta->bind_param('ss', $fecha, $hora);
-        }
+    $cedula = preg_replace('/\D/', '', (string) $cedula);
+    if (strlen($cedula) > 9) {
+        $cedula = substr($cedula, 0, 9);
     }
+    $consulta = $mysqli->prepare(
+        'INSERT INTO Consulta_Asesoria (fecha, hora, cedula, persona, correo, motivo, notas) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    );
+    if (!$consulta) {
+        return null;
+    }
+    $consulta->bind_param('sssssss', $fecha, $hora, $cedula, $persona, $correo, $motivo, $notas);
     $guardo = $consulta->execute();
     $duplicada = $consulta->errno === 1062;
+    $nuevoId = $guardo ? (int) $mysqli->insert_id : 0;
     $consulta->close();
     if ($guardo) {
-        return true;
+        return $nuevoId > 0 ? $nuevoId : true;
     }
     if ($duplicada) {
         return false;
@@ -166,7 +151,7 @@ function actualizar_cita($mysqli, $id, $fecha, $hora, $persona = '', $motivo = '
     $notas = recortar_cita($notas, 800);
     if ($correo !== null) {
         $correo = strtolower(recortar_cita($correo, 120));
-        $consulta = $mysqli->prepare('UPDATE citas SET fecha = ?, hora = ?, persona = ?, correo = ?, motivo = ?, notas = ? WHERE id = ? LIMIT 1');
+        $consulta = $mysqli->prepare('UPDATE Consulta_Asesoria SET fecha = ?, hora = ?, persona = ?, correo = ?, motivo = ?, notas = ? WHERE id = ? LIMIT 1');
         if ($consulta) {
             $consulta->bind_param('ssssssi', $fecha, $hora, $persona, $correo, $motivo, $notas, $id);
             $ok = $consulta->execute();
@@ -174,16 +159,11 @@ function actualizar_cita($mysqli, $id, $fecha, $hora, $persona = '', $motivo = '
             return $ok;
         }
     }
-    $consulta = $mysqli->prepare('UPDATE citas SET fecha = ?, hora = ?, persona = ?, motivo = ?, notas = ? WHERE id = ? LIMIT 1');
+    $consulta = $mysqli->prepare('UPDATE Consulta_Asesoria SET fecha = ?, hora = ?, persona = ?, motivo = ?, notas = ? WHERE id = ? LIMIT 1');
     if (!$consulta) {
-        $consulta = $mysqli->prepare('UPDATE citas SET fecha = ?, hora = ? WHERE id = ? LIMIT 1');
-        if (!$consulta) {
-            return false;
-        }
-        $consulta->bind_param('ssi', $fecha, $hora, $id);
-    } else {
-        $consulta->bind_param('sssssi', $fecha, $hora, $persona, $motivo, $notas, $id);
+        return false;
     }
+    $consulta->bind_param('sssssi', $fecha, $hora, $persona, $motivo, $notas, $id);
     $ok = $consulta->execute();
     $consulta->close();
     return $ok;
@@ -213,6 +193,7 @@ function enviar_respuesta_cita($correo, $persona, $fecha, $hora, $mensaje) {
     if (!preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/', $correo)) {
         return false;
     }
+    require_once __DIR__ . '/correo_smtp.php';
     $persona = trim((string) $persona);
     $asunto = 'Respuesta a su solicitud de cita - SITRAINA';
     $cuerpo = "Hola" . ($persona !== '' ? (' ' . $persona) : '') . ",\n\n";
@@ -223,40 +204,7 @@ function enviar_respuesta_cita($correo, $persona, $fecha, $hora, $mensaje) {
     $cuerpo .= ".\n\n";
     $cuerpo .= $mensaje . "\n\n";
     $cuerpo .= "— Administración SITRAINA\n";
-
-    $raiz = dirname(__DIR__);
-    $exception = $raiz . '/phpmailer/src/exception.php';
-    $phpmailer = $raiz . '/phpmailer/src/phpmailer.php';
-    $smtp = $raiz . '/phpmailer/src/smtp.php';
-    if (!is_file($exception) || !is_file($phpmailer) || !is_file($smtp)) {
-        return false;
-    }
-    require_once $exception;
-    require_once $phpmailer;
-    require_once $smtp;
-
-    try {
-        $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host = 'smtp.ina.ac.cr';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'sitraina@ina.ac.cr';
-        $mail->Password = 'Prueb@2026';
-        $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-        $mail->CharSet = 'UTF-8';
-        $mail->setFrom('sitraina@ina.ac.cr', 'SITRAINA');
-        $mail->addAddress($correo, $persona !== '' ? $persona : $correo);
-        $mail->addReplyTo('sitraina@ina.ac.cr', 'SITRAINA');
-        $mail->isHTML(true);
-        $mail->Subject = $asunto;
-        $mail->Body = nl2br(htmlspecialchars($cuerpo, ENT_QUOTES, 'UTF-8'));
-        $mail->AltBody = $cuerpo;
-        $mail->send();
-        return true;
-    } catch (\Throwable $e) {
-        return false;
-    }
+    return enviar_correo_sitraina_con_respaldo($correo, $persona, $asunto, $cuerpo);
 }
 
 /* Borra una cita por id. */
@@ -265,7 +213,7 @@ function borrar_cita_id($mysqli, $id) {
     if ($id < 1) {
         return false;
     }
-    $consulta = $mysqli->prepare('DELETE FROM citas WHERE id = ? LIMIT 1');
+    $consulta = $mysqli->prepare('DELETE FROM Consulta_Asesoria WHERE id = ? LIMIT 1');
     if (!$consulta) {
         return false;
     }
@@ -277,7 +225,7 @@ function borrar_cita_id($mysqli, $id) {
 
 /* Borra una reserva si el correo de confirmación no se pudo enviar. */
 function liberar_cita($mysqli, $fecha, $hora) {
-    $consulta = $mysqli->prepare('DELETE FROM citas WHERE fecha = ? AND hora = ? LIMIT 1');
+    $consulta = $mysqli->prepare('DELETE FROM Consulta_Asesoria WHERE fecha = ? AND hora = ? LIMIT 1');
     if (!$consulta) {
         return;
     }

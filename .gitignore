@@ -1,2 +1,4 @@
 php/config.php
 admin/config.php
+admin/config_respuestas.php
+php/config_respuestas.php

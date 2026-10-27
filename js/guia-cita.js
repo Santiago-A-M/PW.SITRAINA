@@ -30,7 +30,7 @@
         },
         {
             titulo: 'Cuando te respondan',
-            texto: 'Administración te escribe desde sitraina@ina.ac.cr a ese mismo correo. El mensaje trae la fecha y hora de tu cita y el texto de la respuesta.'
+            texto: 'Administración te escribe desde sitraina@ina.ac.cr a ese mismo correo. El mensaje trae la fecha y hora de tu cita y el texto de la respuesta.',
             icono: '5'
         },
         {

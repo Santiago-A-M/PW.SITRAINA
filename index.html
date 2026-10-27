@@ -9,6 +9,14 @@
         if (localStorage.getItem('modoOscuro') === 'true') {
           document.documentElement.classList.add('dark-mode');
         }
+        if (localStorage.getItem('modoDaltonico') === 'true') {
+          document.documentElement.classList.add('daltonico');
+          var __dl = document.createElement('link');
+          __dl.id = 'daltonico-css';
+          __dl.rel = 'stylesheet';
+          __dl.href = 'css/daltonico.css?v=1.1';
+          document.head.appendChild(__dl);
+        }
       } catch (e) {}
       try {
         var nav = sessionStorage.getItem('sitrainaNav');
@@ -34,7 +42,7 @@
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
 
-  <link rel="stylesheet" href="css/estilo.css?v=3.10">
+  <link rel="stylesheet" href="css/estilo.css?v=3.32">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
   
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -80,7 +88,7 @@
 
 <body class="pagina-inicio pagina-fondo">
   <!-- Barra fija: logo, menú y botón de tono. -->
-  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');</script>
+  <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');if(document.documentElement.classList.contains('daltonico'))document.body.classList.add('daltonico');</script>
 
   <header class="header">
   <!-- Logo, menú de seis páginas y botón de tono. -->
@@ -230,7 +238,7 @@
             <strong>Miguel Vargas Arias</strong>
             <span class="directivo-resumen">Se encarga de procesar las nuevas solicitudes, validar la documentación y mantener actualizada la base de datos.</span>
           </button>
-          <button type="button" class="directivo-card" data-puesto="Secretaría de Conflictos" data-nombre="Eduardo Ortega Rodríguez" data-correo="eortegarodriguez@ina.ac.cr" data-foto="img/secretaria-conflictos.jpg" data-info="Previene conflictos de trabajo, atiende y asesora los reclamos individuales o colectivos de los afiliados y vela por el cumplimiento del Convenio Colectivo.">
+          <button type="button" class="directivo-card" data-puesto="Secretaría de Conflictos" data-nombre="Eduardo Ortega Rodríguez" data-correo="EOrtegaRodriguez@ina.ac.cr" data-foto="img/secretaria-conflictos.jpg" data-info="Previene conflictos de trabajo, atiende y asesora los reclamos individuales o colectivos de los afiliados y vela por el cumplimiento del Convenio Colectivo.">
             <span class="directivo-puesto">Secretaría de Conflictos</span>
             <img src="img/secretaria-conflictos.jpg" alt="">
             <strong>Eduardo Ortega Rodríguez</strong>
@@ -381,7 +389,7 @@
 </div>
 
   <!-- Script -->
-<script src="js/script.js?v=2.91"></script>
+<script src="js/script.js?v=2.98"></script>
   
 </body>
 </html>

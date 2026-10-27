@@ -28,9 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // --- 2. TONO CLARO / OSCURO ---
+    // --- 2. TONO CLARO / OSCURO + ACCESIBILIDAD ---
     const toggleDark = document.getElementById("toggle-oscuro");
-    localStorage.removeItem("modoDaltonismo");
 
     /* Activa o quita el tono oscuro en toda la página. */
     const aplicarOscuro = (activo) => {
@@ -38,9 +37,187 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle("dark-mode", activo);
     };
 
+    const hojaDaltonico = () => {
+        var href = "css/daltonico.css?v=1.1";
+        try {
+            var links = document.getElementsByTagName("link");
+            for (var i = 0; i < links.length; i++) {
+                var h = links[i].getAttribute("href") || "";
+                if (h.indexOf("estilo.css") !== -1) {
+                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.1");
+                    break;
+                }
+            }
+        } catch (e) {}
+        return href;
+    };
+
+    let daltonicoAnimTimer = null;
+    let daltonicoCssListo = false;
+    const preferirMenosMovimientoDal = () =>
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* Precarga la hoja para que el primer clic no quede bloqueado por la descarga. */
+    const precargarDaltonicoCss = () => {
+        if (document.getElementById("daltonico-css") || document.getElementById("daltonico-preload")) {
+            daltonicoCssListo = !!document.getElementById("daltonico-css");
+            return;
+        }
+        var pre = document.createElement("link");
+        pre.id = "daltonico-preload";
+        pre.rel = "preload";
+        pre.as = "style";
+        pre.href = hojaDaltonico();
+        pre.onload = function () { daltonicoCssListo = true; };
+        pre.onerror = function () { daltonicoCssListo = true; };
+        document.head.appendChild(pre);
+    };
+
+    const asegurarHojaDaltonico = () => {
+        var link = document.getElementById("daltonico-css");
+        if (link) {
+            daltonicoCssListo = true;
+            return link;
+        }
+        var pre = document.getElementById("daltonico-preload");
+        link = document.createElement("link");
+        link.id = "daltonico-css";
+        link.rel = "stylesheet";
+        /* media=print evita el bloqueo de pintado; al cargar pasa a all. */
+        link.media = "print";
+        link.href = (pre && pre.href) || hojaDaltonico();
+        link.onload = function () {
+            link.media = "all";
+            daltonicoCssListo = true;
+        };
+        link.onerror = function () {
+            link.media = "all";
+            daltonicoCssListo = true;
+        };
+        document.head.appendChild(link);
+        /* Si ya está en caché, algunos navegadores no disparan onload a tiempo. */
+        if (link.sheet) {
+            link.media = "all";
+            daltonicoCssListo = true;
+        } else {
+            setTimeout(function () {
+                if (link && link.getAttribute("media") === "print") link.media = "all";
+                daltonicoCssListo = true;
+            }, 60);
+        }
+        return link;
+    };
+
+    const aplicarDaltonico = (activo, conAnimacion) => {
+        var animar = conAnimacion !== false && !preferirMenosMovimientoDal();
+        var finalizar = function () {
+            clearTimeout(daltonicoAnimTimer);
+            daltonicoAnimTimer = setTimeout(function () {
+                document.documentElement.classList.remove("tema-animando");
+            }, 520);
+        };
+
+        if (animar) {
+            document.documentElement.classList.add("tema-animando");
+            void document.documentElement.offsetWidth;
+        }
+
+        if (activo) {
+            asegurarHojaDaltonico();
+            document.documentElement.classList.add("daltonico");
+            document.body.classList.add("daltonico");
+        } else {
+            document.documentElement.classList.remove("daltonico");
+            document.body.classList.remove("daltonico");
+            var linkOff = document.getElementById("daltonico-css");
+            if (linkOff) linkOff.remove();
+        }
+
+        if (animar) finalizar();
+    };
+
+    precargarDaltonicoCss();
+
     if (localStorage.getItem("modoOscuro") === "true") {
         aplicarOscuro(true);
     }
+    if (localStorage.getItem("modoDaltonico") === "true") {
+        aplicarDaltonico(true, false);
+    }
+
+    /* Menú tuerca: opción de colores para daltonismo. */
+    (function montarOpcionesAccesibilidad() {
+        var acciones = document.querySelector(".acciones-header");
+        if (!acciones || document.getElementById("nav-opciones")) return;
+
+        var caja = document.createElement("div");
+        caja.className = "nav-opciones";
+        caja.id = "nav-opciones";
+        caja.innerHTML =
+            '<button type="button" class="nav-opciones-btn" id="nav-opciones-btn" aria-expanded="false" aria-haspopup="true" aria-controls="nav-opciones-menu" title="Opciones" aria-label="Abrir opciones">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13a7.7 7.7 0 0 0 .05-2l2.05-1.6-2-3.46-2.45.98a7.9 7.9 0 0 0-1.73-1L14.9 2h-5.8L8.68 4.92a7.9 7.9 0 0 0-1.73 1L4.5 4.94l-2 3.46L4.55 11a7.7 7.7 0 0 0 0 2l-2.05 1.6 2 3.46 2.45-.98a7.9 7.9 0 0 0 1.73 1L9.1 22h5.8l.42-2.92a7.9 7.9 0 0 0 1.73-1l2.45.98 2-3.46L19.4 13z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>' +
+            "</button>" +
+            '<div class="nav-opciones-menu" id="nav-opciones-menu" role="menu" hidden>' +
+            '<button type="button" class="nav-opciones-item" id="toggle-daltonico" role="menuitem" aria-pressed="false">' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true">◐</span>' +
+            "<span>Modo daltónico</span>" +
+            '<span class="nav-opciones-item-estado" id="daltonico-estado">Off</span>' +
+            "</button></div>";
+        acciones.appendChild(caja);
+
+        var btn = document.getElementById("nav-opciones-btn");
+        var menu = document.getElementById("nav-opciones-menu");
+        var toggleDal = document.getElementById("toggle-daltonico");
+        var estadoDal = document.getElementById("daltonico-estado");
+
+        var pintarDaltonico = function () {
+            var on = document.documentElement.classList.contains("daltonico");
+            if (toggleDal) {
+                toggleDal.classList.toggle("activo", on);
+                toggleDal.setAttribute("aria-pressed", on ? "true" : "false");
+            }
+            if (estadoDal) estadoDal.textContent = on ? "On" : "Off";
+        };
+
+        var cerrar = function () {
+            caja.classList.remove("abierto");
+            if (btn) btn.setAttribute("aria-expanded", "false");
+            if (menu) menu.hidden = true;
+        };
+
+        var abrir = function () {
+            precargarDaltonicoCss();
+            caja.classList.add("abierto");
+            if (btn) btn.setAttribute("aria-expanded", "true");
+            if (menu) menu.hidden = false;
+        };
+
+        pintarDaltonico();
+        if (btn) {
+            btn.addEventListener("click", function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                if (menu && menu.hidden) abrir();
+                else cerrar();
+            });
+        }
+        if (toggleDal) {
+            toggleDal.addEventListener("click", function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                var on = !document.documentElement.classList.contains("daltonico");
+                localStorage.setItem("modoDaltonico", on ? "true" : "false");
+                aplicarDaltonico(on, true);
+                pintarDaltonico();
+            });
+        }
+        document.addEventListener("click", function (ev) {
+            if (!caja.contains(ev.target)) cerrar();
+        });
+        document.addEventListener("keydown", function (ev) {
+            if (ev.key === "Escape") cerrar();
+        });
+    })();
 
     if (toggleDark) {
         /* Cambia la etiqueta del botón de sol o luna según el tono actual. */
@@ -1781,6 +1958,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return bot('Hola, soy Sitrabot, el asistente virtual de SITRAINA. Puedo orientarte sobre el sindicato, la afiliación y su cuota, la asesoría legal, los convenios, los documentos y el contacto. ¿Qué necesitas?');
     }
 
+    /* Temas solo del panel / técnico del sitio: el bot público no debe orientar sobre esto. */
+    function esTemaAdmin(q) {
+        if (/administracion publica|ley general de la administracion|personal administrativo/.test(q)) return false;
+        return (
+            /panel (de )?(admin|administracion)|acceso (de |al )?admin|login (de |al )?(admin|panel)|entrar al (panel|admin)|cuenta(s)? (de )?admin|usuario(s)? (de )?admin|sitrabot admin|bot (de )?admin/.test(q) ||
+            /config(_afiliados|_respuestas)?\.php|config\.php|admin\/config|php\/config|generar\.php|salir\.php|agenda\.php|solicitudes\.php/.test(q) ||
+            /info_afiliados|info_consultas|info_cuentas|info_respuestas|admin_info|consulta_contacto|consulta_afiliacion|consulta_asesoria|respuesta_contacto|respuesta_afiliacion|respuesta_asesoria/.test(q) ||
+            /phpmyadmin|mysql|mariadb|sql211|if0_|infinityfree|filezilla|\bftp\b|host(ing)? (mysql|de la base)|usuario (mysql|de la base)|clave (mysql|de la base|hash)|clave_hash/.test(q) ||
+            /(como |donde )?(creo|crear|hago|hacer|subo|subir|publico|publicar|configuro|conectar|conexion) (la |una |el |las )?(base(s)? de datos|tabla(s)?|servidor|sitio)/.test(q) ||
+            /base(s)? de datos|tabla (cuenta|agenda|cuentas)|sql\/0[1-4]|admin\.sql|usuarios\.sql|respuestas\.sql/.test(q) ||
+            /papelera|ver solicitudes|aceptar (o |y )?rechazar|fechas guardadas|agregar fecha|horario del panel|dias habiles (del )?panel/.test(q) ||
+            /contrasena(s)? (de )?(admin|panel|acceso)|password(s)?|hash (de )?(la )?clave|cifrar (la )?clave|cuenta santiago|santiagoabarcamateo|120360070/.test(q) ||
+            /\bcursor\b.*(php|mysql|local|guardar)|localhost|vista previa estatica|codigo (del )?(panel|admin|sitio)|visual studio|vscode/.test(q)
+        );
+    }
+
+    function rechazoAdmin() {
+        return bot('Esa información es solo para la administración del sitio. Yo oriento al público sobre afiliación, asesoría, convenios, documentos y contacto. Para gestionar el panel usá el acceso de Administración.');
+    }
+
     /* Elige la respuesta. La primera regla que coincide gana, por eso las preguntas concretas van primero. */
     function responder(texto) {
         var q = sinAcentos(texto);
@@ -1795,6 +1992,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (/guardas (el|la|los|las)? ?(chat|conversacion|mensajes)|privacidad del chat|quien ve (mis )?mensajes/.test(q)) {
             return bot('Las preguntas de este chat se guardan solo en esta sesión del navegador, en este dispositivo. Para un caso personal, escribe a sitraina@ina.ac.cr o pide cita con la asesoría.');
         }
+        if (esTemaAdmin(q)) return rechazoAdmin();
         if (/que paginas|que secciones|como navego|mapa del sitio/.test(q)) {
             return bot('El menú tiene Inicio, Conócenos, Afiliación, Asesoría, Documentos y Contacto. En Documentos se abren las efemérides, la Hoja del Miércoles, los convenios, los documentos legales, los informes y las actas.');
         }
@@ -1820,7 +2018,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
         }
         if (/acoso|me acosan/.test(q)) {
-            return bot('La Secretaría de Conflictos, Eduardo Ortega Rodríguez, eortegarodriguez@ina.ac.cr, atiende reclamos de las personas afiliadas. También puedes pedir apoyo jurídico en Asesoría. Esta página no lleva un formulario solo para ese caso.');
+            return bot('La Secretaría de Conflictos, Eduardo Ortega Rodríguez, EOrtegaRodriguez@ina.ac.cr, atiende reclamos de las personas afiliadas. También puedes pedir apoyo jurídico en Asesoría. Esta página no lleva un formulario solo para ese caso.');
         }
         if (/huelga|paro laboral|irnos a paro/.test(q)) {
             return bot('El sitio presenta el diálogo, la negociación colectiva y la Secretaría de Conflictos como vías del sindicato. Para un caso concreto, pide cita con la asesoría legal.');
@@ -1836,9 +2034,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (/formsubmit|como (me )?llega (el )?correo|de donde llega (el )?correo|spam de la cita|remitente (del )?correo|respuesta (de la |a la )?cita|guia (del )?correo/.test(q)) {
             return bot([
-                txt('Las citas usan FormSubmit. En '),
+                txt('Las citas llegan por correo a SITRAINA. En '),
                 enl('Solicitar cita', 'solicitar-cita.html'),
-                txt(' abrí la guía con popups: botón «Cómo te llega el correo» o «Guía correo» abajo a la izquierda. Revisá también spam; la respuesta llega al mismo correo del formulario.')
+                txt(' abrí la guía con popups: botón «Cómo te llega el correo» . Revisá también spam; la respuesta llega al mismo correo del formulario.')
             ]);
         }
         if (/puedo pedir cita si no|cita sin estar afiliad|no estoy afiliad|no soy afiliad/.test(q)) {
@@ -2001,7 +2199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return bot('Cristhofer Hernández Guzmán es Vocal 3. Sustituye las vacantes de las personas titulares. Su correo es chernandezguzman@ina.ac.cr.');
         }
         if (/eduardo ortega|eortega/.test(q)) {
-            return bot('Eduardo Ortega Rodríguez ocupa la Secretaría de Conflictos, eortegarodriguez@ina.ac.cr. Previene conflictos, atiende reclamos individuales o colectivos y vela por el cumplimiento de la convención colectiva.');
+            return bot('Eduardo Ortega Rodríguez ocupa la Secretaría de Conflictos, EOrtegaRodriguez@ina.ac.cr. Previene conflictos, atiende reclamos individuales o colectivos y vela por el cumplimiento de la convención colectiva.');
         }
         if (/walia|baltodano/.test(q)) {
             return bot('Walia Baltodano Fernández tiene un informe de labores en Documentos, tipo Informes de labores.');
@@ -2153,7 +2351,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (/conflicto|reclamo|despid|desped|hostig|queja laboral|me estan|me quieren echar/.test(q)) {
             return bot([
-                txt('La Secretaría de Conflictos, Eduardo Ortega Rodríguez, eortegarodriguez@ina.ac.cr, atiende reclamos individuales o colectivos y vela por la convención colectiva. También puedes pedir cita en '),
+                txt('La Secretaría de Conflictos, Eduardo Ortega Rodríguez, EOrtegaRodriguez@ina.ac.cr, atiende reclamos individuales o colectivos y vela por la convención colectiva. También puedes pedir cita en '),
                 enl('Asesoría', 'asesoria-legal.html'),
                 txt('.')
             ]);
