@@ -4454,14 +4454,17 @@ body.dark-mode .pagina-cita .contenedor {
   outline-offset: 3px;
 }
 
-/* Guía correo: botón fijo + popups (oculto en demo; la ayuda inline basta). */
+/* Guía de envío: overlay in-page; el botón flotante permanece oculto. */
 #guia-cita,
 #guia-formsubmit {
   position: fixed;
-  left: 20px;
-  bottom: 20px;
+  inset: 0;
   z-index: 3900;
   font-family: "Public Sans", sans-serif;
+  pointer-events: none;
+}
+#guia-cita .guia-cita-boton,
+#guia-formsubmit .guia-cita-boton {
   display: none !important;
 }
 
@@ -4575,6 +4578,8 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   align-items: center;
   justify-content: center;
   padding: 18px;
+  pointer-events: auto;
+  overflow: auto;
 }
 
 .guia-cita-overlay[hidden] {
@@ -4593,6 +4598,7 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   position: relative;
   z-index: 1;
   width: min(440px, 100%);
+  max-width: 100%;
   max-height: min(88vh, 640px);
   overflow: auto;
   box-sizing: border-box;
@@ -4616,11 +4622,14 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   transform: none;
 }
 
-.guia-cita-ventana.guia-cita-entra-der {
+.guia-cita-contenido {
+  min-height: 10.5rem;
+  overflow: hidden;
+}
+.guia-cita-contenido.guia-cita-entra-der {
   animation: guia-cita-paso-der 0.34s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-.guia-cita-ventana.guia-cita-entra-izq {
+.guia-cita-contenido.guia-cita-entra-izq {
   animation: guia-cita-paso-izq 0.34s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -4756,6 +4765,9 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   opacity: 0.4;
   cursor: not-allowed;
 }
+.guia-cita-flecha[hidden] {
+  display: none;
+}
 
 .guia-cita-flecha-izq {
   background: #fff;
@@ -4842,24 +4854,25 @@ body.dark-mode .guia-cita-punto.activo {
 }
 
 @media (max-width: 640px) {
-  #guia-cita,
-  #guia-formsubmit {
-    left: 12px;
-    bottom: 12px;
+  .guia-cita-overlay {
+    align-items: flex-end;
+    padding: 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
 
-  .guia-cita-texto {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
+  .guia-cita-ventana {
+    max-height: min(92vh, 100%);
+    width: 100%;
+    padding: 24px 16px 16px;
   }
 
-  .guia-cita-boton {
-    width: 56px;
-    padding: 0;
-    justify-content: center;
+  .guia-cita-titulo {
+    font-size: 1.22rem;
+    overflow-wrap: anywhere;
+  }
+
+  .guia-cita-cuerpo {
+    font-size: 0.98rem;
   }
 
   .guia-cita-acciones {
@@ -4876,6 +4889,7 @@ body.dark-mode .guia-cita-punto.activo {
   .guia-cita-boton,
   .guia-cita-fondo,
   .guia-cita-ventana,
+  .guia-cita-contenido,
   .guia-cita-anillo,
   .cita-guia-abrir-inline {
     transition: none;
@@ -6606,7 +6620,7 @@ html.daltonico textarea::placeholder {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 220px;
+  min-width: 268px;
   padding: 8px;
   border-radius: 14px;
   background: #fff;
@@ -6762,10 +6776,6 @@ html.daltonico.dark-mode .nav-opciones-item-icono {
     pointer-events: auto;
   }
 }
-body:not([data-guia-activa]) #guia-formsubmit {
-  display: none;
-}
-
 /* Hover y foco de campos de escritura (no botones, checks, radios, files ni selects). */
 :is(
   input:not([type]),

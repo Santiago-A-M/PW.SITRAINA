@@ -1,17 +1,53 @@
-/* Guía FormSubmit reutilizable: cita, afiliación o contacto. */
+/* Guía de envío reutilizable: Opciones, cita, afiliación o contacto. */
 (function () {
     if (document.getElementById('guia-formsubmit')) return;
 
-    var tipo = (document.body.getAttribute('data-guia-activa') || document.body.getAttribute('data-guia-formsubmit') || 'cita').toLowerCase();
+    var tipoForzado = '';
+    var origenFoco = null;
+    var tipo = 'ayuda';
     var configs = {
+        ayuda: {
+            storageKey: 'ayuda-envio-vista',
+            botonTitulo: 'Cómo llega tu solicitud',
+            botonTexto: 'Cómo llega tu solicitud',
+            omitir: false,
+            pasos: [
+                {
+                    titulo: '¿Qué ocurre cuando envías una solicitud?',
+                    texto: 'Cuando completás un formulario del sitio y lo enviás, SITRAINA recibe tu solicitud. Puede ser un mensaje de contacto, una cita o consulta de asesoría, o una petición de afiliación.',
+                    icono: '1'
+                },
+                {
+                    titulo: '¿Qué sucede con tus datos?',
+                    texto: 'Tu solicitud queda registrada para que los administradores puedan consultarla después. En citas y afiliación también llega un aviso al correo del sindicato (sitraina@ina.ac.cr). El formulario de contacto se guarda de la misma forma para el sindicato, sin ese aviso extra.',
+                    icono: '2'
+                },
+                {
+                    titulo: '¿Quién revisa la solicitud?',
+                    texto: 'Las personas administradoras de SITRAINA revisan lo que enviaste y deciden la respuesta que corresponde.',
+                    icono: '3'
+                },
+                {
+                    titulo: '¿Cómo recibirás una respuesta?',
+                    texto: 'No hay un buzón dentro de esta página. Cuando administración responde, el mensaje se envía al correo que pusiste en el formulario, desde sitraina@ina.ac.cr. Revisá también la carpeta de spam. Si el correo no llega, tu solicitud igual quedó para el sindicato.',
+                    icono: '4'
+                },
+                {
+                    titulo: 'Recomendaciones',
+                    texto: 'Usá información correcta y un correo que revisés. Antes de enviar, comprobá los datos y guardá lo que te ayude a identificar la solicitud. La respuesta depende de la revisión de los administradores. Podés cerrar esta ayuda cuando quieras.',
+                    icono: '✓'
+                }
+            ]
+        },
         cita: {
             storageKey: 'cita-guia-correo-vista',
             botonTitulo: 'Guía del correo',
             botonTexto: 'Guía correo',
+            omitir: true,
             pasos: [
                 {
                     titulo: 'Cómo te llega el correo',
-                    texto: 'Tu solicitud de cita llega a SITRAINA por correo. La respuesta de administración te la escribe sitraina@ina.ac.cr al correo que pusiste en el formulario.',
+                    texto: 'Tu solicitud de cita llega a SITRAINA. La respuesta de administración te la escribe sitraina@ina.ac.cr al correo que pusiste en el formulario.',
                     icono: '✉'
                 },
                 {
@@ -21,22 +57,22 @@
                 },
                 {
                     titulo: 'Al enviar tu solicitud',
-                    texto: 'Tus datos llegan a SITRAINA por correo. En esta misma página verás la confirmación; no hace falta quedarte en otra web.',
+                    texto: 'Tus datos llegan a SITRAINA. En esta misma página verás la confirmación; no hace falta quedarte en otra web.',
                     icono: '2'
                 },
                 {
                     titulo: 'Cómo se ve el remitente',
-                    texto: 'La confirmación de envío confirma el envío. Cuando administración te responda, el remitente debería ser sitraina@ina.ac.cr y el asunto hablará de tu cita.',
+                    texto: 'Cuando administración te responda, el remitente debería ser sitraina@ina.ac.cr y el asunto hablará de tu cita.',
                     icono: '3'
                 },
                 {
                     titulo: 'Revisá spam',
-                    texto: 'A veces el primer correo cae en spam. Si no lo ves en la bandeja principal, buscá “SITRAINA”, “cita” o sitraina@ina.ac.cr.',
+                    texto: 'A veces el correo cae en spam. Si no lo ves en la bandeja principal, buscá “SITRAINA”, “cita” o sitraina@ina.ac.cr.',
                     icono: '4'
                 },
                 {
                     titulo: 'Cuando te respondan',
-                    texto: 'Administración te escribe desde sitraina@ina.ac.cr a ese mismo correo. El mensaje trae la fecha y hora de tu cita y el texto de la respuesta.',
+                    texto: 'Administración te escribe desde sitraina@ina.ac.cr a ese mismo correo. El mensaje trae la fecha y hora de tu cita y el texto de la respuesta. No hay un buzón en esta página.',
                     icono: '5'
                 },
                 {
@@ -50,25 +86,26 @@
             storageKey: 'afiliacion-guia-correo-vista',
             botonTitulo: 'Guía del correo',
             botonTexto: 'Guía correo',
+            omitir: true,
             pasos: [
                 {
                     titulo: 'Cómo llega tu boleta',
-                    texto: 'Tu solicitud de afiliación llega a SITRAINA por correo (sitraina@ina.ac.cr). También queda guardada en la base para el panel de administración.',
+                    texto: 'Tu solicitud de afiliación llega a SITRAINA (sitraina@ina.ac.cr) y también queda registrada para las personas administradoras.',
                     icono: '✉'
                 },
                 {
                     titulo: 'Correos del formulario',
-                    texto: 'Completá correo INA y/o personal. Administración te responderá a uno de esos correos desde sitraina@ina.ac.cr.',
+                    texto: 'Completá correo INA y/o personal. Administración te responderá a uno de esos correos desde sitraina@ina.ac.cr. No hay un buzón en esta página.',
                     icono: '1'
                 },
                 {
                     titulo: 'Al enviar la boleta',
-                    texto: 'El correo notifica a SITRAINA y la página te muestra la confirmación. No hace falta quedarte en otra web.',
+                    texto: 'SITRAINA recibe un aviso y la página te muestra la confirmación. No hace falta quedarte en otra web.',
                     icono: '2'
                 },
                 {
                     titulo: 'Remitente de la respuesta',
-                    texto: 'La confirmación confirma el envío. Cuando te acepten, rechacen o escriban, el correo vendrá de sitraina@ina.ac.cr.',
+                    texto: 'Cuando te acepten, rechacen o escriban, el correo vendrá de sitraina@ina.ac.cr.',
                     icono: '3'
                 },
                 {
@@ -87,25 +124,26 @@
             storageKey: 'contacto-guia-correo-vista',
             botonTitulo: 'Guía del correo',
             botonTexto: 'Guía correo',
+            omitir: true,
             pasos: [
                 {
                     titulo: 'Cómo llega tu mensaje',
-                    texto: 'Tu consulta de contacto se envía a sitraina@ina.ac.cr y también se guarda para el panel de administración.',
+                    texto: 'Tu consulta de contacto se envía a sitraina@ina.ac.cr y queda registrada para las personas administradoras.',
                     icono: '✉'
                 },
                 {
                     titulo: 'Poné un correo válido',
-                    texto: 'Usá un correo que revisés: ahí te escribirá administración cuando responda tu mensaje.',
+                    texto: 'Usá un correo que revisés: ahí te escribirá administración cuando responda tu mensaje. No hay un buzón en esta página.',
                     icono: '1'
                 },
                 {
                     titulo: 'Al enviar',
-                    texto: 'Verás la confirmación en la página. El sistema avisa a SITRAINA; tu mensaje queda registrado en la base.',
+                    texto: 'Verás la confirmación en la página. El sistema avisa a SITRAINA y tu mensaje queda registrado.',
                     icono: '2'
                 },
                 {
                     titulo: 'Cuando te respondan',
-                    texto: 'La respuesta llega desde sitraina@ina.ac.cr al correo que indicaste, con la decisión o la información que pidió administración.',
+                    texto: 'La respuesta llega desde sitraina@ina.ac.cr al correo que indicaste.',
                     icono: '3'
                 },
                 {
@@ -122,7 +160,7 @@
         }
     };
 
-    var cfg = configs[tipo] || configs.cita;
+    var cfg = configs.ayuda;
     var pasos = cfg.pasos;
     var indice = 0;
     var abierto = false;
@@ -131,7 +169,7 @@
     raiz.id = 'guia-formsubmit';
     raiz.className = 'guia-cita';
     raiz.innerHTML = [
-        '<button type="button" class="guia-cita-boton" id="guia-fs-abrir" aria-expanded="false" aria-controls="guia-fs-overlay" title="' + cfg.botonTitulo + '">',
+        '<button type="button" class="guia-cita-boton" id="guia-fs-abrir" hidden aria-expanded="false" aria-controls="guia-fs-overlay" title="' + cfg.botonTitulo + '">',
         '  <span class="guia-cita-anillo" aria-hidden="true"></span>',
         '  <span class="guia-cita-icono" aria-hidden="true">✉</span>',
         '  <span class="guia-cita-texto">' + cfg.botonTexto + '</span>',
@@ -139,11 +177,13 @@
         '<div class="guia-cita-overlay" id="guia-fs-overlay" hidden>',
         '  <div class="guia-cita-fondo" data-guia-fs-cerrar="1" aria-hidden="true"></div>',
         '  <div class="guia-cita-ventana" role="dialog" aria-modal="true" aria-labelledby="guia-fs-titulo">',
-        '    <button type="button" class="guia-cita-cerrar" id="guia-fs-cerrar" aria-label="Cerrar guía">×</button>',
+        '    <button type="button" class="guia-cita-cerrar" id="guia-fs-cerrar" aria-label="Cerrar ayuda">×</button>',
+        '    <div class="guia-cita-contenido" id="guia-fs-contenido">',
+        '      <div class="guia-cita-icono-paso" id="guia-fs-icono" aria-hidden="true"></div>',
+        '      <h2 class="guia-cita-titulo" id="guia-fs-titulo"></h2>',
+        '      <p class="guia-cita-cuerpo" id="guia-fs-cuerpo"></p>',
+        '    </div>',
         '    <p class="guia-cita-progreso" id="guia-fs-progreso" aria-live="polite"></p>',
-        '    <div class="guia-cita-icono-paso" id="guia-fs-icono" aria-hidden="true"></div>',
-        '    <h2 class="guia-cita-titulo" id="guia-fs-titulo"></h2>',
-        '    <p class="guia-cita-cuerpo" id="guia-fs-cuerpo"></p>',
         '    <div class="guia-cita-puntos" id="guia-fs-puntos" role="tablist" aria-label="Pasos de la guía"></div>',
         '    <div class="guia-cita-acciones">',
         '      <button type="button" class="guia-cita-flecha guia-cita-flecha-izq" id="guia-fs-atras" aria-label="Paso anterior">',
@@ -173,16 +213,36 @@
     var progreso = document.getElementById('guia-fs-progreso');
     var icono = document.getElementById('guia-fs-icono');
     var puntos = document.getElementById('guia-fs-puntos');
+    var contenido = document.getElementById('guia-fs-contenido');
     var ventana = raiz.querySelector('.guia-cita-ventana');
 
-    function aplicarTipoGuia() {
-        tipo = (document.body.getAttribute('data-guia-activa') || document.body.getAttribute('data-guia-formsubmit') || 'cita').toLowerCase();
-        cfg = configs[tipo] || configs.cita;
+    function controlesFoco() {
+        if (!ventana) return [];
+        return Array.prototype.slice.call(ventana.querySelectorAll(
+            'button:not([hidden]):not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )).filter(function (el) {
+            return el.offsetParent !== null || el === botonCerrar;
+        });
+    }
+
+    function aplicarTipoGuia(tipoPedido) {
+        if (tipoPedido && configs[tipoPedido]) {
+            tipoForzado = tipoPedido;
+        }
+        if (tipoForzado && configs[tipoForzado]) {
+            tipo = tipoForzado;
+        } else {
+            tipo = (document.body.getAttribute('data-guia-activa') || document.body.getAttribute('data-guia-formsubmit') || 'ayuda').toLowerCase();
+        }
+        cfg = configs[tipo] || configs.ayuda;
         pasos = cfg.pasos;
         if (botonAbrir) {
             botonAbrir.setAttribute('title', cfg.botonTitulo);
             var textoBtn = botonAbrir.querySelector('.guia-cita-texto');
             if (textoBtn) textoBtn.textContent = cfg.botonTexto;
+        }
+        if (botonOmitir) {
+            botonOmitir.hidden = !cfg.omitir;
         }
     }
 
@@ -197,7 +257,8 @@
             punto.type = 'button';
             punto.className = 'guia-cita-punto' + (i === indice ? ' activo' : '');
             punto.setAttribute('aria-label', 'Ir al paso ' + (i + 1));
-            punto.setAttribute('aria-current', i === indice ? 'step' : 'false');
+            if (i === indice) punto.setAttribute('aria-current', 'step');
+            else punto.removeAttribute('aria-current');
             punto.addEventListener('click', function () {
                 mostrarPaso(i, i > indice ? 'der' : 'izq');
             });
@@ -208,24 +269,34 @@
     function mostrarPaso(nuevo, direccion) {
         indice = Math.max(0, Math.min(pasos.length - 1, nuevo));
         var paso = pasos[indice];
-        if (ventana) {
-            ventana.classList.remove('guia-cita-entra-der', 'guia-cita-entra-izq');
-            void ventana.offsetWidth;
-            ventana.classList.add(direccion === 'izq' ? 'guia-cita-entra-izq' : 'guia-cita-entra-der');
+        var ultimo = indice === pasos.length - 1;
+        if (contenido) {
+            contenido.classList.remove('guia-cita-entra-der', 'guia-cita-entra-izq');
+            void contenido.offsetWidth;
+            contenido.classList.add(direccion === 'izq' ? 'guia-cita-entra-izq' : 'guia-cita-entra-der');
         }
-        if (progreso) progreso.textContent = 'Paso ' + (indice + 1) + ' de ' + pasos.length;
+        if (progreso) progreso.textContent = (indice + 1) + ' / ' + pasos.length;
         if (icono) icono.textContent = paso.icono;
         if (titulo) titulo.textContent = paso.titulo;
         if (cuerpo) cuerpo.textContent = paso.texto;
-        if (botonAtras) botonAtras.disabled = indice === 0;
-        if (textoSiguiente) textoSiguiente.textContent = indice === pasos.length - 1 ? 'Finalizar' : 'Siguiente';
-        if (botonOmitir) botonOmitir.hidden = indice === pasos.length - 1;
+        if (botonAtras) {
+            botonAtras.hidden = indice === 0;
+            botonAtras.disabled = indice === 0;
+        }
+        if (textoSiguiente) textoSiguiente.textContent = ultimo ? 'Finalizar' : 'Siguiente';
+        if (botonSiguiente) {
+            botonSiguiente.setAttribute('aria-label', ultimo ? 'Finalizar ayuda' : 'Paso siguiente');
+        }
+        if (botonOmitir) {
+            botonOmitir.hidden = !cfg.omitir || ultimo;
+        }
         pintarPuntos();
     }
 
-    function abrirGuia() {
+    function abrirGuia(tipoPedido, origen) {
         if (abierto) return;
-        aplicarTipoGuia();
+        origenFoco = origen && origen.focus ? origen : document.activeElement;
+        aplicarTipoGuia(tipoPedido);
         abierto = true;
         indice = 0;
         botonAbrir.classList.add('guia-cita-activo');
@@ -234,10 +305,6 @@
         document.body.classList.add('guia-cita-abierta');
         requestAnimationFrame(function () {
             overlay.classList.add('guia-cita-visible');
-            botonAbrir.classList.add('guia-cita-click');
-            window.setTimeout(function () {
-                botonAbrir.classList.remove('guia-cita-click');
-            }, 480);
         });
         mostrarPaso(0, 'der');
         marcarVista();
@@ -251,10 +318,15 @@
         botonAbrir.classList.remove('guia-cita-activo');
         botonAbrir.setAttribute('aria-expanded', 'false');
         document.body.classList.remove('guia-cita-abierta');
+        tipoForzado = '';
         window.setTimeout(function () {
             overlay.hidden = true;
         }, 320);
-        if (botonAbrir.focus) botonAbrir.focus();
+        var destino = origenFoco;
+        origenFoco = null;
+        if (destino && destino.focus && document.contains(destino)) {
+            destino.focus();
+        }
     }
 
     window.abrirGuiaFormSubmit = abrirGuia;
@@ -266,9 +338,8 @@
     var inlineGuia = document.getElementById('cita-guia-abrir-inline');
     if (inlineGuia) {
         inlineGuia.addEventListener('click', function () {
-            document.body.setAttribute('data-guia-activa', 'cita');
             if (abierto) cerrarGuia();
-            else abrirGuia();
+            else abrirGuia('cita', inlineGuia);
         });
     }
     botonCerrar.addEventListener('click', cerrarGuia);
@@ -289,7 +360,22 @@
     document.addEventListener('keydown', function (evento) {
         if (!abierto) return;
         if (evento.key === 'Escape') {
+            evento.preventDefault();
             cerrarGuia();
+            return;
+        }
+        if (evento.key === 'Tab') {
+            var lista = controlesFoco();
+            if (!lista.length) return;
+            var primero = lista[0];
+            var ultimoEl = lista[lista.length - 1];
+            if (evento.shiftKey && document.activeElement === primero) {
+                evento.preventDefault();
+                ultimoEl.focus();
+            } else if (!evento.shiftKey && document.activeElement === ultimoEl) {
+                evento.preventDefault();
+                primero.focus();
+            }
             return;
         }
         if (evento.key === 'ArrowRight') {
@@ -302,10 +388,4 @@
             if (indice > 0) mostrarPaso(indice - 1, 'izq');
         }
     });
-
-    try {
-        if (localStorage.getItem(cfg.storageKey) !== '1') {
-            botonAbrir.classList.add('guia-cita-nuevo');
-        }
-    } catch (e) {}
 })();

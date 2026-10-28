@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const hojaDaltonico = () => {
-        var href = "css/daltonico.css?v=1.8";
+        var href = "css/daltonico.css?v=1.9";
         try {
             var links = document.getElementsByTagName("link");
             for (var i = 0; i < links.length; i++) {
                 var h = links[i].getAttribute("href") || "";
                 if (h.indexOf("estilo.css") !== -1) {
-                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.8");
+                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.9");
                     break;
                 }
             }
@@ -163,6 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
             '<span class="nav-opciones-item-icono" aria-hidden="true">◐</span>' +
             "<span>Modo daltónico</span>" +
             '<span class="nav-opciones-item-estado" id="daltonico-estado">Off</span>' +
+            "</button>" +
+            '<button type="button" class="nav-opciones-item" id="opcion-ayuda-envio" role="menuitem" aria-haspopup="dialog" aria-controls="guia-fs-overlay">' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true">✉</span>' +
+            "<span>Cómo llega tu solicitud</span>" +
             "</button></div>";
         acciones.appendChild(caja);
 
@@ -170,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var menu = document.getElementById("nav-opciones-menu");
         var toggleDal = document.getElementById("toggle-daltonico");
         var estadoDal = document.getElementById("daltonico-estado");
+        var ayudaEnvio = document.getElementById("opcion-ayuda-envio");
 
         var pintarDaltonico = function () {
             var on = document.documentElement.classList.contains("daltonico");
@@ -210,6 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem("modoDaltonico", on ? "true" : "false");
                 aplicarDaltonico(on, true);
                 pintarDaltonico();
+            });
+        }
+        if (ayudaEnvio) {
+            ayudaEnvio.addEventListener("click", function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                cerrar();
+                if (typeof window.abrirGuiaFormSubmit === "function") {
+                    window.abrirGuiaFormSubmit("ayuda", ayudaEnvio);
+                }
             });
         }
         document.addEventListener("click", function (ev) {
