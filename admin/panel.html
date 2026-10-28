@@ -13,11 +13,6 @@
         }
         if (localStorage.getItem('modoDaltonico') === 'true') {
           document.documentElement.classList.add('daltonico');
-          var __dl = document.createElement('link');
-          __dl.id = 'daltonico-css';
-          __dl.rel = 'stylesheet';
-          __dl.href = 'daltonico-admin.css?v=1.1';
-          document.head.appendChild(__dl);
         }
       } catch (e) {}
     })();
@@ -42,7 +37,10 @@
     body.pagina-panel { background: transparent; }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.10">
+  <link rel="stylesheet" href="admin.css?v=6.14">
+<script>
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.5';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+</script>
 </head>
 <body class="pagina-panel">
   <script>if (document.documentElement.classList.contains('dark-mode')) document.body.classList.add('dark-mode'); if (document.documentElement.classList.contains('daltonico')) document.body.classList.add('daltonico');</script>
@@ -449,7 +447,7 @@
   <div id="lista-mes" hidden></div>
   <script src="agenda.js?v=3.7"></script>
   <script src="solicitudes.js?v=4.1"></script>
-  <script src="tono.js?v=1.4"></script>
+  <script src="tono.js?v=1.6"></script>
   <script src="sitrabot-admin.js?v=3.1"></script>
 
   <script src="guia.js?v=2.2"></script>

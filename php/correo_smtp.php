@@ -4,6 +4,18 @@
    igual (ver solicitudes.php / agenda.php). FormSubmit no sirve para responder a
    correos arbitrarios (hay que activar cada destino). */
 
+function sitraina_config_correo() {
+    $archivo = __DIR__ . '/config_correo.php';
+    if (!is_file($archivo)) {
+        return null;
+    }
+    $config = require $archivo;
+    if (!is_array($config) || trim((string) ($config['clave'] ?? '')) === '') {
+        return null;
+    }
+    return $config;
+}
+
 function enviar_correo_sitraina_con_respaldo($para, $nombrePara, $asunto, $cuerpoTexto) {
     return enviar_correo_sitraina($para, $nombrePara, $asunto, $cuerpoTexto);
 }
@@ -30,20 +42,26 @@ function enviar_correo_sitraina($para, $nombrePara, $asunto, $cuerpoTexto) {
     require_once $phpmailer;
     require_once $smtp;
 
+    $smtp = sitraina_config_correo();
+    if (!$smtp) {
+        return false;
+    }
     $nombrePara = trim((string) $nombrePara);
+    $de = trim((string) ($smtp['de'] ?? $smtp['usuario'] ?? ''));
+    $deNombre = trim((string) ($smtp['de_nombre'] ?? 'SITRAINA'));
     try {
         $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
         $mail->isSMTP();
-        $mail->Host = 'smtp.ina.ac.cr';
+        $mail->Host = (string) ($smtp['host'] ?? '');
         $mail->SMTPAuth = true;
-        $mail->Username = 'sitraina@ina.ac.cr';
-        $mail->Password = 'Prueb@2026';
+        $mail->Username = (string) ($smtp['usuario'] ?? '');
+        $mail->Password = (string) ($smtp['clave'] ?? '');
         $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+        $mail->Port = (int) ($smtp['puerto'] ?? 587);
         $mail->CharSet = 'UTF-8';
-        $mail->setFrom('sitraina@ina.ac.cr', 'SITRAINA');
+        $mail->setFrom($de !== '' ? $de : $mail->Username, $deNombre !== '' ? $deNombre : 'SITRAINA');
         $mail->addAddress($para, $nombrePara !== '' ? $nombrePara : $para);
-        $mail->addReplyTo('sitraina@ina.ac.cr', 'SITRAINA');
+        $mail->addReplyTo($de !== '' ? $de : $mail->Username, $deNombre !== '' ? $deNombre : 'SITRAINA');
         $mail->isHTML(true);
         $mail->Subject = $asunto;
         $mail->Body = nl2br(htmlspecialchars($cuerpoTexto, ENT_QUOTES, 'UTF-8'));

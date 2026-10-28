@@ -808,10 +808,38 @@ body.dark-mode .admin-header-grupo {
   height: 14px;
 }
 
+.admin-opciones-salir,
+.admin-opciones-salir:visited {
+  color: #2a2a2a;
+}
+
+.admin-opciones-salir .admin-opciones-item-icono {
+  color: #0a3d5c;
+  background: rgba(10, 61, 92, 0.12);
+}
+
 .admin-opciones-salir:hover,
-.admin-opciones-salir:focus-visible {
-  background: rgba(0, 114, 178, 0.12);
-  color: #0072b2;
+.admin-opciones-salir:focus-visible,
+.admin-opciones-salir:active {
+  background: rgba(10, 61, 92, 0.1);
+  color: #0a3d5c;
+}
+
+body.dark-mode .admin-opciones-salir,
+body.dark-mode .admin-opciones-salir:visited {
+  color: #f4f7fb;
+}
+
+body.dark-mode .admin-opciones-salir .admin-opciones-item-icono {
+  color: #d6eeff;
+  background: rgba(86, 180, 233, 0.22);
+}
+
+body.dark-mode .admin-opciones-salir:hover,
+body.dark-mode .admin-opciones-salir:focus-visible,
+body.dark-mode .admin-opciones-salir:active {
+  background: rgba(86, 180, 233, 0.2);
+  color: #fff;
 }
 
 .admin-opciones-btn.guia-boton-nuevo {
@@ -5116,20 +5144,195 @@ body.dark-mode #sitrabot-admin .sitrabot-form input {
 html.daltonico, html.daltonico :root {
   --color-principal: #0072b2 !important;
   --color-secundario: #005a8c !important;
+  --campo-hover-borde: #0a3d5c !important;
+  --campo-hover-sombra: 0 2px 10px rgba(10, 61, 92, 0.12), 0 0 0 3px rgba(10, 61, 92, 0.14) !important;
+  --campo-focus-borde: #0a3d5c !important;
+  --campo-focus-sombra: 0 0 0 3px rgba(10, 61, 92, 0.22) !important;
+  --campo-focus-outline: 2px solid #0a3d5c !important;
 }
 html.daltonico.dark-mode, html.daltonico.dark-mode :root {
   --color-principal: #56b4e9 !important;
   --color-secundario: #2b8cbe !important;
+  --campo-hover-borde: #56b4e9 !important;
+  --campo-hover-sombra: 0 2px 12px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(86, 180, 233, 0.22) !important;
+  --campo-focus-borde: #56b4e9 !important;
+  --campo-focus-sombra: 0 0 0 3px rgba(86, 180, 233, 0.28) !important;
+  --campo-focus-outline: 2px solid #56b4e9 !important;
 }
 
+html.daltonico a {
+  color: #0a3d5c;
+}
+html.daltonico a:hover,
+html.daltonico a:focus-visible {
+  color: #084066;
+}
+html.daltonico .admin-header a:not(.admin-opciones-item),
+html.daltonico .admin-header a:not(.admin-opciones-item):hover,
+html.daltonico .admin-navbar a,
+html.daltonico .admin-logo,
+html.daltonico .admin-nav-label,
+html.daltonico .admin-opciones-btn,
+html.daltonico .admin-menu-toggle,
+html.daltonico .caja button[type="submit"],
+html.daltonico .caja button:not(.admin-tono):not(.nav-opciones-btn):not(.admin-opciones-btn):not(.admin-opciones-item) {
+  color: #fff !important;
+}
+html.daltonico a.admin-opciones-salir,
+html.daltonico a.admin-opciones-salir:visited {
+  color: #2a2a2a !important;
+}
+html.daltonico a.admin-opciones-salir:hover,
+html.daltonico a.admin-opciones-salir:focus-visible,
+html.daltonico a.admin-opciones-salir:active {
+  color: #0a3d5c !important;
+  background: rgba(10, 61, 92, 0.1);
+}
+html.daltonico.dark-mode a.admin-opciones-salir,
+html.daltonico.dark-mode a.admin-opciones-salir:visited,
+html.daltonico body.dark-mode a.admin-opciones-salir,
+html.daltonico body.dark-mode a.admin-opciones-salir:visited {
+  color: #f4f7fb !important;
+}
+html.daltonico.dark-mode a.admin-opciones-salir:hover,
+html.daltonico.dark-mode a.admin-opciones-salir:focus-visible,
+html.daltonico.dark-mode a.admin-opciones-salir:active,
+html.daltonico body.dark-mode a.admin-opciones-salir:hover,
+html.daltonico body.dark-mode a.admin-opciones-salir:focus-visible,
+html.daltonico body.dark-mode a.admin-opciones-salir:active {
+  color: #fff !important;
+  background: rgba(86, 180, 233, 0.2);
+}
+html.daltonico h1,
+html.daltonico .vista-cabeza h1,
+html.daltonico .panel-cabeza h1,
+html.daltonico .admin-marca-texto h1 {
+  color: #0a3d5c;
+}
+html.daltonico .admin-logo-atras-icono {
+  color: #0a3d5c;
+}
 html.daltonico input[type="checkbox"],
 html.daltonico input[type="radio"] {
-  accent-color: #0072b2;
+  accent-color: #0a3d5c;
 }
 html.daltonico :focus-visible {
-  outline-color: #0072b2;
+  outline-color: #0a3d5c;
+}
+html.daltonico input::placeholder,
+html.daltonico textarea::placeholder {
+  color: #4a6a80;
+  opacity: 1;
 }
 html.daltonico .admin-opciones-item.activo {
-  background: rgba(0, 114, 178, 0.14);
-  color: #005a8c;
+  background: rgba(10, 61, 92, 0.14);
+  color: #0a3d5c;
+}
+
+:is(
+  input:not([type]),
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  textarea
+):not([hidden]):not([name="_honey"]):hover {
+  border-color: var(--campo-hover-borde) !important;
+  box-shadow: var(--campo-hover-sombra);
+}
+
+:is(
+  input:not([type]),
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  textarea
+):not([hidden]):not([name="_honey"]):focus,
+:is(
+  input:not([type]),
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  textarea
+):not([hidden]):not([name="_honey"]):focus-visible,
+:is(
+  input:not([type]),
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  textarea
+):not([hidden]):not([name="_honey"]):hover:focus,
+:is(
+  input:not([type]),
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  textarea
+):not([hidden]):not([name="_honey"]):hover:focus-visible {
+  border-color: var(--campo-focus-borde) !important;
+  box-shadow: var(--campo-focus-sombra);
+}
+
+:is(
+  input:not([type]),
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  textarea
+):not([hidden]):not([name="_honey"]):focus-visible {
+  outline: var(--campo-focus-outline);
+  outline-offset: 2px;
 }

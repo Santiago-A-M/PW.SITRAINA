@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Copia la dirección del video y cambia el botón a "Copiado" por dos segundos. */
 function copiarVinculo(rutaVideo, boton) {
-    const urlCompleta = window.location.origin + window.location.pathname.replace('galeria.html', '') + rutaVideo;
+    const limpia = String(rutaVideo || '').replace(/^\//, '');
+    const urlCompleta = window.location.origin + '/' + limpia;
 
     navigator.clipboard.writeText(urlCompleta).then(() => {
         const textoOriginal = boton.innerHTML;

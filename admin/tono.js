@@ -12,13 +12,13 @@
     };
 
     var hojaDaltonicoAdmin = function () {
-        var href = 'daltonico-admin.css?v=1.1';
+        var href = 'daltonico-admin.css?v=1.5';
         try {
             var scripts = document.getElementsByTagName('script');
             for (var i = 0; i < scripts.length; i++) {
                 var src = scripts[i].src || '';
                 if (src.indexOf('tono.js') !== -1) {
-                    href = src.replace(/tono\.js.*$/, 'daltonico-admin.css?v=1.1');
+                    href = src.replace(/tono\.js.*$/, 'daltonico-admin.css?v=1.5');
                     break;
                 }
             }
@@ -47,6 +47,7 @@
     var asegurarHojaDaltonico = function () {
         var link = document.getElementById('daltonico-css');
         if (link) {
+            document.head.appendChild(link);
             daltonicoCssListo = true;
             return link;
         }

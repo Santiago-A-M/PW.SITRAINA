@@ -10,7 +10,7 @@
 }
 
 .contenedor-titulo-galeria {
-    padding: 152px 20px 8px;
+    padding: 96px 20px 8px;
     width: 100%;
 }
 
@@ -26,13 +26,31 @@
     border-left: 6px solid #c81d25;
     border-radius: 18px;
     box-shadow: 0 12px 28px rgba(110, 18, 24, 0.08);
+    overflow: visible;
 }
 
 .imagen-titulo {
     display: block;
     width: min(320px, 42%);
     height: auto;
+    aspect-ratio: 385 / 187;
     flex: 0 0 auto;
+    overflow: hidden;
+    background: transparent;
+}
+
+.hoja-filtro-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* El PNG es opaco: el halo del emblema se aplica al recorte SVG, no al <img> HTML (fondo negro). */
+html.dark-mode .marca-hoja .imagen-titulo image,
+body.dark-mode .marca-hoja .imagen-titulo image {
+    filter: url("#hoja-halo-emblema");
 }
 
 .marca-hoja p {

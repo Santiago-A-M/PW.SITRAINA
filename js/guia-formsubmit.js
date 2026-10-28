@@ -2,7 +2,7 @@
 (function () {
     if (document.getElementById('guia-formsubmit')) return;
 
-    var tipo = (document.body.getAttribute('data-guia-formsubmit') || 'cita').toLowerCase();
+    var tipo = (document.body.getAttribute('data-guia-activa') || document.body.getAttribute('data-guia-formsubmit') || 'cita').toLowerCase();
     var configs = {
         cita: {
             storageKey: 'cita-guia-correo-vista',
@@ -175,6 +175,17 @@
     var puntos = document.getElementById('guia-fs-puntos');
     var ventana = raiz.querySelector('.guia-cita-ventana');
 
+    function aplicarTipoGuia() {
+        tipo = (document.body.getAttribute('data-guia-activa') || document.body.getAttribute('data-guia-formsubmit') || 'cita').toLowerCase();
+        cfg = configs[tipo] || configs.cita;
+        pasos = cfg.pasos;
+        if (botonAbrir) {
+            botonAbrir.setAttribute('title', cfg.botonTitulo);
+            var textoBtn = botonAbrir.querySelector('.guia-cita-texto');
+            if (textoBtn) textoBtn.textContent = cfg.botonTexto;
+        }
+    }
+
     function marcarVista() {
         try { localStorage.setItem(cfg.storageKey, '1'); } catch (e) {}
     }
@@ -214,6 +225,7 @@
 
     function abrirGuia() {
         if (abierto) return;
+        aplicarTipoGuia();
         abierto = true;
         indice = 0;
         botonAbrir.classList.add('guia-cita-activo');
@@ -251,6 +263,14 @@
         if (abierto) cerrarGuia();
         else abrirGuia();
     });
+    var inlineGuia = document.getElementById('cita-guia-abrir-inline');
+    if (inlineGuia) {
+        inlineGuia.addEventListener('click', function () {
+            document.body.setAttribute('data-guia-activa', 'cita');
+            if (abierto) cerrarGuia();
+            else abrirGuia();
+        });
+    }
     botonCerrar.addEventListener('click', cerrarGuia);
     botonOmitir.addEventListener('click', cerrarGuia);
     overlay.addEventListener('click', function (evento) {

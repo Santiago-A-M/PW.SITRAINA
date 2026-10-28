@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const hojaDaltonico = () => {
-        var href = "css/daltonico.css?v=1.1";
+        var href = "css/daltonico.css?v=1.8";
         try {
             var links = document.getElementsByTagName("link");
             for (var i = 0; i < links.length; i++) {
                 var h = links[i].getAttribute("href") || "";
                 if (h.indexOf("estilo.css") !== -1) {
-                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.1");
+                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.8");
                     break;
                 }
             }
@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const asegurarHojaDaltonico = () => {
         var link = document.getElementById("daltonico-css");
         if (link) {
+            document.head.appendChild(link);
             daltonicoCssListo = true;
             return link;
         }
@@ -261,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tiposDocumentos = document.querySelector('.tipos-documentos');
     const seccionesArchivos = document.querySelectorAll('.seccion-archivos');
 
-    if (tiposDocumentos && seccionesArchivos.length) {
+    if (tiposDocumentos && seccionesArchivos.length && !document.querySelector('[data-vista-publica]')) {
         /* En Documentos, abre la sección del enlace (#legales, #informes o #actas). */
         const panelDocumentos = document.querySelector('.documentos-panel');
         const menosMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -546,6 +547,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             if (url.origin !== location.origin) return;
+            if (enlace.hasAttribute('data-public-nav')) return;
+            if (url.hash && document.querySelector('[data-vista-publica="' + url.hash.replace('#', '') + '"]')) return;
             const destino = indiceNav(url.pathname);
             const actual = indiceNav(location.pathname);
             if (destino < 0 || actual < 0 || destino === actual) return;
@@ -1068,6 +1071,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 diasCita.appendChild(boton);
             }
         };
+        window.sitrainaRefrescarCita = pintarMes;
 
         document.getElementById('cita-mes-anterior').addEventListener('click', () => {
             vista = new Date(vista.getFullYear(), vista.getMonth() - 1, 1);
@@ -1083,7 +1087,7 @@ document.addEventListener('DOMContentLoaded', () => {
             avisoCita.hidden = false;
             avisoCita.textContent = 'Recibimos la solicitud. La cita fue enviada para su revisión.';
             avisoCita.classList.add('ok');
-            history.replaceState(null, '', location.pathname);
+            history.replaceState(null, '', location.pathname + (location.hash || '#cita'));
         }
 
         const campoCorreo = formCita.elements.email;
@@ -1853,13 +1857,16 @@ document.addEventListener('DOMContentLoaded', () => {
         '.sitrabot-user{align-self:flex-end;background:#8e1a20;color:#f6f0ec}',
         '.sitrabot-bot a{color:#8e1a20;font-weight:700}',
         '.sitrabot-form{position:relative;z-index:3;flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:14px 16px 16px;border-top:1px solid #e7ddd6;background:#fff}',
-        '.sitrabot-form input{flex:1;min-width:0;border:1px solid #e0d2cb;border-radius:999px;padding:11px 14px;font:inherit;color:#2b211f;background:#fff}',
-        '.sitrabot-form input:focus{outline:2px solid #c81d25;border-color:#c81d25}',
+        '.sitrabot-form input{flex:1;min-width:0;border:1px solid #e0d2cb;border-radius:999px;padding:11px 14px;font:inherit;color:#2b211f;background:#fff;transition:border-color .28s cubic-bezier(0.22,1,0.36,1),box-shadow .28s cubic-bezier(0.22,1,0.36,1),background-color .35s cubic-bezier(0.22,1,0.36,1),color .35s cubic-bezier(0.22,1,0.36,1)}',
+        '.sitrabot-form input:hover{border-color:var(--campo-hover-borde);box-shadow:var(--campo-hover-sombra)}',
+        '.sitrabot-form input:focus{outline:none;border-color:var(--campo-focus-borde);box-shadow:var(--campo-focus-sombra)}',
+        '.sitrabot-form input:focus-visible{outline:var(--campo-focus-outline);outline-offset:2px;border-color:var(--campo-focus-borde);box-shadow:var(--campo-focus-sombra)}',
+        '.sitrabot-form input:hover:focus,.sitrabot-form input:hover:focus-visible{border-color:var(--campo-focus-borde);box-shadow:var(--campo-focus-sombra)}',
         '.sitrabot-form button{flex:0 0 auto;width:46px;height:46px;border:0;border-radius:50%;background:#c81d25;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 4px 10px rgba(110,18,24,.22);transition:background-color .35s cubic-bezier(0.22,1,0.36,1),transform .35s cubic-bezier(0.22,1,0.36,1)}',
         '.sitrabot-form button svg{width:22px;height:22px;display:block}',
         '.sitrabot-form button:hover{background:#8e1a20;transform:translateY(-1px)}',
         '.sitrabot-espera{opacity:.7}',
-        '.sitrabot-mensajes,.sitrabot-bot,.sitrabot-form,.sitrabot-form input{transition:background-color .35s cubic-bezier(0.22,1,0.36,1),color .35s cubic-bezier(0.22,1,0.36,1),border-color .35s cubic-bezier(0.22,1,0.36,1)}',
+        '.sitrabot-mensajes,.sitrabot-bot,.sitrabot-form,.sitrabot-form input{transition:background-color .35s cubic-bezier(0.22,1,0.36,1),color .35s cubic-bezier(0.22,1,0.36,1),border-color .28s cubic-bezier(0.22,1,0.36,1),box-shadow .28s cubic-bezier(0.22,1,0.36,1)}',
         /* El logo lleva azul oscuro: en tono oscuro se mantiene sobre círculo claro. */
         'body.dark-mode .sitrabot-abrir{background:#f6f0ec;border-color:#000;box-shadow:0 8px 20px rgba(0,0,0,.5)}',
         'body.dark-mode .sitrabot-abrir:hover{box-shadow:0 12px 24px rgba(0,0,0,.58)}',
@@ -1875,12 +1882,30 @@ document.addEventListener('DOMContentLoaded', () => {
         'body.dark-mode .sitrabot-form input{background:#1c1614 !important;color:#f7f2ee !important;border-color:#6a564e !important}',
         'body.dark-mode .sitrabot-form input::placeholder{color:#b7a79f}',
         'body.dark-mode .sitrabot-form input:focus{outline-color:#ffc4bc;border-color:#ffc4bc !important}',
+        'html.daltonico .sitrabot-abrir{border-color:#0072b2;box-shadow:0 8px 18px rgba(10,61,92,.28)}',
+        'html.daltonico .sitrabot-abrir:hover{box-shadow:0 12px 22px rgba(10,61,92,.34)}',
+        'html.daltonico .sitrabot-aviso{background:#0a3d5c;color:#fff}',
+        'html.daltonico .sitrabot-cabeza{background:#0b4f7a;color:#f6f0ec}',
+        'html.daltonico .sitrabot-cerrar{color:#0a3d5c;background:#fff}',
+        'html.daltonico .sitrabot-mensajes{scrollbar-color:#0072b2 #f3ebe6}',
+        'html.daltonico .sitrabot-user{background:#0b4f7a;color:#f6f0ec}',
+        'html.daltonico .sitrabot-bot a{color:#0a3d5c}',
+        'html.daltonico .sitrabot-form input::placeholder{color:#4a6a80}',
+        'html.daltonico .sitrabot-form input:focus{outline:2px solid #0a3d5c;border-color:#0a3d5c}',
+        'html.daltonico .sitrabot-form button{background:#0072b2;color:#fff;box-shadow:0 4px 10px rgba(10,61,92,.22)}',
+        'html.daltonico .sitrabot-form button:hover{background:#0a3d5c;color:#fff}',
+        'html.daltonico.dark-mode .sitrabot-cerrar,html.daltonico body.dark-mode .sitrabot-cerrar{color:#0a3d5c}',
+        'html.daltonico.dark-mode .sitrabot-cabeza,html.daltonico body.dark-mode .sitrabot-cabeza{background:#0b4f7a !important;color:#f6f0ec !important}',
+        'html.daltonico.dark-mode .sitrabot-mensajes,html.daltonico body.dark-mode .sitrabot-mensajes{scrollbar-color:#0072b2 #2c2320}',
+        'html.daltonico.dark-mode .sitrabot-bot a,html.daltonico body.dark-mode .sitrabot-bot a{color:#9ad0f5 !important}',
+        'html.daltonico.dark-mode .sitrabot-user,html.daltonico body.dark-mode .sitrabot-user{background:#0b4f7a;color:#f6f0ec}',
+        'html.daltonico.dark-mode .sitrabot-form input:focus,html.daltonico body.dark-mode .sitrabot-form input:focus{outline-color:#56b4e9;border-color:#56b4e9 !important}',
         '@media (max-width:768px){#sitrabot{right:12px;bottom:12px}.sitrabot-panel{right:12px;bottom:12px;width:calc(100vw - 24px);height:min(520px,calc(100vh - 96px));max-height:calc(100vh - 96px)}}',
         '@media (prefers-reduced-motion:reduce){.sitrabot-abrir,.sitrabot-aviso,.sitrabot-panel,.sitrabot-mensajes,.sitrabot-bot,.sitrabot-form,.sitrabot-form input,.sitrabot-form button,.sitrabot-cerrar{transition:none}}'
     ].join('');
     document.head.appendChild(estilo);
 
-    var raiz = /\/(hojamier|convenios)\//.test(location.pathname) ? '../' : '';
+    var raiz = /\/(hojamier|convenios)\//.test(location.pathname) && !document.querySelector('[data-vista-publica]') ? '../' : '';
     var clave = 'sitrabot-mensajes';
     var logoImg = '<img src="' + logoUrl.replace(/"/g, '&quot;') + '" alt="" width="64" height="64" decoding="async">';
     var marca = '<span class="sitrabot-marca" role="img" aria-label="SITRABOT">' + logoImg + '</span>';

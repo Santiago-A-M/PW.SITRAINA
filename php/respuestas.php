@@ -99,14 +99,13 @@ function guardar_respuesta_enviada($tipo, $origenId, $estado, $respuesta, $admin
     }
     $sql = 'INSERT INTO `' . $tabla . '` (origen_id, estado, respuesta, admin_usuario, respondido_en)
             VALUES (?, ?, ?, ?, NOW())
-            ON DUPLICATE KEY UPDATE estado = VALUES(estado), respuesta = VALUES(respuesta),
-              admin_usuario = VALUES(admin_usuario), respondido_en = NOW()';
+            ON DUPLICATE KEY UPDATE estado = ?, respuesta = ?, admin_usuario = ?, respondido_en = NOW()';
     $consulta = $db->prepare($sql);
     if (!$consulta) {
         $db->close();
         return false;
     }
-    $consulta->bind_param('isss', $origenId, $estado, $respuesta, $adminUsuario);
+    $consulta->bind_param('issssss', $origenId, $estado, $respuesta, $adminUsuario, $estado, $respuesta, $adminUsuario);
     $ok = $consulta->execute();
     $consulta->close();
     $db->close();

@@ -1,6 +1,13 @@
 <?php
-/* Cifra una clave y la muestra para copiarla en phpMyAdmin. No crea la cuenta. */
+/* Cifra una clave y la muestra para copiarla en phpMyAdmin. No crea la cuenta.
+   El primer hash, si aún no hay sesión, se genera en PHP CLI:
+   php -r "echo password_hash('clave', PASSWORD_DEFAULT), PHP_EOL;" */
 require __DIR__ . '/sesion.php';
+
+if (empty($_SESSION['admin_usuario'])) {
+    header('Location: index.php');
+    exit;
+}
 
 $hash = '';
 $aviso = '';

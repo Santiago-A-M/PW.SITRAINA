@@ -132,7 +132,7 @@
             return bot('El público pide cita en solicitar-cita. Las horas abiertas salen de agenda; las ya tomadas están en citas. Si el usuario pone nombre y motivo, se pueden guardar en citas al reservar.');
         }
         if (/cuenta admin|login|entrar|usuario y clave|cifrar|generar hash|password/.test(q)) {
-            return bot('Las cuentas de acceso están en Info_Cuentas_Admins.Admin_Info (cuenta, cedula si aplica, clave_hash). El hash se genera con admin/generar.php. No compartas correos, cédulas ni claves por este chat.');
+            return bot('Las cuentas de acceso están en Info_Cuentas_Admins.Admin_Info (cuenta, cedula si aplica, clave_hash). El hash se genera con admin/generar.php (hace falta sesión de administración) o con PHP en la terminal. No compartas correos, cédulas ni claves por este chat.');
         }
         if (/cerrar sesion|salir|opciones/.test(q)) {
             return bot('Arriba a la derecha está «Opciones». Ahí abrís Ayuda (la guía del panel) o Cerrar sesión, que llama a salir.php y termina la sesión de administración.');

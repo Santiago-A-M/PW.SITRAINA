@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -11,40 +11,22 @@
         }
         if (localStorage.getItem('modoDaltonico') === 'true') {
           document.documentElement.classList.add('daltonico');
-          var __dl = document.createElement('link');
-          __dl.id = 'daltonico-css';
-          __dl.rel = 'stylesheet';
-          __dl.href = 'css/daltonico.css?v=1.1';
-          document.head.appendChild(__dl);
         }
       } catch (e) {}
-      try {
-        var nav = sessionStorage.getItem('sitrainaNav');
-        if (!nav) return;
-        sessionStorage.removeItem('sitrainaNav');
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        var datoNav = JSON.parse(nav);
-        document.documentElement.style.setProperty('--nav-desde-x', datoNav.dir === 'izquierda' ? '-100vw' : '100vw');
-        document.documentElement.classList.add('nav-llegando');
-      } catch (eNav) {}
     })();
   </script>
-  <style>html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}body.pagina-fondo{background:transparent}html.nav-llegando,html.doc-llegando{overflow:hidden}html.nav-llegando>body>:not(header):not(script):not(.btn-atras):not(.directiva-popup):not(.hoja-popup):not(#sitrabot):not(.visor-pdf){transform:translate3d(var(--nav-desde-x,100vw),0,0)}html.doc-llegando>body>main,html.doc-llegando .contenedor-titulo-galeria{transform:translate3d(var(--doc-desde-x,100vw),var(--doc-desde-y,0px),0)}</style>
-  
+  <style>html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}body.pagina-fondo{background:transparent}</style>
   <title>SITRAINA | Sindicato de Trabajadores del INA - Costa Rica</title>
-  
   <meta name="description" content="SITRAINA defiende los derechos laborales de las personas trabajadoras del INA. Unidad, lucha y solidaridad para condiciones dignas en Costa Rica.">
-  
   <meta name="keywords" content="SITRAINA, Sindicato INA, derechos laborales, INA Costa Rica, convención colectiva">
-  
   <meta property="og:title" content="SITRAINA | Sindicato del INA">
   <meta property="og:description" content="Defendiendo los derechos de los trabajadores del INA. Conoce nuestros servicios y comunicados.">
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
-
-  <link rel="stylesheet" href="css/estilo.css?v=3.32">
+  <link rel="stylesheet" href="css/estilo.css?v=3.44">
+  <link rel="stylesheet" href="css/estilo-conve.css?v=1.0">
+  <link rel="stylesheet" href="css/estilo-hoja.css?v=1.3">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
-  
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script type="application/ld+json">
@@ -65,67 +47,82 @@
     "contactType": "customer service"
   },
   "hasPart": [
-    {
-      "@type": "WebPage",
-      "name": "Afiliación",
-      "url": "https://www.sitrainacr.org/afiliacion.html"
-    },
-    {
-      "@type": "WebPage",
-      "name": "Asesoría Legal",
-      "url": "https://www.sitrainacr.org/asesoria-legal.html"
-    },
-    {
-      "@type": "WebPage",
-      "name": "Convenios",
-      "url": "https://www.sitrainacr.org/convenios/convenios.html"
-    }
+    { "@type": "WebPage", "name": "Afiliación", "url": "https://www.sitrainacr.org/index.html#afiliacion" },
+    { "@type": "WebPage", "name": "Asesoría Legal", "url": "https://www.sitrainacr.org/index.html#asesoria" },
+    { "@type": "WebPage", "name": "Convenios", "url": "https://www.sitrainacr.org/index.html#convenios" }
   ]
 }
 </script>
-
+<script>
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.8';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+</script>
 </head>
-
 <body class="pagina-inicio pagina-fondo">
-  <!-- Barra fija: logo, menú y botón de tono. -->
   <script>if(document.documentElement.classList.contains('dark-mode'))document.body.classList.add('dark-mode');if(document.documentElement.classList.contains('daltonico'))document.body.classList.add('daltonico');</script>
-
+  <svg class="hoja-filtro-svg" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="hoja-halo-emblema" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
+      <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 0 2.88" result="cut"/>
+      <feOffset in="cut" dx="0.9" dy="0" result="o1"/>
+      <feOffset in="cut" dx="-0.9" dy="0" result="o2"/>
+      <feOffset in="cut" dx="0" dy="0.9" result="o3"/>
+      <feOffset in="cut" dx="0" dy="-0.9" result="o4"/>
+      <feGaussianBlur in="cut" stdDeviation="0.7" result="blur"/>
+      <feFlood flood-color="#f7f4ef" result="c"/>
+      <feFlood flood-color="#f7f4ef" flood-opacity="0.85" result="c2"/>
+      <feComposite in="c" in2="o1" operator="in" result="s1"/>
+      <feComposite in="c" in2="o2" operator="in" result="s2"/>
+      <feComposite in="c" in2="o3" operator="in" result="s3"/>
+      <feComposite in="c" in2="o4" operator="in" result="s4"/>
+      <feComposite in="c2" in2="blur" operator="in" result="s5"/>
+      <feMerge>
+        <feMergeNode in="s5"/>
+        <feMergeNode in="s1"/>
+        <feMergeNode in="s2"/>
+        <feMergeNode in="s3"/>
+        <feMergeNode in="s4"/>
+        <feMergeNode in="cut"/>
+      </feMerge>
+    </filter>
+  </svg>
   <header class="header">
-  <!-- Logo, menú de seis páginas y botón de tono. -->
   <div class="logo">
-    <a href="index.html">
-        <img src="img/logo.png" alt="SITRAINA">
+    <a href="#inicio" data-public-nav="inicio" id="logo-sitio" class="logo-enlace" aria-label="SITRAINA, ir al inicio">
+      <span class="logo-marca" aria-hidden="true">
+        <img class="logo-img" src="img/logo.png" alt="">
+        <span class="logo-atras-icono">
+          <svg viewBox="0 0 24 24" width="24" height="24" overflow="visible"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </span>
+      <span class="logo-volver-texto">Volver a documentos</span>
     </a>
   </div>
-
   <button class="menu-toggle" id="btn-menu" type="button" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menú">☰</button>
-
 <nav class="navbar" id="menu-principal" role="navigation" aria-label="Menú Principal">
-  <a href="index.html" class="active">Inicio</a>
-  <a href="quiensomos.html">Conócenos</a>
-  <a href="afiliacion.html">Afiliación</a>
-  <a href="asesoria-legal.html">Asesoría</a>
-  <a href="documentos.html">Documentos</a>
-  <a href="contacto.html">Contacto</a>
+  <a href="#inicio" data-public-nav="inicio" class="active">Inicio</a>
+  <a href="#conocenos" data-public-nav="conocenos">Conócenos</a>
+  <a href="#afiliacion" data-public-nav="afiliacion">Afiliación</a>
+  <a href="#asesoria" data-public-nav="asesoria">Asesoría</a>
+  <a href="#documentos" data-public-nav="documentos">Documentos</a>
+  <a href="#contacto" data-public-nav="contacto">Contacto</a>
 </nav>
-
 <div class="acciones-header">
     <button id="toggle-oscuro" class="btn-header" title="Cambiar tono" aria-label="Cambiar tono de la página">
         <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
     </button>
 </div>
-
-
-
 </header>
+
+<div class="vista-publica" id="vista-inicio" data-vista-publica="inicio">
+
+
 
   <!-- Portada: logo, título y botón hacia Conócenos. -->
   <section class="hero">
     <div class="hero-logo" role="img" aria-label="SITRAINA"></div>
     <h1>Defendiendo los derechos de las personas trabajadoras del INA</h1>
     <p>Unidad, lucha y solidaridad por condiciones laborales dignas</p>
-    <a href="quiensomos.html" class="btn">Conócenos</a>
+    <a href="#conocenos" data-public-nav="conocenos" class="btn">Conócenos</a>
   </section>
 
 
@@ -317,57 +314,1353 @@
     </div>
   </div>
 </section>
+</div>
+<main class="conocenos vista-publica" id="vista-conocenos" data-vista-publica="conocenos" hidden>
+    <div class="contenedor">
+      <h1>Conócenos</h1>
 
-<!-- Pie: mapa, correo, teléfonos y redes. -->
-<footer class="footer-franja">
-    <div class="contenedor footer-grid-compacto">
-        
-        <div class="datos-contacto-premium">
-            <div class="dato">
-                <i class="fas fa-map-marker-alt"></i>
-                <div class="dato-texto">
-                    <span class="label">Dirección</span>
-                    <a class="valor" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener">La Uruca, San José</a>
-                </div>
-            </div>
-            <div class="dato">
-                <i class="fas fa-envelope"></i>
-                <div class="dato-texto">
-                    <span class="label">Email</span>
-                    <a class="valor" href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a>
-                </div>
-            </div>
-            <div class="dato">
-                <i class="fas fa-phone-alt"></i>
-                <div class="dato-texto">
-                    <span class="label">Teléfono</span>
-                    <a class="valor" href="tel:+50622202480">+506 2220-2480</a>
-                </div>
-            </div>
-            <div class="dato">
-                <i class="fab fa-whatsapp"></i>
-                <div class="dato-texto">
-                    <span class="label">WhatsApp</span>
-                    <a class="valor" href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a>
-                </div>
-            </div>
+      <section class="quiensomos conocenos-bloque" id="quienes">
+        <h2>Quiénes somos</h2>
+        <div class="contenedor-flex">
+          <div class="caja texto-quienes">
+            <p>
+              <strong>SITRAINA</strong> es el Sindicato de Trabajadores del Instituto Nacional de Aprendizaje (INA), una organización comprometida con la defensa de los derechos laborales y el bienestar de sus afiliados.
+            </p>
+            <p>
+              Desde nuestra fundación, hemos trabajado con compromiso para defender los intereses colectivos de los empleados del INA, promoviendo la unidad, la solidaridad y la participación activa en la defensa del trabajo digno.
+            </p>
+            <p>
+              Representamos a instructores, personal administrativo, técnicos y funcionarios que contribuyen al éxito del Instituto Nacional de Aprendizaje. Creemos en el diálogo, la negociación colectiva y la acción organizada como herramientas para lograr justicia social y equidad en el entorno laboral.
+            </p>
+            <p>
+              Nuestro compromiso es exceder las expectativas de nuestros afiliados, ofreciendo apoyo legal, formación sindical y representación efectiva ante la institución.
+            </p>
+          </div>
+          <div class="caja imagen-quienes">
+            <img src="img/foto1.jpg" alt="Equipo de trabajo SITRAINA">
+          </div>
         </div>
+      </section>
 
-        <div class="redes-contacto-premium">
-            <a href="https://facebook.com/sitraina.cr" target="_blank" class="btn-social" aria-label="Facebook">
-                <i class="fab fa-facebook-f" aria-hidden="true"></i>
-            </a>
-            <a href="https://www.instagram.com/sitrainacr" target="_blank" class="btn-social" aria-label="Instagram">
-                <i class="fab fa-instagram" aria-hidden="true"></i>
-            </a>
-            <a href="https://www.tiktok.com/@sitraina" target="_blank" class="btn-social" aria-label="TikTok">
-                <i class="fab fa-tiktok" aria-hidden="true"></i>
-            </a>
+      <section class="mision-vision conocenos-bloque" id="identidad">
+        <h2>Nuestra identidad</h2>
+        <div class="contenedor-flex">
+          <div class="caja texto-mision">
+            <h3>Misión</h3>
+            <p>
+              Promover la unidad y defender los derechos laborales de los trabajadores del Instituto Nacional de Aprendizaje (INA), garantizando condiciones de trabajo dignas, mediante la negociación colectiva y la representación efectiva.
+            </p>
+            <h3>Visión</h3>
+            <p>
+              Ser el sindicato líder y referente a nivel nacional, que impulse el desarrollo profesional de sus afiliados y contribuya al mejoramiento continuo del sistema educativo técnico en Costa Rica.
+            </p>
+            <h3>Nuestros valores</h3>
+            <ul>
+              <li><strong>Unidad:</strong> Trabajo conjunto por objetivos comunes.</li>
+              <li><strong>Justicia:</strong> Equidad en los derechos laborales.</li>
+              <li><strong>Solidaridad:</strong> Apoyo mutuo entre afiliados.</li>
+              <li><strong>Transparencia:</strong> Honestidad en cada acción.</li>
+            </ul>
+          </div>
+          <div class="caja imagen-mision">
+            <img src="img/juntos.jpg" alt="Personas trabajadoras del INA reunidas">
+          </div>
         </div>
-        
+      </section>
     </div>
-</footer>
+  </main>
+<div class="vista-publica" id="vista-afiliacion" data-vista-publica="afiliacion" hidden>
+<section class="afiliacion">
+    <div class="contenedor">
+      <h2 class="titulo-afiliacion">Boleta de Afiliación SITRAINA</h2>
 
+      <!--
+        CORREO DESTINO (afiliaciones): la URL de FormSubmit decide a qué email llega la boleta.
+        Cambia el hash o usa formsubmit.co/tu-correo@dominio.com y actívalo en formsubmit.co.
+        Debe coincidir con el mismo destino en php/afiliados.php (función reenviarCorreo).
+      -->
+      <form id="form-afiliacion" data-guia-formsubmit="afiliacion" class="boleta-afiliacion" action="https://formsubmit.co/sitraina@ina.ac.cr" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_subject" id="afiliacion-asunto" value="Boleta de afiliación SITRAINA">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://sitraina.free.je/index.html?enviada=1#afiliacion">
+        <input type="hidden" name="Pagina" value="https://sitraina.free.je/index.html#afiliacion">
+        <input type="hidden" name="_replyto" id="afiliacion-replyto">
+        <input type="file" name="attachment" id="afiliacion-adjunto" accept="application/pdf" hidden>
+        <label class="cita-trampa" aria-hidden="true">No completar
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off">
+        </label>
+        <fieldset>
+          <legend>Datos Personales</legend>
+          <div class="fila-afiliacion">
+            <input type="text" name="nombre" placeholder="Nombre completo" required maxlength="120">
+            <input type="text" name="cedula" placeholder="Número de cédula" required maxlength="20" inputmode="numeric">
+          </div>
+          <div class="fila-afiliacion">
+            <input type="email" name="correo_ina" placeholder="Correo INA" maxlength="120">
+            <input type="email" name="correo_personal" placeholder="Correo personal" maxlength="120">
+          </div>
+          <div class="fila-afiliacion">
+            <label class="campo-fecha">
+              Fecha de nacimiento
+              <input type="date" name="fecha_nacimiento" required>
+            </label>
+            <input type="text" name="nombramiento" placeholder="Tipo de nombramiento" required maxlength="80">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Ubicación Laboral</legend>
+          <div class="fila-afiliacion">
+            <input type="text" name="unidad" placeholder="Unidad regional" required maxlength="120">
+            <input type="text" name="centro" placeholder="Centro o núcleo" required maxlength="120">
+          </div>
+          <div class="fila-afiliacion">
+            <input type="text" name="puesto" placeholder="Puesto desempeñado" required maxlength="120">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Teléfonos</legend>
+          <div class="fila-afiliacion">
+            <input type="text" name="telefono_trabajo" placeholder="Trabajo / Ext" maxlength="20" inputmode="numeric">
+            <input type="text" name="telefono_domicilio" placeholder="Domicilio" maxlength="20" inputmode="numeric">
+            <input type="text" name="telefono_celular" placeholder="Celular" required maxlength="11" inputmode="numeric">
+          </div>
+        </fieldset>
+
+        <fieldset class="nota-afiliacion">
+          <legend>Autorización</legend>
+          <p>Autorizo a la Unidad de Recursos Humanos del INA para que deduzca de mi salario el 1% mensual a favor de SITRAINA.</p>
+        </fieldset>
+
+        <fieldset class="nota-afiliacion">
+          <legend>Firma Digital</legend>
+          <p>Al enviar, la boleta se manda por correo en un PDF con los datos que escribiste. En esta página podrás descargar ese mismo PDF para firmarlo con la aplicación Gaudi y tu certificado digital.</p>
+          <p>Sin la firma digital en Gaudi, la afiliación no es válida legalmente.</p>
+        </fieldset>
+
+        <button type="submit" class="btn">Enviar Afiliación</button>
+        <p class="cita-resultado" id="afiliacion-resultado" hidden></p>
+        <p class="descarga-boleta" id="afiliacion-descarga-fila" hidden>
+          <a class="btn" id="afiliacion-descarga">Descargar PDF de afiliación</a>
+        </p>
+      </form>
+    </div>
+  </section>
+</div>
+<div class="vista-publica" id="vista-asesoria" data-vista-publica="asesoria" hidden>
+<section class="hero-servicios">
+    <div class="overlay"></div>
+    <h1>Asesoría Legal Sindical</h1>
+    <p>SITRAINA ofrece apoyo jurídico gratuito a sus afiliados en temas laborales.</p>
+    <a class="btn" href="#cita" data-public-nav="cita">Solicitar cita con el asesor legal</a>
+  </section>
+<section class="asesoria-legal">
+    <div class="contenedor">
+      <h2>Equipo de Asesoría Legal</h2>
+      <p class="intro">
+        Nuestro equipo jurídico está conformado por profesionales especializados en derecho laboral,
+        disponibles para asesorarte y defender tus derechos.
+      </p>
+
+      <h3>Aquí tienes información de nuestros abogados.</h3></br>
+
+      <div class="cards-abogados">
+
+        <!-- Abogado 1 -->
+        <button type="button" class="card-abogado tarjeta-asesor" data-foto="img/Alonso_abogado.jpg" data-puesto="Asesor legal" data-nombre="Lic. Alonso Arley Alvarado" data-info="Especialista en derecho laboral">
+          <img src="img/Alonso_abogado.jpg" alt="">
+          <h3>Lic. Alonso Arley Alvarado</h3>
+          <p>Especialista en derecho laboral</p>
+        </button>
+
+        <!-- Abogado 2 -->
+        <button type="button" class="card-abogado tarjeta-asesor" data-foto="img/esteban-calvo.jpg" data-puesto="Asesor legal" data-nombre="Lic. Esteban Calvo" data-info="Especialista en derecho laboral y en Convención Colectiva">
+          <img src="img/esteban-calvo.jpg" alt="">
+          <h3>Lic. Esteban Calvo</h3>
+          <p>Especialista en derecho laboral y en Convención Colectiva</p>
+        </button>
+
+      </div> <!-- ✅ Cierre del contenedor de cards -->
+
+      <h1 class="titulo-consultores">Además disponemos de consultores especializados</h1>
+      <button type="button" class="lawyer-card tarjeta-asesor" data-foto="img/mainor-castillo.jpg" data-puesto="Consultor especializado" data-nombre="Lic. Mainor Castillo" data-info="Especialista en derecho penal y derecho procesal">
+          <img src="img/mainor-castillo.jpg" alt="">
+          <h3>Lic. Mainor Castillo</h3>
+          <p>Especialista en derecho penal y derecho procesal</p>
+      </button>
+
+    </div>
+  </section>
+</div>
+<div class="vista-publica" id="vista-cita" data-vista-publica="cita" hidden>
+<a class="btn-atras" href="#asesoria" data-public-nav="asesoria">
+  <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  <span class="btn-atras-texto">Volver a asesoría</span>
+</a>
+<main class="pagina-cita">
+    <div class="contenedor">
+      <h1>Solicitar cita con el asesor legal</h1>
+      <p class="cita-intro">Elige un día y una hora disponibles. Al enviar, la confirmación vuelve a esta página.</p>
+      <p class="cita-guia-llamada">
+        <button type="button" class="cita-guia-abrir-inline" id="cita-guia-abrir-inline">Cómo te llega el correo</button>
+      </p>
+
+      <!--
+        CORREO DESTINO (citas legales): la URL de FormSubmit decide a qué email llega la solicitud.
+        Cambia el hash o usa formsubmit.co/tu-correo@dominio.com y actívalo en formsubmit.co.
+        Debe coincidir con el mismo destino en php/afiliados.php (función reenviarCorreo).
+        En la práctica el envío lo hace js/script.js → php/afiliados.php; este action es respaldo.
+      -->
+      <form class="form-cita" id="form-cita" data-guia-formsubmit="cita" action="https://formsubmit.co/sitraina@ina.ac.cr" method="POST">
+        <input type="hidden" name="_subject" id="cita-asunto" value="Solicitud de cita legal">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://sitraina.free.je/index.html?enviada=1#cita">
+        <input type="hidden" name="Pagina" value="https://sitraina.free.je/index.html#cita">
+        <input type="hidden" name="_replyto" id="cita-replyto">
+        <div class="cita-layout">
+          <div class="cita-calendario">
+            <div class="cita-mes">
+              <button type="button" class="cita-nav" id="cita-mes-anterior" aria-label="Mes anterior">‹</button>
+              <strong id="cita-mes-titulo"></strong>
+              <button type="button" class="cita-nav" id="cita-mes-siguiente" aria-label="Mes siguiente">›</button>
+            </div>
+            <div class="cita-semana" aria-hidden="true">
+              <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+            </div>
+            <div class="cita-dias" id="cita-dias"></div>
+            <div class="cita-horas" id="cita-horas" hidden>
+              <p>Hora de la cita</p>
+              <div class="cita-hora-lista" id="cita-hora-lista"></div>
+            </div>
+            <p class="cita-resumen" id="cita-resumen"></p>
+            <input type="hidden" name="fecha" id="cita-fecha">
+            <input type="hidden" name="hora" id="cita-hora">
+          </div>
+          <div class="cita-datos">
+            <label>Nombre completo
+              <input type="text" name="nombre" required maxlength="120" autocomplete="name">
+            </label>
+            <label>Cédula
+              <input type="text" name="cedula" required maxlength="20" autocomplete="off">
+            </label>
+            <label>Correo electrónico
+              <input type="email" name="email" required maxlength="120" autocomplete="email" inputmode="email" spellcheck="false" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Escribe un correo válido con @ y un dominio, por ejemplo nombre@correo.com">
+              <span class="cita-ayuda">Debe incluir @ y un dominio. A este correo te llegará la respuesta de SITRAINA; revisá también spam.</span>
+            </label>
+            <label>Teléfono
+              <input type="tel" name="telefono" required inputmode="numeric" autocomplete="tel" maxlength="11" pattern="[0-9]{8}" title="El teléfono debe tener 8 dígitos">
+              <span class="cita-ayuda">8 dígitos, sin espacios ni código de país.</span>
+            </label>
+            <input type="hidden" name="afiliado" value="Sí">
+            <label>Sede o centro de trabajo
+              <input type="text" name="sede" required maxlength="120">
+            </label>
+            <label class="ancho">Motivo de la consulta
+              <textarea name="motivo" rows="4" required maxlength="800"></textarea>
+            </label>
+            <label class="cita-trampa" aria-hidden="true">No completar
+              <input type="text" name="_honey" tabindex="-1" autocomplete="off">
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn">Enviar solicitud de cita</button>
+        <p class="cita-resultado" id="cita-resultado" hidden></p>
+      </form>
+    </div>
+  </main>
+</div>
+<main class="contenedor pagina-documentos vista-publica" id="vista-documentos" data-vista-publica="documentos" hidden>
+<div class="documentos-panel">
+  <div class="intro-documentos">
+    <h1>Documentos</h1>
+    <p>Elegí un tipo. Se abre la sección con sus documentos.</p>
+  </div>
+
+  <!-- Seis tipos. Los tres primeros abren su página con el mismo deslice. Los otros tres abren una sección aquí. -->
+  <div class="tipos-documentos">
+    <a class="tipo-doc" href="#efemerides" data-public-nav="efemerides">
+      <span class="tipo-doc-cuerpo">
+        <h2>Efemérides</h2>
+        <p>Fechas y conmemoraciones del sindicato.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+    </a>
+    <a class="tipo-doc" href="#hoja" data-public-nav="hoja">
+      <span class="tipo-doc-cuerpo">
+        <h2>Hoja del Miércoles</h2>
+        <p>Ediciones y materiales de la hoja semanal.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+    </a>
+    <a class="tipo-doc" href="#convenios" data-public-nav="convenios">
+      <span class="tipo-doc-cuerpo">
+        <h2>Convenios</h2>
+        <p>Beneficios y alianzas para personas afiliadas.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+    </a>
+    <a class="tipo-doc" href="#legales" data-public-nav="legales">
+      <span class="tipo-doc-cuerpo">
+        <h2>Documentos legales</h2>
+        <p>Leyes, convención, reglamento y estatutos.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+    </a>
+    <a class="tipo-doc" href="#informes" data-public-nav="informes">
+      <span class="tipo-doc-cuerpo">
+        <h2>Informes de labores</h2>
+        <p>Informes de la Junta Directiva y las secretarías.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+    </a>
+    <a class="tipo-doc" href="#actas" data-public-nav="actas">
+      <span class="tipo-doc-cuerpo">
+        <h2>Actas de asamblea</h2>
+        <p>Actas ordinarias y extraordinarias.</p>
+      </span>
+      <span class="tipo-doc-abrir"><span>Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+    </a>
+  </div>
+  </div>
+</main>
+<main class="contenedor pagina-documentos seccion-archivos vista-publica" id="vista-legales" data-vista-publica="legales" hidden>
+<a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
+      <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="btn-atras-texto">Volver a los tipos</span>
+    </a>
+    <h2>Documentos legales</h2>
+    <p>Normativa y documentos institucionales en PDF.</p>
+    <div class="lista-archivos">
+      <article class="archivo-item">
+        <div>
+          <h3>Constitución Política de Costa Rica</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/constitucion_politica_digital_edincr.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Código de Trabajo</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/Codigo_Trabajo_RPL.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Ley General de la Administración Pública</h3>
+          <p>Ley 6227 · PDF</p>
+        </div>
+        <a class="btn" href="documentos/Administraciónpublica.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Ley contra la Corrupción y el Enriquecimiento Ilícito</h3>
+          <p>Ley 8422 · PDF</p>
+        </div>
+        <a class="btn" href="documentos/ley-contra-corrupcion.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Ley Marco de Empleo Público</h3>
+          <p>Ley 10159 · PDF</p>
+        </div>
+        <a class="btn" href="documentos/LEYMARCODEEMPLEOPÚBLICO.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Ley de Fortalecimiento de las Finanzas Públicas</h3>
+          <p>Ley 9635 · PDF</p>
+        </div>
+        <a class="btn" href="documentos/FORTALECIMIENTODELASFINANZASPÚBLICAS.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Ley de Igualdad de Oportunidades para las Personas con Discapacidad</h3>
+          <p>Ley 7600 · PDF</p>
+        </div>
+        <a class="btn" href="documentos/leyigualdaddeoportunidades.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Ley Nacional de Emergencias y Prevención de Riesgos</h3>
+          <p>Ley 8488 · PDF</p>
+        </div>
+        <a class="btn" href="documentos/LEY-8488.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Convención Colectiva</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/convencion_colectiva_INA.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Reglamento Autónomo de Servicios del INA</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/Reglamento_autonomo_servicios_INA.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Estatutos de SITRAINA</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/ESTATUTOSITRA.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Machote de oficios 2026</h3>
+          <p>DOCX</p>
+        </div>
+        <a class="btn" href="documentos/MACHOTE%20OFICIOS.2026.docx" target="_blank" rel="noopener">Abrir</a>
+      </article>
+    </div>
+</main>
+<main class="contenedor pagina-documentos seccion-archivos vista-publica" id="vista-informes" data-vista-publica="informes" hidden>
+<a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
+      <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="btn-atras-texto">Volver a los tipos</span>
+    </a>
+    <h2>Informes de labores</h2>
+    <p>Agosto 2024 – Mayo 2026, más el informe de educación técnica 2025.</p>
+    <div class="lista-archivos">
+      <article class="archivo-item">
+        <div>
+          <h3>Junta Directiva</h3>
+          <p>Informe de labores · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-jd.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Luzmilda Cerdas Rojas</h3>
+          <p>Secretaría General · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-luzmilda.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Raquel Uribe Berríos</h3>
+          <p>Secretaría de la mujer · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-raquel.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Carlos González Castro</h3>
+          <p>Secretaría de Investigación · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-carlos.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Luis Diego González Esquivel</h3>
+          <p>Secretaría de Educación y Docencia · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-diego.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Walia Baltodano Fernández</h3>
+          <p>Secretaría de Actas · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-walia.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Aisha Blackwood Barret</h3>
+          <p>Vocal 1 · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-aisha.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Vanessa Monge Castillo</h3>
+          <p>Secretaría de Propaganda · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-vanesa.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Miguel Vargas Arias</h3>
+          <p>Secretaría de Afiliación · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-miguel.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Eunice Villalobos Sánchez</h3>
+          <p>Secretaría de Finanzas · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-eunice.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Cristhofer Hernández Guzmán</h3>
+          <p>Vocal 3 · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-cristhofer.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Eduardo Ortega Rodríguez</h3>
+          <p>Secretaría de Conflictos · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-eduardo.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Robert Rodríguez Guillén</h3>
+          <p>Suplente · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-robert.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Maribel García Fonseca</h3>
+          <p>Fiscalía · PDF</p>
+        </div>
+        <a class="btn" href="documentos/informe-maribel.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Estado de la Educación Técnica en el INA 2025</h3>
+          <p>Informe SITRAINA · PDF</p>
+        </div>
+        <a class="btn" href="documentos/InformeEstadodelaEducaciónTécnicaenelINA2025-SITRAINA.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+    </div>
+</main>
+<main class="contenedor pagina-documentos seccion-archivos vista-publica" id="vista-actas" data-vista-publica="actas" hidden>
+<a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
+      <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="btn-atras-texto">Volver a los tipos</span>
+    </a>
+    <h2>Actas de asamblea</h2>
+    <p>Actas disponibles por año.</p>
+    <div class="lista-archivos">
+      <article class="archivo-item">
+        <div>
+          <h3>Asamblea ordinaria · agosto 2024</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/Asamblea_Ordinaria_2024.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Asamblea extraordinaria · diciembre 2024</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/Asamblea_Extraordinaria2_2024.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Asamblea extraordinaria · mayo 2025</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/Asamblea_Extraordinaria1_2025.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+      <article class="archivo-item">
+        <div>
+          <h3>Asamblea extraordinaria · diciembre 2025</h3>
+          <p>PDF</p>
+        </div>
+        <a class="btn" href="documentos/Asamblea_Extraordinaria2_2025.pdf" target="_blank" rel="noopener">Abrir</a>
+      </article>
+    </div>
+</main>
+<div class="vista-publica" id="vista-efemerides" data-vista-publica="efemerides" hidden>
+<a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
+  <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  <span class="btn-atras-texto">Volver a documentos</span>
+</a>
+<main class="contenedor-efemerides">
+        <h1 class="titulo-seccion">Fechas importantes</h1>
+        
+        <div class="lista-efemerides">
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">14 de febrero</span>
+                    <span class="efemeride-titulo">Día de la Amistad</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/san_valentin.jpg" alt="Día de la Amistad" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Una fecha dedicada a resaltar los valores de la fraternidad y el compañerismo entre las personas trabajadoras, fortaleciendo los lazos de unidad sindical y respeto mutuo.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">8 de marzo</span>
+                    <span class="efemeride-titulo">Día Internacional de la Mujer</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/mujer.jpg" alt="Día Internacional de la Mujer" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Conmemoramos la lucha histórica de las mujeres por la igualdad, el reconocimiento y el ejercicio efectivo de sus derechos. En SITRAINA reafirmamos el compromiso con la equidad de género.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">11 de abril</span>
+                    <span class="efemeride-titulo">Día de la Batalla de Rivas</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/batallarivas.png" alt="Batalla de Rivas" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Honramos la gesta heroica de Juan Santamaría y los valientes costarricenses que defendieron nuestra soberanía nacional frente a los filibusteros en la histórica gesta de 1856.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">28 de abril</span>
+                    <span class="efemeride-titulo">Día Mundial de la Salud Ocupacional</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/saludocupacional.png" alt="Salud Ocupacional" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Cada rincón del INA debe ser un lugar donde estudiantes, docentes y trabajadores se sientan protegidos, tranquilos y respetados.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">1 de mayo</span>
+                    <span class="efemeride-titulo">Día Mundial del Trabajador</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/trabajador.jpg" alt="Día del trabajador" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Conmemoramos la lucha histórica de la clase trabajadora. Los derechos que hoy disfrutamos no fueron concesiones, sino conquistas logradas con organización y sacrificio frente a la explotación. Honrar el pasado es defender el presente. Por un salario justo, condiciones dignas y el fin de la precarización laboral: ¡Que viva la lucha de los trabajadores!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">29 de mayo</span>
+                    <span class="efemeride-titulo">Día Nacional de las Personas con Discapacidad</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/Personascondiscapacidad.png" alt="Día Nacional de las Personas con Discapacidad" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Cada 29 de mayo, Costa Rica conmemora el Día Nacional de las Personas con Discapacidad, de conformidad con el artículo 1 de la Ley N.° 8671, con la finalidad de promover el respeto, la igualdad, los derechos y la comprensión hacia las personas que presentan alguna discapacidad, celebración que se realiza desde el año 2008.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">5 de junio</span>
+                    <span class="efemeride-titulo">Día del ambiente</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/ambiente.jpeg" alt="Día del ambiente" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Junio es el Mes del Ambiente. En SITRAINA nos unimos a la celebración con un firme compromiso por el planeta. Por eso, te invitamos a ser parte activa de todas las actividades que tenemos programadas para este mes. Tu participación es clave para marcar la diferencia y promover el cuidado de nuestro entorno. SITRAINA camina hacia un futuro más sostenible.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">12 de junio</span>
+                    <span class="efemeride-titulo">Cuidemos Nuestros Océanos</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/12dejunio.png" alt="Cuidemos Nuestros Océanos" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Hoy más que nunca, nuestros océanos necesitan de nosotros. SITRAINA te invita a sumarte en la <strong>Semana 2</strong> del Mes del Ambiente a seguir armando la <strong>Frase Secreta (Parte 2)</strong> para participar y ganar fabulosos premios.</p>
+                            <p><strong>Recordatorio:</strong> Ve guardando tus botellas y frascos de vidrio (limpios, sin tapa ni etiquetas). La recolección oficial se realizará el próximo <strong>30 de junio</strong> en las oficinas centrales de SITRAINA. ¡Reduce, reutiliza y disminuye los residuos!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">12 de junio</span>
+                    <span class="efemeride-titulo">Día Mundial de la Descontaminación Acústica</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/12dejunio-menosruido.png" alt="Día Mundial de la Descontaminación Acústica" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>¡Menos ruido, más bienestar! La <strong>contaminación acústica</strong> afecta directamente nuestra salud, el descanso, la concentración y la calidad de vida. Desde SITRAINA, te invitamos a promover entornos laborales y educativos más saludables reduciendo el ruido innecesario.</p>
+                            <p>Recuerda: un espacio de trabajo y estudio en armonía contribuye a una mejor convivencia para todas las personas. ¡Cuidemos nuestros ambientes!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">15 de junio</span>
+                    <span class="efemeride-titulo">Sembrando Futuro, Cultivando Vida</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/diadelarbol.png" alt="Sembrando Futuro, Cultivando Vida" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>¡Cuidemos hoy lo que nos da vida mañana! En el marco de la celebración del <strong>Día del Árbol en Costa Rica</strong> y otras efemérides ambientales del mes, te invitamos a sumarte a nuestras iniciativas ecológicas.</p>
+                            <p>¡Participa, aprende y gana! Completa la <strong>Frase Secreta (Parte 3)</strong> que revelamos cada viernes para descubrir el mensaje ambiental de SITRAINA y participa en nuestra gran <strong>Rifa de Plantas</strong>. ¡Pequeñas acciones generan grandes cambios!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">21 de junio</span>
+                    <span class="efemeride-titulo">Día del Padre</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <video controls preload="metadata">
+                                <source src="efemerides/díadelpadre2026.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="evento-texto">
+                            <p>Celebramos con alegría el Día del Padre en SITRAINA. Reconocemos y valoramos el esfuerzo, la dedicación y el amor de todos los padres que forman parte de nuestra gran familia. ¡Feliz día a todos!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">26 de junio</span>
+                    <span class="efemeride-titulo">Con pequeñas acciones, generamos grandes cambios</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/26dejunio-mesdelambiente.jpeg" alt="Mes del Medio Ambiente - SITRAINA" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>¡Por un INA más verde, sostenible y consciente! Llegamos a la recta final del <strong>Mes del Medio Ambiente</strong>. Proteger nuestro entorno es un esfuerzo diario y una responsabilidad colectiva: recordar acciones esenciales como reducir, reutilizar, reciclar y reforestar es vital para asegurar el bienestar de nuestro planeta.</p>
+                            <p>¡Llegó el momento de completar el desafío! Revelamos la <strong>Frase Secreta (Parte 4 - Final)</strong> para cerrar este mes de conciencia ecológica. Recordamos a toda la gran familia de SITRAINA que quienes entreguen la frase completa participarán en la gran <strong>Rifa de Plantas</strong>. ¡Aportemos nuestro granito de arena por la calidad de vida de toda la sociedad!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">30 de junio</span>
+                    <span class="efemeride-titulo">Canje vidrio x vidrio</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/vidrioxvidrio.jpg" alt="Canje Vidrio x Vidrio" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>¡Te invitamos a participar en nuestra jornada ecológica! Este martes 30 de junio, únete a la iniciativa <strong>Vidrio x Vidrio</strong> en la Sede Central del INA, Uruca (Oficinas de SITRAINA), de 9:00 a.m. a 2:00 p.m.</p>
+                            <p>Recuerda: ¡Por cada 5 kilos de vidrio para reciclar, recibirás un vaso! *Hasta terminar existencias.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">15 de julio</span>
+                    <span class="efemeride-titulo">Día Nacional de la Educación Técnica y Formación Profesional</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/diaeducacióntécnica.jpeg" alt="Día Nacional de la Educación Técnica" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Este miércoles 15 de julio, celebramos el Día Nacional de la Educación Técnica y Formación Profesional. Desde <strong>SITRAINA</strong>, expresamos nuestro más profundo reconocimiento y agradecimiento a todas las personas trabajadoras del <strong>Instituto Nacional de Aprendizaje (INA)</strong>.</p>
+                            <p>Con compromiso, vocación y excelencia, ustedes hacen posible que la formación técnica y profesional transforme vidas, fortalezca a las familias e impulse el desarrollo económico y social de Costa Rica.</p>
+                            <p>Formación hoy, desarrollo siempre.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">25 de julio</span>
+                    <span class="efemeride-titulo">Anexión del Partido de Nicoya a Guanacaste</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <img src="efemerides/25dejulio.jpeg" alt="Anexión del Partido de Nicoya" class="img-zoomable">
+                        </div>
+                        <div class="evento-texto">
+                            <p>Este 25 de julio celebramos el Día de la <strong>Anexión del Partido de Nicoya</strong>. Un día que nos recuerda nuestra historia, nuestra identidad y el orgullo de ser guanacastecos.</p>
+                            <p>Desde <strong>SITRAINA</strong> conmemoramos 202 años de historia y unidad que fortalecen la identidad cultural y el desarrollo de nuestro país.</p>
+                            <p>¡De la patria por nuestra voluntad!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">15 de agosto</span>
+                    <span class="efemeride-titulo">Día de la Madre</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <video controls preload="metadata">
+                                <source src="efemerides/diadelamadre.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="evento-texto">
+                            <p>En SITRAINA conmemoramos y celebramos con orgullo el Día de la Madre. Reconocemos el valioso rol, la dedicación y el amor incondicional que las madres aportan cada día a nuestra institución. ¡Feliz día a todas!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">9 de setiembre</span>
+                    <span class="efemeride-titulo">Día de la Niñez</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <video controls preload="metadata">
+                                <source src="efemerides/Díadelniño.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="evento-texto">
+                            <p>Que los años nos traigan sabiduría, pero que jamás nos quiten la capacidad de asombrarnos, de soñar sin límites y de mirar el mundo con la curiosidad de nuestros primeros años. Crecer y asumir responsabilidades no significa apagar la chispa que nos impulsa a explorar; significa usar nuestra experiencia para seguir construyendo, transformando realidades y creando cosas nuevas con la misma pasión, imaginación y valentía que teníamos de niños.</p>
+                            <p>Hoy recordamos que la innovación y la capacidad de superar desafíos nacen de ese espíritu inquieto que no teme intentar algo por primera vez.</p>
+                            <p><strong>SITRAINA te desea un feliz Día del Niño y de la Niña.</strong> Sigamos creando, aprendiendo y construyendo juntos un futuro lleno de posibilidades.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="efemeride">
+                <button type="button" class="efemeride-resumen" aria-expanded="false">
+                    <span class="efemeride-fecha">15 de setiembre</span>
+                    <span class="efemeride-titulo">Día de la Independencia</span>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="efemeride-panel">
+                    <div class="efemeride-cuerpo">
+                        <div class="efemeride-media">
+                            <video controls preload="metadata">
+                                <source src="efemerides/setiembre1.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="evento-texto">
+                            <p>Celebrar nuestra independencia es rendir homenaje a la libertad, la paz y la democracia que definen a Costa Rica. Es recordar que la patria no solo se contempla, sino que se construye día a día con esfuerzo, ética, justicia social y el trabajo con el que aportamos al desarrollo de nuestro país.</p>
+                            <p>Como organización comprometida con la clase trabajadora y la educación, reafirmamos nuestra misión de seguir impulsando oportunidades, defendiendo derechos y fortaleciendo las bases que garantizan un futuro más justo, solidario y próspero para todas y todos.</p>
+                            <p><strong>SITRAINA les desea un feliz Día de la Independencia.</strong> Sigamos haciendo patria juntos con orgullo, trabajo y esperanza.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+    </main>
+</div>
+<div class="vista-publica" id="vista-hoja" data-vista-publica="hoja" hidden>
+<a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
+  <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  <span class="btn-atras-texto">Volver a documentos</span>
+</a>
+<div class="contenedor-titulo-galeria">
+  <div class="marca-hoja">
+    <svg class="imagen-titulo" viewBox="0 0 385 187" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Hoja del Miércoles" overflow="visible">
+      <image href="img/hojamier.png" width="385" height="187"></image>
+    </svg>
+    <p>Ediciones en video de la hoja semanal. Elige un volumen para ver el video y su descripción.</p>
+  </div>
+</div>
+<main class="contenedor-galeria">
+  <div class="grid-videos">
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 11" data-src="hojamier/Videos/Hojadelmiércoles-15-04-26.mp4" data-desc="Edición del miércoles 15 de abril.">Volumen 11</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 12" data-src="hojamier/Videos/Hojadelmiércoles22-4-26.mp4" data-desc="Edición del miércoles 22 de abril.">Volumen 12</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 13" data-src="hojamier/Videos/Hojadelmiércoles29-4-26.mp4" data-desc="Edición del miércoles 29 de abril.">Volumen 13</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 14" data-src="hojamier/Videos/hojadelmiércoles6-5-26.mp4" data-desc="Edición del miércoles 6 de mayo.">Volumen 14</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 15" data-src="hojamier/Videos/Hojadelmiércoles13-5-26.mp4" data-desc="Edición del miércoles 13 de mayo.">Volumen 15</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 17" data-src="hojamier/Videos/Hojadelmiércoles-27-05-26.mp4" data-desc="Edición del miércoles 27 de mayo.">Volumen 17</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 18" data-src="hojamier/Videos/Hojadelmiércoles3-6-26.mp4" data-desc="Edición del miércoles 3 de junio.">Volumen 18</button>
+    <button type="button" class="hoja-titulo" data-titulo="Edición Especial" data-src="hojamier/Videos/Mesambiente.mp4" data-desc="Edición especial del Mes del Ambiente.">Edición Especial</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 19" data-src="hojamier/Videos/Hojadelmiércoles10-6-26.mp4" data-desc="Edición del miércoles 10 de junio.">Volumen 19</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 20" data-src="hojamier/Videos/Hojadelmiércoles-17-06-26.mp4" data-desc="Edición del miércoles 17 de junio, con el informe del estado de la educación técnica en el INA." data-pdf="documentos/InformeEstadodelaEducaciónTécnicaenelINA2025-SITRAINA.pdf" data-pdf-nombre="Descargar: Estado de la Educación Técnica en el INA">Volumen 20</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 21" data-src="hojamier/Videos/Hojadelmiércoles24-6-26.mp4" data-desc="Edición del miércoles 24 de junio.">Volumen 21</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 22" data-src="hojamier/Videos/hojadelmiercoles1-7-26.mp4" data-desc="Edición del miércoles 1 de julio.">Volumen 22</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 23" data-src="hojamier/Videos/Hojadelmiércoles8-7-26.mp4" data-desc="Edición del miércoles 8 de julio.">Volumen 23</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 24" data-src="hojamier/Videos/Hojadelmiércoles15-7-26.mp4" data-desc="Edición del miércoles 15 de julio.">Volumen 24</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 25" data-src="hojamier/Videos/Hojadelmiércoles22-7-26.mp4" data-desc="Edición del miércoles 22 de julio.">Volumen 25</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 26" data-src="hojamier/Videos/Hojadelmiércoles29-7-26.mp4" data-desc="Edición del miércoles 29 de julio.">Volumen 26</button>
+    <button type="button" class="hoja-titulo" data-titulo="Victorias que protegen al INA" data-src="hojamier/Videos/Victorias2026-07-31.mp4" data-desc="Publicación del viernes 31 de julio.">Victorias que protegen al INA</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 27" data-src="hojamier/Videos/Hojadelmiércoles5-8-26.mp4" data-desc="Edición del miércoles 5 de agosto.">Volumen 27</button>
+    <button type="button" class="hoja-titulo" data-titulo="Victorias que protegen al INA" data-src="hojamier/Videos/Victorias2026-08-11.mp4" data-desc="Publicación del martes 11 de agosto.">Victorias que protegen al INA</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 28" data-src="hojamier/Videos/Hojadelmiércoles12-8-26.mp4" data-desc="Edición del miércoles 12 de agosto.">Volumen 28</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 29" data-src="hojamier/Videos/Hojadelmiercoles19-08-2026.mp4" data-desc="Edición del miércoles 19 de agosto.">Volumen 29</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 30" data-src="hojamier/Videos/Hojadelmiércoles26-8-26.mp4" data-desc="Edición del miércoles 26 de agosto.">Volumen 30</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 31" data-src="hojamier/Videos/Hojadelmiércoles2-9-26.mp4" data-desc="Edición del miércoles 2 de setiembre.">Volumen 31</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 32" data-src="hojamier/Videos/Hojadelmiércoles9-9-26.mp4" data-desc="Edición del miércoles 9 de setiembre.">Volumen 32</button>
+    <button type="button" class="hoja-titulo" data-titulo="Volumen 33" data-src="hojamier/Videos/hojadelmiércoles16-09-2026.mp4" data-desc="Edición del miércoles 16 de setiembre.">Volumen 33</button>
+  </div>
+
+</main>
+</div>
+<div class="vista-publica" id="vista-convenios" data-vista-publica="convenios" hidden>
+<a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
+  <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  <span class="btn-atras-texto">Volver a documentos</span>
+</a>
+<main class="contenedor-catalogo">
+    <div class="cabecera-revista">
+        <h1 class="titulo-pagina">Convenios</h1>
+    </div>
+
+    <div class="menu-categorias">
+        <button class="btn-categoria active" onclick="filtrar('todos')">Todos</button>
+        <button class="btn-categoria" onclick="filtrar('salud')">Salud</button>
+        <button class="btn-categoria" onclick="filtrar('educacion')">Educación</button>
+        <button class="btn-categoria" onclick="filtrar('turismo')">Turismo</button>
+    </div>
+
+    <div class="grid-revista">
+        
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (1).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (2).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (3).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (4).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (5).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (6).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (7).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (8).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (9).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Asembis/asembis (10).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Asembis</h3>
+                <p>Requiere código de afiliación</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Zhen/Zhen (1).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Zhen/Zhen (2).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+       <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Zhen/Zhen (3).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+               <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Zhen/Zhen (4).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+               <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Zhen/Zhen (5).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/Zhen/Zhen (6).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Clinica Zhen</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+
+        <div class="tarjeta-pagina" data-category="salud">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/SmartFit/Smartfit.png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>SmartFit</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+  
+        <div class="tarjeta-pagina" data-category="educacion">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/ucienciasarte/ucienciaarte.png" loading="lazy" alt="educacion" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>U. Ciencias y Artes</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+                <div class="tarjeta-pagina" data-category="educacion">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/ufidelitas/ufidelitas.png" loading="lazy"   alt="educacion" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>U. Fidélitas</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+
+                <div class="tarjeta-pagina" data-category="educacion">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/UStaLucia/sta.png" loading="lazy" alt="educacion" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>U. Sta.Lucía</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+                        <div class="tarjeta-pagina" data-category="turismo">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/bestwester/best.png" loading="lazy" alt="Turismo" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Best Wester</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="turismo">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/ponderosa/ponderosa.png" loading="lazy" alt="Turismo" onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Ponderosa</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+        <div class="tarjeta-pagina" data-category="turismo">
+            <div class="foto-convenio">
+                <img src="convenios/img-conv/termomania/thermo.png" loading="lazy" alt="Turismo"  onclick="abrirImagen(this.src)">
+            </div>
+            <div class="pie-pagina">
+                <h3>Thermomanía</h3>
+                <p>Requiere identificación como afiliado</p>
+            </div>
+        </div>
+
+
+
+</main>
+</div>
+<main class="contenedor pagina-contacto vista-publica" id="vista-contacto" data-vista-publica="contacto" hidden>
+        <section class="seccion-formulario">
+            <h2>Contáctanos</h2>
+            <p>¿Tienes alguna duda, sugerencia o necesitas apoyo? Escríbenos a través del siguiente formulario.</p>
+
+            <!-- CORREO DESTINO (contacto): se define en contacto.php → addAddress(...). -->
+            <form id="formulario-contacto-pagina" data-guia-formsubmit="contacto" action="contacto.php" method="POST">
+    <div class="form-grupo">
+        <label for="nombre">Nombre Completo</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required maxlength="120">
+    </div>
+
+    <div class="form-grupo">
+        <label for="email">Correo Electrónico</label>
+        <input type="email" id="email" name="email" placeholder="tu@email.com" required maxlength="120" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Escribe un correo válido con @ y un dominio">
+    </div>
+
+    <div class="form-grupo">
+        <label for="asunto">Asunto</label>
+        <input type="text" id="asunto" name="asunto" placeholder="Motivo de tu mensaje" maxlength="120">
+    </div>
+
+    <div class="form-grupo">
+        <label for="mensaje">Mensaje</label>
+        <textarea id="mensaje" name="mensaje" rows="7" placeholder="Escribe tu mensaje aquí..." required maxlength="2000"></textarea>
+    </div>
+
+    <button type="submit" class="btn">Enviar Mensaje</button>
+    <p class="cita-resultado" id="contacto-resultado" hidden></p>
+</form>
+
+
+        </section>
+
+        <section class="seccion-info-contacto">
+            <h2>Información de contacto</h2>
+            <div class="info-item">
+                <span class="icono" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></span>
+                <div>
+                    <span class="info-etiqueta">Dirección</span>
+                    <p><a href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener" title="Ver ubicación de SITRAINA en el mapa">Avenida 59, Calle 106, Barrio Finca La Caja, Uruca, San José. Código postal 10107.</a></p>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="icono" aria-hidden="true"><i class="fas fa-envelope"></i></span>
+                <div>
+                    <span class="info-etiqueta">Correo</span>
+                    <p><a href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a></p>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="icono" aria-hidden="true"><i class="fas fa-phone-alt"></i></span>
+                <div>
+                    <span class="info-etiqueta">Teléfono</span>
+                    <p><a href="tel:+50622202480">+506 2220-2480</a></p>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="icono" aria-hidden="true"><i class="fas fa-clock"></i></span>
+                <div>
+                    <span class="info-etiqueta">Horario</span>
+                    <p>Lunes a viernes, de 7:00 a. m. a 3:00 p. m.</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="icono" aria-hidden="true"><i class="fab fa-whatsapp"></i></span>
+                <div>
+                    <span class="info-etiqueta">WhatsApp</span>
+                    <p><a href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+<footer class="footer-franja">
+
+    <div class="contenedor footer-grid-compacto">
+      <div class="datos-contacto-premium">
+        <div class="dato">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="dato-texto">
+            <span class="label">Dirección</span>
+            <a class="valor" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener">La Uruca, San José</a>
+          </div>
+        </div>
+        <div class="dato">
+          <i class="fas fa-envelope"></i>
+          <div class="dato-texto">
+            <span class="label">Email</span>
+            <a class="valor" href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a>
+          </div>
+        </div>
+        <div class="dato">
+          <i class="fas fa-phone-alt"></i>
+          <div class="dato-texto">
+            <span class="label">Teléfono</span>
+            <a class="valor" href="tel:+50622202480">+506 2220-2480</a>
+          </div>
+        </div>
+        <div class="dato">
+          <i class="fab fa-whatsapp"></i>
+          <div class="dato-texto">
+            <span class="label">WhatsApp</span>
+            <a class="valor" href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a>
+          </div>
+        </div>
+      </div>
+      <div class="redes-contacto-premium">
+        <a href="https://facebook.com/sitraina.cr" target="_blank" class="btn-social" aria-label="Facebook">
+          <i class="fab fa-facebook-f" aria-hidden="true"></i>
+        </a>
+        <a href="https://www.instagram.com/sitrainacr" target="_blank" class="btn-social" aria-label="Instagram">
+          <i class="fab fa-instagram" aria-hidden="true"></i>
+        </a>
+        <a href="https://www.tiktok.com/@sitraina" target="_blank" class="btn-social" aria-label="TikTok">
+          <i class="fab fa-tiktok" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  
+</footer>
 <div class="directiva-popup" id="directiva-popup" aria-hidden="true">
   <div class="directiva-popup-panel" role="dialog" aria-modal="true" aria-labelledby="directiva-popup-nombre">
     <button type="button" class="directiva-cerrar" aria-label="Cerrar">×</button>
@@ -378,7 +1671,6 @@
     <p class="directiva-popup-correo"><a id="directiva-popup-correo" href="#"></a></p>
   </div>
 </div>
-
 <div class="directiva-popup labor-popup" id="labor-popup" aria-hidden="true">
   <div class="directiva-popup-panel" role="dialog" aria-modal="true" aria-labelledby="labor-popup-titulo">
     <button type="button" class="directiva-cerrar" aria-label="Cerrar">×</button>
@@ -387,9 +1679,543 @@
     <p class="directiva-popup-info" id="labor-popup-info"></p>
   </div>
 </div>
+<div class="directiva-popup" id="asesoria-popup" aria-hidden="true">
+  <div class="directiva-popup-panel" role="dialog" aria-modal="true" aria-labelledby="asesoria-popup-nombre">
+    <button type="button" class="directiva-cerrar" aria-label="Cerrar">×</button>
+    <img id="asesoria-popup-foto" alt="">
+    <p class="directiva-popup-puesto" id="asesoria-popup-puesto"></p>
+    <h3 id="asesoria-popup-nombre"></h3>
+    <p class="directiva-popup-info" id="asesoria-popup-info"></p>
+  </div>
+</div>
+<div class="cita-puerta" id="cita-puerta" role="dialog" aria-modal="true" aria-labelledby="cita-puerta-titulo" hidden>
+    <div class="cita-puerta-panel">
+      <h2 id="cita-puerta-titulo"></h2>
+      <p id="cita-puerta-texto"></p>
+      <div id="cita-puerta-extra"></div>
+      <div class="cita-puerta-acciones" id="cita-puerta-acciones"></div>
+    </div>
+  </div>
+<div class="hoja-popup" id="hoja-popup" aria-hidden="true">
+  <div class="hoja-popup-panel" role="dialog" aria-modal="true" aria-labelledby="hoja-popup-titulo">
+    <button type="button" class="hoja-cerrar" aria-label="Cerrar">×</button>
+    <h2 id="hoja-popup-titulo"></h2>
+    <div class="hoja-popup-cuerpo">
+      <div class="video-wrapper">
+        <video id="hoja-popup-video" controls playsinline preload="auto"></video>
+      </div>
+      <div class="hoja-popup-texto">
+        <p id="hoja-popup-desc"></p>
+        <div class="hoja-popup-acciones">
+          <button type="button" class="btn-copiar" id="hoja-popup-copiar"><i class="fas fa-link"></i> Copiar vínculo</button>
+          <a class="btn-descarga" id="hoja-popup-pdf" hidden target="_blank"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="modal-imagen" class="modal-lightbox" onclick="cerrarImagen()">
+    <span class="cerrar-lightbox">&times;</span>
+    <img id="imagen-maximizada" src="" alt="Convenio Ampliado">
+</div>
+<script src="js/script.js?v=3.03"></script>
+<script src="js/vistas-publicas.js?v=1.1"></script>
+<script src="js/guia-formsubmit.js?v=1.2"></script>
+<script src="js/script-conve.js"></script>
+<script src="js/script-hoja.js?v=1.1"></script>
+<script>
+/* Arma el PDF de la boleta en el navegador y lo adjunta al envío. */
+(function () {
+  var form = document.getElementById('form-afiliacion');
+  if (!form) return;
+  var aviso = document.getElementById('afiliacion-resultado');
+  var filaDescarga = document.getElementById('afiliacion-descarga-fila');
+  var enlaceDescarga = document.getElementById('afiliacion-descarga');
+  var adjunto = document.getElementById('afiliacion-adjunto');
+  var asunto = document.getElementById('afiliacion-asunto');
+  var replyto = document.getElementById('afiliacion-replyto');
+  var patronCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  var winAnsi = {
+    '¡':161,'¢':162,'£':163,'¥':165,'§':167,'©':169,'ª':170,'«':171,'®':174,'°':176,'±':177,'²':178,'³':179,'µ':181,'·':183,'¹':185,'º':186,'»':187,'¿':191,
+    'À':192,'Á':193,'Â':194,'Ã':195,'Ä':196,'Å':197,'Æ':198,'Ç':199,'È':200,'É':201,'Ê':202,'Ë':203,'Ì':204,'Í':205,'Î':206,'Ï':207,'Ñ':209,'Ò':210,'Ó':211,'Ô':212,'Õ':213,'Ö':214,'Ø':216,'Ù':217,'Ú':218,'Û':219,'Ü':220,
+    'à':224,'á':225,'â':226,'ã':227,'ä':228,'å':229,'æ':230,'ç':231,'è':232,'é':233,'ê':234,'ë':235,'ì':236,'í':237,'î':238,'ï':239,'ñ':241,'ò':242,'ó':243,'ô':244,'õ':245,'ö':246,'ø':248,'ù':249,'ú':250,'û':251,'ü':252,'ÿ':255
+  };
 
-  <!-- Script -->
-<script src="js/script.js?v=2.98"></script>
-  
-</body>
-</html>
+  /* Muestra el aviso de éxito o de error debajo de la boleta. */
+  function mostrar(texto, ok) {
+    aviso.hidden = false;
+    aviso.textContent = texto;
+    aviso.classList.toggle('ok', !!ok);
+    aviso.classList.toggle('error', !ok);
+  }
+
+  /* Lee y recorta el valor de un campo del formulario. */
+  function valor(nombre) {
+    return (form.elements[nombre].value || '').trim();
+  }
+
+  /* Pasa una fecha AAAA-MM-DD a DD/MM/AAAA. */
+  function fechaLegible(fecha) {
+    var partes = /^(\d{4})-(\d{2})-(\d{2})$/.exec(fecha);
+    return partes ? partes[3] + '/' + partes[2] + '/' + partes[1] : fecha;
+  }
+
+  /* Parte un texto largo en líneas que quepan en el PDF. */
+  function cortar(texto, maximo) {
+    var palabras = texto.split(/\s+/);
+    var lineas = [];
+    var actual = '';
+    palabras.forEach(function (palabra) {
+      var prueba = actual ? actual + ' ' + palabra : palabra;
+      if (prueba.length > maximo && actual) {
+        lineas.push(actual);
+        actual = palabra;
+      } else {
+        actual = prueba;
+      }
+    });
+    if (actual) lineas.push(actual);
+    return lineas;
+  }
+
+  /* Prepara un texto para que el PDF acepte tildes y eñes. */
+  function pdfTexto(texto) {
+    var limpio = String(texto || '').replace(/[\r\n\t]+/g, ' ');
+    var salida = '';
+    for (var i = 0; i < limpio.length; i++) {
+      var caracter = limpio.charAt(i);
+      var codigo = limpio.charCodeAt(i);
+      var byte = codigo < 128 ? codigo : (winAnsi[caracter] || 63);
+      if (byte === 40 || byte === 41 || byte === 92) salida += '\\';
+      salida += String.fromCharCode(byte);
+    }
+    return salida;
+  }
+
+  /* Convierte el texto del PDF en bytes. */
+  function bytes(texto) {
+    var datos = new Uint8Array(texto.length);
+    for (var i = 0; i < texto.length; i++) datos[i] = texto.charCodeAt(i) & 255;
+    return datos;
+  }
+
+  /* Construye el archivo PDF con las líneas de la boleta. */
+  function crearPdf(lineas) {
+    var comandos = ['BT', '/F2 16 Tf', '50 750 Td', '(' + pdfTexto(lineas[0]) + ') Tj', '/F1 11 Tf'];
+    for (var i = 1; i < lineas.length; i++) {
+      comandos.push('0 -18 Td', '(' + pdfTexto(lineas[i]) + ') Tj');
+    }
+    comandos.push('ET');
+    var stream = comandos.join('\n');
+    var objetos = [
+      '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n',
+      '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n',
+      '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>\nendobj\n',
+      '4 0 obj\n<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream\nendobj\n',
+      '5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n',
+      '6 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\nendobj\n'
+    ];
+    var cuerpo = '%PDF-1.4\n';
+    var offsets = [0];
+    objetos.forEach(function (objeto) {
+      offsets.push(cuerpo.length);
+      cuerpo += objeto;
+    });
+    var xref = cuerpo.length;
+    cuerpo += 'xref\n0 ' + (objetos.length + 1) + '\n';
+    cuerpo += '0000000000 65535 f \n';
+    for (var n = 1; n < offsets.length; n++) {
+      cuerpo += ('0000000000' + offsets[n]).slice(-10) + ' 00000 n \n';
+    }
+    cuerpo += 'trailer\n<< /Size ' + (objetos.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF';
+    return { binario: cuerpo, blob: new Blob([bytes(cuerpo)], { type: 'application/pdf' }) };
+  }
+
+  /* Muestra el enlace para descargar el mismo PDF que se envió. */
+  function prepararDescarga(guardado) {
+    if (!guardado) return;
+    var datos;
+    try { datos = JSON.parse(guardado); } catch (e) { return; }
+    if (!datos || !datos.base64 || !datos.nombre) return;
+    var binario = atob(datos.base64);
+    var url = URL.createObjectURL(new Blob([bytes(binario)], { type: 'application/pdf' }));
+    enlaceDescarga.href = url;
+    enlaceDescarga.download = datos.nombre;
+    filaDescarga.hidden = false;
+  }
+
+  if (new URLSearchParams(location.search).get('enviada') === '1') {
+    mostrar('Recibimos la boleta. El PDF con tus datos fue enviado por correo. Descárgalo y fírmalo con Gaudi usando tu certificado digital.', true);
+    prepararDescarga(sessionStorage.getItem('afiliacionPdf'));
+    history.replaceState(null, '', location.pathname + (location.hash || '#afiliacion'));
+  }
+
+  form.addEventListener('submit', function (evento) {
+    evento.preventDefault();
+    if (valor('_honey')) return;
+    var correoIna = valor('correo_ina');
+    var correoPersonal = valor('correo_personal');
+    form.elements.correo_ina.value = correoIna;
+    form.elements.correo_personal.value = correoPersonal;
+    if (!correoIna && !correoPersonal) {
+      mostrar('Escribe al menos un correo, el del INA o el personal.', false);
+      return;
+    }
+    if ((correoIna && !patronCorreo.test(correoIna)) || (correoPersonal && !patronCorreo.test(correoPersonal))) {
+      mostrar('Escribe un correo válido, con @ y un dominio. Ejemplo: nombre@correo.com', false);
+      return;
+    }
+    var nombre = valor('nombre');
+    var cedula = valor('cedula').replace(/\D/g, '');
+    if (!nombre) {
+      mostrar('Escribe el nombre completo.', false);
+      return;
+    }
+    if (!/^[0-9]{9}$/.test(cedula)) {
+      mostrar('La cédula debe tener 9 dígitos.', false);
+      return;
+    }
+    var nacimiento = valor('fecha_nacimiento');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(nacimiento) || nacimiento > new Date().toISOString().slice(0, 10)) {
+      mostrar('Escribe una fecha de nacimiento válida.', false);
+      return;
+    }
+    if (!valor('nombramiento') || !valor('unidad') || !valor('centro') || !valor('puesto')) {
+      mostrar('Completa el nombramiento, la unidad, el centro y el puesto.', false);
+      return;
+    }
+    var celular = valor('telefono_celular').replace(/\D/g, '');
+    if (celular.indexOf('506') === 0 && celular.length === 11) celular = celular.slice(3);
+    if (!/^[0-9]{8}$/.test(celular)) {
+      mostrar('El celular debe tener 8 dígitos.', false);
+      return;
+    }
+    form.elements.telefono_celular.value = celular;
+    form.elements.cedula.value = cedula;
+    var lineas = ['Boleta de Afiliación SITRAINA', ' '];
+    [
+      ['Nombre', nombre],
+      ['Cédula', cedula],
+      ['Correo INA', correoIna],
+      ['Correo personal', correoPersonal],
+      ['Fecha de nacimiento', fechaLegible(valor('fecha_nacimiento'))],
+      ['Nombramiento', valor('nombramiento')],
+      ['Unidad regional', valor('unidad')],
+      ['Centro o núcleo', valor('centro')],
+      ['Puesto', valor('puesto')],
+      ['Teléfono de trabajo', valor('telefono_trabajo')],
+      ['Teléfono de domicilio', valor('telefono_domicilio')],
+      ['Teléfono celular', valor('telefono_celular')]
+    ].forEach(function (par) {
+      lineas.push(par[0] + ': ' + (par[1] || '—'));
+    });
+    lineas.push(' ');
+    cortar('Autorizo a la Unidad de Recursos Humanos del INA para que deduzca de mi salario el 1% mensual a favor de SITRAINA.', 78).forEach(function (linea) {
+      lineas.push(linea);
+    });
+    lineas.push(' ');
+    cortar('Esta boleta debe firmarse con la aplicación Gaudi y el certificado digital. Sin esa firma, la afiliación no es válida legalmente.', 78).forEach(function (linea) {
+      lineas.push(linea);
+    });
+    var pdf = crearPdf(lineas);
+    var archivoNombre = 'Afiliacion_SITRAINA_' + (cedula.replace(/\D/g, '') || 'boleta') + '.pdf';
+    try {
+      var archivo = new File([pdf.blob], archivoNombre, { type: 'application/pdf' });
+      var transferencia = new DataTransfer();
+      transferencia.items.add(archivo);
+      adjunto.files = transferencia.files;
+    } catch (error) {
+      mostrar('No se pudo preparar el PDF. Intenta de nuevo.', false);
+      return;
+    }
+    asunto.value = 'Boleta de afiliación: ' + nombre;
+    replyto.value = correoPersonal || correoIna;
+    try {
+      sessionStorage.setItem('afiliacionPdf', JSON.stringify({ nombre: archivoNombre, base64: btoa(pdf.binario) }));
+    } catch (error) {}
+    var campoAccion = form.querySelector('input[name="accion"]');
+    if (!campoAccion) {
+      campoAccion = document.createElement('input');
+      campoAccion.type = 'hidden';
+      campoAccion.name = 'accion';
+      form.appendChild(campoAccion);
+    }
+    campoAccion.value = 'guardar';
+    /* CORREO DESTINO de la afiliación: php/afiliados.php → reenviarCorreo() (FormSubmit). */
+    form.action = 'php/afiliados.php';
+    form.submit();
+  });
+})();
+
+</script>
+<script>
+(function () {
+  var form = document.getElementById('formulario-contacto-pagina');
+  if (!form) return;
+  var aviso = document.getElementById('contacto-resultado');
+  var correo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  form.addEventListener('submit', function (evento) {
+    var nombre = form.elements.nombre;
+    var email = form.elements.email;
+    var mensaje = form.elements.mensaje;
+    nombre.value = nombre.value.trim();
+    email.value = email.value.trim();
+    mensaje.value = mensaje.value.trim();
+    nombre.setCustomValidity(nombre.value ? '' : 'Escribe tu nombre.');
+    email.setCustomValidity(correo.test(email.value) ? '' : 'Escribe un correo válido, con @ y un dominio.');
+    mensaje.setCustomValidity(mensaje.value ? '' : 'Escribe el mensaje.');
+    if (!form.checkValidity()) {
+      evento.preventDefault();
+      form.reportValidity();
+      if (aviso) {
+        aviso.hidden = false;
+        aviso.textContent = 'Revisa los datos antes de enviar.';
+        aviso.classList.add('error');
+      }
+    }
+  });
+})();
+</script>
+<script>
+/* Pregunta si la persona está afiliada antes de dejar usar el formulario de la cita. */
+    (function () {
+      var puerta = document.getElementById('cita-puerta');
+      var titulo = document.getElementById('cita-puerta-titulo');
+      var texto = document.getElementById('cita-puerta-texto');
+      var acciones = document.getElementById('cita-puerta-acciones');
+      var extra = document.getElementById('cita-puerta-extra');
+      var campoCedula = document.querySelector('input[name="cedula"]');
+      var main = document.getElementById('vista-cita');
+      if (!puerta || !titulo || !texto || !acciones || !extra) return;
+
+      var enviada = false;
+      try {
+        enviada = new URLSearchParams(location.search).get('enviada') === '1';
+      } catch (e) {}
+
+      var campoNombre = document.querySelector('input[name="nombre"]');
+      var campoCorreo = document.querySelector('input[name="email"]');
+      var guardado = { cedula: '', nombre: '', correo: '' };
+      var yaConfirmada = false;
+      try {
+        guardado.cedula = sessionStorage.getItem('citaCedula') || '';
+        guardado.nombre = sessionStorage.getItem('citaNombre') || '';
+        guardado.correo = sessionStorage.getItem('citaCorreo') || '';
+        yaConfirmada = sessionStorage.getItem('citaAfiliado') === 'si'
+          && /^[0-9]{9}$/.test(guardado.cedula)
+          && guardado.nombre
+          && guardado.correo;
+      } catch (e) {}
+
+      function cerrar() {
+        puerta.hidden = true;
+        document.body.classList.remove('cita-bloqueada');
+        if (main) main.removeAttribute('aria-hidden');
+      }
+
+      function bloquear() {
+        puerta.hidden = false;
+        document.body.classList.add('cita-bloqueada');
+        if (main) main.setAttribute('aria-hidden', 'true');
+      }
+
+      function aceptar(datosOk) {
+        if (campoCedula) campoCedula.value = datosOk.cedula;
+        if (campoNombre) campoNombre.value = datosOk.nombre;
+        if (campoCorreo) campoCorreo.value = datosOk.correo;
+        try {
+          sessionStorage.setItem('citaAfiliado', 'si');
+          sessionStorage.setItem('citaCedula', datosOk.cedula);
+          sessionStorage.setItem('citaNombre', datosOk.nombre);
+          sessionStorage.setItem('citaCorreo', datosOk.correo);
+        } catch (e) {}
+        cerrar();
+      }
+
+      function olvidar() {
+        try {
+          sessionStorage.removeItem('citaAfiliado');
+          sessionStorage.removeItem('citaCedula');
+          sessionStorage.removeItem('citaNombre');
+          sessionStorage.removeItem('citaCorreo');
+        } catch (e) {}
+      }
+
+      /* Comprueba cédula + nombre completo + correo en Info_Afiliados.Cuenta (solo lectura). */
+      function consultarCuenta(cedula, nombre, correo) {
+        var datos = new FormData();
+        datos.append('accion', 'consultar');
+        datos.append('cedula', cedula);
+        datos.append('nombre_completo', nombre);
+        datos.append('correo', correo);
+        return fetch('php/afiliados.php', {
+          method: 'POST',
+          body: datos,
+          cache: 'no-store',
+          credentials: 'same-origin'
+        }).then(function (respuesta) {
+          return respuesta.json();
+        });
+      }
+
+      function boton(etiqueta, clase, alPulsar) {
+        var botonEl = document.createElement('button');
+        botonEl.type = 'button';
+        botonEl.className = clase;
+        botonEl.textContent = etiqueta;
+        botonEl.addEventListener('click', alPulsar);
+        return botonEl;
+      }
+
+      function campoLabel(texto, entrada) {
+        var etiqueta = document.createElement('label');
+        etiqueta.className = 'cita-puerta-label';
+        etiqueta.appendChild(document.createTextNode(texto));
+        etiqueta.appendChild(entrada);
+        return etiqueta;
+      }
+
+      function mostrar(paso) {
+        acciones.innerHTML = '';
+        extra.innerHTML = '';
+        if (paso === 'afiliado') {
+          titulo.textContent = '¿Es persona afiliada?';
+          texto.textContent = 'La asesoría legal de SITRAINA se ofrece a las personas afiliadas. Indique si ya forma parte del sindicato.';
+          acciones.appendChild(boton('Sí, soy persona afiliada', 'btn', function () {
+            mostrar('cuenta');
+          }));
+          acciones.appendChild(boton('No, no estoy afiliada', 'btn btn-contorno', function () {
+            mostrar('ofrecer');
+          }));
+        } else if (paso === 'cuenta') {
+          titulo.textContent = 'Datos de afiliado';
+          texto.textContent = 'Escriba cédula, nombre completo y correo exactamente como están cargados en el registro de afiliados (carga manual).';
+          var entradaCedula = document.createElement('input');
+          entradaCedula.type = 'text';
+          entradaCedula.inputMode = 'numeric';
+          entradaCedula.autocomplete = 'off';
+          entradaCedula.maxLength = 9;
+          entradaCedula.placeholder = '9 dígitos';
+          entradaCedula.setAttribute('aria-label', 'Cédula');
+          var entradaNombre = document.createElement('input');
+          entradaNombre.type = 'text';
+          entradaNombre.autocomplete = 'name';
+          entradaNombre.maxLength = 120;
+          entradaNombre.placeholder = 'Nombre completo';
+          entradaNombre.setAttribute('aria-label', 'Nombre completo');
+          var entradaCorreo = document.createElement('input');
+          entradaCorreo.type = 'email';
+          entradaCorreo.autocomplete = 'email';
+          entradaCorreo.maxLength = 120;
+          entradaCorreo.placeholder = 'correo@ejemplo.com';
+          entradaCorreo.setAttribute('aria-label', 'Correo');
+          var aviso = document.createElement('span');
+          aviso.className = 'cita-puerta-error';
+          extra.appendChild(campoLabel('Cédula', entradaCedula));
+          extra.appendChild(campoLabel('Nombre completo', entradaNombre));
+          extra.appendChild(campoLabel('Correo', entradaCorreo));
+          extra.appendChild(aviso);
+          entradaCedula.addEventListener('input', function () {
+            entradaCedula.value = entradaCedula.value.replace(/\D/g, '').slice(0, 9);
+            aviso.textContent = '';
+          });
+          entradaNombre.addEventListener('input', function () { aviso.textContent = ''; });
+          entradaCorreo.addEventListener('input', function () { aviso.textContent = ''; });
+          acciones.appendChild(boton('Continuar', 'btn', function () {
+            var digitos = entradaCedula.value.replace(/\D/g, '');
+            var nombre = (entradaNombre.value || '').trim();
+            var correo = (entradaCorreo.value || '').trim().toLowerCase();
+            if (!/^[0-9]{9}$/.test(digitos)) {
+              aviso.textContent = 'La cédula debe tener 9 dígitos.';
+              entradaCedula.focus();
+              return;
+            }
+            if (!nombre) {
+              aviso.textContent = 'Escribe el nombre completo.';
+              entradaNombre.focus();
+              return;
+            }
+            if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(correo)) {
+              aviso.textContent = 'Escribe un correo válido.';
+              entradaCorreo.focus();
+              return;
+            }
+            var botones = acciones.querySelectorAll('button');
+            for (var i = 0; i < botones.length; i++) botones[i].disabled = true;
+            aviso.textContent = 'Comprobando la cuenta…';
+            consultarCuenta(digitos, nombre, correo).then(function (resultado) {
+              for (var j = 0; j < botones.length; j++) botones[j].disabled = false;
+              if (!resultado || !resultado.ok) {
+                aviso.textContent = (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.';
+                return;
+              }
+              aceptar({ cedula: digitos, nombre: nombre, correo: correo });
+            }).catch(function () {
+              for (var k = 0; k < botones.length; k++) botones[k].disabled = false;
+              aviso.textContent = 'No se pudo comprobar la cuenta. Intenta de nuevo.';
+            });
+          }));
+          acciones.appendChild(boton('Volver', 'btn btn-contorno', function () {
+            mostrar('afiliado');
+          }));
+          entradaCedula.focus();
+          return;
+        } else if (paso === 'ofrecer') {
+          titulo.textContent = '¿Desea afiliarse?';
+          texto.textContent = 'Para solicitar una cita es necesario estar afiliado. Puede completar la boleta de afiliación o declinar la solicitud.';
+          acciones.appendChild(boton('Sí, deseo afiliarme', 'btn', function () {
+            if (window.mostrarVistaPublica) window.mostrarVistaPublica('afiliacion'); else location.hash = 'afiliacion';
+          }));
+          acciones.appendChild(boton('No, no deseo afiliarme', 'btn btn-contorno', function () {
+            mostrar('rechazo');
+          }));
+        } else {
+          titulo.textContent = 'Solicitud no procedente';
+          texto.textContent = 'Su pedido de cita no puede aceptarse. La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA. Al manifestar que no desea afiliarse, la solicitud queda rechazada.';
+          acciones.appendChild(boton('Volver a asesoría', 'btn', function () {
+            if (window.mostrarVistaPublica) window.mostrarVistaPublica('asesoria'); else location.hash = 'asesoria';
+          }));
+        }
+        var primero = acciones.querySelector('button');
+        if (primero) primero.focus();
+      }
+
+      var arrancada = false;
+      function arrancarPuerta() {
+        if (arrancada) return;
+        arrancada = true;
+        if (enviada) return;
+        bloquear();
+        if (yaConfirmada) {
+          consultarCuenta(guardado.cedula, guardado.nombre, guardado.correo).then(function (resultado) {
+            if (resultado && resultado.ok) {
+              aceptar(guardado);
+              return;
+            }
+            olvidar();
+            mostrar('cuenta');
+            var avisoPrevio = extra.querySelector('.cita-puerta-error');
+            if (avisoPrevio) avisoPrevio.textContent = (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.';
+          }).catch(function () {
+            olvidar();
+            mostrar('afiliado');
+          });
+          return;
+        }
+        mostrar('afiliado');
+      }
+      var vistaCita = document.getElementById('vista-cita');
+      if (vistaCita && vistaCita.hidden) {
+        var obs = new MutationObserver(function () {
+          if (!vistaCita.hidden) {
+            obs.disconnect();
+            arrancarPuerta();
+          }
+        });
+        obs.observe(vistaCita, { attributes: true, attributeFilter: ['hidden'] });
+      } else {
+        arrancarPuerta();
+      }
+    })();
+</script>
+</body></html>

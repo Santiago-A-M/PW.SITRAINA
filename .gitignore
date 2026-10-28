@@ -1,4 +1,6 @@
 php/config.php
+php/config_afiliados.php
+php/config_correo.php
+php/config_respuestas.php
 admin/config.php
 admin/config_respuestas.php
-php/config_respuestas.php

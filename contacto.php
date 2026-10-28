@@ -1,20 +1,19 @@
 <?php
-/* Intento antiguo de enviar el contacto por SMTP. El formulario de contacto.html todavía apunta aquí. */
+/* Recibe el formulario de contacto: guarda en Consulta_Contacto y avisa por SMTP si hay config. */
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require 'phpmailer/src/exception.php';
 require 'phpmailer/src/phpmailer.php';
 require 'phpmailer/src/smtp.php';
+require_once __DIR__ . '/php/correo_smtp.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitización básica
     $nombre = htmlspecialchars(trim($_POST['nombre'] ?? ''), ENT_QUOTES, 'UTF-8');
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $asunto = htmlspecialchars(trim($_POST['asunto'] ?? ''), ENT_QUOTES, 'UTF-8');
     $mensaje = htmlspecialchars(trim($_POST['mensaje'] ?? ''), ENT_QUOTES, 'UTF-8');
 
-    // Validación mínima
     if ($nombre === '' || $email === '' || $mensaje === '') {
         die("<h2>Error: el nombre, el correo y el mensaje son obligatorios.</h2>");
     }
@@ -34,47 +33,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         html_entity_decode($mensaje, ENT_QUOTES, 'UTF-8')
     );
 
-    $mail = new PHPMailer(true);
-
-    try {
-        $mail->isSMTP();
-        $mail->Host = "smtp.ina.ac.cr";
-        $mail->SMTPAuth = true;
-        $mail->Username = "sitraina@ina.ac.cr";
-        $mail->Password = "Prueb@2026";
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-
-        $mail->setFrom("sitraina@ina.ac.cr", "Formulario Web - SITRAINA");
-        $mail->addAddress("sitraina@ina.ac.cr");
-        $mail->addReplyTo($email, $nombre);
-
-        $mail->isHTML(true);
-        $mail->Subject = "Contacto web: " . ($asunto ?: "Sin asunto");
-        $mail->Body = "
+    $smtp = sitraina_config_correo();
+    $enviado = false;
+    if ($smtp) {
+        $mail = new PHPMailer(true);
+        try {
+            $de = trim((string) ($smtp['de'] ?? $smtp['usuario'] ?? ''));
+            $deNombre = trim((string) ($smtp['de_nombre'] ?? 'Formulario Web - SITRAINA'));
+            $mail->isSMTP();
+            $mail->Host = (string) ($smtp['host'] ?? '');
+            $mail->SMTPAuth = true;
+            $mail->Username = (string) ($smtp['usuario'] ?? '');
+            $mail->Password = (string) ($smtp['clave'] ?? '');
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = (int) ($smtp['puerto'] ?? 587);
+            $mail->setFrom($de !== '' ? $de : $mail->Username, $deNombre !== '' ? $deNombre : 'Formulario Web - SITRAINA');
+            $mail->addAddress($de !== '' ? $de : $mail->Username);
+            $mail->addReplyTo($email, $nombre);
+            $mail->isHTML(true);
+            $mail->Subject = "Contacto web: " . ($asunto ?: "Sin asunto");
+            $mail->Body = "
             <h3>Nuevo mensaje desde la web de SITRAINA</h3>
             <p><strong>Nombre:</strong> " . $nombre . "</p>
             <p><strong>Correo:</strong> " . $email . "</p>
             <p><strong>Asunto:</strong> " . $asunto . "</p>
             <p><strong>Mensaje:</strong><br>" . nl2br($mensaje) . "</p>
         ";
+            $mail->send();
+            $enviado = true;
+        } catch (Exception $e) {
+            $enviado = false;
+        }
+    }
 
-        $mail->send();
-        echo "<h2>✅ Mensaje enviado correctamente</h2>";
+    if ($enviado) {
+        echo "<h2>Mensaje enviado correctamente</h2>";
         echo "<p>Gracias por contactarnos, <strong>" . $nombre . "</strong>. Te responderemos pronto.</p>";
         if (!$guardado) {
             echo "<p>El mensaje se envió, pero no quedó registrado en el panel. Revisá php/config.php y la tabla Consulta_Contacto.</p>";
         }
         echo '<p><a href="index.html">← Volver al inicio</a></p>';
-    } catch (Exception $e) {
-        if ($guardado) {
-            echo "<h2>✅ Mensaje registrado</h2>";
-            echo "<p>Tu mensaje quedó en el panel de administración. El aviso por correo no se pudo enviar ahora.</p>";
-            echo '<p><a href="index.html">← Volver al inicio</a></p>';
-        } else {
-            echo "<h2>❌ Error al enviar el mensaje</h2>";
-            echo "<p>Por favor, inténtalo más tarde o escribe directamente a <a href='mailto:sitraina@ina.ac.cr'>sitraina@ina.ac.cr</a>.</p>";
-        }
+    } elseif ($guardado) {
+        echo "<h2>Mensaje registrado</h2>";
+        echo "<p>Tu mensaje quedó en el panel de administración. El aviso por correo no se pudo enviar ahora.</p>";
+        echo '<p><a href="index.html">← Volver al inicio</a></p>';
+    } else {
+        echo "<h2>Error al enviar el mensaje</h2>";
+        echo "<p>Por favor, inténtalo más tarde o escribe directamente a <a href='mailto:sitraina@ina.ac.cr'>sitraina@ina.ac.cr</a>.</p>";
     }
 }
-?>
