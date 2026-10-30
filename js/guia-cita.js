@@ -1,26 +1,26 @@
-/* Guía FormSubmit en solicitar cita: botón fijo y popups con flechas. */
+/* Guía de la solicitud de cita: botón fijo y popups con flechas. */
 (function () {
     if (document.getElementById('guia-cita')) return;
 
     var pasos = [
         {
             titulo: 'Cómo te llega el correo',
-            texto: 'Tu solicitud de cita llega a SITRAINA por FormSubmit. La respuesta de administración te la escribe sitraina@ina.ac.cr al correo que pusiste en el formulario.',
+            texto: 'Tu solicitud de cita queda en el panel. La respuesta llega a Mis mensajes si ya iniciaste sesión y el formulario lleva el correo de esa cuenta.',
             icono: '✉'
         },
         {
             titulo: 'Usá un correo que revisés',
-            texto: 'En el formulario poné el mismo correo al que querés que te escriban. Ahí llegará la respuesta de administración sobre tu cita.',
+            texto: 'Iniciá sesión y, en el formulario, poné el correo de esa cuenta. Así la respuesta vuelve a Mis mensajes.',
             icono: '1'
         },
         {
             titulo: 'Al enviar tu solicitud',
-            texto: 'FormSubmit lleva tus datos a SITRAINA. En esta misma página verás la confirmación; no hace falta quedarte en otra web.',
+            texto: 'En esta misma página verás la confirmación. El sindicato ve la cita en el panel.',
             icono: '2'
         },
         {
             titulo: 'Cómo se ve el remitente',
-            texto: 'La confirmación de envío puede mencionar FormSubmit. Cuando administración te responda, el remitente debería ser sitraina@ina.ac.cr y el asunto hablará de tu cita.',
+            texto: 'Cuando administración te responda, el mensaje aparece en Mis mensajes porque ya habías iniciado sesión con el correo del formulario.',
             icono: '3'
         },
         {
@@ -46,7 +46,7 @@
     var raiz = document.createElement('div');
     raiz.id = 'guia-cita';
     raiz.innerHTML = [
-        '<button type="button" class="guia-cita-boton" id="guia-cita-abrir" aria-expanded="false" aria-controls="guia-cita-overlay" title="Guía del correo FormSubmit">',
+        '<button type="button" class="guia-cita-boton" id="guia-cita-abrir" aria-expanded="false" aria-controls="guia-cita-overlay" title="Guía de la solicitud">',
         '  <span class="guia-cita-anillo" aria-hidden="true"></span>',
         '  <span class="guia-cita-icono" aria-hidden="true">✉</span>',
         '  <span class="guia-cita-texto">Guía correo</span>',

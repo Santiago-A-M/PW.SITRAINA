@@ -36,6 +36,7 @@ function abrir_respuestas() {
         return null;
     }
     $mysqli->set_charset('utf8mb4');
+    $mysqli->query("SET time_zone = '-06:00'");
     return $mysqli;
 }
 
@@ -52,9 +53,14 @@ function tabla_respuesta_por_tipo($tipo) {
     return null;
 }
 
-/* Guarda una consulta de Contacto en Info_Consultas. */
+/* La respuesta vuelve a Mis mensajes si la solicitud se envió con la sesión iniciada. */
+function solicitud_visible_en_bandeja($tipo, $fila, $cuentas = null) {
+    return (int) ($fila['usuario_id'] ?? 0) > 0;
+}
+
 function registrar_contacto_consulta($nombre, $correo, $asunto, $mensaje) {
     require_once __DIR__ . '/disponibilidad.php';
+    require_once __DIR__ . '/sesion_usuario.php';
     $db = abrir_consultas();
     if (!$db) {
         return false;
@@ -63,14 +69,16 @@ function registrar_contacto_consulta($nombre, $correo, $asunto, $mensaje) {
     $correo = strtolower(trim((string) $correo));
     $asunto = trim((string) $asunto);
     $mensaje = trim((string) $mensaje);
+    $usuarioId = sitraina_id_si_cuenta_en_formulario([$correo]);
+    $uid = $usuarioId > 0 ? $usuarioId : null;
     $consulta = $db->prepare(
-        'INSERT INTO Consulta_Contacto (nombre, correo, asunto, mensaje) VALUES (?, ?, ?, ?)'
+        'INSERT INTO Consulta_Contacto (nombre, correo, asunto, mensaje, usuario_id) VALUES (?, ?, ?, ?, ?)'
     );
     if (!$consulta) {
         $db->close();
         return false;
     }
-    $consulta->bind_param('ssss', $nombre, $correo, $asunto, $mensaje);
+    $consulta->bind_param('ssssi', $nombre, $correo, $asunto, $mensaje, $uid);
     $ok = $consulta->execute();
     $consulta->close();
     $db->close();
@@ -81,7 +89,30 @@ function registrar_contacto_respuesta($nombre, $correo, $asunto, $mensaje) {
     return registrar_contacto_consulta($nombre, $correo, $asunto, $mensaje);
 }
 
-function guardar_respuesta_enviada($tipo, $origenId, $estado, $respuesta, $adminUsuario) {
+function respuestas_tiene_editado($db, $tabla, $crear = false) {
+    static $cache = [];
+    if (array_key_exists($tabla, $cache) && ($cache[$tabla] || !$crear)) {
+        return $cache[$tabla];
+    }
+    $permitidas = ['Respuesta_Contacto', 'Respuesta_Afiliacion', 'Respuesta_Asesoria'];
+    if (!$db || !in_array($tabla, $permitidas, true)) {
+        return false;
+    }
+    $consulta = $db->query('SHOW COLUMNS FROM `' . $tabla . '` LIKE \'editado\'');
+    $hay = $consulta && $consulta->num_rows > 0;
+    if ($consulta) {
+        $consulta->free();
+    }
+    if (!$hay && $crear) {
+        $hay = (bool) $db->query(
+            'ALTER TABLE `' . $tabla . '` ADD COLUMN editado TINYINT(1) NOT NULL DEFAULT 0 AFTER respuesta'
+        );
+    }
+    $cache[$tabla] = $hay;
+    return $hay;
+}
+
+function guardar_respuesta_enviada($tipo, $origenId, $estado, $respuesta, $adminUsuario, $editar = false) {
     $tabla = tabla_respuesta_por_tipo($tipo);
     if ($tabla === null) {
         return false;
@@ -97,15 +128,30 @@ function guardar_respuesta_enviada($tipo, $origenId, $estado, $respuesta, $admin
     if (!$db) {
         return false;
     }
-    $sql = 'INSERT INTO `' . $tabla . '` (origen_id, estado, respuesta, admin_usuario, respondido_en)
-            VALUES (?, ?, ?, ?, NOW())
-            ON DUPLICATE KEY UPDATE estado = ?, respuesta = ?, admin_usuario = ?, respondido_en = NOW()';
-    $consulta = $db->prepare($sql);
-    if (!$consulta) {
-        $db->close();
-        return false;
+    $conEditado = respuestas_tiene_editado($db, $tabla, true);
+    if ($conEditado) {
+        $marca = $editar ? 1 : 0;
+        $sql = 'INSERT INTO `' . $tabla . '` (origen_id, estado, respuesta, admin_usuario, respondido_en, editado)
+                VALUES (?, ?, ?, ?, NOW(), 0)
+                ON DUPLICATE KEY UPDATE estado = ?, respuesta = ?, admin_usuario = ?, respondido_en = NOW(),
+                editado = IF(? = 1, 1, editado)';
+        $consulta = $db->prepare($sql);
+        if (!$consulta) {
+            $db->close();
+            return false;
+        }
+        $consulta->bind_param('issssssi', $origenId, $estado, $respuesta, $adminUsuario, $estado, $respuesta, $adminUsuario, $marca);
+    } else {
+        $sql = 'INSERT INTO `' . $tabla . '` (origen_id, estado, respuesta, admin_usuario, respondido_en)
+                VALUES (?, ?, ?, ?, NOW())
+                ON DUPLICATE KEY UPDATE estado = ?, respuesta = ?, admin_usuario = ?, respondido_en = NOW()';
+        $consulta = $db->prepare($sql);
+        if (!$consulta) {
+            $db->close();
+            return false;
+        }
+        $consulta->bind_param('issssss', $origenId, $estado, $respuesta, $adminUsuario, $estado, $respuesta, $adminUsuario);
     }
-    $consulta->bind_param('issssss', $origenId, $estado, $respuesta, $adminUsuario, $estado, $respuesta, $adminUsuario);
     $ok = $consulta->execute();
     $consulta->close();
     $db->close();
@@ -143,8 +189,11 @@ function mapa_respuestas_por_tipo($dbRespuestas, $tipo) {
     if (!$dbRespuestas || $tabla === null) {
         return $mapa;
     }
+    $conEditado = respuestas_tiene_editado($dbRespuestas, $tabla);
     $consulta = $dbRespuestas->prepare(
-        'SELECT origen_id, estado, respuesta, admin_usuario, respondido_en FROM `' . $tabla . '`'
+        $conEditado
+            ? 'SELECT origen_id, estado, respuesta, admin_usuario, respondido_en, editado FROM `' . $tabla . '`'
+            : 'SELECT origen_id, estado, respuesta, admin_usuario, respondido_en FROM `' . $tabla . '`'
     );
     if (!$consulta) {
         return $mapa;
@@ -155,6 +204,7 @@ function mapa_respuestas_por_tipo($dbRespuestas, $tipo) {
         $resultado = $consulta->get_result();
         if ($resultado) {
             while ($fila = $resultado->fetch_assoc()) {
+                $fila['editado'] = !empty($fila['editado']) ? 1 : 0;
                 $mapa[(int) $fila['origen_id']] = $fila;
             }
             $resultado->free();
@@ -165,7 +215,12 @@ function mapa_respuestas_por_tipo($dbRespuestas, $tipo) {
         $respuesta = '';
         $adminUsuario = '';
         $respondidoEn = '';
-        $consulta->bind_result($origenId, $estado, $respuesta, $adminUsuario, $respondidoEn);
+        $editado = 0;
+        if ($conEditado) {
+            $consulta->bind_result($origenId, $estado, $respuesta, $adminUsuario, $respondidoEn, $editado);
+        } else {
+            $consulta->bind_result($origenId, $estado, $respuesta, $adminUsuario, $respondidoEn);
+        }
         while ($consulta->fetch()) {
             $mapa[(int) $origenId] = [
                 'origen_id' => (int) $origenId,
@@ -173,6 +228,7 @@ function mapa_respuestas_por_tipo($dbRespuestas, $tipo) {
                 'respuesta' => (string) $respuesta,
                 'admin_usuario' => (string) $adminUsuario,
                 'respondido_en' => (string) $respondidoEn,
+                'editado' => $editado ? 1 : 0,
             ];
         }
     }

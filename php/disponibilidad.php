@@ -24,6 +24,8 @@ function abrir_mysql_desde($archivo) {
         return null;
     }
     $mysqli->set_charset('utf8mb4');
+    /* Costa Rica no cambia el reloj. InfinityFree suele estar en UTC y TIMESTAMP se muestra en esa zona. */
+    $mysqli->query("SET time_zone = '-06:00'");
     return $mysqli;
 }
 
@@ -42,9 +44,14 @@ function abrir_usuarios() {
     return abrir_consultas();
 }
 
-/* Info_Afiliados: tabla Cuenta (carga manual). */
+/* Info_Afiliados: tabla Cuenta (alta y baja solo desde el panel). */
 function abrir_afiliados() {
     return abrir_mysql_desde(__DIR__ . '/config_afiliados.php');
+}
+
+/* Usuarios_Web: cuentas de ingreso (Usuario_Web). */
+function abrir_cuentas_web() {
+    return abrir_mysql_desde(__DIR__ . '/config_usuarios.php');
 }
 
 function abrir_agenda() {
@@ -78,11 +85,11 @@ function leer_agenda($mysqli) {
 function leer_citas($mysqli) {
     $citas = [];
     $consulta = $mysqli->prepare(
-        'SELECT id, fecha, hora, persona, correo, motivo, notas, creado_en FROM Consulta_Asesoria ORDER BY creado_en DESC, fecha DESC, hora DESC'
+        'SELECT id, fecha, hora, persona, correo, motivo, notas, creado_en, usuario_id FROM Consulta_Asesoria ORDER BY creado_en DESC, fecha DESC, hora DESC'
     );
     if ($consulta) {
         $consulta->execute();
-        $consulta->bind_result($id, $fecha, $hora, $persona, $correo, $motivo, $notas, $creadoEn);
+        $consulta->bind_result($id, $fecha, $hora, $persona, $correo, $motivo, $notas, $creadoEn, $usuarioId);
         while ($consulta->fetch()) {
             $citas[] = [
                 'id' => (int) $id,
@@ -93,6 +100,7 @@ function leer_citas($mysqli) {
                 'motivo' => (string) $motivo,
                 'notas' => (string) $notas,
                 'creado_en' => (string) $creadoEn,
+                'usuario_id' => (int) $usuarioId,
             ];
         }
         $consulta->close();
@@ -120,13 +128,18 @@ function reservar_cita($mysqli, $fecha, $hora, $persona = '', $motivo = '', $not
     if (strlen($cedula) > 9) {
         $cedula = substr($cedula, 0, 9);
     }
+    $usuarioId = 0;
+    if (function_exists('sitraina_id_si_cuenta_en_formulario')) {
+        $usuarioId = (int) sitraina_id_si_cuenta_en_formulario([$correo]);
+    }
+    $uid = $usuarioId > 0 ? $usuarioId : null;
     $consulta = $mysqli->prepare(
-        'INSERT INTO Consulta_Asesoria (fecha, hora, cedula, persona, correo, motivo, notas) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        'INSERT INTO Consulta_Asesoria (fecha, hora, cedula, persona, correo, motivo, notas, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     );
     if (!$consulta) {
         return null;
     }
-    $consulta->bind_param('sssssss', $fecha, $hora, $cedula, $persona, $correo, $motivo, $notas);
+    $consulta->bind_param('sssssssi', $fecha, $hora, $cedula, $persona, $correo, $motivo, $notas, $uid);
     $guardo = $consulta->execute();
     $duplicada = $consulta->errno === 1062;
     $nuevoId = $guardo ? (int) $mysqli->insert_id : 0;

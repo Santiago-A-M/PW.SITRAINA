@@ -37,9 +37,10 @@
     body.pagina-panel { background: transparent; }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.14">
+  <link rel="stylesheet" href="admin.css?v=6.42">
+  <link rel="stylesheet" href="../css/avisos.css?v=1.2">
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.5';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.26';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body class="pagina-panel">
@@ -49,7 +50,7 @@
     <div class="admin-header-inner">
       <a class="admin-logo" href="#agenda" data-admin-nav="agenda" id="admin-logo" aria-label="SITRAINA Administración">
         <span class="admin-logo-marca" aria-hidden="true">
-          <img class="admin-logo-img" src="../img/logo.png" alt="" width="44" height="44" decoding="async">
+          <img class="admin-logo-img" src="../img/logo.png" alt="" width="55" height="55" decoding="async">
           <span class="admin-logo-atras-icono">
             <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
@@ -64,37 +65,37 @@
       </a>
 
       <nav class="admin-navbar" id="admin-menu" role="navigation" aria-label="Menú de administración">
-        <a href="#agenda" class="active" data-admin-nav="agenda">
+        <a href="#agenda" class="active" data-admin-nav="agenda" title="Inicio" aria-label="Inicio">
           <span class="admin-nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
           </span>
           <span class="admin-nav-label">Inicio</span>
         </a>
-        <a href="#afilacion" data-admin-nav="afilacion">
+        <a href="#afilacion" data-admin-nav="afilacion" title="Afiliaciones" aria-label="Afiliaciones">
           <span class="admin-nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 8v6M16 11h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </span>
           <span class="admin-nav-label">Afiliaciones</span>
         </a>
-        <a href="#afiliados" data-admin-nav="afiliados">
+        <a href="#afiliados" data-admin-nav="afiliados" title="Afiliados" aria-label="Afiliados">
           <span class="admin-nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a3.5 3.5 0 0 1 0 6.74" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </span>
           <span class="admin-nav-label">Afiliados</span>
         </a>
-        <a href="#cita" data-admin-nav="cita">
+        <a href="#cita" data-admin-nav="cita" title="Citas con Asesoría" aria-label="Citas con Asesoría">
           <span class="admin-nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </span>
           <span class="admin-nav-label">Citas con Asesoría</span>
         </a>
-        <a href="#horario" data-admin-nav="horario">
+        <a href="#horario" data-admin-nav="horario" title="Horario" aria-label="Horario">
           <span class="admin-nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M3 11h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 14.8v1.4l.9.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </span>
           <span class="admin-nav-label">Horario</span>
         </a>
-        <a href="#contacto" data-admin-nav="contacto">
+        <a href="#contacto" data-admin-nav="contacto" title="Contacto" aria-label="Contacto">
           <span class="admin-nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
@@ -156,7 +157,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
         </button>
         <h2 class="admin-alerta-titulo" id="admin-alerta-titulo">Advertencias</h2>
-        <p class="admin-alerta-ayuda">Avisos del panel para administración.</p>
+        <p class="admin-alerta-ayuda">Consultas pendientes. Solo se ve el tipo y cuándo llegó.</p>
         <div class="admin-alerta-lista" id="admin-alerta-lista" role="status" aria-live="polite">
           <p class="admin-alerta-vacio" id="admin-alerta-vacio">No hay advertencias por ahora.</p>
         </div>
@@ -167,7 +168,7 @@
   <main class="caja caja-panel admin-vista" id="vista-agenda" data-vista="agenda">
     <header class="vista-cabeza">
       <h1>Inicio</h1>
-      <p class="panel-intro">Resumen para administración: pendientes y citas recientes. Abrí la papelera para revisar o borrar consultas rechazadas.</p>
+      <p class="panel-intro">Resumen para administración: pendientes y consultas recientes. Abrí la papelera para revisar o borrar consultas rechazadas.</p>
     </header>
 
     <section class="inicio-stats" aria-label="Pendientes por tipo">
@@ -187,13 +188,7 @@
 
     <section class="inicio-bloque" aria-labelledby="inicio-citas-titulo">
       <div class="inicio-bloque-cabeza">
-        <h2 id="inicio-citas-titulo">Citas más recientes</h2>
-        <button type="button" class="inicio-ver-todas" data-admin-nav="cita" aria-label="Ver todas las citas" title="Ver todas">
-          <span class="inicio-ver-todas-texto">Ver todas</span>
-          <span class="inicio-ver-todas-icono" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </button>
+        <h2 id="inicio-citas-titulo">Consultas recientes</h2>
       </div>
       <div id="inicio-citas-recientes" class="inicio-lista"><p class="vacio-bloque">Cargando...</p></div>
     </section>
@@ -246,7 +241,7 @@
   <main class="caja caja-panel admin-vista" id="vista-afilacion" data-vista="afilacion" hidden>
     <header class="vista-cabeza">
       <h1>Afiliaciones</h1>
-      <p class="panel-intro">Boletas enviadas desde Afiliacion. Aqui respondes para aceptar, rechazar o dar una respuesta neutral al correo de la persona.</p>
+      <p class="panel-intro">Boletas enviadas desde Afiliacion. Si la persona ya inició sesión y el formulario trae el correo de su cuenta, la respuesta llega a Mis mensajes.</p>
     </header>
     <p class="guardadas-panel-ayuda">Cada casilla es una solicitud de afiliación. Ábrela, elige la decisión, escribe el mensaje y envía.</p>
     <div id="lista-sol-afilacion" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Cargando...</p></div>
@@ -255,9 +250,12 @@
   <main class="caja caja-panel admin-vista" id="vista-afiliados" data-vista="afiliados" hidden>
     <header class="vista-cabeza">
       <h1>Afiliados</h1>
-      <p class="panel-intro">Personas en Info_Afiliados.Cuenta (cedula, nombre completo y correo). Se cargan solo a mano en phpMyAdmin. Sirven para validar la puerta de Solicitar cita.</p>
+      <p class="panel-intro">Personas registradas para validar Solicitar cita. La cédula, el nombre completo y el correo se cargan solo desde este panel.</p>
     </header>
-    <p class="guardadas-panel-ayuda">Solo lectura aquí. Las boletas nuevas están en Afiliaciones (Consulta_Afiliacion).</p>
+    <p class="guardadas-panel-ayuda">Las boletas que envía la gente siguen en Afiliaciones. Aquí solo se agregan o eliminan afiliados.</p>
+    <div class="panel-acciones">
+      <button type="button" class="btn-abrir-asistente" id="abrir-afiliado">Añadir afiliado</button>
+    </div>
     <div id="lista-afiliados" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Cargando...</p></div>
   </main>
 
@@ -266,18 +264,41 @@
       <h1>Citas con Asesoría</h1>
       <p class="panel-intro">Solicitudes de cita legal enviadas desde Asesoria. Responde para confirmar, rechazar o aclarar dudas sobre el turno.</p>
     </header>
-    <p class="guardadas-panel-ayuda">Cada casilla es una cita pedida. Ábrela, elige Aceptar, Rechazar o Respuesta neutral y envía el correo.</p>
+    <p class="guardadas-panel-ayuda">Cada casilla es una cita pedida. Ábrela, elige Aceptar, Rechazar o Neutral, previsualizá y guardá la respuesta.</p>
     <div id="lista-sol-cita" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Cargando...</p></div>
   </main>
 
   <main class="caja caja-panel admin-vista" id="vista-contacto" data-vista="contacto" hidden>
     <header class="vista-cabeza">
       <h1>Contacto</h1>
-      <p class="panel-intro">Mensajes enviados desde Contacto: dudas, peticiones o consultas generales. Responde desde aquí al correo de quien escribió.</p>
+      <p class="panel-intro">Mensajes enviados desde Contacto. Si quien escribió ya había iniciado sesión con ese correo, la respuesta llega a Mis mensajes.</p>
     </header>
     <p class="guardadas-panel-ayuda">Cada casilla es un mensaje. Ábrela, elige la decisión, escribe la respuesta y envía.</p>
     <div id="lista-sol-contacto" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Cargando...</p></div>
   </main>
+
+  <div class="asistente" id="popup-afiliado" hidden>
+    <div class="asistente-fondo" data-cerrar-afiliado="1" aria-hidden="true"></div>
+    <div class="asistente-ventana" role="dialog" aria-modal="true" aria-labelledby="afiliado-titulo">
+      <button type="button" class="asistente-cerrar" id="cerrar-afiliado" aria-label="Cerrar">&times;</button>
+      <h2 class="asistente-titulo" id="afiliado-titulo">Añadir afiliado</h2>
+      <p class="asistente-ayuda">Estos tres datos tienen que coincidir exactamente cuando la persona pida cita.</p>
+      <form id="form-afiliado">
+        <label class="asistente-label" for="afiliado-cedula">Cédula
+          <input id="afiliado-cedula" name="cedula" inputmode="numeric" maxlength="9" autocomplete="off" required>
+        </label>
+        <label class="asistente-label" for="afiliado-nombre">Nombre completo
+          <input id="afiliado-nombre" name="nombre_completo" maxlength="120" autocomplete="name" required>
+        </label>
+        <label class="asistente-label" for="afiliado-correo">Correo
+          <input id="afiliado-correo" name="correo" type="email" maxlength="120" autocomplete="email" required>
+        </label>
+        <div class="asistente-acciones">
+          <button type="submit" class="btn-atajo" id="guardar-afiliado">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div class="asistente" id="asistente" hidden>
     <div class="asistente-fondo" data-cerrar="1" aria-hidden="true"></div>
@@ -355,11 +376,13 @@
 
   <div class="asistente" id="guardadas" hidden>
     <div class="asistente-fondo" data-cerrar-guardadas="1" aria-hidden="true"></div>
-    <div class="asistente-ventana asistente-ventana-ancha" role="dialog" aria-modal="true" aria-labelledby="guardadas-titulo">
+    <div class="asistente-ventana asistente-ventana-ancha fechas-ventana" role="dialog" aria-modal="true" aria-labelledby="guardadas-titulo">
       <button type="button" class="asistente-cerrar" id="cerrar-guardadas" aria-label="Cerrar">&times;</button>
+      <div class="fechas-riel" id="fechas-riel">
+      <div class="fechas-panel fechas-panel-lista" id="fechas-panel-lista">
       <p class="asistente-pasos">Base de datos</p>
       <h2 class="asistente-titulo" id="guardadas-titulo">Horarios de asesoría</h2>
-      <p class="asistente-ayuda">Solo citas con asesoría. Cada fecha u hora es una casilla: ábrela para verla, cambiar el estado o eliminarla.</p>
+      <p class="asistente-ayuda">Cada casilla es un día guardado. Tocála para ver el año, el día de la semana y la hora.</p>
 
       <div class="guardadas-leyenda" aria-label="Significado de los estados">
         <span class="estado-badge estado-habil"><span class="estado-punto" aria-hidden="true"></span> Habil</span>
@@ -373,7 +396,7 @@
       </div>
 
       <section class="guardadas-panel" id="panel-disponibilidad" role="tabpanel" aria-labelledby="tab-disponibilidad">
-        <p class="guardadas-panel-ayuda">Meses, días y horas permitidos para pedir cita con asesoría.</p>
+        <p class="guardadas-panel-ayuda">Días guardados para pedir cita con asesoría. El número es el día y debajo va el mes.</p>
         <div id="lista-disponibilidad" class="lista-guardadas-wrap">
           <p class="vacio-bloque">Sin fechas de disponibilidad todavia.</p>
         </div>
@@ -413,6 +436,14 @@
           <p class="vacio-bloque">Todavia no hay citas reservadas para comentar.</p>
         </div>
       </section>
+      </div>
+      <div class="fechas-panel fechas-panel-detalle" id="fechas-panel-detalle">
+        <button type="button" class="btn-atajo btn-atajo-secundario fechas-volver" id="fechas-volver">Volver</button>
+        <p class="asistente-pasos">Fecha guardada</p>
+        <h2 class="asistente-titulo" id="fechas-detalle-titulo">Información</h2>
+        <div id="fechas-detalle-cuerpo"></div>
+      </div>
+      </div>
     </div>
   </div>
 
@@ -443,13 +474,37 @@
     </button>
   </div>
 
+  <div class="sol-ficha" id="sol-ficha" hidden>
+    <div class="sol-ficha-caja" role="dialog" aria-modal="true" aria-labelledby="sol-ficha-titulo">
+      <button type="button" class="sol-ficha-cerrar" aria-label="Cerrar">×</button>
+      <p class="sol-ficha-tipo" id="sol-ficha-tipo"></p>
+      <h2 id="sol-ficha-titulo"></h2>
+      <div id="sol-ficha-meta"></div>
+      <div id="sol-ficha-acciones"></div>
+    </div>
+  </div>
+
+  <div class="sol-preview" id="sol-preview" hidden>
+    <div class="sol-preview-caja" role="dialog" aria-modal="true" aria-labelledby="sol-preview-titulo">
+      <h2 id="sol-preview-titulo">Vista previa</h2>
+      <p>Decisión: <strong id="sol-preview-estado"></strong></p>
+      <p id="sol-preview-cuenta"></p>
+      <div class="sol-preview-cuerpo" id="sol-preview-cuerpo"></div>
+      <div class="sol-preview-acciones">
+        <button type="button" class="btn-atajo btn-atajo-secundario sol-preview-cancelar">Volver</button>
+        <button type="button" class="btn-atajo sol-preview-confirmar">Confirmar y guardar</button>
+      </div>
+    </div>
+  </div>
+
   <input type="hidden" id="agenda-token" value="{{token}}">
   <div id="lista-mes" hidden></div>
-  <script src="agenda.js?v=3.7"></script>
-  <script src="solicitudes.js?v=4.1"></script>
-  <script src="tono.js?v=1.6"></script>
-  <script src="sitrabot-admin.js?v=3.1"></script>
+  <script src="../js/avisos.js?v=1.2"></script>
+  <script src="agenda.js?v=4.0"></script>
+  <script src="solicitudes.js?v=4.8"></script>
+  <script src="tono.js?v=2.0"></script>
+  <script src="sitrabot-admin.js?v=3.3"></script>
 
-  <script src="guia.js?v=2.2"></script>
+  <script src="guia.js?v=2.4"></script>
 </body>
 </html>

@@ -10,8 +10,10 @@
     var alertaCuenta = document.getElementById('admin-alerta-cuenta');
     var alertaCerrar = document.getElementById('admin-alerta-cerrar');
     var alertas = [];
+    var consultasAvisos = [];
     var alertaId = 0;
     var timerAlerta = null;
+    var timerPulso = null;
     var campoMes = document.getElementById('mes');
     var listaHora = document.getElementById('lista-hora');
     var listaMesResumen = document.getElementById('lista-mes-resumen');
@@ -61,6 +63,9 @@
     var botonCitaEnviar = document.getElementById('cita-enviar-respuesta');
     var botonCitaLimpiar = document.getElementById('cita-limpiar');
     var citaCorreoActual = '';
+    var detalleClave = '';
+    var scrollLista = 0;
+    var diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
     var cuentaDisponibilidad = document.getElementById('cuenta-disponibilidad');
     var cuentaCitas = document.getElementById('cuenta-citas');
     var meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -95,23 +100,33 @@
     function renderAlertas() {
         if (!alertaLista) return;
         alertaLista.innerHTML = '';
-        if (!alertas.length) {
+        if (!alertas.length && !consultasAvisos.length) {
             var vacio = document.createElement('p');
             vacio.className = 'admin-alerta-vacio';
             vacio.id = 'admin-alerta-vacio';
-            vacio.textContent = 'No hay advertencias por ahora.';
+            vacio.textContent = 'No hay consultas pendientes por ahora.';
             alertaLista.appendChild(vacio);
             alertaVacio = vacio;
         } else {
             alertaVacio = null;
-            for (var i = 0; i < alertas.length; i++) {
-                var p = document.createElement('p');
-                p.className = 'admin-alerta-item' + (alertas[i].esError ? '' : ' admin-alerta-item-ok');
-                p.textContent = alertas[i].texto;
-                alertaLista.appendChild(p);
-            }
         }
-        var n = alertas.length;
+        for (var c = 0; c < consultasAvisos.length; c++) {
+            var aviso = consultasAvisos[c];
+            var boton = document.createElement('button');
+            boton.type = 'button';
+            boton.className = 'admin-alerta-item admin-alerta-consulta';
+            boton.setAttribute('data-alerta-tipo', aviso.tipo);
+            boton.setAttribute('data-alerta-id', String(aviso.id));
+            boton.textContent = aviso.texto;
+            alertaLista.appendChild(boton);
+        }
+        for (var i = 0; i < alertas.length; i++) {
+            var p = document.createElement('p');
+            p.className = 'admin-alerta-item' + (alertas[i].esError ? '' : ' admin-alerta-item-ok');
+            p.textContent = alertas[i].texto;
+            alertaLista.appendChild(p);
+        }
+        var n = consultasAvisos.length + alertas.length;
         if (alertaCaja) alertaCaja.classList.toggle('admin-alerta-con-avisos', n > 0);
         if (alertaCuenta) {
             alertaCuenta.hidden = n < 1;
@@ -147,6 +162,31 @@
 
     window.adminMostrarAlerta = pintarAlerta;
 
+    window.adminSincronizarConsultas = function (lista, llegaronNuevas) {
+        consultasAvisos = Array.isArray(lista) ? lista.slice(0, 12) : [];
+        renderAlertas();
+        if (!llegaronNuevas || !alertaCaja || !consultasAvisos.length) return;
+        alertaCaja.classList.remove('admin-alerta-llegada');
+        void alertaCaja.offsetWidth;
+        alertaCaja.classList.add('admin-alerta-llegada');
+        clearTimeout(timerPulso);
+        timerPulso = setTimeout(function () {
+            alertaCaja.classList.remove('admin-alerta-llegada');
+        }, 2200);
+    };
+
+    if (alertaLista) {
+        alertaLista.addEventListener('click', function (evento) {
+            var boton = evento.target.closest('[data-alerta-tipo]');
+            if (!boton || !window.adminAbrirConsulta) return;
+            setAlertaAbierta(false);
+            window.adminAbrirConsulta(
+                boton.getAttribute('data-alerta-tipo'),
+                boton.getAttribute('data-alerta-id')
+            );
+        });
+    }
+
     if (alertaAbrir) {
         alertaAbrir.addEventListener('click', function () {
             setAlertaAbierta(alertaPopup ? alertaPopup.hidden : true);
@@ -171,17 +211,32 @@
 
     function mostrarAviso(texto) {
         if (!texto) return;
-        pintarAlerta(texto, true, 0);
+        if (window.SitrainaAvisos) window.SitrainaAvisos.error('No se pudo completar', texto);
+        else pintarAlerta(texto, true, 0);
     }
 
     function mostrarGuardado(texto) {
         if (!texto) return;
-        pintarAlerta(texto, false, 2400);
+        if (window.SitrainaAvisos) window.SitrainaAvisos.exito('Listo', texto);
+        else pintarAlerta(texto, false, 2400);
     }
 
     function mostrarErrorGuardado(texto) {
         if (!texto) return;
-        pintarAlerta(texto, true, 0);
+        if (window.SitrainaAvisos) window.SitrainaAvisos.error('No se pudo completar', texto);
+        else pintarAlerta(texto, true, 0);
+    }
+
+    function pedirConfirmacion(titulo, texto) {
+        if (window.SitrainaAvisos) {
+            return window.SitrainaAvisos.confirmar({
+                titulo: titulo,
+                texto: texto,
+                confirmar: 'Eliminar',
+                cancelar: 'Cancelar'
+            });
+        }
+        return Promise.resolve(window.confirm(texto));
     }
 
     if (!token || !campoMes || !diasMes || !asistente) return;
@@ -424,8 +479,10 @@
                         clase: 'btn-item btn-item-peligro',
                         aria: 'Eliminar ' + titulo,
                         alClick: function () {
-                            if (!window.confirm('¿Eliminar «' + titulo + '»?')) return;
-                            opciones.alQuitar(fila);
+                            pedirConfirmacion('Eliminar de la base', '¿Eliminar «' + titulo + '»? Esta acción no se puede deshacer.').then(function (aceptado) {
+                                if (!aceptado) return;
+                                opciones.alQuitar(fila);
+                            });
                         }
                     }
                 ]
@@ -579,8 +636,86 @@
 
     function abrirCasillaPorClave(clave) {
         if (!clave || !guardadas) return;
+        if (clave.indexOf('fecha:') === 0 || clave.indexOf('cita:') === 0) {
+            abrirDetalleFecha(clave);
+            return;
+        }
+        var extra = document.getElementById('fechas-extra');
+        if (extra) extra.open = true;
         var casilla = guardadas.querySelector('.casilla[data-clave="' + clave.replace(/"/g, '') + '"]');
         if (casilla) abrirCasilla(casilla);
+    }
+
+    function capitalizar(texto) {
+        var valor = String(texto || '');
+        if (!valor) return '';
+        return valor.charAt(0).toUpperCase() + valor.slice(1);
+    }
+
+    function partesFecha(iso) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+        var partes = iso.split('-');
+        var anio = Number(partes[0]);
+        var mes = Number(partes[1]);
+        var dia = Number(partes[2]);
+        if (mes < 1 || mes > 12 || dia < 1 || dia > 31) return null;
+        var marca = new Date(Date.UTC(anio, mes - 1, dia));
+        if (marca.getUTCFullYear() !== anio || marca.getUTCMonth() !== mes - 1 || marca.getUTCDate() !== dia) return null;
+        return {
+            anio: anio,
+            mes: mes,
+            dia: dia,
+            mesNombre: meses[mes - 1] || '',
+            semana: diasSemana[marca.getUTCDay()] || ''
+        };
+    }
+
+    function crearFechaCasilla(opciones, indice) {
+        var item = document.createElement('li');
+        var boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'fecha-casilla';
+        boton.setAttribute('data-clave', opciones.clave);
+        boton.setAttribute('aria-label', opciones.aria);
+        boton.style.animationDelay = (Math.min(indice, 14) * 35) + 'ms';
+        var dia = document.createElement('span');
+        dia.className = 'fecha-casilla-dia';
+        dia.textContent = String(opciones.dia);
+        var mes = document.createElement('span');
+        mes.className = 'fecha-casilla-mes';
+        mes.textContent = opciones.mes || '';
+        boton.appendChild(dia);
+        boton.appendChild(mes);
+        boton.addEventListener('click', function () {
+            abrirDetalleFecha(opciones.clave);
+        });
+        item.appendChild(boton);
+        return item;
+    }
+
+    function agregarDato(contenedor, etiqueta, valor) {
+        if (!valor) return;
+        var fila = document.createElement('div');
+        fila.className = 'fecha-dato';
+        var dt = document.createElement('span');
+        dt.className = 'fecha-dato-etiqueta';
+        dt.textContent = etiqueta;
+        var dd = document.createElement('span');
+        dd.className = 'fecha-dato-valor';
+        dd.textContent = valor;
+        fila.appendChild(dt);
+        fila.appendChild(dd);
+        contenedor.appendChild(fila);
+    }
+
+    function horasAbiertas() {
+        return reglas.filter(function (fila) { return fila.tipo === 'hora' && fila.estado === 'abierta'; })
+            .sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
+    }
+
+    function citasDeFecha(iso) {
+        return citas.filter(function (cita) { return cita.fecha === iso && cita.hora; })
+            .sort(function (a, b) { return a.hora < b.hora ? -1 : 1; });
     }
 
     function crearCasilla(opciones) {
@@ -651,16 +786,207 @@
         return casilla;
     }
 
+    function pintarSello(contenedor, partes) {
+        var sello = document.createElement('div');
+        sello.className = 'fecha-detalle-sello';
+        var dia = document.createElement('span');
+        dia.className = 'fecha-detalle-dia';
+        dia.textContent = String(partes.dia);
+        var mes = document.createElement('span');
+        mes.className = 'fecha-detalle-mes';
+        mes.textContent = partes.mesNombre || '';
+        var anio = document.createElement('span');
+        anio.className = 'fecha-detalle-anio';
+        anio.textContent = String(partes.anio);
+        sello.appendChild(dia);
+        sello.appendChild(mes);
+        sello.appendChild(anio);
+        contenedor.appendChild(sello);
+    }
+
+    function pintarHorasDetalle(contenedor, iso, estado) {
+        var reservadas = citasDeFecha(iso);
+        if (reservadas.length) {
+            reservadas.forEach(function (cita) {
+                agregarDato(contenedor, reservadas.length > 1 ? 'Hora de cita' : 'Hora', etiquetaHora(cita.hora));
+            });
+            return;
+        }
+        if (estado === 'bloqueada') {
+            agregarDato(contenedor, 'Hora', 'Sin hora. El día está marcado como no hábil.');
+            return;
+        }
+        if (estado !== 'abierta') {
+            agregarDato(contenedor, 'Hora', 'No hay una hora guardada para esta fecha.');
+            return;
+        }
+        var abiertas = horasAbiertas();
+        if (!abiertas.length) {
+            agregarDato(contenedor, 'Hora', 'No hay una hora guardada para esta fecha.');
+            return;
+        }
+        abiertas.forEach(function (fila) {
+            agregarDato(contenedor, abiertas.length > 1 ? 'Horas del horario' : 'Hora', etiquetaHora(fila.valor));
+        });
+        var nota = document.createElement('p');
+        nota.className = 'fecha-dato-nota';
+        nota.textContent = abiertas.length > 1
+            ? 'Estas horas están guardadas en el horario y aplican a los días hábiles.'
+            : 'Esta hora está guardada en el horario y aplica a los días hábiles.';
+        contenedor.appendChild(nota);
+    }
+
+    function buscarDetalle(clave) {
+        if (clave.indexOf('fecha:') === 0) {
+            var valor = clave.slice(6);
+            var fila = null;
+            reglas.forEach(function (item) {
+                if (item.tipo === 'fecha' && item.valor === valor) fila = item;
+            });
+            if (!fila) return null;
+            var partes = partesFecha(fila.valor);
+            if (!partes) return null;
+            return { tipo: 'fecha', fila: fila, partes: partes };
+        }
+        if (clave.indexOf('cita:') === 0) {
+            var id = clave.slice(5);
+            var cita = null;
+            citas.forEach(function (item) {
+                if (String(item.id || (item.fecha + '-' + item.hora)) === id) cita = item;
+            });
+            if (!cita) return null;
+            var partesCita = partesFecha(cita.fecha);
+            if (!partesCita) return null;
+            return { tipo: 'cita', cita: cita, partes: partesCita };
+        }
+        return null;
+    }
+
+    function pintarDetalle(datos) {
+        var cuerpo = document.getElementById('fechas-detalle-cuerpo');
+        var titulo = document.getElementById('fechas-detalle-titulo');
+        if (!cuerpo) return;
+        cuerpo.innerHTML = '';
+        if (titulo) titulo.textContent = 'Información';
+        pintarSello(cuerpo, datos.partes);
+        var datosFila = document.createElement('div');
+        datosFila.className = 'fecha-datos';
+        agregarDato(datosFila, 'Día', capitalizar(datos.partes.semana));
+        if (datos.tipo === 'fecha') {
+            agregarDato(datosFila, 'Estado', etiquetaEstado(datos.fila.estado));
+            pintarHorasDetalle(datosFila, datos.fila.valor, datos.fila.estado);
+        } else {
+            agregarDato(datosFila, 'Hora', etiquetaHora(datos.cita.hora) || '');
+            if (datos.cita.correo) agregarDato(datosFila, 'Correo', datos.cita.correo);
+            if (datos.cita.persona) agregarDato(datosFila, 'De quién', datos.cita.persona);
+            if (datos.cita.motivo) agregarDato(datosFila, 'Para qué', datos.cita.motivo);
+            if (datos.cita.notas) agregarDato(datosFila, 'Notas', datos.cita.notas);
+        }
+        cuerpo.appendChild(datosFila);
+
+        var acciones = document.createElement('div');
+        acciones.className = 'fecha-detalle-acciones';
+        if (datos.tipo === 'fecha') {
+            var fila = datos.fila;
+            var tituloTexto = etiquetaFecha(fila.valor);
+            if (fila.estado !== 'abierta') {
+                acciones.appendChild(crearBotonAccion('Marcar hábil', 'btn-item', 'Marcar hábil: ' + tituloTexto, function () {
+                    guardar('guardar', 'fecha', fila.valor, 'abierta', 'Estado actualizado.');
+                }));
+            }
+            if (fila.estado !== 'bloqueada') {
+                acciones.appendChild(crearBotonAccion('Marcar no hábil', 'btn-item', 'Marcar no hábil: ' + tituloTexto, function () {
+                    guardar('guardar', 'fecha', fila.valor, 'bloqueada', 'Estado actualizado.');
+                }));
+            }
+            if (fila.estado !== 'ocupada') {
+                acciones.appendChild(crearBotonAccion('Marcar ocupada', 'btn-item btn-item-ocupada', 'Marcar ocupada: ' + tituloTexto, function () {
+                    guardar('guardar', 'fecha', fila.valor, 'ocupada', 'Marcada como ocupada.');
+                }));
+            }
+            acciones.appendChild(crearBotonAccion('Eliminar', 'btn-item btn-item-peligro', 'Eliminar día ' + tituloTexto, function () {
+                pedirConfirmacion('Eliminar de la base', '¿Eliminar el día «' + tituloTexto + '» de la base? Esta acción no se puede deshacer.').then(function (aceptado) {
+                    if (!aceptado) return;
+                    guardar('quitar', 'fecha', fila.valor, '', 'Eliminado.');
+                });
+            }));
+        } else {
+            var cita = datos.cita;
+            var tituloCita = etiquetaFecha(cita.fecha) + ' · ' + etiquetaHora(cita.hora);
+            acciones.appendChild(crearBotonAccion('Comentar', 'btn-item', 'Añadir comentarios a la cita del ' + tituloCita, function () {
+                volverFechas();
+                cargarCitaEnFormulario(cita);
+            }));
+            acciones.appendChild(crearBotonAccion('Eliminar', 'btn-item btn-item-peligro', 'Eliminar cita del ' + tituloCita, function () {
+                pedirConfirmacion('Eliminar de la base', '¿Eliminar la cita del ' + tituloCita + '? Esta acción no se puede deshacer.').then(function (aceptado) {
+                    if (!aceptado) return;
+                    eliminarCita(cita);
+                });
+            }));
+        }
+        acciones.appendChild(crearBotonAccion('Cerrar', 'btn-item', 'Cerrar fechas guardadas', function () {
+            cerrarGuardadas();
+        }));
+        cuerpo.appendChild(acciones);
+    }
+
+    function marcarPaneles() {
+        var lista = document.getElementById('fechas-panel-lista');
+        var detalle = document.getElementById('fechas-panel-detalle');
+        var viendo = !!(guardadas && guardadas.classList.contains('fechas-viendo-detalle'));
+        if (lista) lista.inert = viendo;
+        if (detalle) detalle.inert = !viendo;
+    }
+
+    function abrirDetalleFecha(clave, refresco) {
+        if (!guardadas || !clave) return false;
+        var datos = buscarDetalle(clave);
+        if (!datos) return false;
+        pintarDetalle(datos);
+        detalleClave = clave;
+        var ventana = guardadas.querySelector('.asistente-ventana');
+        if (ventana) ventana.setAttribute('aria-labelledby', 'fechas-detalle-titulo');
+        if (!refresco) {
+            var panel = document.getElementById('fechas-panel-lista');
+            if (panel) scrollLista = panel.scrollTop;
+            guardadas.classList.add('fechas-viendo-detalle');
+            marcarPaneles();
+            var detalle = document.getElementById('fechas-panel-detalle');
+            if (detalle) detalle.scrollTop = 0;
+            var volver = document.getElementById('fechas-volver');
+            if (volver && volver.focus) volver.focus();
+        }
+        return true;
+    }
+
+    function volverFechas() {
+        if (!guardadas) return;
+        guardadas.classList.remove('fechas-viendo-detalle');
+        marcarPaneles();
+        var ventana = guardadas.querySelector('.asistente-ventana');
+        if (ventana) ventana.setAttribute('aria-labelledby', 'guardadas-titulo');
+        var panel = document.getElementById('fechas-panel-lista');
+        if (panel) panel.scrollTop = scrollLista;
+        var boton = detalleClave
+            ? guardadas.querySelector('.fecha-casilla[data-clave="' + detalleClave.replace(/"/g, '') + '"]')
+            : null;
+        detalleClave = '';
+        if (boton && boton.focus) boton.focus();
+    }
+
     function pintarGuardadas() {
         if (!listaDisponibilidad || !listaCitas) return;
+        var panelLista = document.getElementById('fechas-panel-lista');
+        var scrollPrevio = panelLista ? panelLista.scrollTop : scrollLista;
+        var claveAbierta = detalleClave;
 
-        var meses = reglas.filter(function (f) { return f.tipo === 'mes'; })
+        var mesesGuardados = reglas.filter(function (f) { return f.tipo === 'mes'; })
             .sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
         var dias = reglas.filter(function (f) { return f.tipo === 'fecha'; })
             .sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
         var horas = reglas.filter(function (f) { return f.tipo === 'hora'; })
             .sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
-        var totalDisp = meses.length + dias.length + horas.length;
+        var totalDisp = mesesGuardados.length + dias.length + horas.length;
 
         if (cuentaDisponibilidad) cuentaDisponibilidad.textContent = '(' + totalDisp + ')';
         if (cuentaCitas) cuentaCitas.textContent = '(' + citas.length + ')';
@@ -672,29 +998,45 @@
         }
 
         listaDisponibilidad.innerHTML = '';
-        if (!totalDisp) {
+        if (!dias.length) {
             var vacioDisp = document.createElement('p');
             vacioDisp.className = 'vacio-bloque';
-            vacioDisp.textContent = 'Todavía no hay meses, días ni horas guardados en la base.';
+            vacioDisp.textContent = 'Todavía no hay días guardados en la base.';
             listaDisponibilidad.appendChild(vacioDisp);
         } else {
-            function pintarFilasDisponibilidad(filas, tipo) {
-                var bloque = null;
-                if (tipo === 'mes') {
-                    bloque = crearGrupoGuardadas('Meses abiertos', 'Tocá una casilla para verla, editarla o eliminarla.');
-                } else if (tipo === 'fecha') {
-                    bloque = crearGrupoGuardadas('Días', 'Tocá una casilla para ver el estado y cambiarlo o borrarlo.');
-                } else {
-                    bloque = crearGrupoGuardadas('Horarios', 'Tocá una casilla para ver la hora y gestionarla.');
-                }
-                filas.forEach(function (fila) {
-                    var tituloTexto = '';
-                    if (fila.tipo === 'mes') tituloTexto = nombreMes(fila.valor);
-                    else if (fila.tipo === 'fecha') tituloTexto = etiquetaFecha(fila.valor);
-                    else tituloTexto = etiquetaHora(fila.valor);
+            var rejilla = document.createElement('ul');
+            rejilla.className = 'fechas-rejilla';
+            dias.forEach(function (fila, indice) {
+                var partes = partesFecha(fila.valor);
+                if (!partes) return;
+                rejilla.appendChild(crearFechaCasilla({
+                    clave: 'fecha:' + fila.valor,
+                    dia: partes.dia,
+                    mes: partes.mesNombre,
+                    aria: partes.dia + ' de ' + partes.mesNombre + ' de ' + partes.anio + ', ' + etiquetaEstado(fila.estado) + '. Ver información.'
+                }, indice));
+            });
+            listaDisponibilidad.appendChild(rejilla);
+        }
 
+        if (mesesGuardados.length || horas.length) {
+            var extra = document.createElement('details');
+            extra.className = 'fechas-extra';
+            extra.id = 'fechas-extra';
+            var resumen = document.createElement('summary');
+            resumen.textContent = 'Meses y horas del horario';
+            extra.appendChild(resumen);
+            function pintarExtra(filas, tipo) {
+                var bloque = crearGrupoGuardadas(
+                    tipo === 'mes' ? 'Meses abiertos' : 'Horas guardadas',
+                    tipo === 'mes'
+                        ? 'Estos meses siguen guardados. Podés eliminarlos desde aquí.'
+                        : 'Estas horas aplican a los días hábiles. Podés cambiarlas o eliminarlas.'
+                );
+                filas.forEach(function (fila) {
+                    var tituloTexto = fila.tipo === 'mes' ? nombreMes(fila.valor) : etiquetaHora(fila.valor);
                     var acciones = [];
-                    if (fila.tipo === 'fecha' || fila.tipo === 'hora') {
+                    if (fila.tipo === 'hora') {
                         var otro = fila.estado === 'abierta' ? 'bloqueada' : 'abierta';
                         var textoOtro = otro === 'abierta' ? 'Marcar hábil' : 'Marcar no hábil';
                         acciones.push({
@@ -702,32 +1044,23 @@
                             clase: 'btn-item',
                             aria: textoOtro + ': ' + tituloTexto,
                             alClick: function () {
-                                guardar('guardar', fila.tipo, fila.valor, otro, 'Estado actualizado.');
+                                guardar('guardar', 'hora', fila.valor, otro, 'Estado actualizado.');
                             }
                         });
-                        if (fila.tipo === 'fecha' && fila.estado !== 'ocupada') {
-                            acciones.push({
-                                texto: 'Marcar ocupada',
-                                clase: 'btn-item btn-item-ocupada',
-                                aria: 'Marcar ocupada: ' + tituloTexto,
-                                alClick: function () {
-                                    guardar('guardar', 'fecha', fila.valor, 'ocupada', 'Marcada como ocupada.');
-                                }
-                            });
-                        }
                     }
                     acciones.push({
                         texto: 'Eliminar',
                         clase: 'btn-item btn-item-peligro',
                         aria: 'Eliminar ' + etiquetaTipo(fila.tipo).toLowerCase() + ' ' + tituloTexto,
                         alClick: function () {
-                            var aviso = '¿Eliminar ' + etiquetaTipo(fila.tipo).toLowerCase() + ' «' + tituloTexto + '» de la base?';
-                            if (!window.confirm(aviso)) return;
-                            if (fila.tipo === 'mes') quitarMes(fila.valor);
-                            else guardar('quitar', fila.tipo, fila.valor, '', 'Eliminado.');
+                            var aviso = '¿Eliminar ' + etiquetaTipo(fila.tipo).toLowerCase() + ' «' + tituloTexto + '» de la base? Esta acción no se puede deshacer.';
+                            pedirConfirmacion('Eliminar de la base', aviso).then(function (aceptado) {
+                                if (!aceptado) return;
+                                if (fila.tipo === 'mes') quitarMes(fila.valor);
+                                else guardar('quitar', 'hora', fila.valor, '', 'Eliminado.');
+                            });
                         }
                     });
-
                     bloque.lista.appendChild(crearCasilla({
                         clave: fila.tipo + ':' + fila.valor,
                         tipoTexto: etiquetaTipo(fila.tipo),
@@ -742,12 +1075,11 @@
                         acciones: acciones
                     }));
                 });
-                listaDisponibilidad.appendChild(bloque.grupo);
+                extra.appendChild(bloque.grupo);
             }
-
-            if (meses.length) pintarFilasDisponibilidad(meses, 'mes');
-            if (dias.length) pintarFilasDisponibilidad(dias, 'fecha');
-            if (horas.length) pintarFilasDisponibilidad(horas, 'hora');
+            if (mesesGuardados.length) pintarExtra(mesesGuardados, 'mes');
+            if (horas.length) pintarExtra(horas, 'hora');
+            listaDisponibilidad.appendChild(extra);
         }
 
         var citasOrden = citas.slice().sort(function (a, b) {
@@ -759,50 +1091,33 @@
             var vacioCita = document.createElement('p');
             vacioCita.className = 'vacio-bloque';
             vacioCita.textContent = 'Todavía no hay citas reservadas en la base.';
-            listaCitas.appendChild(vacioCita);
-            return;
+        } else {
+            var rejillaCitas = document.createElement('ul');
+            rejillaCitas.className = 'fechas-rejilla';
+            var indiceCita = 0;
+            citasOrden.forEach(function (cita) {
+                var partesCita = partesFecha(cita.fecha);
+                if (!partesCita) return;
+                var claveCita = 'cita:' + String(cita.id || (cita.fecha + '-' + cita.hora));
+                rejillaCitas.appendChild(crearFechaCasilla({
+                    clave: claveCita,
+                    dia: partesCita.dia,
+                    mes: partesCita.mesNombre,
+                    aria: 'Cita del ' + partesCita.dia + ' de ' + partesCita.mesNombre + ' de ' + partesCita.anio +
+                        (cita.hora ? ', ' + etiquetaHora(cita.hora) : '') + '. Ver información.'
+                }, indiceCita));
+                indiceCita += 1;
+            });
+            listaCitas.appendChild(rejillaCitas);
         }
+        if (!citasOrden.length) listaCitas.appendChild(vacioCita);
 
-        var grupoCitas = crearGrupoGuardadas(
-            'Citas en la base',
-            'Tocá una casilla para ver los datos, comentar o eliminar la cita.'
-        );
-        citasOrden.forEach(function (cita) {
-            var tituloTexto = etiquetaFecha(cita.fecha) + ' · ' + etiquetaHora(cita.hora);
-            grupoCitas.lista.appendChild(crearCasilla({
-                clave: 'cita:' + String(cita.id || (cita.fecha + '-' + cita.hora)),
-                tipoTexto: 'Cita',
-                titulo: tituloTexto,
-                estado: 'ocupada',
-                claseEstado: 'estado-ocupada',
-                filasMeta: [
-                    { etiqueta: 'Fecha', valor: etiquetaFecha(cita.fecha) || cita.fecha },
-                    { etiqueta: 'Hora', valor: etiquetaHora(cita.hora) || cita.hora },
-                    { etiqueta: 'Correo', valor: cita.correo || 'Sin correo guardado', vacio: !cita.correo },
-                    { etiqueta: 'De quién', valor: cita.persona || 'Sin nombre todavía', vacio: !cita.persona },
-                    { etiqueta: 'Para qué', valor: cita.motivo || 'Sin motivo todavía', vacio: !cita.motivo },
-                    { etiqueta: 'Notas', valor: cita.notas || 'Sin notas', vacio: !cita.notas }
-                ],
-                acciones: [
-                    {
-                        texto: 'Comentar',
-                        clase: 'btn-item',
-                        aria: 'Añadir comentarios a la cita del ' + tituloTexto,
-                        alClick: function () { cargarCitaEnFormulario(cita); }
-                    },
-                    {
-                        texto: 'Eliminar',
-                        clase: 'btn-item btn-item-peligro',
-                        aria: 'Eliminar cita del ' + tituloTexto,
-                        alClick: function () {
-                            if (!window.confirm('¿Eliminar la cita del ' + tituloTexto + '?')) return;
-                            eliminarCita(cita);
-                        }
-                    }
-                ]
-            }));
-        });
-        listaCitas.appendChild(grupoCitas.grupo);
+        if (claveAbierta && guardadas && guardadas.classList.contains('fechas-viendo-detalle')) {
+            if (!abrirDetalleFecha(claveAbierta, true)) volverFechas();
+            else if (panelLista) panelLista.scrollTop = scrollLista;
+        } else if (panelLista) {
+            panelLista.scrollTop = scrollPrevio;
+        }
     }
 
     function mostrarPestanaGuardadas(cual) {
@@ -873,6 +1188,12 @@
         if (!guardadas) return;
         if (!asistente.hidden) cerrarAsistente();
         limpiarFormularioCita();
+        detalleClave = '';
+        scrollLista = 0;
+        guardadas.classList.remove('fechas-viendo-detalle');
+        marcarPaneles();
+        var ventana = guardadas.querySelector('.asistente-ventana');
+        if (ventana) ventana.setAttribute('aria-labelledby', 'guardadas-titulo');
         mostrarPestanaGuardadas('disponibilidad');
         pintarGuardadas();
         guardadas.hidden = false;
@@ -888,6 +1209,8 @@
         document.body.classList.remove('asistente-abierto');
         window.setTimeout(function () {
             guardadas.hidden = true;
+            guardadas.classList.remove('fechas-viendo-detalle');
+            detalleClave = '';
             limpiarFormularioCita();
         }, 280);
     }
@@ -1202,6 +1525,9 @@
 
     function guardar(accion, tipo, valor, estado, mensajeOk) {
         encolar(function () {
+            if (window.SitrainaAvisos) {
+                window.SitrainaAvisos.procesando('Guardando', 'Estamos actualizando el horario. Esperá un momento.');
+            }
             return enviar(accion, tipo, valor, estado)
                 .then(function () {
                     mostrarAviso('');
@@ -1286,6 +1612,8 @@
     });
     if (botonAbrirGuardadas) botonAbrirGuardadas.addEventListener('click', abrirGuardadas);
     if (botonCerrarGuardadas) botonCerrarGuardadas.addEventListener('click', cerrarGuardadas);
+    var botonVolverFechas = document.getElementById('fechas-volver');
+    if (botonVolverFechas) botonVolverFechas.addEventListener('click', volverFechas);
     if (guardadas) {
         guardadas.addEventListener('click', function (evento) {
             if (evento.target && evento.target.getAttribute('data-cerrar-guardadas') === '1') cerrarGuardadas();
@@ -1306,6 +1634,10 @@
     document.addEventListener('keydown', function (evento) {
         if (evento.key !== 'Escape') return;
         if (guardadas && !guardadas.hidden) {
+            if (guardadas.classList.contains('fechas-viendo-detalle')) {
+                volverFechas();
+                return;
+            }
             cerrarGuardadas();
             return;
         }

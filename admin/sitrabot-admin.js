@@ -68,7 +68,7 @@
     }
 
     function bienvenida() {
-        return bot('Hola, soy Sitrabot Admin. Puedo ayudarte con este panel: base de datos, config.php, fechas hábiles u ocupadas, citas guardadas, diseño, tono claro/oscuro y cómo publicar en InfinityFree. ¿Qué necesitás?');
+        return bot('Hola, soy Sitrabot Admin. Puedo explicarte el panel con palabras sencillas: cómo responder consultas, agregar o quitar afiliados, ver las más recientes, las advertencias, editar una respuesta y el horario de citas. ¿Qué necesitás?');
     }
 
     function popupAbierto() {
@@ -83,83 +83,95 @@
         if (/^(hola|holi|buenas( tardes| noches)?|buenos dias|buen dia|hey|saludos|gracias|muchas gracias|adios|chao|bye|ok|que tal|pura vida)[!. ]*$/.test(q)) return bienvenida();
         if (/que puedes|en que ayudas|que sabes|opciones del chat|temas/.test(q) || /^(ayuda|ayudame|menu)[!. ]*$/.test(q)) return bienvenida();
         if (/quien eres|que eres|eres (un )?bot/.test(q)) {
-            return bot('Soy Sitrabot Admin, el asistente de este panel. Respondo con información fija sobre administración, bases de datos y diseño del sitio. No modifico la base ni el código por vos.');
+            return bot('Soy Sitrabot Admin, el asistente de este panel. Explico cómo usar las secciones. No cambio datos ni envío respuestas por vos.');
         }
         if (/guardas|privacidad|quien ve/.test(q)) {
             return bot('Las preguntas de este chat se guardan solo en esta sesión del navegador, en este dispositivo. No se envían a la base de datos.');
         }
 
         /* Bases de datos y config */
-        if (/dos bases|2 bases|tres bases|3 bases|afiliaciones y admin|por que dos|cuantas bases|respuestas/.test(q)) {
-            return bot('1) Info_Afiliados → Cuenta (manual). 2) Info_Consultas → Consulta_Contacto, Consulta_Afiliacion, Consulta_Asesoria. 3) Info_Cuentas_Admins → Admin_Info y Agenda. 4) Info_Respuestas → Respuesta_Contacto, Respuesta_Afiliacion, Respuesta_Asesoria. SQL en sql/01 a 04.');
+        if (/dos bases|2 bases|tres bases|3 bases|afiliaciones y admin|por que dos|cuantas bases|que guarda el sitio|donde se guardan/.test(q)) {
+            return bot('El sitio guarda por separado a las personas afiliadas, las consultas que llegan, las respuestas que enviás, las cuentas de administración y las cuentas de quienes ingresan en la página pública. Desde el panel no hace falta conocer esos nombres: usá el menú.');
         }
-        if (/config\.php|config ejemplo|donde (va|esta) (el )?config|como conecto|conexion mysql|host|usuario mysql|clave mysql/.test(q)) {
-            return bot('Configs en el servidor: php/config_afiliados.php (Info_Afiliados), php/config.php (Info_Consultas), admin/config.php (Info_Cuentas_Admins), admin/config_respuestas.php (Info_Respuestas). Host, usuario y clave van solo en esos archivos; no los compartas ni los pegues en el chat.');
-        }
-        if (/sql\/admin|admin\.sql|que tablas|tablas de admin|cuentas|tabla agenda|tabla citas|alter table|columnas persona|motivo|notas/.test(q)) {
-            return bot('En cada base nueva ejecutá: sql/01_Info_Afiliados.sql, 02_Info_Consultas.sql, 03_Info_Cuentas_Admins.sql y 04_Info_Respuestas.sql.');
+        if (/config\.php|config ejemplo|donde (va|esta) (el )?config|como conecto|conexion mysql|host|usuario mysql|clave mysql|que tablas|tablas de admin|alter table/.test(q)) {
+            return bot('La conexión con la información ya está preparada en el sitio publicado. Para el trabajo de todos los días no hay que tocar archivos ni escribir comandos. No compartas usuarios ni claves por este chat.');
         }
         if (/no (se )?guarda|no conecta|error (de )?guardar|falta (la )?conexion|no se pudo guardar|falta config/.test(q)) {
-            return bot('Si no guarda, revisá: 1) entrar por el login de Administración, 2) admin/config.php en el servidor con la base admin, 3) tablas de sql/admin.sql creadas. En Cursor (vista local) no corre PHP ni MySQL, por eso ahí falla el guardado.');
+            return bot('Si algo no se guarda, salí y volvé a entrar por el ingreso de Administración. Si sigue igual, el sitio publicado todavía no está conectado. En una vista de prueba en la computadora el guardado no funciona.');
         }
         if (/cursor|desde aqui|local|preview|localhost|php local/.test(q)) {
-            return bot('En Cursor o una vista previa estática no se ejecuta PHP ni MySQL. El diseño sí se ve; guardar fechas o citas funciona en InfinityFree con config.php y las tablas listas.');
+            return bot('En una vista de prueba se puede ver el diseño, pero guardar afiliados, citas o respuestas solo funciona en el sitio ya publicado.');
         }
         if (/infinityfree|subir|publicar|ftp|filezilla|que archivos (subo|subir)/.test(q)) {
-            return bot('Subí a InfinityFree el sitio completo, incluidos admin/ (panel, agenda.php, configs) y php/ (configs de consultas y afiliados).');
+            return bot('Para que un cambio se vea en el sitio, hay que subir los archivos nuevos a donde está publicado. Después entrá al panel y probá la sección que cambió.');
         }
 
         /* Panel y opciones */
+        if (/anadir afiliado|agregar afiliado|eliminar afiliado|borrar afiliado|nuevo afiliado|registrar afiliado|afiliados|lista de afiliados|cedulas registradas/.test(q)) {
+            return bot('En Afiliados tocá Añadir afiliado. Se abre una ventana para la cédula de 9 dígitos, el nombre completo y el correo. Esos tres datos tienen que ser exactamente los mismos que la persona va a escribir al pedir cita. Para quitar a alguien, abrí su casilla y tocá Eliminar de la base. Las solicitudes de afiliación que envía la gente están en Afiliaciones, no en esta lista.');
+        }
+        if (/consultas recientes|citas recientes|ultimas consultas|mas recientes|inicio del panel/.test(q)) {
+            return bot('En Inicio, Consultas recientes muestra las últimas que llegaron, de contacto, afiliación y citas, de la más nueva a la más antigua. Cada una indica el tipo, la fecha y la hora. Al abrirla vas a la sección donde se responde.');
+        }
+        if (/advertencia|alerta|aviso de consulta|llego una consulta|consultas pendientes/.test(q)) {
+            return bot('El botón de advertencia, arriba de Sitrabot, avisa cuando hay consultas sin responder. Solo dice de qué tipo es y cuándo llegó: no muestra el mensaje, el correo ni la cédula. Al tocar una, se abre esa consulta.');
+        }
+        if (/editar (la |una )?respuesta|mensaje editado|etiqueta editado|dice editado|volver a enviar|corregir (la |una )?respuesta/.test(q)) {
+            return bot('Si ya enviaste una respuesta, al abrir de nuevo esa consulta aparece Editar, junto a Eliminar de la base. Corregís el texto y lo enviás otra vez. La persona lo ve en Mis mensajes con la etiqueta Editado. La primera vez que llega no lleva esa etiqueta.');
+        }
+        if (/como respondo|responder (una |la )?consulta|enviar (una |la )?respuesta|aceptar o rechazar|respuesta neutral/.test(q)) {
+            return bot('Abrí la consulta en Contacto, Afiliaciones o Citas con Asesoría. Elegí aceptar, rechazar o una respuesta neutral, escribí el mensaje y envialo. Si la persona había entrado con el mismo correo del formulario, la respuesta le llega a Mis mensajes.');
+        }
         if (/agregar fecha|asistente|pasos|como (agrego|abro) (una )?fecha|wizard/.test(q)) {
-            return bot('En la sección Horario del menú tocá «Agregar fecha y hora». Solo define disponibilidad para citas con asesoría: mes → tipo (hábil, ocupada o no hábil) → día → hora (si aplica) → guardar. Va a la tabla agenda.');
+            return bot('En Horario tocá Agregar fecha y hora. Sirve solo para las citas con asesoría: primero el mes, después si el día está libre, ocupado o no se ofrece, luego el día y, si aplica, la hora. Al final se guarda.');
         }
         if (/habil|ocupada|no habil|bloqueada|tipo de fecha/.test(q)) {
-            return bot('Hábil: el día queda disponible para citas. Ocupada: ya la tiene alguien (también puede crear una cita en la base). No hábil: el día no se ofrece; en ese caso se salta el paso de la hora.');
+            return bot('Día libre: se puede pedir cita. Ocupado: ya lo tiene alguien. No se ofrece: ese día no aparece para el público. Si el día no se ofrece, no hace falta elegir hora.');
         }
-        if (/afiliados|tabla cuenta|lista de afiliados|cedulas registradas|info_afiliados/.test(q)) {
-            return bot('En Afiliados ves Info_Afiliados.Cuenta (cedula, nombre completo, correo). Solo lectura: las altas se hacen a mano en phpMyAdmin. Eso valida la puerta de Solicitar cita. Las boletas nuevas estan en Afiliaciones (Consulta_Afiliacion).');
+        if (/navbar|menu admin|afiliaciones|citas con asesoria|ver solicitudes|bandeja|contacto admin|afilacion admin/.test(q)) {
+            return bot('El menú tiene Inicio, Afiliaciones, Afiliados, Citas con Asesoría, Horario y Contacto. En Inicio está la papelera: ahí se ven las consultas rechazadas y se pueden borrar para siempre. Horario solo define qué días y horas se pueden pedir para asesoría.');
         }
-        if (/navbar|menu admin|afiliaciones|citas con asesoria|ver solicitudes|bandeja|aceptar|rechazar|neutral|contacto admin|afilacion admin|respuestas/.test(q)) {
-            return bot('El menu tiene Inicio, Afiliaciones, Afiliados, Citas con Asesoria, Horario y Contacto. En Inicio abris la papelera; ahi seleccionas rechazadas y el boton de borrar de la esquina las elimina de la base. Horario solo define dias y horas para citas con asesoria.');
+        if (/ver fechas|fechas guardadas|comentarios|de quien|para que|notas|citas reservadas/.test(q)) {
+            return bot('En Horario, Ver fechas guardadas muestra cada día en una casilla: el número grande y el mes debajo. Al tocarla se abre el detalle. La hora vale para todos los días libres, no cambia de un día a otro. Para responder una cita usá Citas con Asesoría.');
         }
-        if (/ver fechas|fechas guardadas|editar cita|eliminar cita|comentarios|de quien|para que|notas|citas reservadas|responder|enviar respuesta|correo de la cita|formsubmit/.test(q)) {
-            return bot('En «Ver fechas guardadas» → Citas reservadas revisás turnos y comentarios. Para aceptar, rechazar o contestar de forma neutral usá «Ver solicitudes».');
+        if (/papelera|borrar (de la base|para siempre)|eliminar consulta|eliminar de la base/.test(q)) {
+            return bot('La papelera está en Inicio y guarda las consultas rechazadas. Podés marcar una o varias y borrarlas para siempre. En una consulta abierta, Eliminar de la base también la quita. Esa acción no se deshace.');
         }
         if (/base respuestas|config_respuestas|sql\/respuestas/.test(q)) {
-            return bot('Creá las 4 bases Info_*, ejecutá sql/01 a 04, y subí php/config.php, php/config_afiliados.php, admin/config.php y admin/config_respuestas.php.');
+            return bot('Las respuestas que enviás quedan guardadas con la consulta. La persona las ve en Mis mensajes si usó el mismo correo con el que ingresó. No hace falta crear nada a mano para responder desde el panel.');
         }
-        if (/cita publica|solicitar cita|pagina de citas|como reserva el usuario/.test(q)) {
-            return bot('El público pide cita en solicitar-cita. Las horas abiertas salen de agenda; las ya tomadas están en citas. Si el usuario pone nombre y motivo, se pueden guardar en citas al reservar.');
+        if (/cita publica|solicitar cita|pagina de citas|como reserva el usuario|como pide cita/.test(q)) {
+            return bot('La persona pide la cita en la página pública, en un día y una hora que el horario tenga libres. Antes de continuar, su cédula, su nombre completo y su correo tienen que coincidir con un afiliado cargado en este panel. Después la ves en Citas con Asesoría.');
         }
-        if (/cuenta admin|login|entrar|usuario y clave|cifrar|generar hash|password/.test(q)) {
-            return bot('Las cuentas de acceso están en Info_Cuentas_Admins.Admin_Info (cuenta, cedula si aplica, clave_hash). El hash se genera con admin/generar.php (hace falta sesión de administración) o con PHP en la terminal. No compartas correos, cédulas ni claves por este chat.');
+        if (/cuenta admin|login|entrar|usuario y clave|password|contrasena/.test(q)) {
+            return bot('Para entrar se usan la cuenta y la cédula de administración. No se pide una contraseña. No compartas correos ni cédulas por este chat.');
         }
         if (/cerrar sesion|salir|opciones/.test(q)) {
-            return bot('Arriba a la derecha está «Opciones». Ahí abrís Ayuda (la guía del panel) o Cerrar sesión, que llama a salir.php y termina la sesión de administración.');
+            return bot('Arriba a la derecha está Opciones. Ahí abrís Ayuda, la guía del panel, o Cerrar sesión.');
         }
 
         /* Diseño */
         if (/fondo|degradado|mismo (fondo|color) (del )?index|gradiente/.test(q)) {
-            return bot('El panel usa el mismo degradado del index (azul → crema → naranja) y cambia con el modo oscuro al degradado oscuro del sitio público.');
+            return bot('El fondo del panel es el mismo de la página pública: pasa del azul al crema y al naranja. En modo oscuro ese fondo también se oscurece.');
         }
-        if (/modo oscuro|modo claro|tono|sol|luna|tema/.test(q)) {
-            return bot('El botón de sol/luna arriba a la derecha cambia el tono. Usa la misma preferencia modoOscuro del sitio, guardada en este navegador.');
+        if (/modo oscuro|modo claro|tono|sol|luna|tema|dalton/.test(q)) {
+            return bot('El botón de sol o luna, arriba a la derecha, cambia entre claro y oscuro. El mismo tono se recuerda en este navegador. En el sitio público, el engranaje también puede activar el modo para daltonismo, que usa azul en lugar de rojo.');
         }
-        if (/popup|equis|cerrar (el )?popup|diseno (del )?panel|botones/.test(q)) {
-            return bot('Los asistentes son popups grandes animados. La equis de cerrar es un círculo compacto. Si ves una franja a la izquierda de las cajas, es el acento rojo del diseño (en oscuro se mantiene rojo).');
+        if (/popup|equis|cerrar (el )?popup|diseno (del )?panel|botones|boton de atras|flecha/.test(q)) {
+            return bot('Las ventanas se cierran con la equis de la esquina. La flecha de volver, junto al nombre, lleva a Inicio y cambia de color con el modo claro u oscuro.');
         }
         if (/sitrabot (de )?usuarios|bot (del )?index|diferencia/.test(q)) {
-            return bot('El Sitrabot del index orienta a afiliados (afiliación, asesoría, convenios). Este Sitrabot Admin orienta a quien administra: bases, panel, fechas y publicación.');
+            return bot('El Sitrabot de la página pública orienta a las personas: afiliación, citas, cuenta y Mis mensajes. Este Sitrabot Admin explica cómo usar el panel.');
         }
         if (/ide|visual studio|vscode|editor|codigo/.test(q)) {
-            return bot('Podés editar el proyecto en Cursor o VS Code. Los cambios de diseño se ven en local; para que el guardado y el login funcionen hay que probarlos en InfinityFree con PHP y MySQL.');
+            return bot('El diseño se puede revisar en la computadora, pero guardar afiliados, citas o respuestas solo funciona cuando el sitio ya está publicado.');
         }
 
         if (/que mas|otros temas|mas ayuda/.test(q)) {
-            return bot('También puedo hablar de las tres bases, los config.php, sql/admin.sql y sql/respuestas.sql, Horario, citas guardadas, modo oscuro, Cursor vs InfinityFree y cómo subir archivos.');
+            return bot('También puedo explicar cómo agregar o quitar afiliados, qué muestra Consultas recientes, para qué sirve el botón de advertencias, cómo editar una respuesta, el horario de citas y el tono claro u oscuro.');
         }
 
-        return bot('No tengo esa respuesta exacta. Probá preguntar por: base de datos, config.php, agregar fecha, fechas guardadas, modo oscuro, Cursor o InfinityFree. O escribí «ayuda» para ver los temas.');
+        return bot('No tengo esa respuesta exacta. Probá preguntar por afiliados, consultas recientes, advertencias, editar una respuesta, horario o modo oscuro. O escribí «ayuda».');
     }
 
     function mostrarBienvenida() {

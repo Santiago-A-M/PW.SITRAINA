@@ -23,39 +23,44 @@
     body{background:transparent}
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.14">
+  <link rel="stylesheet" href="admin.css?v=6.34">
+  <link rel="stylesheet" href="../css/avisos.css?v=1.2">
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.5';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.22';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body>
   <script>if (document.documentElement.classList.contains('dark-mode')) document.body.classList.add('dark-mode'); if (document.documentElement.classList.contains('daltonico')) document.body.classList.add('daltonico');</script>
-  <main class="caja">
+  <main class="caja caja-acceso">
     <header class="panel-cabeza">
       <div class="admin-marca">
-        <img src="../img/logo.png" alt="" width="52" height="52" decoding="async">
+        <span class="admin-marca-logo">
+          <img src="../img/logo-transparente.png" alt="SITRAINA" width="64" height="64" decoding="async">
+        </span>
         <div class="admin-marca-texto">
           <p class="admin-marca-nombre">SITRAINA</p>
           <h1>Administración</h1>
         </div>
       </div>
-      <button id="toggle-oscuro" class="admin-tono btn-header" type="button" title="Cambiar tono" aria-label="Cambiar tono de la página">
-        <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
-      </button>
+      <div class="panel-cabeza-acciones">
+        <button id="toggle-oscuro" class="admin-tono btn-header" type="button" title="Cambiar tono" aria-label="Cambiar tono de la página">
+          <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
+        </button>
+      </div>
     </header>
-    <p>Cuenta institucional <strong>sitraina@ina.ac.cr</strong> (sin cédula) o tu Gmail con cédula.</p>
+    <p class="panel-intro">Cuenta institucional <strong>sitraina@ina.ac.cr</strong> (sin cédula) o tu Gmail con cédula.</p>
     <p class="error" hidden>{{error}}</p>
-    <form method="post" action="index.php" autocomplete="off" id="form-login-admin">
+    <form method="post" action="index.php" autocomplete="off" id="form-login-admin" class="caja-form">
       <input type="hidden" name="token" value="{{token}}">
-      <label for="cuenta">Cuenta</label>
-      <input id="cuenta" name="cuenta" type="email" maxlength="120" autocomplete="username" placeholder="sitraina@ina.ac.cr o tu@gmail.com" required>
-      <div id="bloque-cedula">
+      <div class="caja-campo">
+        <label for="cuenta">Cuenta</label>
+        <input id="cuenta" name="cuenta" type="email" maxlength="120" autocomplete="username" required>
+      </div>
+      <div id="bloque-cedula" class="caja-campo">
         <label for="cedula">Cédula</label>
         <input id="cedula" name="cedula" type="text" inputmode="numeric" maxlength="9" pattern="[0-9]{9}" autocomplete="off">
       </div>
-      <label for="clave">Clave</label>
-      <input id="clave" name="clave" type="password" autocomplete="current-password" required>
       <button type="submit">Entrar</button>
     </form>
   </main>
@@ -83,6 +88,40 @@
       sincronizar();
     })();
   </script>
+  <script src="../js/avisos.js?v=1.2"></script>
   <script src="tono.js?v=1.6"></script>
+  <script>
+    (function () {
+      var aviso = document.querySelector('main .error');
+      if (aviso && !aviso.hidden && aviso.textContent && window.SitrainaAvisos) {
+        window.SitrainaAvisos.error('No se pudo entrar', aviso.textContent.trim());
+        aviso.hidden = true;
+      }
+      var form = document.getElementById('form-login-admin');
+      if (!form || !window.SitrainaAvisos) return;
+      form.noValidate = true;
+      form.addEventListener('submit', function (ev) {
+        var cuenta = document.getElementById('cuenta');
+        var cedula = document.getElementById('cedula');
+        var institucional = String(cuenta.value || '').trim().toLowerCase() === 'sitraina@ina.ac.cr';
+        var correoOk = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/.test(String(cuenta.value || '').trim());
+        if (!correoOk) {
+          ev.preventDefault();
+          window.SitrainaAvisos.campos('Revisá la información', 'Escribí una cuenta de correo válida.');
+          if (cuenta) cuenta.focus();
+          return;
+        }
+        if (!institucional && !/^[0-9]{9}$/.test(String(cedula.value || '').replace(/\D/g, ''))) {
+          ev.preventDefault();
+          window.SitrainaAvisos.campos('Revisá la información', 'Para esta cuenta la cédula debe tener 9 dígitos.');
+          if (cedula) cedula.focus();
+          return;
+        }
+        var boton = form.querySelector('button[type="submit"]');
+        if (boton) boton.disabled = true;
+        window.SitrainaAvisos.procesando('Comprobando acceso', 'Estamos revisando la cuenta. No vuelvas a enviar el formulario.');
+      });
+    })();
+  </script>
 </body>
 </html>

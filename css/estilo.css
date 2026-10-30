@@ -4921,7 +4921,7 @@ body.dark-mode .guia-cita-punto.activo {
 
 .cita-calendario,
 .cita-datos {
-  background: #fbf8f6;
+  background: transparent;
   border: 1px solid #eadfd8;
   border-radius: 16px;
   padding: 26px 24px 28px;
@@ -5184,8 +5184,18 @@ body.dark-mode .cita-nav {
   color: #ffc4bc !important;
 }
 
+body.dark-mode .form-cita {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
 body.dark-mode .cita-calendario,
-body.dark-mode .cita-datos,
+body.dark-mode .cita-datos {
+  background: #1c1614 !important;
+  background-color: #1c1614 !important;
+  border-color: #4a3d38 !important;
+}
+
 body.dark-mode .cita-aviso {
   background: #1c1614 !important;
   border-color: #4a3d38 !important;
@@ -6639,6 +6649,9 @@ html.daltonico textarea::placeholder {
   pointer-events: auto;
   transform: none;
 }
+.nav-opciones-item[hidden] {
+  display: none !important;
+}
 .nav-opciones-item {
   display: inline-flex;
   align-items: center;
@@ -6915,6 +6928,286 @@ html.daltonico.dark-mode .nav-opciones-item-icono {
 ):not([hidden]):not([name="_honey"]):disabled:hover {
   border-color: inherit !important;
   box-shadow: none;
+}
+
+.cuenta-caja {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 0 48px;
+}
+
+.cuenta-aviso-error {
+  color: #8e1a20;
+}
+
+.bandeja-rejilla {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bandeja-item {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid #eadfd8;
+  border-radius: 12px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bandeja-item-nuevo {
+  box-shadow: inset 3px 0 0 #8e1a20;
+}
+
+.bandeja-icono {
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.bandeja-icono-aceptada {
+  background: #e7f6ee;
+  color: #146338;
+}
+
+.bandeja-icono-rechazada {
+  background: #fff0ee;
+  color: #8e1a20;
+}
+
+.bandeja-icono-neutral {
+  background: #eef2f7;
+  color: #334155;
+}
+
+.bandeja-item-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.bandeja-item-tipo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bandeja-item-fecha {
+  font-size: 0.82rem;
+  opacity: 0.8;
+}
+
+.bandeja-editado {
+  display: inline-flex;
+  align-self: flex-start;
+  margin: 4px 0 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fff4f2;
+  color: #8e1a20;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+body.dark-mode .bandeja-editado {
+  background: #3a241c;
+  color: #ffc4bc;
+}
+
+.bandeja-detalle {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f7f2ee;
+}
+
+.bandeja-cuerpo {
+  white-space: pre-wrap;
+  font: inherit;
+  margin: 12px 0 0;
+}
+
+a.nav-opciones-item {
+  text-decoration: none;
+}
+
+#nav-opciones-menu .nav-opciones-item[hidden] {
+  display: none !important;
+}
+
+body.dark-mode .bandeja-item {
+  background: #243044;
+  border-color: #3a4a5c;
+}
+
+body.dark-mode .bandeja-detalle {
+  background: #1b2836;
+}
+
+.cuenta-mensajes {
+  max-width: 960px;
+  padding: 32px 28px 40px;
+}
+
+.cuenta-mensajes.seccion-formulario h2,
+.cuenta-mensajes #cuenta-saludo {
+  text-align: center;
+}
+
+.cuenta-mensajes.seccion-formulario h2 {
+  margin-bottom: 10px;
+}
+
+.cuenta-mensajes #cuenta-saludo {
+  margin: 0 auto 18px;
+  max-width: 42rem;
+}
+
+.bandeja-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.bandeja-rejilla > li {
+  display: flex;
+  min-height: 156px;
+}
+
+.bandeja-item {
+  flex: 1;
+  min-height: 156px;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid #b7d4f2;
+  background: linear-gradient(165deg, #f7fbff 0%, #e4f1fc 100%);
+  box-shadow: 0 2px 8px rgba(18, 48, 86, 0.07);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bandeja-item:hover,
+.bandeja-item:focus-visible {
+  transform: translateY(-5px);
+  border-color: #3d7ec4;
+  box-shadow: 0 16px 30px rgba(18, 48, 86, 0.16);
+  outline: none;
+}
+
+.bandeja-item-asunto {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-weight: 700;
+}
+
+.bandeja-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(18, 40, 72, 0.5);
+  animation: bandeja-fondo 0.22s ease;
+}
+
+.bandeja-popup[hidden] {
+  display: none !important;
+}
+
+.bandeja-popup-caja {
+  position: relative;
+  width: min(720px, 100%);
+  max-height: min(86vh, 760px);
+  overflow: auto;
+  padding: 28px 28px 22px;
+  border-radius: 20px;
+  background: #fff;
+  color: #16324f;
+  box-shadow: 0 24px 60px rgba(18, 40, 72, 0.28);
+  animation: bandeja-entra 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bandeja-popup-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: #e7f2fc;
+  color: #16324f;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bandeja-popup-caja h3 {
+  margin: 8px 48px 8px 0;
+  font-size: 1.4rem;
+  line-height: 1.25;
+}
+
+.bandeja-popup .bandeja-cuerpo {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f4f9ff;
+}
+
+@keyframes bandeja-fondo {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bandeja-entra {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+body.dark-mode .bandeja-popup-caja {
+  background: #1b2836;
+  color: #e8f4fc;
+}
+
+body.dark-mode .bandeja-popup-cerrar {
+  background: #24384f;
+  color: #e8f4fc;
+}
+
+body.dark-mode .bandeja-popup .bandeja-cuerpo {
+  background: #243044;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bandeja-item,
+  .bandeja-popup,
+  .bandeja-popup-caja {
+    transition: none;
+    animation: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

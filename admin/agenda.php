@@ -131,11 +131,6 @@ if ($tipo === 'cita') {
             $mysqli->close();
             responder(404, ['ok' => false, 'mensaje' => 'No se encontró esa cita.']);
         }
-        $correo = trim((string) ($cita['correo'] ?? ''));
-        if ($correo === '') {
-            $mysqli->close();
-            responder(400, ['ok' => false, 'mensaje' => 'Esa cita no tiene correo guardado. Solo las solicitudes nuevas lo traen.']);
-        }
         $mysqli->close();
         $adminUser = (string) ($_SESSION['admin_usuario'] ?? '');
         if (!guardar_respuesta_enviada('cita', $id, 'neutral', $mensaje, $adminUser)) {
@@ -144,14 +139,18 @@ if ($tipo === 'cita') {
                 'mensaje' => 'No se pudo guardar la respuesta en Info_Respuestas.',
             ]);
         }
-        $correoOk = enviar_respuesta_cita($correo, $cita['persona'] ?? '', $cita['fecha'] ?? '', $cita['hora'] ?? '', $mensaje);
-        if ($correoOk) {
-            responder(200, ['ok' => true, 'mensaje' => 'Respuesta guardada y enviada a ' . $correo . '.', 'correo_ok' => true]);
+        $enBandeja = solicitud_visible_en_bandeja('cita', $cita);
+        if ($enBandeja) {
+            responder(200, [
+                'ok' => true,
+                'mensaje' => 'Respuesta guardada. Llega a Mis mensajes porque la persona ya había iniciado sesión con esa cuenta.',
+                'bandeja' => true,
+            ]);
         }
         responder(200, [
             'ok' => true,
-            'mensaje' => 'Respuesta guardada. El correo a ' . $correo . ' no se pudo enviar ahora (SMTP bloqueado o no disponible en el hosting).',
-            'correo_ok' => false,
+            'mensaje' => 'Respuesta guardada. Esta solicitud no se envió con la cuenta iniciada: no aparece en Mis mensajes.',
+            'bandeja' => false,
         ]);
     }
 

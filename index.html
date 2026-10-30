@@ -23,7 +23,8 @@
   <meta property="og:description" content="Defendiendo los derechos de los trabajadores del INA. Conoce nuestros servicios y comunicados.">
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
-  <link rel="stylesheet" href="css/estilo.css?v=3.45">
+  <link rel="stylesheet" href="css/estilo.css?v=3.54">
+  <link rel="stylesheet" href="css/avisos.css?v=1.2">
   <link rel="stylesheet" href="css/estilo-conve.css?v=1.0">
   <link rel="stylesheet" href="css/estilo-hoja.css?v=1.3">
   <link rel="icon" type="image/x-icon" href="img/ley.png">
@@ -54,7 +55,7 @@
 }
 </script>
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.9';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.13';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body class="pagina-inicio pagina-fondo">
@@ -229,12 +230,6 @@
             <strong>Eunice Villalobos Sanchez</strong>
             <span class="directivo-resumen">Administración presupuestaria, gestión de cuotas, redención de cuentas y control financiero.</span>
           </button>
-          <button type="button" class="directivo-card" data-puesto="Secretaría de Afiliación" data-nombre="Miguel Vargas Arias" data-correo="mvargasarias@ina.ac.cr" data-foto="img/secretario-de-afiliacion.jpg" data-info="Se encarga de procesar las nuevas solicitudes, validar la documentación y mantener actualizada la base de datos.">
-            <span class="directivo-puesto">Secretaría de Afiliación</span>
-            <img src="img/secretario-de-afiliacion.jpg" alt="">
-            <strong>Miguel Vargas Arias</strong>
-            <span class="directivo-resumen">Se encarga de procesar las nuevas solicitudes, validar la documentación y mantener actualizada la base de datos.</span>
-          </button>
           <button type="button" class="directivo-card" data-puesto="Secretaría de Conflictos" data-nombre="Eduardo Ortega Rodríguez" data-correo="EOrtegaRodriguez@ina.ac.cr" data-foto="img/secretaria-conflictos.jpg" data-info="Previene conflictos de trabajo, atiende y asesora los reclamos individuales o colectivos de los afiliados y vela por el cumplimiento del Convenio Colectivo.">
             <span class="directivo-puesto">Secretaría de Conflictos</span>
             <img src="img/secretaria-conflictos.jpg" alt="">
@@ -246,12 +241,6 @@
             <img src="img/secretaria-de-propaganda.jpg" alt="">
             <strong>Vanessa Monge Castillo</strong>
             <span class="directivo-resumen">Planifica, coordina y administra las campañas de comunicación, publicaciones, redes sociales y estrategias de afiliación del sindicato.</span>
-          </button>
-          <button type="button" class="directivo-card" data-puesto="Fiscal" data-nombre="Maribel Garcia Fonseca" data-correo="mgarciafonseca@ina.ac.cr" data-foto="img/Fiscal.jpeg" data-info="Vigila y supervisa la correcta administración del sindicato, garantizando que tanto la Junta Directiva como las personas afiliadas cumplan con los estatutos y las normativas vigentes.">
-            <span class="directivo-puesto">Fiscal</span>
-            <img src="img/Fiscal.jpeg" alt="">
-            <strong>Maribel Garcia Fonseca</strong>
-            <span class="directivo-resumen">Vigila y supervisa la correcta administración del sindicato, garantizando que tanto la Junta Directiva como las personas afiliadas cumplan con los estatutos y las normativas vigentes.</span>
           </button>
           <button type="button" class="directivo-card" data-puesto="Vocal 1" data-nombre="Aisha Blackwood Barret" data-correo="ABlackwoodBarret@ina.ac.cr" data-foto="img/vocal1-aisha.jpg" data-info="Sustituye de inmediato cualquier vacante que ocurra entre los miembros titulares de la Junta Directiva.">
             <span class="directivo-puesto">Vocal 1</span>
@@ -375,12 +364,11 @@
       <h2 class="titulo-afiliacion">Boleta de Afiliación SITRAINA</h2>
 
       <!--
-        CORREO DESTINO (afiliaciones): la URL de FormSubmit decide a qué email llega la boleta.
-        Cambia el hash o usa formsubmit.co/tu-correo@dominio.com y actívalo en formsubmit.co.
-        Debe coincidir con el mismo destino en php/afiliados.php (función reenviarCorreo).
+        La boleta se guarda en el panel. La respuesta aparece en Mis mensajes si la persona ingresa con el correo INA o el personal de la boleta.
       -->
-      <form id="form-afiliacion" data-guia-formsubmit="afiliacion" class="boleta-afiliacion" action="https://formsubmit.co/sitraina@ina.ac.cr" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="_subject" id="afiliacion-asunto" value="Boleta de afiliación SITRAINA">
+      <form id="form-afiliacion" data-guia-formsubmit="afiliacion" class="boleta-afiliacion" action="php/afiliados.php" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="accion" value="guardar">
+        <input type="hidden" name="_subject" id="afiliacion-asunto" value="Copia de tu boleta de afiliación SITRAINA">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_next" value="https://sitraina.free.je/index.html?enviada=1#afiliacion">
@@ -508,13 +496,11 @@
       </p>
 
       <!--
-        CORREO DESTINO (citas legales): la URL de FormSubmit decide a qué email llega la solicitud.
-        Cambia el hash o usa formsubmit.co/tu-correo@dominio.com y actívalo en formsubmit.co.
-        Debe coincidir con el mismo destino en php/afiliados.php (función reenviarCorreo).
-        En la práctica el envío lo hace js/script.js → php/afiliados.php; este action es respaldo.
+        La cita se guarda en el panel. La respuesta aparece en Mis mensajes si la persona ingresa con el correo que escribió en la solicitud.
       -->
-      <form class="form-cita" id="form-cita" data-guia-formsubmit="cita" action="https://formsubmit.co/sitraina@ina.ac.cr" method="POST">
-        <input type="hidden" name="_subject" id="cita-asunto" value="Solicitud de cita legal">
+      <form class="form-cita" id="form-cita" data-guia-formsubmit="cita" action="php/afiliados.php" method="POST">
+        <input type="hidden" name="accion" value="verificar">
+        <input type="hidden" name="_subject" id="cita-asunto" value="Copia de tu solicitud de cita SITRAINA">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_next" value="https://sitraina.free.je/index.html?enviada=1#cita">
@@ -1546,7 +1532,7 @@
             <h2>Contáctanos</h2>
             <p>¿Tienes alguna duda, sugerencia o necesitas apoyo? Escríbenos a través del siguiente formulario.</p>
 
-            <!-- CORREO DESTINO (contacto): se define en contacto.php → addAddress(...). -->
+            <!-- Contacto: se guarda en Consulta_Contacto. La respuesta se ve en Mis mensajes al ingresar con ese correo. -->
             <form id="formulario-contacto-pagina" data-guia-formsubmit="contacto" action="contacto.php" method="POST">
     <div class="form-grupo">
         <label for="nombre">Nombre Completo</label>
@@ -1614,6 +1600,57 @@
             </div>
         </section>
     </main>
+<main class="contenedor pagina-contacto vista-publica" id="vista-ingresar" data-vista-publica="ingresar" hidden>
+  <section class="seccion-formulario cuenta-caja">
+    <h2>Ingresar</h2>
+    <p>Iniciá sesión con tu cuenta. Después, si enviás un formulario con ese mismo correo, la respuesta de administración llega a Mis mensajes.</p>
+    <form id="form-ingreso">
+      <div class="form-grupo">
+        <label for="ingreso-correo">Correo</label>
+        <input type="email" id="ingreso-correo" name="correo" required maxlength="120" autocomplete="username">
+      </div>
+      <button type="submit" class="btn">Ingresar</button>
+      <p class="cita-resultado" id="ingreso-aviso" hidden></p>
+      <p><a href="#registro">Crear cuenta</a></p>
+    </form>
+  </section>
+</main>
+<main class="contenedor pagina-contacto vista-publica" id="vista-registro" data-vista-publica="registro" hidden>
+  <section class="seccion-formulario cuenta-caja">
+    <h2>Crear cuenta</h2>
+    <p>Creá la cuenta e iniciá sesión. En contacto, citas o afiliación usá ese mismo correo para que la respuesta vuelva a esta cuenta.</p>
+    <form id="form-registro">
+      <div class="form-grupo">
+        <label for="registro-nombre">Nombre</label>
+        <input type="text" id="registro-nombre" name="nombre" required maxlength="120" autocomplete="name">
+      </div>
+      <div class="form-grupo">
+        <label for="registro-correo">Correo</label>
+        <input type="email" id="registro-correo" name="correo" required maxlength="120" autocomplete="email">
+      </div>
+      <div class="form-grupo">
+        <label for="registro-cedula">Cédula (opcional)</label>
+        <input type="text" id="registro-cedula" name="cedula" maxlength="9" inputmode="numeric" autocomplete="off">
+      </div>
+      <button type="submit" class="btn">Registrarme</button>
+      <p class="cita-resultado" id="registro-aviso" hidden></p>
+      <p><a href="#ingresar">Ya tengo cuenta</a></p>
+    </form>
+  </section>
+</main>
+<main class="contenedor pagina-contacto vista-publica" id="vista-cuenta" data-vista-publica="cuenta" hidden>
+  <section class="seccion-formulario cuenta-caja cuenta-mensajes">
+    <h2>Mis mensajes</h2>
+    <p id="cuenta-saludo">Ingresá para ver tus mensajes.</p>
+    <div id="bandeja-lista"><p class="vacio-bloque">Cargando…</p></div>
+  </section>
+</main>
+<div class="bandeja-popup" id="bandeja-popup" hidden>
+  <div class="bandeja-popup-caja" role="dialog" aria-modal="true" aria-labelledby="bandeja-popup-titulo">
+    <button type="button" class="bandeja-popup-cerrar" id="bandeja-popup-cerrar" aria-label="Cerrar">×</button>
+    <div id="bandeja-popup-cuerpo"></div>
+  </div>
+</div>
 <footer class="footer-franja">
 
     <div class="contenedor footer-grid-compacto">
@@ -1718,9 +1755,11 @@
     <span class="cerrar-lightbox">&times;</span>
     <img id="imagen-maximizada" src="" alt="Convenio Ampliado">
 </div>
-<script src="js/script.js?v=3.04"></script>
-<script src="js/vistas-publicas.js?v=1.1"></script>
-<script src="js/guia-formsubmit.js?v=1.3"></script>
+<script src="js/avisos.js?v=1.2"></script>
+<script src="js/script.js?v=3.15"></script>
+<script src="js/vistas-publicas.js?v=1.3"></script>
+<script src="js/guia-formsubmit.js?v=1.6"></script>
+<script src="js/cuenta.js?v=1.4"></script>
 <script src="js/script-conve.js"></script>
 <script src="js/script-hoja.js?v=1.1"></script>
 <script>
@@ -1741,8 +1780,15 @@
     'à':224,'á':225,'â':226,'ã':227,'ä':228,'å':229,'æ':230,'ç':231,'è':232,'é':233,'ê':234,'ë':235,'ì':236,'í':237,'î':238,'ï':239,'ñ':241,'ò':242,'ó':243,'ô':244,'õ':245,'ö':246,'ø':248,'ù':249,'ú':250,'û':251,'ü':252,'ÿ':255
   };
 
-  /* Muestra el aviso de éxito o de error debajo de la boleta. */
+  /* Muestra el resultado en el popup. El párrafo queda como respaldo si el script de avisos no cargó. */
   function mostrar(texto, ok) {
+    if (window.SitrainaAvisos) {
+      if (ok) window.SitrainaAvisos.exito('¡Solicitud enviada!', texto);
+      else window.SitrainaAvisos.campos('Revisá la información', texto);
+      if (aviso) aviso.hidden = true;
+      return;
+    }
+    if (!aviso) return;
     aviso.hidden = false;
     aviso.textContent = texto;
     aviso.classList.toggle('ok', !!ok);
@@ -1844,14 +1890,16 @@
     filaDescarga.hidden = false;
   }
 
-  if (new URLSearchParams(location.search).get('enviada') === '1') {
+  if (new URLSearchParams(location.search).get('enviada') === '1' && location.hash.replace('#', '') === 'afiliacion') {
     mostrar('Recibimos la boleta. El PDF con tus datos fue enviado por correo. Descárgalo y fírmalo con Gaudi usando tu certificado digital.', true);
     prepararDescarga(sessionStorage.getItem('afiliacionPdf'));
     history.replaceState(null, '', location.pathname + (location.hash || '#afiliacion'));
   }
 
+  var enviandoBoleta = false;
   form.addEventListener('submit', function (evento) {
     evento.preventDefault();
+    if (enviandoBoleta) return;
     if (valor('_honey')) return;
     var correoIna = valor('correo_ina');
     var correoPersonal = valor('correo_personal');
@@ -1941,9 +1989,17 @@
       form.appendChild(campoAccion);
     }
     campoAccion.value = 'guardar';
-    /* CORREO DESTINO de la afiliación: php/afiliados.php → reenviarCorreo() (FormSubmit). */
+    /* Afiliación: php/afiliados.php guarda en Consulta_Afiliacion. */
     form.action = 'php/afiliados.php';
-    form.submit();
+    if (!window.SitrainaAvisos || !window.SitrainaAvisos.exigirSesion) return;
+    window.SitrainaAvisos.exigirSesion().then(function (conSesion) {
+      if (!conSesion) return;
+      enviandoBoleta = true;
+      var botonBoleta = form.querySelector('[type="submit"]');
+      if (botonBoleta) botonBoleta.disabled = true;
+      window.SitrainaAvisos.procesando('Enviando solicitud', 'Estamos registrando la boleta. No vuelvas a enviarla.');
+      form.submit();
+    });
   });
 })();
 
@@ -1954,7 +2010,25 @@
   if (!form) return;
   var aviso = document.getElementById('contacto-resultado');
   var correo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  var enviandoContacto = false;
+  function leerRespuesta(html) {
+    var tipo = /data-sit-aviso="(exito|error|campos|sesion)"/.exec(html || '');
+    var titulo = /data-sit-titulo="([^"]*)"/.exec(html || '');
+    var texto = /data-sit-texto="([^"]*)"/.exec(html || '');
+    var caja = document.createElement('textarea');
+    function textoPlano(trozo) {
+      caja.innerHTML = trozo || '';
+      return caja.value;
+    }
+    return {
+      tipo: tipo ? tipo[1] : 'error',
+      titulo: textoPlano(titulo ? titulo[1] : 'No se pudo enviar'),
+      texto: textoPlano(texto ? texto[1] : 'Ocurrió un problema al procesar la solicitud. Volvé a intentarlo.')
+    };
+  }
   form.addEventListener('submit', function (evento) {
+    evento.preventDefault();
+    if (enviandoContacto) return;
     var nombre = form.elements.nombre;
     var email = form.elements.email;
     var mensaje = form.elements.mensaje;
@@ -1965,13 +2039,51 @@
     email.setCustomValidity(correo.test(email.value) ? '' : 'Escribe un correo válido, con @ y un dominio.');
     mensaje.setCustomValidity(mensaje.value ? '' : 'Escribe el mensaje.');
     if (!form.checkValidity()) {
-      evento.preventDefault();
-      form.reportValidity();
-      if (aviso) {
+      if (window.SitrainaAvisos) window.SitrainaAvisos.revisar(form);
+      else if (aviso) {
         aviso.hidden = false;
         aviso.textContent = 'Revisa los datos antes de enviar.';
         aviso.classList.add('error');
       }
+      return;
+    }
+    if (!window.SitrainaAvisos || !window.SitrainaAvisos.exigirSesion) return;
+    window.SitrainaAvisos.exigirSesion().then(function (conSesion) {
+      if (!conSesion) return;
+      enviandoContacto = true;
+      var boton = form.querySelector('[type="submit"]');
+      if (boton) boton.disabled = true;
+      window.SitrainaAvisos.procesando('Enviando solicitud', 'Estamos registrando tu mensaje. No vuelvas a enviarlo.');
+      enviarContacto(boton);
+    });
+    function enviarContacto(boton) {
+    fetch(form.action || 'contacto.php', { method: 'POST', body: new FormData(form), credentials: 'same-origin' })
+      .then(function (respuesta) { return respuesta.text(); })
+      .then(function (html) {
+        var resultado = leerRespuesta(html);
+        enviandoContacto = false;
+        if (boton) boton.disabled = false;
+        if (!window.SitrainaAvisos) return;
+        if (resultado.tipo === 'sesion') {
+          window.SitrainaAvisos.sesion();
+          return;
+        }
+        if (resultado.tipo === 'exito') {
+          form.reset();
+          window.SitrainaAvisos.exito(resultado.titulo, resultado.texto);
+        } else if (resultado.titulo.indexOf('Revisá') === 0) {
+          window.SitrainaAvisos.campos(resultado.titulo, resultado.texto);
+        } else {
+          window.SitrainaAvisos.error(resultado.titulo, resultado.texto);
+        }
+      })
+      .catch(function () {
+        enviandoContacto = false;
+        if (boton) boton.disabled = false;
+        if (window.SitrainaAvisos) {
+          window.SitrainaAvisos.error('No se pudo enviar', 'Ocurrió un problema al procesar la solicitud. Volvé a intentarlo.');
+        }
+      });
     }
   });
 })();
@@ -2089,7 +2201,7 @@
           }));
         } else if (paso === 'cuenta') {
           titulo.textContent = 'Datos de afiliado';
-          texto.textContent = 'Escriba cédula, nombre completo y correo exactamente como están cargados en el registro de afiliados (carga manual).';
+          texto.textContent = 'Escriba cédula, nombre completo y correo exactamente como los registró administración.';
           var entradaCedula = document.createElement('input');
           entradaCedula.type = 'text';
           entradaCedula.inputMode = 'numeric';
@@ -2126,33 +2238,36 @@
             var nombre = (entradaNombre.value || '').trim();
             var correo = (entradaCorreo.value || '').trim().toLowerCase();
             if (!/^[0-9]{9}$/.test(digitos)) {
-              aviso.textContent = 'La cédula debe tener 9 dígitos.';
+              if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'La cédula debe tener 9 dígitos.');
               entradaCedula.focus();
               return;
             }
             if (!nombre) {
-              aviso.textContent = 'Escribe el nombre completo.';
+              if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'Escribe el nombre completo.');
               entradaNombre.focus();
               return;
             }
             if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(correo)) {
-              aviso.textContent = 'Escribe un correo válido.';
+              if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'Escribe un correo válido.');
               entradaCorreo.focus();
               return;
             }
             var botones = acciones.querySelectorAll('button');
             for (var i = 0; i < botones.length; i++) botones[i].disabled = true;
-            aviso.textContent = 'Comprobando la cuenta…';
+            if (window.SitrainaAvisos) window.SitrainaAvisos.procesando('Comprobando la cuenta', 'Estamos verificando los datos de afiliación.');
             consultarCuenta(digitos, nombre, correo).then(function (resultado) {
               for (var j = 0; j < botones.length; j++) botones[j].disabled = false;
               if (!resultado || !resultado.ok) {
-                aviso.textContent = (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.';
+                if (window.SitrainaAvisos) {
+                  window.SitrainaAvisos.error('No se pudo comprobar', (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.');
+                }
                 return;
               }
+              if (window.SitrainaAvisos) window.SitrainaAvisos.cerrar();
               aceptar({ cedula: digitos, nombre: nombre, correo: correo });
             }).catch(function () {
               for (var k = 0; k < botones.length; k++) botones[k].disabled = false;
-              aviso.textContent = 'No se pudo comprobar la cuenta. Intenta de nuevo.';
+              if (window.SitrainaAvisos) window.SitrainaAvisos.error('No se pudo comprobar', 'No se pudo comprobar la cuenta. Intenta de nuevo.');
             });
           }));
           acciones.appendChild(boton('Volver', 'btn btn-contorno', function () {
@@ -2195,7 +2310,9 @@
             olvidar();
             mostrar('cuenta');
             var avisoPrevio = extra.querySelector('.cita-puerta-error');
-            if (avisoPrevio) avisoPrevio.textContent = (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.';
+            if (window.SitrainaAvisos) {
+              window.SitrainaAvisos.error('No se pudo comprobar', (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.');
+            }
           }).catch(function () {
             olvidar();
             mostrar('afiliado');

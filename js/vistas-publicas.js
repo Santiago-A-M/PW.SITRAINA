@@ -22,7 +22,10 @@
         efemerides: 'documentos',
         hoja: 'documentos',
         convenios: 'documentos',
-        contacto: 'contacto'
+        contacto: 'contacto',
+        ingresar: 'inicio',
+        registro: 'inicio',
+        cuenta: 'inicio'
     };
     var guias = { afiliacion: 1, cita: 1, contacto: 1 };
 
@@ -227,7 +230,13 @@
         if (!destino) return;
         if (!vistas[destino] && !alias[destino]) return;
         evento.preventDefault();
-        mostrarVista(destino, true);
+        var actual = (location.hash || '').replace('#', '');
+        if (actual === destino) {
+            mostrarVista(destino, true);
+            document.dispatchEvent(new CustomEvent('sitraina-vista', { detail: destino }));
+            return;
+        }
+        location.hash = destino;
     }, true);
 
     window.addEventListener('hashchange', function () {

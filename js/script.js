@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const hojaDaltonico = () => {
-        var href = "css/daltonico.css?v=1.9";
+        var href = "css/daltonico.css?v=1.13";
         try {
             var links = document.getElementsByTagName("link");
             for (var i = 0; i < links.length; i++) {
                 var h = links[i].getAttribute("href") || "";
                 if (h.indexOf("estilo.css") !== -1) {
-                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.9");
+                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.13");
                     break;
                 }
             }
@@ -167,7 +167,19 @@ document.addEventListener('DOMContentLoaded', () => {
             '<button type="button" class="nav-opciones-item" id="opcion-ayuda-envio" role="menuitem" aria-haspopup="dialog" aria-controls="guia-fs-overlay">' +
             '<span class="nav-opciones-item-icono" aria-hidden="true">✉</span>' +
             "<span>Cómo llega tu solicitud</span>" +
-            "</button></div>";
+            "</button>" +
+            '<a class="nav-opciones-item" id="opcion-ingresar" role="menuitem" href="#ingresar">' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true">→</span>' +
+            "<span>Ingresar</span></a>" +
+            '<a class="nav-opciones-item" id="opcion-registro" role="menuitem" href="#registro">' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true">+</span>' +
+            "<span>Crear cuenta</span></a>" +
+            '<a class="nav-opciones-item" id="opcion-mensajes" role="menuitem" href="#cuenta" hidden>' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true">☰</span>' +
+            "<span>Mis mensajes</span></a>" +
+            '<button type="button" class="nav-opciones-item" id="opcion-salir" role="menuitem" hidden>' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true">×</span>' +
+            "<span>Cerrar sesión</span></button></div>";
         acciones.appendChild(caja);
 
         var btn = document.getElementById("nav-opciones-btn");
@@ -227,6 +239,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+        caja.addEventListener("click", function (ev) {
+            if (ev.target.closest("a.nav-opciones-item")) cerrar();
+        });
         document.addEventListener("click", function (ev) {
             if (!caja.contains(ev.target)) cerrar();
         });
@@ -1098,10 +1113,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const avisoCita = document.getElementById('cita-resultado');
-        if (avisoCita && new URLSearchParams(location.search).get('enviada') === '1') {
-            avisoCita.hidden = false;
-            avisoCita.textContent = 'Recibimos la solicitud. La cita fue enviada para su revisión.';
-            avisoCita.classList.add('ok');
+        if (avisoCita && new URLSearchParams(location.search).get('enviada') === '1' && location.hash.replace('#', '') === 'cita') {
+            if (window.SitrainaAvisos) {
+                window.SitrainaAvisos.exito('¡Solicitud enviada!', 'Recibimos la solicitud. La cita fue enviada para su revisión.');
+            } else {
+                avisoCita.hidden = false;
+                avisoCita.textContent = 'Recibimos la solicitud. La cita fue enviada para su revisión.';
+                avisoCita.classList.add('ok');
+            }
             history.replaceState(null, '', location.pathname + (location.hash || '#cita'));
         }
 
@@ -1154,9 +1173,11 @@ document.addEventListener('DOMContentLoaded', () => {
             else campoTelefono.setCustomValidity('');
         });
 
+        let enviandoCita = false;
         formCita.addEventListener('submit', (evento) => {
             /* Revisa los datos importantes. form.submit() no usa la revisión del navegador. */
             evento.preventDefault();
+            if (enviandoCita) return;
             const trampa = formCita.elements._honey;
             if (trampa && trampa.value.trim() !== '') return;
 
@@ -1177,17 +1198,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const correoOk = revisarCorreo();
             const telefonoOk = revisarTelefono();
-            if (!campoFecha.value || !campoHora.value) {
+            const faltaTurno = !campoFecha.value || !campoHora.value;
+            if (faltaTurno && resumenCita) {
                 resumenCita.textContent = 'Elige el día y la hora de la cita antes de enviarla.';
             }
-            if (!correoOk || !telefonoOk || !formCita.checkValidity()) {
-                if (!correoOk) campoCorreo.reportValidity();
-                else if (!telefonoOk) campoTelefono.reportValidity();
-                else formCita.reportValidity();
+            if (!correoOk || !telefonoOk || !formCita.checkValidity() || faltaTurno) {
+                const extra = faltaTurno ? ' Elegí el día y la hora de la cita.' : '';
+                if (window.SitrainaAvisos) {
+                    if (!formCita.checkValidity()) {
+                        const primero = formCita.querySelector(':invalid');
+                        window.SitrainaAvisos.campos(
+                            'Revisá la información',
+                            ((primero && primero.validationMessage) || 'Faltan datos obligatorios.') + extra
+                        );
+                        if (primero && primero.focus) primero.focus();
+                    } else {
+                        window.SitrainaAvisos.campos('Revisá la información', 'Elegí el día y la hora de la cita antes de enviarla.');
+                    }
+                }
                 return;
             }
-            if (!campoFecha.value || !campoHora.value) return;
-            document.getElementById('cita-asunto').value = 'Solicitud de cita legal: ' + etiquetaFecha(campoFecha.value) + ', ' + etiquetaHora(campoHora.value);
+            document.getElementById('cita-asunto').value = 'Copia de tu solicitud de cita SITRAINA: ' + etiquetaFecha(campoFecha.value) + ', ' + etiquetaHora(campoHora.value);
             document.getElementById('cita-replyto').value = campoCorreo.value;
             let campoAccion = formCita.querySelector('input[name="accion"]');
             if (!campoAccion) {
@@ -1197,9 +1228,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 formCita.appendChild(campoAccion);
             }
             campoAccion.value = 'verificar';
-            /* CORREO DESTINO de la cita: php/afiliados.php → reenviarCorreo() (FormSubmit). */
+            /* Cita: php/afiliados.php guarda en Consulta_Asesoria. */
             formCita.action = 'php/afiliados.php';
-            formCita.submit();
+            if (!window.SitrainaAvisos || !window.SitrainaAvisos.exigirSesion) return;
+            window.SitrainaAvisos.exigirSesion().then((conSesion) => {
+                if (!conSesion) return;
+                enviandoCita = true;
+                const botonCita = formCita.querySelector('[type="submit"]');
+                if (botonCita) botonCita.disabled = true;
+                window.SitrainaAvisos.procesando('Enviando solicitud', 'Estamos registrando la cita. No vuelvas a enviarla.');
+                formCita.submit();
+            });
         });
 
         pintarMes();
@@ -1995,7 +2034,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Saludo de apertura y lista corta de temas. */
     function bienvenida() {
-        return bot('Hola, soy Sitrabot, el asistente virtual de SITRAINA. Puedo orientarte sobre el sindicato, la afiliación y su cuota, la asesoría legal, los convenios, los documentos y el contacto. ¿Qué necesitas?');
+        return bot('Hola, soy Sitrabot, el asistente virtual de SITRAINA. Puedo orientarte sobre el sindicato, la afiliación, la asesoría legal, tu cuenta, Mis mensajes, los convenios, los documentos y el contacto. ¿Qué necesitas?');
     }
 
     /* Temas solo del panel / técnico del sitio: el bot público no debe orientar sobre esto. */
@@ -2003,13 +2042,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (/administracion publica|ley general de la administracion|personal administrativo/.test(q)) return false;
         return (
             /panel (de )?(admin|administracion)|acceso (de |al )?admin|login (de |al )?(admin|panel)|entrar al (panel|admin)|cuenta(s)? (de )?admin|usuario(s)? (de )?admin|sitrabot admin|bot (de )?admin/.test(q) ||
-            /config(_afiliados|_respuestas)?\.php|config\.php|admin\/config|php\/config|generar\.php|salir\.php|agenda\.php|solicitudes\.php/.test(q) ||
+            /config(_afiliados|_respuestas)?\.php|config\.php|admin\/config|php\/config|salir\.php|agenda\.php|solicitudes\.php/.test(q) ||
             /info_afiliados|info_consultas|info_cuentas|info_respuestas|admin_info|consulta_contacto|consulta_afiliacion|consulta_asesoria|respuesta_contacto|respuesta_afiliacion|respuesta_asesoria/.test(q) ||
             /phpmyadmin|mysql|mariadb|sql211|if0_|infinityfree|filezilla|\bftp\b|host(ing)? (mysql|de la base)|usuario (mysql|de la base)|clave (mysql|de la base|hash)|clave_hash/.test(q) ||
             /(como |donde )?(creo|crear|hago|hacer|subo|subir|publico|publicar|configuro|conectar|conexion) (la |una |el |las )?(base(s)? de datos|tabla(s)?|servidor|sitio)/.test(q) ||
             /base(s)? de datos|tabla (cuenta|agenda|cuentas)|sql\/0[1-4]|admin\.sql|usuarios\.sql|respuestas\.sql/.test(q) ||
             /papelera|ver solicitudes|aceptar (o |y )?rechazar|fechas guardadas|agregar fecha|horario del panel|dias habiles (del )?panel/.test(q) ||
-            /contrasena(s)? (de )?(admin|panel|acceso)|password(s)?|hash (de )?(la )?clave|cifrar (la )?clave|cuenta santiago|santiagoabarcamateo|120360070/.test(q) ||
+            /contrasena(s)? (de )?(admin|panel|acceso)|password(s)?|clave_hash|cuenta santiago|santiagoabarcamateo|120360070/.test(q) ||
             /\bcursor\b.*(php|mysql|local|guardar)|localhost|vista previa estatica|codigo (del )?(panel|admin|sitio)|visual studio|vscode/.test(q)
         );
     }
@@ -2024,7 +2063,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (/^(hola|holi|buenas( tardes| noches)?|buenos dias|buen dia|hey|saludos|gracias|muchas gracias|adios|chao|bye|ok|que tal|pura vida)[!. ]*$/.test(q)) return bienvenida();
         if (/que puedes|en que ayudas|que sabes|opciones del chat/.test(q) || /^(ayuda|ayudame|menu)[!. ]*$/.test(q)) return bienvenida();
         if (/que mas puedes|que mas sabes|otros temas|que otras preguntas|mas temas/.test(q)) {
-            return bot('También puedo orientarte sobre la cuota del 1%, Gaudi, la desafiliación, las secretarías y sus correos, las vocalías, los abogados, el horario de citas, cada convenio, las efemérides, las leyes, los comunicados, las redes y cómo usar el tono claro u oscuro.');
+            return bot('También puedo orientarte sobre tu cuenta, Mis mensajes, la etiqueta Editado, cómo pedir cita si tus datos no coinciden, la cuota del 1%, Gaudi, los convenios, las leyes y el tono claro, oscuro o para daltonismo.');
         }
         if (/quien eres|que eres|eres (un )?bot|eres humano|eres una persona|eres abogado|eres abogada/.test(q)) {
             return bot('Soy Sitrabot, el asistente de esta página. Oriento con la información publicada de SITRAINA. No soy una persona abogada ni sustituyo la asesoría legal.');
@@ -2033,6 +2072,18 @@ document.addEventListener('DOMContentLoaded', () => {
             return bot('Las preguntas de este chat se guardan solo en esta sesión del navegador, en este dispositivo. Para un caso personal, escribe a sitraina@ina.ac.cr o pide cita con la asesoría.');
         }
         if (esTemaAdmin(q)) return rechazoAdmin();
+        if (/mis mensajes|donde (veo|estan|llegan) (las |mis )?respuestas/.test(q)) {
+            return bot('Mis mensajes está en el engranaje de la barra, cuando ya iniciaste sesión. Ahí ves las respuestas de contacto, afiliación o cita, si el formulario se envió con el mismo correo de tu cuenta. Tocá un mensaje para leerlo completo.');
+        }
+        if (/etiqueta editado|dice editado|mensaje editado|respuesta editada|por que dice editado/.test(q)) {
+            return bot('Editado significa que administración corrigió una respuesta que ya te había enviado. La primera vez que llega no lleva esa etiqueta. Solo aparece si la volvieron a enviar con un cambio.');
+        }
+        if (/crear cuenta|crear una cuenta|registrarme|iniciar sesion|ingresar a mi cuenta|cerrar sesion|ya inicie sesion/.test(q)) {
+            return bot('En el engranaje de la barra están Ingresar y Crear cuenta. La cuenta pide tu nombre y tu correo; la cédula es opcional. Cuando ya entraste, esas dos opciones se ocultan y queda Cerrar sesión. Usá el mismo correo en los formularios para que la respuesta llegue a Mis mensajes.');
+        }
+        if (/no (me )?deja (pedir|continuar|seguir)( con)?( la)? cita|no coinciden|datos no coinciden|no reconoce (mi |la )?cedula/.test(q)) {
+            return bot('Para seguir con la cita, la cédula de 9 dígitos, el nombre completo y el correo tienen que ser exactamente los mismos que administración tiene registrados. Revisá tildes, espacios y el correo. Si siguen sin coincidir, escribí a sitraina@ina.ac.cr.');
+        }
         if (/que paginas|que secciones|como navego|mapa del sitio/.test(q)) {
             return bot('El menú tiene Inicio, Conócenos, Afiliación, Asesoría, Documentos y Contacto. En Documentos se abren las efemérides, la Hoja del Miércoles, los convenios, los documentos legales, los informes y las actas.');
         }
@@ -2074,23 +2125,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (/formsubmit|como (me )?llega (el )?correo|de donde llega (el )?correo|spam de la cita|remitente (del )?correo|respuesta (de la |a la )?cita|guia (del )?correo/.test(q)) {
             return bot([
-                txt('Las citas llegan por correo a SITRAINA. En '),
+                txt('La cita queda en el panel. Si ya iniciaste sesión y el formulario lleva el correo de tu cuenta, la respuesta aparece en Mis mensajes. En '),
                 enl('Solicitar cita', 'solicitar-cita.html'),
-                txt(' abrí la guía con popups: botón «Cómo te llega el correo» . Revisá también spam; la respuesta llega al mismo correo del formulario.')
+                txt(' podés abrir la guía del envío.')
             ]);
         }
         if (/puedo pedir cita si no|cita sin estar afiliad|no estoy afiliad|no soy afiliad/.test(q)) {
             return bot([
                 txt('La asesoría legal y los convenios son para personas afiliadas. Si todavía no lo estás, la boleta está en '),
                 enl('Afiliación', 'afiliacion.html'),
-                txt('. Al pedir cita, la página pregunta si ya formas parte del sindicato.')
+                txt('. Para continuar, la cédula, el nombre completo y el correo tienen que coincidir con los que administración registró.')
             ]);
         }
         if (/9 digitos|cedula de la cita|dimex|que cedula/.test(q)) {
             return bot('Para continuar con la cita, la página pide una cédula de 9 dígitos. En la boleta de afiliación el campo es el número de cédula.');
         }
         if (/que datos (pide|lleva|necesita) (la |una )?cita|que debo poner en la cita|que llena la cita/.test(q)) {
-            return bot('La solicitud pide nombre completo, cédula, correo con @ y dominio, teléfono de 8 dígitos, sede o centro de trabajo y el motivo de la consulta. También hay que elegir un día y una hora.');
+            return bot('La solicitud pide nombre completo, cédula de 9 dígitos, correo, teléfono de 8 dígitos, sede o centro de trabajo y el motivo. La cédula, el nombre y el correo tienen que coincidir con los que administración registró. También hay que elegir un día y una hora.');
         }
         if (/cita presencial|cita virtual|es virtual|es presencial|videollamada|por zoom|por teams/.test(q)) {
             return bot('La solicitud registra el día y la hora. La página no indica si la cita es presencial o virtual. Para confirmarlo, escribe a sitraina@ina.ac.cr o llama al +506 2220-2480.');
@@ -2099,10 +2150,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return bot('Al enviar la afiliación, la boleta se manda por correo en un PDF y en la misma página puedes descargarlo. Ese PDF se firma en Gaudi con el certificado digital.');
         }
         if (/ya estoy afiliad|como se si estoy|consultar si estoy afiliad|estado de mi afiliacion/.test(q)) {
-            return bot('Esta página no consulta si ya estás afiliado. Escribe a la Secretaría de Afiliación, Miguel Vargas Arias, mvargasarias@ina.ac.cr.');
+            return bot('La página no muestra la lista de afiliados. Al pedir cita sí revisa que la cédula, el nombre completo y el correo coincidan con el registro de administración. Para otra consulta, escribí a sitraina@ina.ac.cr.');
         }
         if (/codigo de afiliacion|codigo de afiliado|donde saco el codigo/.test(q)) {
-            return bot('Asembis pide un código de afiliación. Los demás convenios piden identificarse como persona afiliada. Si no tienes el código, escríbele a Miguel Vargas Arias, mvargasarias@ina.ac.cr.');
+            return bot('Asembis pide un código de afiliación. Los demás convenios piden identificarse como persona afiliada. Si no tienes el código, escribe a sitraina@ina.ac.cr.');
         }
         if (/facebook|instagram|tiktok|tik tok/.test(q)) {
             return bot('SITRAINA está en Facebook como sitraina.cr, en Instagram como sitrainacr y en TikTok como @sitraina. Los enlaces están en el pie de página.');
@@ -2257,7 +2308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (/desafil|darme de baja|salirme|renunciar al sindicato|ya no quiero estar/.test(q)) {
             return bot([
-                txt('Esta página no tiene un formulario para desafiliarse. Escribe a sitraina@ina.ac.cr o a la Secretaría de Afiliación, Miguel Vargas Arias, en mvargasarias@ina.ac.cr. La boleta de ingreso está en '),
+                txt('Esta página no tiene un formulario para desafiliarse. Escribe a sitraina@ina.ac.cr. La boleta de ingreso está en '),
                 enl('Afiliación', 'afiliacion.html'),
                 txt('.')
             ]);
@@ -2275,7 +2326,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
         }
         if (/secretaria de afiliacion|miguel vargas/.test(q)) {
-            return bot('La Secretaría de Afiliación la ocupa Miguel Vargas Arias, mvargasarias@ina.ac.cr. Procesa las solicitudes nuevas, valida la documentación y mantiene al día la base de datos.');
+            return bot('Las consultas de afiliación se atienden en sitraina@ina.ac.cr. La boleta pública está en Afiliación.');
         }
         if (/afili|boleta|inscrib|unirme|hacerme miembro|como me uno/.test(q)) {
             return bot([
@@ -2416,7 +2467,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return bot('La Secretaría de Propaganda la ocupa Vanessa Monge Castillo, VMongeCastillo@ina.ac.cr. Coordina la comunicación, las publicaciones, las redes y las campañas de afiliación.');
         }
         if (/fiscal|maribel/.test(q)) {
-            return bot('La Fiscal es Maribel Garcia Fonseca, mgarciafonseca@ina.ac.cr. Vigila que la Junta Directiva y las personas afiliadas cumplan los estatutos y la normativa.');
+            return bot('Las consultas de fiscalía se atienden en sitraina@ina.ac.cr.');
         }
         if (/vocal|aisha|marielos|cristhofer|cristofer/.test(q)) {
             return bot('Las vocalías las ocupan Aisha Blackwood Barret, Marielos Bermúdez Araya y Cristhofer Hernández Guzmán. Sustituyen las vacantes de las personas titulares. Sus correos se ven al elegir la tarjeta en Inicio.');
@@ -2454,7 +2505,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
         }
         if (/modo oscuro|modo claro|tono oscuro|tema oscuro|sol y luna|cambiar el color|dalton/.test(q)) {
-            return bot('El botón de sol o luna, en la barra roja, cambia el tono claro u oscuro del sitio. La barra y el pie se mantienen en rojo.');
+            return bot('El botón de sol o luna, en la barra, cambia el tono claro u oscuro. En el engranaje también está el modo para daltonismo: cambia el rojo por azul para distinguir mejor los colores. La barra y el pie se mantienen del color del modo elegido.');
         }
 
         return bot([

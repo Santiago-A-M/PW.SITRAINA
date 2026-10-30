@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS Admin_Info (
   UNIQUE KEY uk_admin_info_cedula (cedula)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Generá los hash con admin/generar.php y descomentá:
+-- clave_hash debe ser bcrypt (password_hash de PHP). El ingreso usa password_verify.
 -- INSERT INTO Admin_Info (cedula, cuenta, clave_hash) VALUES
 -- (NULL, 'sitraina@ina.ac.cr', 'HASH_SITRAINA'),
 -- ('120360070', 'santiagoabarcamateo@gmail.com', 'HASH_SANTIAGO');

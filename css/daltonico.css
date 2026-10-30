@@ -4917,7 +4917,7 @@ body.dark-mode .guia-cita-punto.activo {
 
 .cita-calendario,
 .cita-datos {
-  background: #fbf8f6;
+  background: transparent;
   border: 1px solid #eadfd8;
   border-radius: 16px;
   padding: 26px 24px 28px;
@@ -5180,8 +5180,18 @@ body.dark-mode .cita-nav {
   color: #b3dff5 !important;
 }
 
+body.dark-mode .form-cita {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
 body.dark-mode .cita-calendario,
-body.dark-mode .cita-datos,
+body.dark-mode .cita-datos {
+  background: #1c1614 !important;
+  background-color: #1c1614 !important;
+  border-color: #4a3d38 !important;
+}
+
 body.dark-mode .cita-aviso {
   background: #1c1614 !important;
   border-color: #4a3d38 !important;
@@ -6944,4 +6954,14 @@ body.dark-mode .pie-pagina p {
 ):not([hidden]):not([name="_honey"]):focus-visible {
   outline: var(--campo-focus-outline);
   outline-offset: 2px;
+}
+
+.bandeja-editado {
+  background: #e7f2fc;
+  color: #0a3d5c;
+}
+
+body.dark-mode .bandeja-editado {
+  background: #24384f;
+  color: #b3dff5;
 }

@@ -1,12 +1,8 @@
 <?php
-/* Recibe la cita o la afiliación, las revisa y reenvía el correo por FormSubmit. */
-/*
- * CORREO DESTINO (citas + afiliaciones en vivo):
- * Cambia la URL de FormSubmit en reenviarCorreo() más abajo.
- * Ejemplo: https://formsubmit.co/tu-correo@dominio.com
- * Activa ese correo una vez en https://formsubmit.co
- * Mantén la misma URL en afiliacion.html y solicitar-cita.html.
- */
+/* Recibe la cita o la afiliación y las guarda en Info_Consultas. */
+require_once __DIR__ . '/sesion_usuario.php';
+sitraina_sesion_usuario();
+
 mysqli_report(MYSQLI_REPORT_OFF);
 
 /* Escapa un texto antes de mostrarlo en HTML. */
@@ -19,11 +15,12 @@ function pagina($titulo, $mensaje, $volver) {
     echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>' . h($titulo) . '</title>';
-    echo '<link rel="stylesheet" href="../css/estilo.css?v=2.37">';
-    echo '</head><body><main class="contenedor" style="padding:120px 20px 60px">';
-    echo '<h1>' . h($titulo) . '</h1><p>' . h($mensaje) . '</p>';
+    echo '<link rel="stylesheet" href="../css/estilo.css?v=3.47">';
+    echo '<link rel="stylesheet" href="../css/avisos.css?v=1.2">';
+    echo '</head><body data-sit-aviso="error" data-sit-titulo="' . h($titulo) . '" data-sit-texto="' . h($mensaje) . '">';
+    echo '<main class="contenedor" style="padding:120px 20px 60px">';
     echo '<p><a class="btn" href="' . h($volver) . '">Volver</a></p>';
-    echo '</main></body></html>';
+    echo '</main><script src="../js/avisos.js?v=1.2"></script></body></html>';
     exit;
 }
 
@@ -110,10 +107,14 @@ if ($accion === 'consultar') {
     $busqueda->close();
     $baseConsulta->close();
     if (!$registrada) {
-        $responder(false, 'Cédula, nombre completo y correo no coinciden con un afiliado registrado. Deben cargarse manualmente en Info_Afiliados antes de pedir la cita.');
+        $responder(false, 'Cédula, nombre completo y correo no coinciden con un afiliado registrado por administración.');
     }
     $responder(true, '');
 }
+
+/* Cita y afiliación solo se guardan con la sesión pública. Consultar afiliado sigue abierto. */
+sitraina_exige_cuenta(volver($accion), '..');
+
 $cedula = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
 $correo = strtolower(trim((string) ($_POST['correo'] ?? '')));
 if ($correo === '') {
@@ -173,6 +174,7 @@ if ($mysqli->connect_errno) {
     pagina('Base de datos', 'No se pudo conectar. Intentá de nuevo más tarde.', volver($accion));
 }
 $mysqli->set_charset('utf8mb4');
+$mysqli->query("SET time_zone = '-06:00'");
 
 if ($accion === 'verificar') {
     $mysqli->close();
@@ -226,19 +228,14 @@ if ($accion === 'verificar') {
         pagina('Cita', 'No se pudo guardar la cita. Intentá de nuevo más tarde.', volver($accion));
     }
     $consultasDb->close();
-    /* La cita ya quedó en Consulta_Asesoria: no se deshace si falla FormSubmit (InfinityFree). */
-    if (!reenviarCorreo()) {
-        if ($reservada) {
-            pagina(
-                'Cita guardada',
-                'La cita quedó registrada en el panel. El correo de confirmación no se pudo enviar ahora; revisá FormSubmit o escribinos a sitraina@ina.ac.cr.',
-                destino($accion)
-            );
-        }
-        pagina('Correo', 'No se pudo enviar el correo de la cita. Intentá de nuevo o escribinos a sitraina@ina.ac.cr.', volver($accion));
-    }
-    header('Location: ' . destino($accion));
-    exit;
+    $avisoCita = sitraina_id_si_cuenta_en_formulario([$correo])
+        ? 'La cita quedó en el panel. Como ya iniciaste sesión con este correo, la respuesta llega a Mis mensajes.'
+        : 'La cita quedó en el panel. Para recibir la respuesta, iniciá sesión y enviá el formulario con el correo de esa cuenta.';
+    pagina(
+        'Cita guardada',
+        $avisoCita,
+        destino($accion)
+    );
 }
 
 if ($accion === 'guardar') {
@@ -316,13 +313,15 @@ if ($accion === 'guardar') {
         pagina('Afiliación', 'Esa cédula ya envió una boleta. No puede enviarse otra vez.', volver($accion));
     }
 
-    $cambio = $mysqli->prepare('INSERT INTO Consulta_Afiliacion (nombre, cedula, correo_ina, correo_personal, fecha_nacimiento, nombramiento, unidad, centro, puesto, telefono_trabajo, telefono_domicilio, telefono_celular) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    $uidAfil = sitraina_id_si_cuenta_en_formulario([$correoIna, $correoPersonal]);
+    $uidAfilBind = $uidAfil > 0 ? $uidAfil : null;
+    $cambio = $mysqli->prepare('INSERT INTO Consulta_Afiliacion (nombre, cedula, correo_ina, correo_personal, fecha_nacimiento, nombramiento, unidad, centro, puesto, telefono_trabajo, telefono_domicilio, telefono_celular, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     if (!$cambio) {
         $mysqli->close();
         pagina('Afiliación', 'No se pudo guardar la afiliación.', volver($accion));
     }
     $cambio->bind_param(
-        'ssssssssssss',
+        'ssssssssssssi',
         $nombre,
         $cedula,
         $correoIna,
@@ -334,7 +333,8 @@ if ($accion === 'guardar') {
         $puesto,
         $telefonoTrabajo,
         $telefonoDomicilio,
-        $telefonoCelular
+        $telefonoCelular,
+        $uidAfilBind
     );
     $guardado = $cambio->execute();
     $error = $cambio->error;
@@ -348,42 +348,15 @@ if ($accion === 'guardar') {
         }
         pagina('Afiliación', 'No se pudo guardar la afiliación.', volver($accion));
     }
-    if (!reenviarCorreo()) {
-        pagina('Afiliación guardada', 'Los datos ya quedaron en la base. El correo con el PDF no se pudo enviar.', destino($accion));
-    }
-    header('Location: ' . destino($accion));
-    exit;
+    $avisoBoleta = $uidAfil
+        ? 'La boleta quedó en el panel. Como ya iniciaste sesión y el formulario incluye el correo de tu cuenta, la respuesta llega a Mis mensajes.'
+        : 'La boleta quedó en el panel. Para recibir la respuesta, iniciá sesión y poné el correo de esa cuenta en el formulario.';
+    pagina(
+        'Afiliación guardada',
+        $avisoBoleta,
+        destino($accion)
+    );
 }
 
 $mysqli->close();
 pagina('Afiliación', 'No se reconoció el formulario.', '../index.html#afiliacion');
-
-/* Reenvía los datos del formulario al correo activado en FormSubmit. */
-function reenviarCorreo() {
-    if (!function_exists('curl_init')) {
-        return false;
-    }
-    $campos = $_POST;
-    unset($campos['accion']);
-    if (!empty($_FILES['attachment']['tmp_name']) && is_uploaded_file($_FILES['attachment']['tmp_name'])) {
-        $campos['attachment'] = new CURLFile(
-            $_FILES['attachment']['tmp_name'],
-            'application/pdf',
-            $_FILES['attachment']['name'] ?: 'afiliacion.pdf'
-        );
-    }
-    // >>> CORREO DESTINO: pon aquí el FormSubmit del email que debe recibir citas y afiliaciones.
-    //     Actívalo en formsubmit.co. Debe ser el mismo que en afiliacion.html y solicitar-cita.html.
-    $curl = curl_init('https://formsubmit.co/sitraina@ina.ac.cr');
-    curl_setopt_array($curl, [
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $campos,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_TIMEOUT => 30,
-    ]);
-    curl_exec($curl);
-    $codigo = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    curl_close($curl);
-    return $codigo >= 200 && $codigo < 400;
-}

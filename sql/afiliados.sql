@@ -1,1 +1,1 @@
--- OBSOLETO. Usá sql/01_Info_Afiliados.sql (tabla Cuenta, carga manual).
+-- OBSOLETO. Usá sql/01_Info_Afiliados.sql (tabla Cuenta; alta y baja desde el panel).

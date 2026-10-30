@@ -19,7 +19,7 @@
                 },
                 {
                     titulo: '¿Qué sucede con tus datos?',
-                    texto: 'Tu solicitud queda registrada para que los administradores puedan consultarla después. En citas y afiliación también llega un aviso al correo del sindicato (sitraina@ina.ac.cr). El formulario de contacto se guarda de la misma forma para el sindicato, sin ese aviso extra.',
+                    texto: 'Tu solicitud queda en el panel. La respuesta llega a Mis mensajes si ya iniciaste sesión y el formulario incluye el correo de esa cuenta. El sindicato no recibe un correo automático en sitraina@ina.ac.cr.',
                     icono: '2'
                 },
                 {
@@ -29,7 +29,7 @@
                 },
                 {
                     titulo: '¿Cómo recibirás una respuesta?',
-                    texto: 'No hay un buzón dentro de esta página. Cuando administración responde, el mensaje se envía al correo que pusiste en el formulario, desde sitraina@ina.ac.cr. Revisá también la carpeta de spam. Si el correo no llega, tu solicitud igual quedó para el sindicato.',
+                    texto: 'Primero iniciá sesión. Después enviá la solicitud con el correo de esa cuenta. La respuesta de administración aparece en Opciones → Mis mensajes. Si no había sesión, la respuesta queda solo en el panel.',
                     icono: '4'
                 },
                 {
@@ -47,12 +47,12 @@
             pasos: [
                 {
                     titulo: 'Cómo te llega el correo',
-                    texto: 'Tu solicitud de cita llega a SITRAINA. La respuesta de administración te la escribe sitraina@ina.ac.cr al correo que pusiste en el formulario.',
+                    texto: 'Tu solicitud de cita queda en el panel de SITRAINA. La respuesta llega a Mis mensajes si ya iniciaste sesión y el formulario lleva el correo de esa cuenta.',
                     icono: '✉'
                 },
                 {
                     titulo: 'Usá un correo que revisés',
-                    texto: 'En el formulario poné el mismo correo al que querés que te escriban. Ahí llegará la respuesta de administración sobre tu cita.',
+                    texto: 'Iniciá sesión y, en el formulario, poné el correo de esa cuenta. Así la respuesta de administración vuelve a Mis mensajes.',
                     icono: '1'
                 },
                 {
@@ -62,7 +62,7 @@
                 },
                 {
                     titulo: 'Cómo se ve el remitente',
-                    texto: 'Cuando administración te responda, el remitente debería ser sitraina@ina.ac.cr y el asunto hablará de tu cita.',
+                    texto: 'La respuesta aparece en Mis mensajes, no como un correo automático.',
                     icono: '3'
                 },
                 {
@@ -72,7 +72,7 @@
                 },
                 {
                     titulo: 'Cuando te respondan',
-                    texto: 'Administración te escribe desde sitraina@ina.ac.cr a ese mismo correo. El mensaje trae la fecha y hora de tu cita y el texto de la respuesta. No hay un buzón en esta página.',
+                    texto: 'Abrí Opciones → Mis mensajes. Ahí ves la decisión (aceptada, rechazada o información) y el texto de administración.',
                     icono: '5'
                 },
                 {
@@ -90,17 +90,17 @@
             pasos: [
                 {
                     titulo: 'Cómo llega tu boleta',
-                    texto: 'Tu solicitud de afiliación llega a SITRAINA (sitraina@ina.ac.cr) y también queda registrada para las personas administradoras.',
+                    texto: 'Tu boleta queda en el panel. La respuesta llega a Mis mensajes si ya iniciaste sesión y el correo INA o el personal es el de esa cuenta.',
                     icono: '✉'
                 },
                 {
                     titulo: 'Correos del formulario',
-                    texto: 'Completá correo INA y/o personal. Administración te responderá a uno de esos correos desde sitraina@ina.ac.cr. No hay un buzón en esta página.',
+                    texto: 'Completá correo INA y/o personal. Si ya iniciaste sesión y uno de esos correos es el de tu cuenta, la respuesta llega a Mis mensajes.',
                     icono: '1'
                 },
                 {
                     titulo: 'Al enviar la boleta',
-                    texto: 'SITRAINA recibe un aviso y la página te muestra la confirmación. No hace falta quedarte en otra web.',
+                    texto: 'La página te muestra la confirmación y tu boleta queda en el panel.',
                     icono: '2'
                 },
                 {
@@ -128,22 +128,22 @@
             pasos: [
                 {
                     titulo: 'Cómo llega tu mensaje',
-                    texto: 'Tu consulta de contacto se envía a sitraina@ina.ac.cr y queda registrada para las personas administradoras.',
+                    texto: 'Tu consulta queda en el panel. La respuesta llega a Mis mensajes si ya iniciaste sesión y el formulario usa el correo de esa cuenta.',
                     icono: '✉'
                 },
                 {
                     titulo: 'Poné un correo válido',
-                    texto: 'Usá un correo que revisés: ahí te escribirá administración cuando responda tu mensaje. No hay un buzón en esta página.',
+                    texto: 'Iniciá sesión antes de enviar y usá el correo de esa cuenta si querés ver la respuesta en Mis mensajes.',
                     icono: '1'
                 },
                 {
                     titulo: 'Al enviar',
-                    texto: 'Verás la confirmación en la página. El sistema avisa a SITRAINA y tu mensaje queda registrado.',
+                    texto: 'Verás la confirmación en la página. Tu mensaje queda en el panel.',
                     icono: '2'
                 },
                 {
                     titulo: 'Cuando te respondan',
-                    texto: 'La respuesta llega desde sitraina@ina.ac.cr al correo que indicaste.',
+                    texto: 'La respuesta queda en Mis mensajes si enviaste el formulario con la cuenta ya iniciada y con el correo de esa cuenta.',
                     icono: '3'
                 },
                 {

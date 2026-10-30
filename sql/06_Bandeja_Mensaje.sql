@@ -1,0 +1,3 @@
+-- Obsoleto. Mis mensajes lee Respuesta_* en Info_Respuestas.
+-- El cruce es el correo de la cuenta (Usuario_Web) con el correo de la solicitud.
+-- Si la tabla todavía existe, sql/07_Usuarios_Web.sql la elimina.

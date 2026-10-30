@@ -1,7 +1,7 @@
 <?php
 /* Envía un correo desde sitraina@ina.ac.cr por SMTP (PHPMailer).
    En InfinityFree el SMTP saliente a menudo falla: el panel debe guardar la respuesta
-   igual (ver solicitudes.php / agenda.php). FormSubmit no sirve para responder a
+   igual (ver solicitudes.php / agenda.php). La persona ve la respuesta en Mis mensajes, leída desde Info_Respuestas. Este SMTP ya no se llama en el éxito de solicitudes.
    correos arbitrarios (hay que activar cada destino). */
 
 function sitraina_config_correo() {

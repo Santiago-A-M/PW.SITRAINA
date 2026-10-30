@@ -1,0 +1,389 @@
+/* Avisos de formularios. Siguen html.dark-mode y html.daltonico, sin tema propio. */
+body.sit-aviso-abierto {
+  overflow: hidden;
+}
+
+.sit-aviso {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: grid;
+  place-items: center;
+  padding: 20px 16px;
+  background: rgba(43, 33, 31, 0.55);
+  font-family: "Public Sans", sans-serif;
+}
+
+.sit-aviso[hidden] {
+  display: none !important;
+}
+
+.sit-aviso-caja {
+  width: min(440px, 100%);
+  max-height: min(88vh, 640px);
+  overflow: auto;
+  padding: 28px 26px 22px;
+  border-radius: 16px;
+  border: 1px solid #eadfd8;
+  border-top: 6px solid #c81d25;
+  background: #fffdfb;
+  color: #2b211f;
+  box-shadow: 0 18px 40px rgba(43, 33, 31, 0.28);
+  text-align: center;
+  animation: sit-aviso-entra 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sit-aviso-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: #f3ebe6;
+  color: #6e1218;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sit-aviso-caja {
+  position: relative;
+}
+
+.sit-aviso-cerrar:hover,
+.sit-aviso-cerrar:focus-visible {
+  background: #eadfd8;
+  outline: 2px solid #c81d25;
+  outline-offset: 2px;
+}
+
+.sit-aviso-icono {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f3ebe6;
+  color: #6e1218;
+}
+
+.sit-aviso-icono svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+.sit-aviso-titulo {
+  margin: 0 36px 8px;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  color: #6e1218;
+}
+
+.sit-aviso-texto {
+  margin: 0;
+  line-height: 1.5;
+  color: #4a403c;
+}
+
+.sit-aviso-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.sit-aviso-btn {
+  min-width: 128px;
+  margin: 0;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 1px solid #c81d25;
+  background: #c81d25;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sit-aviso-btn:hover,
+.sit-aviso-btn:focus-visible {
+  background: #8e1a20;
+  outline: 2px solid #6e1218;
+  outline-offset: 2px;
+}
+
+.sit-aviso-btn-sec {
+  background: #fffdfb;
+  color: #6e1218;
+}
+
+.sit-aviso-btn-sec:hover,
+.sit-aviso-btn-sec:focus-visible {
+  background: #f6f0ec;
+}
+
+.sit-aviso-exito .sit-aviso-caja {
+  border-top-color: #1b7f4a;
+}
+
+.sit-aviso-exito .sit-aviso-icono {
+  background: #e7f6ee;
+  color: #146338;
+}
+
+.sit-aviso-exito .sit-aviso-titulo {
+  color: #146338;
+}
+
+.sit-aviso-error .sit-aviso-caja {
+  border-top-color: #c81d25;
+}
+
+.sit-aviso-error .sit-aviso-icono {
+  background: #fde8e6;
+  color: #8e1a20;
+}
+
+.sit-aviso-campos .sit-aviso-caja {
+  border-top-color: #b86e12;
+}
+
+.sit-aviso-campos .sit-aviso-icono {
+  background: #fff4e8;
+  color: #8a4b12;
+}
+
+.sit-aviso-campos .sit-aviso-titulo {
+  color: #8a4b12;
+}
+
+.sit-aviso-confirmar .sit-aviso-caja {
+  border-top-color: #c81d25;
+}
+
+.sit-aviso-confirmar .sit-aviso-icono {
+  background: #fde8e6;
+  color: #8e1a20;
+}
+
+.sit-aviso-sesion .sit-aviso-caja {
+  border-top-color: #c81d25;
+}
+
+.sit-aviso-sesion .sit-aviso-icono {
+  background: #f8e8e6;
+  color: #6e1218;
+}
+
+.sit-aviso-sesion .sit-aviso-acciones {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.sit-aviso-sesion .sit-aviso-btn {
+  width: 100%;
+}
+
+.sit-aviso-proceso .sit-aviso-icono {
+  background: transparent;
+  color: #c81d25;
+}
+
+.sit-aviso-giro {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #eadfd8;
+  border-top-color: #c81d25;
+  border-radius: 50%;
+  animation: sit-aviso-giro 0.8s linear infinite;
+}
+
+@keyframes sit-aviso-entra {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes sit-aviso-giro {
+  to { transform: rotate(360deg); }
+}
+
+html.dark-mode .sit-aviso,
+body.dark-mode .sit-aviso {
+  background: rgba(12, 10, 9, 0.72);
+}
+
+html.dark-mode .sit-aviso-caja,
+body.dark-mode .sit-aviso-caja {
+  background: #1c1614;
+  color: #f7f2ee;
+  border-color: #4a3d38;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+html.dark-mode .sit-aviso-texto,
+body.dark-mode .sit-aviso-texto {
+  color: #f0e8e2;
+}
+
+html.dark-mode .sit-aviso-titulo,
+body.dark-mode .sit-aviso-titulo,
+html.dark-mode .sit-aviso-cerrar,
+body.dark-mode .sit-aviso-cerrar {
+  color: #ffc4bc;
+}
+
+html.dark-mode .sit-aviso-cerrar,
+body.dark-mode .sit-aviso-cerrar,
+html.dark-mode .sit-aviso-icono,
+body.dark-mode .sit-aviso-icono {
+  background: #2c2320;
+}
+
+html.dark-mode .sit-aviso-exito .sit-aviso-icono,
+body.dark-mode .sit-aviso-exito .sit-aviso-icono,
+html.dark-mode .sit-aviso-exito .sit-aviso-titulo,
+body.dark-mode .sit-aviso-exito .sit-aviso-titulo {
+  color: #b7ebc9;
+}
+
+html.dark-mode .sit-aviso-campos .sit-aviso-titulo,
+body.dark-mode .sit-aviso-campos .sit-aviso-titulo,
+html.dark-mode .sit-aviso-campos .sit-aviso-icono,
+body.dark-mode .sit-aviso-campos .sit-aviso-icono {
+  color: #ffd7a8;
+}
+
+html.dark-mode .sit-aviso-btn-sec,
+body.dark-mode .sit-aviso-btn-sec {
+  background: #1c1614;
+  color: #ffc4bc;
+  border-color: #c81d25;
+}
+
+html.dark-mode .sit-aviso-giro,
+body.dark-mode .sit-aviso-giro {
+  border-color: #4a3d38;
+  border-top-color: #ffc4bc;
+}
+
+html.dark-mode .sit-aviso-sesion .sit-aviso-icono,
+body.dark-mode .sit-aviso-sesion .sit-aviso-icono {
+  background: #3a241c;
+  color: #ffc4bc;
+}
+
+html.daltonico .sit-aviso-caja,
+html.daltonico .sit-aviso-exito .sit-aviso-caja,
+html.daltonico .sit-aviso-error .sit-aviso-caja,
+html.daltonico .sit-aviso-campos .sit-aviso-caja,
+html.daltonico .sit-aviso-confirmar .sit-aviso-caja {
+  border-top-color: #0072b2;
+}
+
+html.daltonico .sit-aviso-titulo,
+html.daltonico .sit-aviso-exito .sit-aviso-titulo,
+html.daltonico .sit-aviso-campos .sit-aviso-titulo,
+html.daltonico .sit-aviso-cerrar,
+html.daltonico .sit-aviso-icono,
+html.daltonico .sit-aviso-exito .sit-aviso-icono,
+html.daltonico .sit-aviso-error .sit-aviso-icono,
+html.daltonico .sit-aviso-campos .sit-aviso-icono,
+html.daltonico .sit-aviso-confirmar .sit-aviso-icono {
+  color: #0a3d5c;
+}
+
+html.daltonico .sit-aviso-btn {
+  background: #0072b2;
+  border-color: #0072b2;
+}
+
+html.daltonico .sit-aviso-btn:hover,
+html.daltonico .sit-aviso-btn:focus-visible {
+  background: #0b4f7a;
+  outline-color: #0a3d5c;
+}
+
+html.daltonico .sit-aviso-btn-sec {
+  background: #fff;
+  color: #0a3d5c;
+  border-color: #0072b2;
+}
+
+html.daltonico .sit-aviso-giro {
+  border-top-color: #0072b2;
+}
+
+html.daltonico.dark-mode .sit-aviso-caja,
+html.daltonico body.dark-mode .sit-aviso-caja {
+  background: #1b2836;
+  border-color: #3d5f86;
+  border-top-color: #8ec4f6;
+  color: #e8f4fc;
+}
+
+html.daltonico.dark-mode .sit-aviso-texto,
+html.daltonico body.dark-mode .sit-aviso-texto {
+  color: #d5e6f2;
+}
+
+html.daltonico.dark-mode .sit-aviso-titulo,
+html.daltonico.dark-mode .sit-aviso-exito .sit-aviso-titulo,
+html.daltonico.dark-mode .sit-aviso-campos .sit-aviso-titulo,
+html.daltonico.dark-mode .sit-aviso-cerrar,
+html.daltonico.dark-mode .sit-aviso-icono,
+html.daltonico.dark-mode .sit-aviso-exito .sit-aviso-icono,
+html.daltonico.dark-mode .sit-aviso-error .sit-aviso-icono,
+html.daltonico.dark-mode .sit-aviso-campos .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-titulo,
+html.daltonico body.dark-mode .sit-aviso-cerrar,
+html.daltonico body.dark-mode .sit-aviso-icono {
+  color: #b3dff5;
+}
+
+html.daltonico.dark-mode .sit-aviso-cerrar,
+html.daltonico.dark-mode .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-cerrar,
+html.daltonico body.dark-mode .sit-aviso-icono {
+  background: #24384f;
+}
+
+html.daltonico.dark-mode .sit-aviso-btn-sec,
+html.daltonico body.dark-mode .sit-aviso-btn-sec {
+  background: #1b2836;
+  color: #b3dff5;
+  border-color: #0072b2;
+}
+
+html.daltonico.dark-mode .sit-aviso-giro,
+html.daltonico body.dark-mode .sit-aviso-giro {
+  border-color: #3d5f86;
+  border-top-color: #8ec4f6;
+}
+
+@media (max-width: 640px) {
+  .sit-aviso {
+    padding: 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .sit-aviso-caja {
+    width: 100%;
+  }
+
+  .sit-aviso-acciones,
+  .sit-aviso-btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sit-aviso-caja,
+  .sit-aviso-giro {
+    animation: none;
+  }
+}

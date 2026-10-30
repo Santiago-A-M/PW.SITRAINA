@@ -3,7 +3,6 @@
 ob_start();
 require __DIR__ . '/sesion.php';
 require dirname(__DIR__) . '/php/respuestas.php';
-require dirname(__DIR__) . '/php/correo_smtp.php';
 require dirname(__DIR__) . '/php/disponibilidad.php';
 ob_end_clean();
 
@@ -55,14 +54,15 @@ function mezclar_con_respuesta($fila, $resp, $extra = []) {
         'respuesta' => $resp ? (string) ($resp['respuesta'] ?? '') : '',
         'admin_usuario' => $resp ? (string) ($resp['admin_usuario'] ?? '') : '',
         'respondido_en' => $resp ? (string) ($resp['respondido_en'] ?? '') : '',
+        'editado' => $resp && !empty($resp['editado']) ? 1 : 0,
     ]);
     return $base;
 }
 
-function listar_contactos($dbUsuarios, $dbResp) {
+function listar_contactos($dbUsuarios, $dbResp, $cuentas = null) {
     $mapa = mapa_respuestas_por_tipo($dbResp, 'contacto');
     $resultado = $dbUsuarios->query(
-        'SELECT id, nombre, correo, asunto, mensaje, creado_en FROM Consulta_Contacto ORDER BY creado_en DESC LIMIT 300'
+        'SELECT id, nombre, correo, asunto, mensaje, creado_en, usuario_id FROM Consulta_Contacto ORDER BY creado_en DESC LIMIT 300'
     );
     if (!$resultado) {
         return null;
@@ -70,13 +70,15 @@ function listar_contactos($dbUsuarios, $dbResp) {
     $filas = [];
     while ($fila = $resultado->fetch_assoc()) {
         $id = (int) $fila['id'];
-        $filas[] = mezclar_con_respuesta($fila, $mapa[$id] ?? null);
+        $item = mezclar_con_respuesta($fila, $mapa[$id] ?? null);
+        $item['cuenta_web'] = solicitud_visible_en_bandeja('contacto', $fila, $cuentas) ? 1 : 0;
+        $filas[] = $item;
     }
     $resultado->free();
     return $filas;
 }
 
-function listar_citas($dbUsuarios, $dbResp) {
+function listar_citas($dbUsuarios, $dbResp, $cuentas = null) {
     $mapa = mapa_respuestas_por_tipo($dbResp, 'cita');
     $filas = [];
     foreach (leer_citas($dbUsuarios) as $cita) {
@@ -84,7 +86,7 @@ function listar_citas($dbUsuarios, $dbResp) {
         if ($id < 1) {
             continue;
         }
-        $filas[] = mezclar_con_respuesta([
+        $item = [
             'id' => $id,
             'persona' => (string) ($cita['persona'] ?? ''),
             'correo' => (string) ($cita['correo'] ?? ''),
@@ -92,7 +94,10 @@ function listar_citas($dbUsuarios, $dbResp) {
             'hora' => (string) ($cita['hora'] ?? ''),
             'motivo' => (string) ($cita['motivo'] ?? ''),
             'creado_en' => (string) ($cita['creado_en'] ?? ''),
-        ], $mapa[$id] ?? null);
+            'usuario_id' => (int) ($cita['usuario_id'] ?? 0),
+        ];
+        $item['cuenta_web'] = solicitud_visible_en_bandeja('cita', $item, $cuentas) ? 1 : 0;
+        $filas[] = mezclar_con_respuesta($item, $mapa[$id] ?? null);
     }
     usort($filas, function ($a, $b) {
         $ea = ($a['estado'] ?? '') === 'pendiente' ? 0 : 1;
@@ -140,13 +145,13 @@ function listar_afiliados() {
     return $filas;
 }
 
-function listar_afilaciones($dbConsultas, $dbResp) {
+function listar_afilaciones($dbConsultas, $dbResp, $cuentas = null) {
     if (!$dbConsultas) {
         return null;
     }
     $mapa = mapa_respuestas_por_tipo($dbResp, 'afilacion');
     $resultado = $dbConsultas->query(
-        'SELECT id, nombre, cedula, correo_ina, correo_personal, creado_en
+        'SELECT id, nombre, cedula, correo_ina, correo_personal, creado_en, usuario_id
          FROM Consulta_Afiliacion ORDER BY id DESC LIMIT 300'
     );
     if (!$resultado) {
@@ -156,13 +161,18 @@ function listar_afilaciones($dbConsultas, $dbResp) {
     while ($fila = $resultado->fetch_assoc()) {
         $id = (int) $fila['id'];
         $correo = strtolower(trim((string) (($fila['correo_personal'] ?: $fila['correo_ina']) ?: '')));
-        $filas[] = mezclar_con_respuesta([
+        $item = [
             'id' => $id,
             'nombre' => (string) $fila['nombre'],
             'cedula' => preg_replace('/\D/', '', (string) $fila['cedula']),
             'correo' => $correo,
+            'correo_ina' => (string) ($fila['correo_ina'] ?? ''),
+            'correo_personal' => (string) ($fila['correo_personal'] ?? ''),
             'creado_en' => (string) ($fila['creado_en'] ?? ''),
-        ], $mapa[$id] ?? null);
+            'usuario_id' => (int) ($fila['usuario_id'] ?? 0),
+        ];
+        $item['cuenta_web'] = solicitud_visible_en_bandeja('afilacion', $item, $cuentas) ? 1 : 0;
+        $filas[] = mezclar_con_respuesta($item, $mapa[$id] ?? null);
     }
     $resultado->free();
     return $filas;
@@ -179,7 +189,7 @@ function buscar_consulta($tipo, $id) {
             return null;
         }
         $consulta = $db->prepare(
-            'SELECT id, nombre, correo, asunto, mensaje, creado_en FROM Consulta_Contacto WHERE id = ? LIMIT 1'
+            'SELECT id, nombre, correo, asunto, mensaje, creado_en, usuario_id FROM Consulta_Contacto WHERE id = ? LIMIT 1'
         );
         if (!$consulta) {
             $db->close();
@@ -187,7 +197,7 @@ function buscar_consulta($tipo, $id) {
         }
         $consulta->bind_param('i', $id);
         $consulta->execute();
-        $fila = solicitudes_fetch_assoc($consulta, ['id', 'nombre', 'correo', 'asunto', 'mensaje', 'creado_en']);
+        $fila = solicitudes_fetch_assoc($consulta, ['id', 'nombre', 'correo', 'asunto', 'mensaje', 'creado_en', 'usuario_id']);
         $consulta->close();
         $db->close();
         return $fila ?: null;
@@ -209,6 +219,7 @@ function buscar_consulta($tipo, $id) {
             'fecha' => (string) ($cita['fecha'] ?? ''),
             'hora' => (string) ($cita['hora'] ?? ''),
             'motivo' => (string) ($cita['motivo'] ?? ''),
+            'usuario_id' => (int) ($cita['usuario_id'] ?? 0),
         ];
     }
     if ($tipo === 'afilacion') {
@@ -217,7 +228,7 @@ function buscar_consulta($tipo, $id) {
             return null;
         }
         $consulta = $db->prepare(
-            'SELECT id, nombre, cedula, correo_ina, correo_personal, creado_en FROM Consulta_Afiliacion WHERE id = ? LIMIT 1'
+            'SELECT id, nombre, cedula, correo_ina, correo_personal, creado_en, usuario_id FROM Consulta_Afiliacion WHERE id = ? LIMIT 1'
         );
         if (!$consulta) {
             $db->close();
@@ -225,7 +236,7 @@ function buscar_consulta($tipo, $id) {
         }
         $consulta->bind_param('i', $id);
         $consulta->execute();
-        $fila = solicitudes_fetch_assoc($consulta, ['id', 'nombre', 'cedula', 'correo_ina', 'correo_personal', 'creado_en']);
+        $fila = solicitudes_fetch_assoc($consulta, ['id', 'nombre', 'cedula', 'correo_ina', 'correo_personal', 'creado_en', 'usuario_id']);
         $consulta->close();
         $db->close();
         if (!$fila) {
@@ -236,6 +247,9 @@ function buscar_consulta($tipo, $id) {
             'nombre' => (string) $fila['nombre'],
             'cedula' => preg_replace('/\D/', '', (string) $fila['cedula']),
             'correo' => strtolower(trim((string) (($fila['correo_personal'] ?: $fila['correo_ina']) ?: ''))),
+            'correo_ina' => (string) ($fila['correo_ina'] ?? ''),
+            'correo_personal' => (string) ($fila['correo_personal'] ?? ''),
+            'usuario_id' => (int) ($fila['usuario_id'] ?? 0),
         ];
     }
     return null;
@@ -371,14 +385,69 @@ if (!hash_equals(token_admin(), $token)) {
 
 $accion = (string) ($_POST['accion'] ?? '');
 
-/* Los afiliados de Cuenta se cargan solo en phpMyAdmin; no hay toggle aquí. */
-if ($accion === 'toggle_afiliado') {
+/* Cuenta solo se escribe desde este panel (sesión de admin + token). */
+if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado') {
     $dbUsuarios->close();
     $dbResp->close();
-    solicitudes_responder(400, [
-        'ok' => false,
-        'mensaje' => 'Los afiliados se cargan o editan manualmente en Info_Afiliados (tabla Cuenta).',
-    ]);
+    $dbAfiliados = abrir_afiliados();
+    if (!$dbAfiliados) {
+        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo abrir Info_Afiliados.']);
+    }
+    $dbAfiliados->query("SET @sitraina_panel = '1'");
+    if ($accion === 'eliminar_afiliado') {
+        $idAfiliado = (int) ($_POST['id'] ?? 0);
+        if ($idAfiliado < 1) {
+            $dbAfiliados->close();
+            solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí un afiliado.']);
+        }
+        $borrar = $dbAfiliados->prepare('DELETE FROM Cuenta WHERE id = ? LIMIT 1');
+        if (!$borrar) {
+            $dbAfiliados->close();
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo eliminar el afiliado.']);
+        }
+        $borrar->bind_param('i', $idAfiliado);
+        $borro = $borrar->execute() && $borrar->affected_rows > 0;
+        $borrar->close();
+        $dbAfiliados->close();
+        if (!$borro) {
+            solicitudes_responder(404, ['ok' => false, 'mensaje' => 'Ese afiliado ya no está en la lista.']);
+        }
+        solicitudes_responder(200, ['ok' => true, 'mensaje' => 'Afiliado eliminado.']);
+    }
+    $cedulaNueva = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
+    $nombreNuevo = trim((string) ($_POST['nombre_completo'] ?? ''));
+    $correoNuevo = strtolower(trim((string) ($_POST['correo'] ?? '')));
+    $largoNombre = function_exists('mb_strlen') ? mb_strlen($nombreNuevo, 'UTF-8') : strlen($nombreNuevo);
+    if (!preg_match('/^[0-9]{9}$/', $cedulaNueva)) {
+        $dbAfiliados->close();
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'La cédula debe tener 9 dígitos.']);
+    }
+    if ($nombreNuevo === '' || $largoNombre > 120) {
+        $dbAfiliados->close();
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Escribí el nombre completo.']);
+    }
+    if (!preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/', $correoNuevo) || strlen($correoNuevo) > 120) {
+        $dbAfiliados->close();
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Escribí un correo válido.']);
+    }
+    $creadoEn = (new DateTime('now', new DateTimeZone('America/Costa_Rica')))->format('Y-m-d H:i:s');
+    $insertar = $dbAfiliados->prepare('INSERT INTO Cuenta (cedula, nombre_completo, correo, creado_en) VALUES (?, ?, ?, ?)');
+    if (!$insertar) {
+        $dbAfiliados->close();
+        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo guardar el afiliado.']);
+    }
+    $insertar->bind_param('ssss', $cedulaNueva, $nombreNuevo, $correoNuevo, $creadoEn);
+    $guardo = $insertar->execute();
+    $duplicado = !$guardo && ((int) $insertar->errno === 1062 || (int) $dbAfiliados->errno === 1062);
+    $insertar->close();
+    $dbAfiliados->close();
+    if ($duplicado) {
+        solicitudes_responder(409, ['ok' => false, 'mensaje' => 'Esa cédula o ese correo ya está registrado.']);
+    }
+    if (!$guardo) {
+        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo guardar el afiliado.']);
+    }
+    solicitudes_responder(200, ['ok' => true, 'mensaje' => 'Afiliado registrado.']);
 }
 
 /* Borrar una o varias consultas (sección o papelera). */
@@ -460,6 +529,7 @@ $tipo = (string) ($_POST['tipo'] ?? '');
 $id = (int) ($_POST['id'] ?? 0);
 $estado = (string) ($_POST['estado'] ?? '');
 $respuesta = trim((string) ($_POST['respuesta'] ?? ''));
+$editar = (string) ($_POST['editar'] ?? '') === '1';
 $admin = (string) ($_SESSION['admin_usuario'] ?? '');
 
 $dbUsuarios->close();
@@ -483,47 +553,26 @@ if (!$fila) {
     solicitudes_responder(404, ['ok' => false, 'mensaje' => 'No se encontró esa consulta.']);
 }
 
-$correo = strtolower(trim((string) ($fila['correo'] ?? '')));
-$nombre = trim((string) ($fila['nombre'] ?? ($fila['persona'] ?? '')));
-if ($correo === '') {
-    solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Esa consulta no tiene correo.']);
-}
+$enBandeja = solicitud_visible_en_bandeja($tipo, $fila);
 
-$titulos = [
-    'contacto' => 'Respuesta a su mensaje de contacto - SITRAINA',
-    'cita' => 'Respuesta a su solicitud de cita - SITRAINA',
-    'afilacion' => 'Respuesta a su solicitud de afiliación - SITRAINA',
-];
-$etiquetas = [
-    'aceptada' => 'aceptada',
-    'rechazada' => 'no aceptada',
-    'neutral' => 'respondida',
-];
-$cuerpo = 'Hola' . ($nombre !== '' ? (' ' . $nombre) : '') . ",\n\n";
-$cuerpo .= 'Le escribimos desde SITRAINA. Su solicitud fue marcada como ' . $etiquetas[$estado] . ".\n\n";
-$cuerpo .= $respuesta . "\n\n";
-$cuerpo .= "— Administración SITRAINA\n";
-
-/* Primero la base (InfinityFree): el panel y los pendientes no dependen del correo. */
-if (!guardar_respuesta_enviada($tipo, $id, $estado, $respuesta, $admin)) {
+if (!guardar_respuesta_enviada($tipo, $id, $estado, $respuesta, $admin, $editar)) {
     solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo guardar la respuesta en Info_Respuestas.']);
 }
 
-$correoOk = enviar_correo_sitraina_con_respaldo($correo, $nombre, $titulos[$tipo], $cuerpo);
-if ($correoOk) {
+if ($enBandeja) {
     solicitudes_responder(200, [
         'ok' => true,
-        'mensaje' => 'Respuesta guardada y enviada a ' . $correo . '.',
+        'mensaje' => 'Respuesta guardada. Llega a Mis mensajes porque la persona ya había iniciado sesión con esa cuenta.',
         'estado' => $estado,
-        'correo_ok' => true,
+        'bandeja' => true,
     ]);
 }
 
 solicitudes_responder(200, [
     'ok' => true,
-    'mensaje' => 'Respuesta guardada. El correo a ' . $correo . ' no se pudo enviar ahora (SMTP bloqueado o no disponible en el hosting).',
+    'mensaje' => 'Respuesta guardada. Esta solicitud no se envió con la cuenta iniciada: no aparece en Mis mensajes.',
     'estado' => $estado,
-    'correo_ok' => false,
+    'bandeja' => false,
 ]);
 } catch (Throwable $e) {
     solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudieron cargar las solicitudes.']);

@@ -4,4 +4,5 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteRule ^panel\.html$ index.php [L,R=302]
+  RewriteRule ^generar\.(html|php)$ index.php [L,R=302]
 </IfModule>

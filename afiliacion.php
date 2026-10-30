@@ -3,6 +3,9 @@
 require('fpdf/fpdf.php'); // Asegúrate de tener la librería FPDF
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+    require_once __DIR__ . '/php/sesion_usuario.php';
+    sitraina_sesion_usuario();
+    sitraina_exige_cuenta('index.html#afiliacion', '');
     // Capturar datos del formulario
     $nombre = htmlspecialchars(trim($_POST['nombre'] ?? ''), ENT_QUOTES, 'UTF-8');
     $cedula = htmlspecialchars(trim($_POST['cedula'] ?? ''), ENT_QUOTES, 'UTF-8');

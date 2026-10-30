@@ -1,6 +1,6 @@
 <?php
 /* Intento antiguo de enviar la cita por SMTP. Pedir cita ya no usa este archivo.
-   CORREO DESTINO vivo: php/afiliados.php → reenviarCorreo() (FormSubmit). */
+   Pedir cita vivo: php/afiliados.php (INSERT en Consulta_Asesoria). */
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -29,6 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: solicitar-cita.html');
     exit;
 }
+
+require_once __DIR__ . '/php/sesion_usuario.php';
+sitraina_sesion_usuario();
+sitraina_exige_cuenta('index.html#cita', '');
 
 if (trim($_POST['sitio'] ?? '') !== '') {
     pagina('Solicitud recibida', '<h1>Recibimos tu solicitud</h1><p><a class="btn" href="asesoria-legal.html">Volver a asesoría</a></p>');
@@ -127,8 +131,8 @@ if ($correoPrueba->Password === 'TU_CONTRASEÑA') {
 
 try {
     $oficina = $preparar();
-    // >>> CORREO DESTINO (legado; pedir cita ya no usa este archivo, usa php/afiliados.php + FormSubmit)
-    $oficina->addAddress('sitraina@ina.ac.cr');
+    // Legado: no forma parte del flujo vivo. Pedir cita usa php/afiliados.php.
+    $oficina->addAddress($email);
     $oficina->addReplyTo($email, $nombre);
     $oficina->Subject = 'Solicitud de cita legal: ' . $fechaTexto . ' ' . $horaTexto;
     $oficina->Body = '<h2>Nueva solicitud de cita con el asesor legal</h2>' . $filas;

@@ -10,7 +10,7 @@
         },
         {
             titulo: 'Afiliaciones, citas y contacto',
-            texto: 'En Afiliaciones ves boletas (Consulta_Afiliacion). En Afiliados ves Cuenta (carga manual). En Citas y Contacto respondés consultas. Abrí una casilla, elegí Aceptar, Rechazar o Respuesta neutral y enviá.',
+            texto: 'En Afiliaciones ves boletas (Consulta_Afiliacion). En Afiliados registrás o eliminás la cédula, el nombre y el correo. En Citas y Contacto respondés consultas. Abrí una casilla, elegí Aceptar, Rechazar o Respuesta neutral y enviá.',
             icono: '2'
         },
         {
@@ -40,7 +40,7 @@
         },
         {
             titulo: 'Sitrabot Admin',
-            texto: 'Abajo a la derecha está Sitrabot Admin. Respondé preguntas fijas sobre bases de datos, el panel, el diseño e InfinityFree.',
+            texto: 'Abajo a la derecha está Sitrabot Admin. Explica el panel con palabras sencillas: consultas, afiliados, advertencias, horario y el tono de la página.',
             icono: '8'
         },
         {
