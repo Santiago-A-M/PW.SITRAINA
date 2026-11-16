@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const hojaDaltonico = () => {
-        var href = "css/daltonico.css?v=1.13";
+        var href = "css/daltonico.css?v=1.38";
         try {
             var links = document.getElementsByTagName("link");
             for (var i = 0; i < links.length; i++) {
                 var h = links[i].getAttribute("href") || "";
                 if (h.indexOf("estilo.css") !== -1) {
-                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.13");
+                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.38");
                     break;
                 }
             }
@@ -160,25 +160,28 @@ document.addEventListener('DOMContentLoaded', () => {
             "</button>" +
             '<div class="nav-opciones-menu" id="nav-opciones-menu" role="menu" hidden>' +
             '<button type="button" class="nav-opciones-item" id="toggle-daltonico" role="menuitem" aria-pressed="false">' +
-            '<span class="nav-opciones-item-icono" aria-hidden="true">◐</span>' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/></svg></span>' +
             "<span>Modo daltónico</span>" +
             '<span class="nav-opciones-item-estado" id="daltonico-estado">Off</span>' +
             "</button>" +
             '<button type="button" class="nav-opciones-item" id="opcion-ayuda-envio" role="menuitem" aria-haspopup="dialog" aria-controls="guia-fs-overlay">' +
-            '<span class="nav-opciones-item-icono" aria-hidden="true">✉</span>' +
-            "<span>Cómo llega tu solicitud</span>" +
+            '<span class="nav-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.2 9.3a2.8 2.8 0 1 1 4.4 2.3c-.8.4-1.6 1-1.6 2V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 17.6h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span>' +
+            "<span>Ayuda</span>" +
             "</button>" +
             '<a class="nav-opciones-item" id="opcion-ingresar" role="menuitem" href="#ingresar">' +
-            '<span class="nav-opciones-item-icono" aria-hidden="true">→</span>' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l4-4-4-4M3 12h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
             "<span>Ingresar</span></a>" +
             '<a class="nav-opciones-item" id="opcion-registro" role="menuitem" href="#registro">' +
-            '<span class="nav-opciones-item-icono" aria-hidden="true">+</span>' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 19c.5-3 2.6-4.5 5.5-4.5s5 1.5 5.5 4.5M19 8v6M16 11h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>' +
             "<span>Crear cuenta</span></a>" +
+            '<a class="nav-opciones-item" id="opcion-citas" role="menuitem" href="#mis-citas" hidden>' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 3.5V7M16 3.5V7M4 10h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>' +
+            "<span>Citas</span></a>" +
             '<a class="nav-opciones-item" id="opcion-mensajes" role="menuitem" href="#cuenta" hidden>' +
-            '<span class="nav-opciones-item-icono" aria-hidden="true">☰</span>' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
             "<span>Mis mensajes</span></a>" +
             '<button type="button" class="nav-opciones-item" id="opcion-salir" role="menuitem" hidden>' +
-            '<span class="nav-opciones-item-icono" aria-hidden="true">×</span>' +
+            '<span class="nav-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 16l4-4-4-4M9 12h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
             "<span>Cerrar sesión</span></button></div>";
         acciones.appendChild(caja);
 
@@ -895,389 +898,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 6. CITA CON ASESORÍA LEGAL ---
-    const formCita = document.getElementById('form-cita');
-
-    if (formCita) {
-        const diasCita = document.getElementById('cita-dias');
-        const tituloMes = document.getElementById('cita-mes-titulo');
-        const horasCita = document.getElementById('cita-horas');
-        const listaHoras = document.getElementById('cita-hora-lista');
-        const campoFecha = document.getElementById('cita-fecha');
-        const campoHora = document.getElementById('cita-hora');
-        const resumenCita = document.getElementById('cita-resumen');
-        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre'];
-        const horasBase = ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'];
-        let reglas = { fechas: {}, meses: {}, horas: {} };
-        let citas = {};
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-        const limite = new Date(hoy.getFullYear(), hoy.getMonth() + 3, hoy.getDate());
-        let vista = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-        let fechaElegida = '';
-
-        /* Convierte una fecha del calendario en texto AAAA-MM-DD. */
-        const iso = (fecha) => {
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            return fecha.getFullYear() + '-' + mes + '-' + dia;
-        };
-
-        /* Escribe la fecha como "16 de octubre de 2026". */
-        const etiquetaFecha = (valor) => {
-            const partes = valor.split('-');
-            return Number(partes[2]) + ' de ' + meses[Number(partes[1]) - 1] + ' de ' + partes[0];
-        };
-
-        /* Pasa una hora de 24 horas a "9:30 a. m." o "2:05 p. m.". */
-        const etiquetaHora = (hora) => {
-            const partes = hora.split(':');
-            let h = Number(partes[0]);
-            const periodo = h >= 12 ? 'p. m.' : 'a. m.';
-            h = h % 12;
-            if (h === 0) h = 12;
-            return h + ':' + partes[1] + ' ' + periodo;
-        };
-
-        /* Actualiza el texto que resume el día y la hora elegidos. */
-        const actualizarResumen = () => {
-            if (!fechaElegida || !campoHora.value) {
-                resumenCita.textContent = 'Elige un día y una hora disponibles.';
-                return;
-            }
-            resumenCita.textContent = 'Cita: ' + etiquetaFecha(fechaElegida) + ', a las ' + etiquetaHora(campoHora.value);
-        };
-
-        /* Horas que se pueden ofrecer: las del administrador, o de 7:00 a. m. a 2:00 p. m. */
-        const horasOfrecidas = () => {
-            const abiertas = Object.keys(reglas.horas).filter((hora) => reglas.horas[hora] === 'abierta').sort();
-            if (abiertas.length) return abiertas;
-            return horasBase.filter((hora) => reglas.horas[hora] !== 'bloqueada');
-        };
-
-        /* Quita las horas que ya tienen una cita reservada ese día. */
-        const horasDelDia = () => {
-            const tomadas = citas[fechaElegida] || [];
-            return horasOfrecidas().filter((hora) => tomadas.indexOf(hora) === -1);
-        };
-
-        /* Indica si el día no se puede elegir: pasado, cerrado, ocupado o sin horas libres. */
-        const diaBloqueado = (fecha) => {
-            const clave = iso(fecha);
-            const mes = clave.slice(0, 7);
-            const reglaDia = reglas.fechas[clave];
-            const reglaMes = reglas.meses[mes];
-            const finDeSemana = fecha.getDay() === 0 || fecha.getDay() === 6;
-            const hayMeses = Object.keys(reglas.meses).some((item) => reglas.meses[item] === 'abierta');
-            if (fecha < hoy) return true;
-            if (reglaDia === 'bloqueada' || reglaDia === 'ocupada') return true;
-            if (reglaDia !== 'abierta') {
-                if (reglaMes === 'bloqueada' || hayMeses) return true;
-                if (fecha > limite || finDeSemana) return true;
-            }
-            const tomadas = citas[clave] || [];
-            if (tomadas.length && horasOfrecidas().every((hora) => tomadas.indexOf(hora) !== -1)) return true;
-            return false;
-        };
-        /* Elige la marca del día: X si está cerrado y reloj si está ocupado. */
-        const marcaVisible = (fecha) => {
-            const clave = iso(fecha);
-            const regla = reglas.fechas[clave];
-            if (regla === 'ocupada') return 'ocupada';
-            const tomadas = citas[clave] || [];
-            if (regla === 'abierta' && tomadas.length && horasOfrecidas().every((hora) => tomadas.indexOf(hora) !== -1)) return 'ocupada';
-            if (regla === 'bloqueada') return 'cerrado';
-            const hayMeses = Object.keys(reglas.meses).some((item) => reglas.meses[item] === 'abierta');
-            if (hayMeses && regla !== 'abierta') return 'cerrado';
-            return '';
-        };
-
-        /* Dibuja el reloj que aparece en un día ocupado. */
-        const relojCita = () => {
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('viewBox', '0 0 24 24');
-            svg.setAttribute('class', 'cita-reloj');
-            svg.setAttribute('aria-hidden', 'true');
-            const circulo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            circulo.setAttribute('cx', '12');
-            circulo.setAttribute('cy', '12');
-            circulo.setAttribute('r', '8');
-            circulo.setAttribute('fill', 'none');
-            circulo.setAttribute('stroke', 'currentColor');
-            circulo.setAttribute('stroke-width', '2');
-            const aguja = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            aguja.setAttribute('d', 'M12 8v5l3 2');
-            aguja.setAttribute('fill', 'none');
-            aguja.setAttribute('stroke', 'currentColor');
-            aguja.setAttribute('stroke-width', '2');
-            aguja.setAttribute('stroke-linecap', 'round');
-            svg.appendChild(circulo);
-            svg.appendChild(aguja);
-            return svg;
-        };
-
-        /* Muestra los botones de hora del día que la persona eligió. */
-        const pintarHoras = () => {
-            listaHoras.innerHTML = '';
-            if (!fechaElegida) {
-                horasCita.hidden = true;
-                campoHora.value = '';
-                actualizarResumen();
-                return;
-            }
-            horasCita.hidden = false;
-            const ofrecidas = horasDelDia();
-            if (!ofrecidas.length) {
-                const vacio = document.createElement('p');
-                vacio.textContent = 'No hay horas disponibles ese día.';
-                listaHoras.appendChild(vacio);
-                actualizarResumen();
-                return;
-            }
-            const ahora = new Date();
-            ofrecidas.forEach((hora) => {
-                const boton = document.createElement('button');
-                boton.type = 'button';
-                boton.className = 'cita-hora';
-                boton.textContent = etiquetaHora(hora);
-                const momento = new Date(fechaElegida + 'T' + hora);
-                if (momento <= ahora) boton.disabled = true;
-                if (campoHora.value === hora) boton.classList.add('elegida');
-                boton.addEventListener('click', () => {
-                    campoHora.value = hora;
-                    pintarHoras();
-                    actualizarResumen();
-                });
-                listaHoras.appendChild(boton);
-            });
-            actualizarResumen();
-        };
-
-        /* Dibuja los días del mes, en verde, con X o con reloj según la agenda. */
-        const pintarMes = () => {
-            tituloMes.textContent = meses[vista.getMonth()] + ' ' + vista.getFullYear();
-            diasCita.innerHTML = '';
-            const inicio = new Date(vista.getFullYear(), vista.getMonth(), 1);
-            const desplazamiento = (inicio.getDay() + 6) % 7;
-            const total = new Date(vista.getFullYear(), vista.getMonth() + 1, 0).getDate();
-
-            for (let i = 0; i < desplazamiento; i += 1) {
-                const vacio = document.createElement('span');
-                vacio.className = 'cita-vacio';
-                diasCita.appendChild(vacio);
-            }
-
-            for (let dia = 1; dia <= total; dia += 1) {
-                const fecha = new Date(vista.getFullYear(), vista.getMonth(), dia);
-                const boton = document.createElement('button');
-                boton.type = 'button';
-                boton.className = 'cita-dia';
-                const numero = document.createElement('span');
-                numero.textContent = String(dia);
-                boton.appendChild(numero);
-                const marca = marcaVisible(fecha);
-                if (marca === 'cerrado') {
-                    boton.classList.add('cerrado');
-                    const equis = document.createElement('span');
-                    equis.className = 'cita-marca';
-                    equis.setAttribute('aria-hidden', 'true');
-                    equis.textContent = '×';
-                    boton.appendChild(equis);
-                } else if (marca === 'ocupada') {
-                    boton.classList.add('ocupada');
-                    boton.appendChild(relojCita());
-                } else if (reglas.fechas[iso(fecha)] === 'abierta' && !diaBloqueado(fecha)) {
-                    boton.classList.add('habil');
-                }
-                boton.disabled = diaBloqueado(fecha);
-                if (iso(fecha) === fechaElegida) boton.classList.add('elegido');
-                boton.addEventListener('click', () => {
-                    fechaElegida = iso(fecha);
-                    campoFecha.value = fechaElegida;
-                    campoHora.value = '';
-                    pintarMes();
-                    pintarHoras();
-                });
-                diasCita.appendChild(boton);
-            }
-        };
-        window.sitrainaRefrescarCita = pintarMes;
-
-        document.getElementById('cita-mes-anterior').addEventListener('click', () => {
-            vista = new Date(vista.getFullYear(), vista.getMonth() - 1, 1);
-            pintarMes();
-        });
-        document.getElementById('cita-mes-siguiente').addEventListener('click', () => {
-            vista = new Date(vista.getFullYear(), vista.getMonth() + 1, 1);
-            pintarMes();
-        });
-
-        const avisoCita = document.getElementById('cita-resultado');
-        if (avisoCita && new URLSearchParams(location.search).get('enviada') === '1' && location.hash.replace('#', '') === 'cita') {
-            if (window.SitrainaAvisos) {
-                window.SitrainaAvisos.exito('¡Solicitud enviada!', 'Recibimos la solicitud. La cita fue enviada para su revisión.');
-            } else {
-                avisoCita.hidden = false;
-                avisoCita.textContent = 'Recibimos la solicitud. La cita fue enviada para su revisión.';
-                avisoCita.classList.add('ok');
-            }
-            history.replaceState(null, '', location.pathname + (location.hash || '#cita'));
-        }
-
-        const campoCorreo = formCita.elements.email;
-        const campoTelefono = formCita.elements.telefono;
-        const correoValido = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
-
-        /* Exige un correo con @ y un dominio antes de enviar la cita. */
-        const revisarCorreo = () => {
-            const valor = campoCorreo.value.trim();
-            campoCorreo.value = valor;
-            if (!valor) {
-                campoCorreo.setCustomValidity('Escribe tu correo electrónico.');
-                return false;
-            }
-            if (valor.indexOf('@') === -1 || !correoValido.test(valor)) {
-                campoCorreo.setCustomValidity('Escribe un correo válido, con @ y un dominio. Ejemplo: nombre@correo.com');
-                return false;
-            }
-            campoCorreo.setCustomValidity('');
-            return true;
-        };
-
-        /* Deja el teléfono en 8 dígitos y quita el 506 si venía incluido. */
-        const revisarTelefono = () => {
-            let digitos = campoTelefono.value.replace(/\D/g, '');
-            if (digitos.indexOf('506') === 0 && digitos.length === 11) digitos = digitos.slice(3);
-            campoTelefono.value = digitos;
-            if (!/^[0-9]{8}$/.test(digitos)) {
-                campoTelefono.setCustomValidity('El teléfono debe tener exactamente 8 dígitos.');
-                return false;
-            }
-            campoTelefono.setCustomValidity('');
-            return true;
-        };
-
-        campoCorreo.addEventListener('input', () => {
-            if (campoCorreo.value.trim() === '') campoCorreo.setCustomValidity('');
-            else revisarCorreo();
-        });
-        campoCorreo.addEventListener('blur', () => {
-            if (campoCorreo.value.trim() !== '') revisarCorreo();
-        });
-        campoTelefono.addEventListener('input', () => {
-            let digitos = campoTelefono.value.replace(/\D/g, '');
-            if (digitos.indexOf('506') === 0 && digitos.length === 11) digitos = digitos.slice(3);
-            if (campoTelefono.value !== digitos) campoTelefono.value = digitos;
-            if (digitos.length === 0) campoTelefono.setCustomValidity('');
-            else if (!/^[0-9]{8}$/.test(digitos)) campoTelefono.setCustomValidity('El teléfono debe tener exactamente 8 dígitos.');
-            else campoTelefono.setCustomValidity('');
-        });
-
-        let enviandoCita = false;
-        formCita.addEventListener('submit', (evento) => {
-            /* Revisa los datos importantes. form.submit() no usa la revisión del navegador. */
-            evento.preventDefault();
-            if (enviandoCita) return;
-            const trampa = formCita.elements._honey;
-            if (trampa && trampa.value.trim() !== '') return;
-
-            const campoNombre = formCita.elements.nombre;
-            const campoSede = formCita.elements.sede;
-            const campoMotivo = formCita.elements.motivo;
-            const campoCedula = formCita.elements.cedula;
-            campoNombre.value = campoNombre.value.trim();
-            campoSede.value = campoSede.value.trim();
-            campoMotivo.value = campoMotivo.value.trim();
-            campoNombre.setCustomValidity(campoNombre.value ? '' : 'Escribe el nombre completo.');
-            campoSede.setCustomValidity(campoSede.value ? '' : 'Escribe la sede o el centro de trabajo.');
-            campoMotivo.setCustomValidity(campoMotivo.value ? '' : 'Escribe el motivo de la consulta.');
-
-            const cedulaCita = (campoCedula.value || '').replace(/\D/g, '');
-            campoCedula.value = cedulaCita;
-            campoCedula.setCustomValidity(/^[0-9]{9}$/.test(cedulaCita) ? '' : 'La cédula debe tener 9 dígitos.');
-
-            const correoOk = revisarCorreo();
-            const telefonoOk = revisarTelefono();
-            const faltaTurno = !campoFecha.value || !campoHora.value;
-            if (faltaTurno && resumenCita) {
-                resumenCita.textContent = 'Elige el día y la hora de la cita antes de enviarla.';
-            }
-            if (!correoOk || !telefonoOk || !formCita.checkValidity() || faltaTurno) {
-                const extra = faltaTurno ? ' Elegí el día y la hora de la cita.' : '';
-                if (window.SitrainaAvisos) {
-                    if (!formCita.checkValidity()) {
-                        const primero = formCita.querySelector(':invalid');
-                        window.SitrainaAvisos.campos(
-                            'Revisá la información',
-                            ((primero && primero.validationMessage) || 'Faltan datos obligatorios.') + extra
-                        );
-                        if (primero && primero.focus) primero.focus();
-                    } else {
-                        window.SitrainaAvisos.campos('Revisá la información', 'Elegí el día y la hora de la cita antes de enviarla.');
-                    }
-                }
-                return;
-            }
-            document.getElementById('cita-asunto').value = 'Copia de tu solicitud de cita SITRAINA: ' + etiquetaFecha(campoFecha.value) + ', ' + etiquetaHora(campoHora.value);
-            document.getElementById('cita-replyto').value = campoCorreo.value;
-            let campoAccion = formCita.querySelector('input[name="accion"]');
-            if (!campoAccion) {
-                campoAccion = document.createElement('input');
-                campoAccion.type = 'hidden';
-                campoAccion.name = 'accion';
-                formCita.appendChild(campoAccion);
-            }
-            campoAccion.value = 'verificar';
-            /* Cita: php/afiliados.php guarda en Consulta_Asesoria. */
-            formCita.action = 'php/afiliados.php';
-            if (!window.SitrainaAvisos || !window.SitrainaAvisos.exigirSesion) return;
-            window.SitrainaAvisos.exigirSesion().then((conSesion) => {
-                if (!conSesion) return;
-                enviandoCita = true;
-                const botonCita = formCita.querySelector('[type="submit"]');
-                if (botonCita) botonCita.disabled = true;
-                window.SitrainaAvisos.procesando('Enviando solicitud', 'Estamos registrando la cita. No vuelvas a enviarla.');
-                formCita.submit();
-            });
-        });
-
-        pintarMes();
-        actualizarResumen();
-        const rutaAgenda = window.location.pathname.replace(/[^/]*$/, '') + 'php/agenda.php';
-        /* Convierte la respuesta del servidor en un objeto, aunque venga vacía. */
-        const comoMapa = (valor) => (valor && typeof valor === 'object' && !Array.isArray(valor) ? valor : {});
-        fetch(rutaAgenda, { cache: 'no-store', credentials: 'same-origin' })
-            .then((respuesta) => respuesta.text())
-            .then((texto) => {
-                let datos = null;
-                try { datos = JSON.parse(texto); } catch (error) { datos = null; }
-                if (!datos) return;
-                reglas = {
-                    fechas: comoMapa(datos.fechas),
-                    meses: comoMapa(datos.meses),
-                    horas: comoMapa(datos.horas)
-                };
-                citas = comoMapa(datos.citas);
-                const claves = Object.keys(reglas.fechas).filter((clave) => reglas.fechas[clave] === 'abierta').sort();
-                let abierto = null;
-                claves.forEach((clave) => {
-                    if (abierto) return;
-                    const fecha = new Date(clave + 'T00:00:00');
-                    if (!diaBloqueado(fecha)) abierto = fecha;
-                });
-                if (abierto) {
-                    const ultimo = new Date(vista.getFullYear(), vista.getMonth() + 1, 0).getDate();
-                    let hayCupo = false;
-                    for (let dia = 1; dia <= ultimo; dia += 1) {
-                        if (!diaBloqueado(new Date(vista.getFullYear(), vista.getMonth(), dia))) hayCupo = true;
-                    }
-                    if (!hayCupo) vista = new Date(abierto.getFullYear(), abierto.getMonth(), 1);
-                }
-                pintarMes();
-                pintarHoras();
-            })
-            .catch(() => {});
-    }
+    // La reserva de cita vive en js/cita-calendario.js.
 
     // --- 7. ZOOM PARA COMUNICADOS Y EFEMÉRIDES ---
     var imagenesZoom = document.querySelectorAll('.img-zoomable, .imagen-noticia img');
@@ -1491,7 +1112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var visor = document.createElement('div');
         visor.className = 'visor-pdf';
         visor.hidden = true;
-                visor.innerHTML = '<div class="visor-pdf-marco" role="dialog" aria-modal="true" aria-labelledby="visor-pdf-titulo"><h2 id="visor-pdf-titulo" class="visor-pdf-titulo"></h2><button type="button" class="visor-pdf-cerrar" aria-label="Cerrar documento">&times;</button><div class="visor-pdf-cuerpo"><button type="button" class="visor-pdf-flecha visor-pdf-anterior" aria-label="Página anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="visor-pdf-hoja"><div class="visor-pdf-clip"><p class="visor-pdf-estado">Cargando documento…</p><canvas class="visor-pdf-lienzo" hidden></canvas><iframe class="visor-pdf-respaldo" hidden title="Documento PDF"></iframe></div></div><button type="button" class="visor-pdf-flecha visor-pdf-siguiente" aria-label="Página siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="visor-pdf-controles"><p class="visor-pdf-cuenta"><span class="visor-pdf-cuenta-etiqueta">Página</span> <input type="text" inputmode="numeric" pattern="[0-9]*" class="visor-pdf-pagina" value="" aria-label="Ir a la página" disabled> <span class="visor-pdf-cuenta-de">de</span> <span class="visor-pdf-pagina-total">0</span></p><div class="visor-pdf-zoom"><button type="button" data-pdf-zoom="menos" aria-label="Alejar">&minus;</button><button type="button" class="visor-pdf-zoom-cifra" data-pdf-zoom="normal" aria-label="Volver a 100%">100%</button><button type="button" data-pdf-zoom="mas" aria-label="Acercar">+</button></div><a class="visor-pdf-descarga" href="#" target="_blank" rel="noopener">Abrir en una pestaña</a></div></div>';
+                visor.innerHTML = '<div class="visor-pdf-marco" role="dialog" aria-modal="true" aria-labelledby="visor-pdf-titulo"><h2 id="visor-pdf-titulo" class="visor-pdf-titulo"></h2><button type="button" class="visor-pdf-cerrar" aria-label="Cerrar documento">&times;</button><div class="visor-pdf-cuerpo"><button type="button" class="visor-pdf-flecha visor-pdf-anterior" aria-label="Página anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="visor-pdf-hoja"><div class="visor-pdf-clip"><p class="visor-pdf-estado">Un momento, estamos abriendo el documento.</p><canvas class="visor-pdf-lienzo" hidden></canvas><iframe class="visor-pdf-respaldo" hidden title="Documento"></iframe></div></div><button type="button" class="visor-pdf-flecha visor-pdf-siguiente" aria-label="Página siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="visor-pdf-controles"><p class="visor-pdf-cuenta"><span class="visor-pdf-cuenta-etiqueta">Página</span> <input type="text" inputmode="numeric" pattern="[0-9]*" class="visor-pdf-pagina" value="" aria-label="Ir a la página" disabled> <span class="visor-pdf-cuenta-de">de</span> <span class="visor-pdf-pagina-total">0</span></p><div class="visor-pdf-zoom"><button type="button" data-pdf-zoom="menos" aria-label="Alejar">&minus;</button><button type="button" class="visor-pdf-zoom-cifra" data-pdf-zoom="normal" aria-label="Volver a 100%">100%</button><button type="button" data-pdf-zoom="mas" aria-label="Acercar">+</button></div><a class="visor-pdf-descarga" href="#" target="_blank" rel="noopener">Abrir en una pestaña</a></div></div>';
         document.body.appendChild(visor);
 
         var titulo = visor.querySelector('#visor-pdf-titulo');
@@ -1618,7 +1239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!documento || !usandoLienzo) return;
             if (tarea && tarea.cancel) tarea.cancel();
             estado.hidden = false;
-            estado.textContent = 'Cargando página…';
+            estado.textContent = 'Un momento, estamos abriendo la página.';
             lienzo.hidden = true;
             documento.getPage(pagina).then(function (hojaPdf) {
                 var estiloHoja = getComputedStyle(hoja);
@@ -1709,7 +1330,7 @@ document.addEventListener('DOMContentLoaded', () => {
             visor.hidden = false;
             document.body.classList.add('visor-pdf-abierto');
             estado.hidden = false;
-            estado.textContent = 'Cargando documento…';
+            estado.textContent = 'Un momento, estamos abriendo el documento.';
             lienzo.hidden = true;
             respaldo.hidden = true;
             usandoLienzo = false;
@@ -1974,7 +1595,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var caja = document.createElement('div');
     caja.id = 'sitrabot';
-    caja.innerHTML = '<section class="sitrabot-panel" aria-hidden="true"><header class="sitrabot-cabeza">' + marca + '<div><strong>SITRABOT</strong><span>Asistente virtual de SITRAINA</span></div><button type="button" class="sitrabot-cerrar" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></header><div class="sitrabot-mensajes" role="log" aria-live="polite"></div><form class="sitrabot-form"><input type="text" aria-label="Tu pregunta o duda laboral" placeholder="Tu pregunta o duda laboral..." autocomplete="off"><button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form></section><button type="button" class="sitrabot-abrir" aria-label="Bot del SITRAINA" aria-expanded="false">' + logoImg + '</button><span class="sitrabot-aviso" aria-hidden="true">Bot del SITRAINA</span>';
+    caja.innerHTML = '<section class="sitrabot-panel" aria-hidden="true"><header class="sitrabot-cabeza">' + marca + '<div><strong>SITRABOT</strong><span>Asistente de SITRAINA</span></div><button type="button" class="sitrabot-cerrar" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></header><div class="sitrabot-mensajes" role="log" aria-live="polite"></div><form class="sitrabot-form"><input type="text" aria-label="Tu pregunta o duda laboral" placeholder="Tu pregunta o duda laboral..." autocomplete="off"><button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form></section><button type="button" class="sitrabot-abrir" aria-label="Bot del SITRAINA" aria-expanded="false">' + logoImg + '</button><span class="sitrabot-aviso" aria-hidden="true">Bot del SITRAINA</span>';
     document.body.appendChild(caja);
 
     var panel = caja.querySelector('.sitrabot-panel');
@@ -2034,7 +1655,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Saludo de apertura y lista corta de temas. */
     function bienvenida() {
-        return bot('Hola, soy Sitrabot, el asistente virtual de SITRAINA. Puedo orientarte sobre el sindicato, la afiliación, la asesoría legal, tu cuenta, Mis mensajes, los convenios, los documentos y el contacto. ¿Qué necesitas?');
+        return bot('Hola, soy Sitrabot, el asistente de SITRAINA. Puedo orientarte sobre el sindicato, la afiliación, la asesoría legal, tu cuenta, Mis mensajes, los convenios, los documentos y el contacto. ¿Qué necesitás?');
     }
 
     /* Temas solo del panel / técnico del sitio: el bot público no debe orientar sobre esto. */
@@ -2054,7 +1675,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function rechazoAdmin() {
-        return bot('Esa información es solo para la administración del sitio. Yo oriento al público sobre afiliación, asesoría, convenios, documentos y contacto. Para gestionar el panel usá el acceso de Administración.');
+        return bot('Esa información es solo para quienes administran el sitio. Yo oriento sobre afiliación, asesoría, convenios, documentos y contacto. Para el trabajo interno, usá el acceso de Administración.');
     }
 
     /* Elige la respuesta. La primera regla que coincide gana, por eso las preguntas concretas van primero. */
@@ -2069,17 +1690,34 @@ document.addEventListener('DOMContentLoaded', () => {
             return bot('Soy Sitrabot, el asistente de esta página. Oriento con la información publicada de SITRAINA. No soy una persona abogada ni sustituyo la asesoría legal.');
         }
         if (/guardas (el|la|los|las)? ?(chat|conversacion|mensajes)|privacidad del chat|quien ve (mis )?mensajes/.test(q)) {
-            return bot('Las preguntas de este chat se guardan solo en esta sesión del navegador, en este dispositivo. Para un caso personal, escribe a sitraina@ina.ac.cr o pide cita con la asesoría.');
+            return bot('Las preguntas de este chat se quedan solo en esta visita, en este dispositivo. Para un caso personal, escribinos a sitraina@ina.ac.cr o pedí cita con la asesoría.');
         }
         if (esTemaAdmin(q)) return rechazoAdmin();
+        if (/como (envio|enviar|mando|mandar|lleno|llenar|completo|se envia) (un |el |los )?formulari|enviar (un |el )?formulari|envio de formulari/.test(q)) {
+            return bot([
+                txt('Para enviar un formulario, primero entrá con tu cuenta. Si no hay sesión, el aviso te lleva a iniciar sesión o a crear una cuenta y después volvés a ese formulario. Hay tres: '),
+                enl('Afiliación', 'afiliacion.html'),
+                txt(' (completá los datos y pulsá Enviar Afiliación; después firmás la copia con Gaudi), '),
+                enl('Contacto', 'contacto.html'),
+                txt(' (nombre, correo y mensaje) y la cita en '),
+                enl('Asesoría', 'asesoria-legal.html'),
+                txt(' (motivo, un martes o jueves y la hora).')
+            ]);
+        }
+        if (/informacion (de |del )?sitraina|datos (de |del )?sitraina|correo.{0,24}(numero|telefono).{0,24}direccion|direccion.{0,24}correo/.test(q)) {
+            return bot('El correo es sitraina@ina.ac.cr. El teléfono es +506 2220-2480 y el WhatsApp es +506 8448-1450. SITRAINA queda en Avenida 59, Calle 106, Barrio Finca La Caja, Uruca, San José. El código postal es 10107.');
+        }
+        if (/secretarios|secretarias|todas las secretaria|lista de secretaria|uno por cada uno/.test(q)) {
+            return bot('Las secretarías, una por una:\nSecretaría General: Luzmilda Cerdas Rojas, lcerdasrojas@ina.ac.cr.\nSecretaría de la Mujer: Raquel Uribe Berrios, ruribeberrios@ina.ac.cr.\nSecretaría de Investigación: Carlos González Castro, cgonzalezcastro@ina.ac.cr.\nSecretaría de la Educación y Docencia: Luis Diego González Esquivel, lgonzalezesquivel@ina.ac.cr.\nSecretaría de Finanzas: Eunice Villalobos Sanchez, EVillalobosSanchez@ina.ac.cr.\nSecretaría de Conflictos: Eduardo Ortega Rodríguez, EOrtegaRodriguez@ina.ac.cr.\nSecretaría de Propaganda: Vanessa Monge Castillo, VMongeCastillo@ina.ac.cr.');
+        }
         if (/mis mensajes|donde (veo|estan|llegan) (las |mis )?respuestas/.test(q)) {
-            return bot('Mis mensajes está en el engranaje de la barra, cuando ya iniciaste sesión. Ahí ves las respuestas de contacto, afiliación o cita, si el formulario se envió con el mismo correo de tu cuenta. Tocá un mensaje para leerlo completo.');
+            return bot('Mis mensajes está en el engranaje de la barra, cuando ya entraste. Ahí ves las respuestas de contacto, afiliación o cita, si usaste el mismo correo de tu cuenta. Tocá un mensaje para leerlo completo.');
         }
         if (/etiqueta editado|dice editado|mensaje editado|respuesta editada|por que dice editado/.test(q)) {
             return bot('Editado significa que administración corrigió una respuesta que ya te había enviado. La primera vez que llega no lleva esa etiqueta. Solo aparece si la volvieron a enviar con un cambio.');
         }
         if (/crear cuenta|crear una cuenta|registrarme|iniciar sesion|ingresar a mi cuenta|cerrar sesion|ya inicie sesion/.test(q)) {
-            return bot('En el engranaje de la barra están Ingresar y Crear cuenta. La cuenta pide tu nombre y tu correo; la cédula es opcional. Cuando ya entraste, esas dos opciones se ocultan y queda Cerrar sesión. Usá el mismo correo en los formularios para que la respuesta llegue a Mis mensajes.');
+            return bot('En el engranaje de la barra están Ayuda, Ingresar y Crear cuenta. La cuenta pide tu nombre y tu correo; la cédula es opcional. Cuando ya entraste, Ingresar y Crear cuenta se ocultan y quedan Citas, Mis mensajes y Cerrar sesión. Ayuda explica cómo moverte por la página. En Citas ves las confirmadas, las que no se aceptaron y las canceladas.');
         }
         if (/no (me )?deja (pedir|continuar|seguir)( con)?( la)? cita|no coinciden|datos no coinciden|no reconoce (mi |la )?cedula/.test(q)) {
             return bot('Para seguir con la cita, la cédula de 9 dígitos, el nombre completo y el correo tienen que ser exactamente los mismos que administración tiene registrados. Revisá tildes, espacios y el correo. Si siguen sin coincidir, escribí a sitraina@ina.ac.cr.');
@@ -2109,45 +1747,45 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
         }
         if (/acoso|me acosan/.test(q)) {
-            return bot('La Secretaría de Conflictos, Eduardo Ortega Rodríguez, EOrtegaRodriguez@ina.ac.cr, atiende reclamos de las personas afiliadas. También puedes pedir apoyo jurídico en Asesoría. Esta página no lleva un formulario solo para ese caso.');
+            return bot('La Secretaría de Conflictos, Eduardo Ortega Rodríguez, EOrtegaRodriguez@ina.ac.cr, atiende reclamos de las personas afiliadas. También podés pedir apoyo jurídico en Asesoría. Para este tema, escribinos o pedí una cita.');
         }
         if (/huelga|paro laboral|irnos a paro/.test(q)) {
             return bot('El sitio presenta el diálogo, la negociación colectiva y la Secretaría de Conflictos como vías del sindicato. Para un caso concreto, pide cita con la asesoría legal.');
         }
         if (/sabado|domingo|feriado|dia festivo/.test(q)) {
-            return bot('La oficina atiende de lunes a viernes, de 7:00 a. m. a 3:00 p. m. El calendario de citas ofrece días hábiles, de 7:00 a. m. a 2:00 p. m. Un sábado, un domingo o un día pasado no se puede elegir, salvo que ese día aparezca abierto en el calendario.');
+            return bot('La oficina atiende de lunes a viernes, de 7:00 a. m. a 3:00 p. m. Las citas se ofrecen en los días disponibles, de 7:00 a. m. a 2:00 p. m. Un sábado, un domingo o un día que ya pasó no se puede elegir, salvo que ese día aparezca abierto.');
         }
         if (/horario de la cita|horario de citas|hora de la asesoria|a que hora son las citas|hasta que hora pido cita/.test(q)) {
-            return bot('Las citas se piden en días hábiles, entre 7:00 a. m. y 2:00 p. m., en los días que el calendario muestre abiertos. La oficina atiende hasta las 3:00 p. m.');
+            return bot('Las citas se piden en los días disponibles, entre 7:00 a. m. y 2:00 p. m. La oficina atiende hasta las 3:00 p. m.');
         }
-        if (/cancelar (la |una )?cita|cambiar (la |una )?cita|reprogramar|mover la cita/.test(q)) {
-            return bot('Esta página no tiene un formulario para cancelar o cambiar una cita. Escribe a sitraina@ina.ac.cr o llama al +506 2220-2480.');
+        if (/cancelar (la |una )?cita|cambiar (la |una )?cita|reprogramar|mover la cita|15 dias|quince dias/.test(q)) {
+            return bot('Si ya tenés una cita confirmada, en Opciones, dentro de Citas, podés cancelarla. Desde ese momento tenés 15 días para volver a pedir esa misma cita. La nueva queda para el mismo día en que la pedís, si ese día está disponible. Si el plazo se vence, la cita queda cancelada y ya no se recupera. Esos 15 días no impiden pedir otra cita distinta.');
         }
         if (/formsubmit|como (me )?llega (el )?correo|de donde llega (el )?correo|spam de la cita|remitente (del )?correo|respuesta (de la |a la )?cita|guia (del )?correo/.test(q)) {
             return bot([
-                txt('La cita queda en el panel. Si ya iniciaste sesión y el formulario lleva el correo de tu cuenta, la respuesta aparece en Mis mensajes. En '),
+                txt('La cita queda con el sindicato. Si ya entraste y usaste el correo de tu cuenta, la respuesta aparece en Mis mensajes. En '),
                 enl('Solicitar cita', 'solicitar-cita.html'),
                 txt(' podés abrir la guía del envío.')
             ]);
         }
         if (/puedo pedir cita si no|cita sin estar afiliad|no estoy afiliad|no soy afiliad/.test(q)) {
             return bot([
-                txt('La asesoría legal y los convenios son para personas afiliadas. Si todavía no lo estás, la boleta está en '),
+                txt('La asesoría legal y los convenios son para personas afiliadas. Si todavía no lo estás, la solicitud está en '),
                 enl('Afiliación', 'afiliacion.html'),
                 txt('. Para continuar, la cédula, el nombre completo y el correo tienen que coincidir con los que administración registró.')
             ]);
         }
         if (/9 digitos|cedula de la cita|dimex|que cedula/.test(q)) {
-            return bot('Para continuar con la cita, la página pide una cédula de 9 dígitos. En la boleta de afiliación el campo es el número de cédula.');
+            return bot('Para continuar con la cita, escribí tu cédula de 9 dígitos. Es el mismo número que va en la solicitud de afiliación.');
         }
         if (/que datos (pide|lleva|necesita) (la |una )?cita|que debo poner en la cita|que llena la cita/.test(q)) {
             return bot('La solicitud pide nombre completo, cédula de 9 dígitos, correo, teléfono de 8 dígitos, sede o centro de trabajo y el motivo. La cédula, el nombre y el correo tienen que coincidir con los que administración registró. También hay que elegir un día y una hora.');
         }
         if (/cita presencial|cita virtual|es virtual|es presencial|videollamada|por zoom|por teams/.test(q)) {
-            return bot('La solicitud registra el día y la hora. La página no indica si la cita es presencial o virtual. Para confirmarlo, escribe a sitraina@ina.ac.cr o llama al +506 2220-2480.');
+            return bot('Al pedir la cita elegís si preferís verla en persona o en línea, junto con el día y la hora. Si tenés una duda, escribinos a sitraina@ina.ac.cr o llamá al +506 2220-2480.');
         }
         if (/descargar (el |la )?pdf|pdf de afiliacion|bajar la boleta/.test(q)) {
-            return bot('Al enviar la afiliación, la boleta se manda por correo en un PDF y en la misma página puedes descargarlo. Ese PDF se firma en Gaudi con el certificado digital.');
+            return bot('Al enviar la afiliación, te llega una copia a tu correo y también podés descargarla en la misma página. Esa copia se firma con Gaudi y tu firma digital.');
         }
         if (/ya estoy afiliad|como se si estoy|consultar si estoy afiliad|estado de mi afiliacion/.test(q)) {
             return bot('La página no muestra la lista de afiliados. Al pedir cita sí revisa que la cédula, el nombre completo y el correo coincidan con el registro de administración. Para otra consulta, escribí a sitraina@ina.ac.cr.');
@@ -2296,29 +1934,29 @@ document.addEventListener('DOMContentLoaded', () => {
             return bot('Walia Baltodano Fernández tiene un informe de labores en Documentos, tipo Informes de labores.');
         }
         if (/como (abro|veo|reproduzco) (el |la |un )?video|video de la hoja/.test(q)) {
-            return bot('En la Hoja del Miércoles se abre la edición con un clic. El video se reproduce en ese panel. No hace falta pasar el cursor por encima.');
+            return bot('En la Hoja del Miércoles se abre la edición con un clic. El video se reproduce ahí mismo. No hace falta pasar el cursor por encima.');
         }
 
         /* A partir de aquí siguen las respuestas de afiliación, asesoría, contacto, documentos y Junta. */
         if (/cuota|1 ?%|porcentaje|cuanto cuesta|cuanto se paga|cuanto pagan|cuanto descuent|descuento del salario|deduc/.test(q)) {
-            return bot('La boleta autoriza a Recursos Humanos del INA a deducir el 1% mensual del salario a favor de SITRAINA. La Secretaría de Finanzas administra esas cuotas.');
+            return bot('La solicitud autoriza a Recursos Humanos del INA a deducir el 1% mensual del salario a favor de SITRAINA. La Secretaría de Finanzas administra esas cuotas.');
         }
         if (/gaudi|firma digital|certificado digital/.test(q)) {
-            return bot('Al enviar la afiliación se genera un PDF. Hay que descargarlo y firmarlo en Gaudi con el certificado digital. Sin esa firma, la afiliación no es válida legalmente.');
+            return bot('Al enviar la afiliación te llega una copia para descargar. Hay que firmarla con Gaudi y tu firma digital. Sin esa firma, la afiliación no queda en firme.');
         }
         if (/desafil|darme de baja|salirme|renunciar al sindicato|ya no quiero estar/.test(q)) {
             return bot([
-                txt('Esta página no tiene un formulario para desafiliarse. Escribe a sitraina@ina.ac.cr. La boleta de ingreso está en '),
+                txt('Para dejar el sindicato, escribinos a sitraina@ina.ac.cr. La solicitud de ingreso está en '),
                 enl('Afiliación', 'afiliacion.html'),
                 txt('.')
             ]);
         }
         if (/quien puede|quienes pueden|requisito|no trabajo|no soy del ina|no soy funcionario|estudiante|puedo afiliarme si/.test(q)) {
-            return bot('La afiliación es para personas trabajadoras del INA: instructores, personal administrativo, técnicos y funcionarios. La boleta pide nombre, cédula, correos, fecha de nacimiento, tipo de nombramiento, unidad, centro, puesto y teléfonos.');
+            return bot('La afiliación es para personas trabajadoras del INA: instructores, personal administrativo, técnicos y funcionarios. Te pedimos nombre, cédula, correos, fecha de nacimiento, tipo de nombramiento, unidad, centro, puesto y teléfonos.');
         }
         if (/que gano|para que afil|por que afil|ventaja|beneficio de afil/.test(q)) {
             return bot([
-                txt('Afiliarse es sumarse a la defensa de los derechos laborales del personal del INA. Quien está afiliado recibe apoyo jurídico en temas laborales y puede usar los convenios. La boleta está en '),
+                txt('Afiliarse es sumarse a la defensa de los derechos laborales del personal del INA. Quien está afiliado recibe apoyo jurídico en temas laborales y puede usar los convenios. La solicitud está en '),
                 enl('Afiliación', 'afiliacion.html'),
                 txt(' y los convenios en '),
                 enl('Convenios', 'convenios/convenios.html'),
@@ -2326,13 +1964,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
         }
         if (/secretaria de afiliacion|miguel vargas/.test(q)) {
-            return bot('Las consultas de afiliación se atienden en sitraina@ina.ac.cr. La boleta pública está en Afiliación.');
+            return bot('Las consultas de afiliación se atienden en sitraina@ina.ac.cr. La solicitud está en Afiliación.');
         }
         if (/afili|boleta|inscrib|unirme|hacerme miembro|como me uno/.test(q)) {
             return bot([
-                txt('Completa la boleta en '),
+                txt('Completá la solicitud en '),
                 enl('Afiliación', 'afiliacion.html'),
-                txt('. Pide datos personales, ubicación laboral y teléfonos, y autoriza el 1% mensual del salario. Después hay que firmar el PDF en Gaudi.')
+                txt('. Pide datos personales, ubicación laboral y teléfonos, y autoriza el 1% mensual del salario. Después hay que firmar la copia con Gaudi.')
             ]);
         }
 
@@ -2344,7 +1982,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
         }
         if (/gratis|gratuito|cuesta la asesoria|hay que pagar la cita/.test(q)) {
-            return bot('SITRAINA ofrece apoyo jurídico gratuito a sus personas afiliadas en temas laborales. La cita se pide con día y hora de lunes a viernes.');
+            return bot('SITRAINA ofrece apoyo jurídico gratuito a sus personas afiliadas en temas laborales. La cita se reserva en el calendario, entre hoy y los próximos 15 días, en un horario libre.');
         }
         if (/cita|asesor|abogad|juridic|consulta legal|defensa legal/.test(q)) {
             return bot([
@@ -2352,7 +1990,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 enl('Asesoría', 'asesoria-legal.html'),
                 txt(' o directo en '),
                 enl('solicitar cita', 'solicitar-cita.html'),
-                txt('. Elige un día hábil y una hora entre 7:00 a. m. y 2:00 p. m. La solicitud queda registrada para la asesoría legal.')
+                txt('. Elegís un día disponible de los próximos 15 días, una hora libre y si preferís la cita en persona o en línea. Al confirmar, ese espacio queda reservado para vos.')
             ]);
         }
 
@@ -2366,11 +2004,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return bot('El teléfono de la oficina es +506 2220-2480. También está el WhatsApp +506 8448-1450.');
         }
         if (/direccion|ubicacion|donde queda|donde estan|donde queda|uruca|como llego|mapa/.test(q)) {
-            return bot('La oficina está en Avenida 59, Calle 106, Barrio Finca La Caja, Uruca, San José. Código postal 10107.');
+            return bot('SITRAINA queda en Avenida 59, Calle 106, Barrio Finca La Caja, Uruca, San José. El código postal es 10107.');
         }
         if (/correo|email|e-mail|contact|formulario/.test(q)) {
             return bot([
-                txt('El correo es sitraina@ina.ac.cr. También puedes llamar al +506 2220-2480 o escribir por WhatsApp al +506 8448-1450. El formulario está en '),
+                txt('El correo es sitraina@ina.ac.cr. También podés llamar al +506 2220-2480 o escribir por WhatsApp al +506 8448-1450. Para escribirnos, entrá en '),
                 enl('Contacto', 'contacto.html'),
                 txt('.')
             ]);
@@ -2577,4 +2215,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 450);
     });
 })();
-

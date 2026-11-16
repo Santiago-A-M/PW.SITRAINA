@@ -703,12 +703,43 @@ body.dark-mode .labor-popup .directiva-popup-panel img {
     gap: 12px;
 }
 
-.dato i {
-    font-size: 1.4rem;
-    color: rgba(255, 255, 255, 0.9);
+.dato-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    color: rgba(255, 255, 255, 0.95);
     background: rgba(0, 0, 0, 0.1);
-    padding: 8px;
-    border-radius: 8px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dato-icono i {
+    font-size: 1.25rem;
+    color: inherit;
+    line-height: 1;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dato-icono:hover,
+.dato-icono:focus-visible {
+    transform: translateY(-3px);
+    background: rgba(0, 0, 0, 0.22);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+    color: #ffffff;
+    outline: none;
+}
+
+.dato-icono:hover i,
+.dato-icono:focus-visible i {
+    transform: scale(1.08);
 }
 
 .dato-texto {
@@ -748,27 +779,60 @@ body.dark-mode .labor-popup .directiva-popup-panel img {
 
 .btn-social {
     background: rgba(0, 0, 0, 0.1);
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 10px;
     color: #ffffff;
     font-size: 1.2rem;
     text-decoration: none;
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), background 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-social i {
-    color: #ffffff;
+    color: inherit;
     line-height: 1;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.btn-social:hover {
-    transform: translateY(-4px);
+.btn-social:hover,
+.btn-social:focus-visible {
+    transform: translateY(-3px);
     background: rgba(0, 0, 0, 0.22);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
     color: #ffffff;
+    outline: none;
+}
+
+.btn-social:hover i,
+.btn-social:focus-visible i {
+    transform: scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dato-icono,
+    .dato-icono i,
+    .btn-social,
+    .btn-social i {
+        transition: none;
+    }
+
+    .dato-icono:hover,
+    .dato-icono:focus-visible,
+    .btn-social:hover,
+    .btn-social:focus-visible,
+    .dato-icono:hover i,
+    .dato-icono:focus-visible i,
+    .btn-social:hover i,
+    .btn-social:focus-visible i {
+        transform: none;
+    }
 }
 
 /* --- RESPONSIVO PARA MÓVIL --- */
@@ -2540,12 +2604,20 @@ body.dark-mode a.btn-atras:focus-visible {
     justify-content: center;
     cursor: pointer;
     z-index: 2;
-    transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.cerrar-lightbox:hover {
+.cerrar-lightbox:hover,
+.cerrar-lightbox:focus-visible {
     background: #0072b2;
     color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+    outline: none;
 }
 
 .luz-controles {
@@ -2566,7 +2638,11 @@ body.dark-mode a.btn-atras:focus-visible {
     color: #0a3d5c;
     font: 700 16px/1 "Public Sans", sans-serif;
     cursor: pointer;
-    transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .luz-controles .luz-magnitud {
@@ -2578,9 +2654,13 @@ body.dark-mode a.btn-atras:focus-visible {
     font-size: 15px;
 }
 
-.luz-controles button:hover {
+.luz-controles button:hover:not(:disabled),
+.luz-controles button:focus-visible:not(:disabled) {
     background: #0072b2;
     color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+    outline: none;
 }
 
 .luz-controles button:disabled {
@@ -2591,6 +2671,8 @@ body.dark-mode a.btn-atras:focus-visible {
 .luz-controles button:disabled:hover {
     background: #fff;
     color: #0a3d5c;
+    transform: none;
+    box-shadow: none;
 }
 
 .imagen-noticia img,
@@ -4148,6 +4230,20 @@ body.directiva-abierta > :not(.directiva-popup):not(script) {
   font-size: 1.35rem;
   line-height: 1;
   cursor: pointer;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.directiva-cerrar:hover,
+.directiva-cerrar:focus-visible {
+  background: #e7f2fc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(10, 61, 92, 0.16);
+  outline: none;
 }
 
 .directiva-popup-panel img {
@@ -4587,7 +4683,7 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   inset: 0;
   background: rgba(28, 22, 20, 0.58);
   opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .guia-cita-ventana {
@@ -4600,13 +4696,12 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   box-sizing: border-box;
   padding: 28px 24px 20px;
   border-radius: 22px;
-  border: 1px solid #eadfd8;
-  border-left: 8px solid #0072b2;
+  border: 2px solid #8ec0dc;
   background: #fffdfb;
   box-shadow: 0 24px 60px rgba(28, 22, 20, 0.3);
   opacity: 0;
   transform: translateY(24px) scale(0.96);
-  transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1), transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .guia-cita-visible .guia-cita-fondo {
@@ -4657,6 +4752,19 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   font-size: 1.45rem;
   line-height: 1;
   cursor: pointer;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-cerrar:hover,
+.guia-cita-cerrar:focus-visible {
+  background: #e7f2fc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(10, 61, 92, 0.16);
 }
 
 .guia-cita-progreso {
@@ -4749,6 +4857,18 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-flecha:hover:not(:disabled),
+.guia-cita-flecha:focus-visible:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(10, 61, 92, 0.16);
 }
 
 .guia-cita-flecha svg {
@@ -4782,6 +4902,15 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
+  transition:
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-omitir:hover,
+.guia-cita-omitir:focus-visible {
+  transform: translateY(-2px);
 }
 
 .guia-cita-flecha:focus-visible,
@@ -4808,8 +4937,7 @@ body.dark-mode .cita-guia-abrir-inline:hover {
 
 body.dark-mode .guia-cita-ventana {
   background: #2c2320;
-  border-color: #4a3d38;
-  border-left-color: #0072b2;
+  border-color: #8ec0dc;
   color: #f7f2ee;
 }
 
@@ -4945,7 +5073,12 @@ body.dark-mode .guia-cita-punto.activo {
   border-radius: 8px;
   cursor: pointer;
   font: inherit;
-  transition: background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .cita-nav {
@@ -5014,6 +5147,8 @@ body.dark-mode .guia-cita-punto.activo {
 .cita-hora:hover:not(:disabled),
 .cita-nav:hover {
   border-color: #0072b2;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(10, 61, 92, 0.12);
 }
 
 .cita-dia.elegido,
@@ -5452,26 +5587,31 @@ body.dark-mode .btn-contorno:hover {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 8px;
     min-height: 68px;
     padding: 10px 16px;
+    overflow: visible;
   }
 
-  /* Izquierda: tono. Centro: logo. Derecha: menú. */
-  header.header .acciones-header {
-    display: inline-flex !important;
+  /* Izquierda: logo. Derecha: tono, opciones y menú. */
+  header.header .logo {
     order: 0;
     flex: 0 0 auto;
-    position: static;
-    transform: none;
+    display: flex;
+    justify-content: flex-start;
+    margin: 0;
   }
 
-  header.header .logo {
+  header.header .acciones-header {
+    display: inline-flex !important;
     order: 1;
-    flex: 1 1 auto;
-    display: flex;
-    justify-content: center;
-    margin: 0;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    position: static;
+    transform: none;
   }
 
   header.header .acciones-header .btn-header {
@@ -6500,8 +6640,15 @@ html.daltonico.dark-mode, html.daltonico.dark-mode :root {
 
 /* ===== Remapes extra: Hoja del Miércoles + acentos/bordes rojos sueltos ===== */
 html.daltonico .marca-hoja {
-  border-left-color: #0072b2;
+  border-color: #8ec0dc;
   box-shadow: 0 12px 28px rgba(10, 61, 92, 0.08);
+}
+html.daltonico .bandeja-item.bandeja-item-nuevo,
+html.daltonico body.dark-mode .bandeja-item.bandeja-item-nuevo,
+html.daltonico.dark-mode .bandeja-item.bandeja-item-nuevo,
+html.daltonico .bandeja-item.bandeja-item-nuevo:hover,
+html.daltonico .bandeja-item.bandeja-item-nuevo:focus-visible {
+  border: 2px solid #8ec0dc;
 }
 html.daltonico .hoja-titulo {
   background: #0a3d5c;
@@ -6519,7 +6666,7 @@ html.daltonico .btn-descarga { background: #0072b2; color: #fff !important; }
 html.daltonico .btn-descarga,
 html.daltonico .btn-copiar.copiado { background: #0a3d5c; color: #fff !important; }
 html.daltonico body.dark-mode .marca-hoja,
-html.daltonico.dark-mode .marca-hoja { border-left-color: #0072b2; }
+html.daltonico.dark-mode .marca-hoja { border-color: #8ec0dc; }
 html.daltonico body.dark-mode .hoja-popup-panel h2,
 html.daltonico.dark-mode .hoja-popup-panel h2 { color: #b3dff5; }
 html.daltonico body.dark-mode .hoja-cerrar,
@@ -6956,6 +7103,45 @@ body.dark-mode .pie-pagina p {
   outline-offset: 2px;
 }
 
+html.daltonico .bandeja-accion {
+  background: #0072b2;
+}
+
+html.daltonico .cita-estado-rechazada,
+html.daltonico .cita-estado-cancelada,
+html.daltonico .cita-tachado {
+  color: #0a3d5c;
+}
+
+html.daltonico #vista-mis-citas .cita-estado-rechazada,
+html.daltonico #vista-mis-citas .cita-estado-cancelada,
+html.daltonico #vista-mis-citas .cita-tachado {
+  background: #e7f2fc;
+}
+
+html.daltonico.dark-mode .cita-estado-rechazada,
+html.daltonico.dark-mode .cita-estado-cancelada,
+html.daltonico body.dark-mode .cita-estado-rechazada,
+html.daltonico body.dark-mode .cita-estado-cancelada,
+html.daltonico.dark-mode .cita-tachado,
+html.daltonico body.dark-mode .cita-tachado {
+  color: #d6eeff;
+}
+
+html.daltonico.dark-mode #vista-mis-citas .cita-estado-rechazada,
+html.daltonico.dark-mode #vista-mis-citas .cita-estado-cancelada,
+html.daltonico body.dark-mode #vista-mis-citas .cita-estado-rechazada,
+html.daltonico body.dark-mode #vista-mis-citas .cita-estado-cancelada,
+html.daltonico.dark-mode #vista-mis-citas .cita-tachado,
+html.daltonico body.dark-mode #vista-mis-citas .cita-tachado {
+  background: #1b2836;
+}
+
+html.daltonico .bandeja-accion:hover,
+html.daltonico .bandeja-accion:focus-visible {
+  background: #005a8c;
+}
+
 .bandeja-editado {
   background: #e7f2fc;
   color: #0a3d5c;
@@ -6964,4 +7150,538 @@ body.dark-mode .pie-pagina p {
 body.dark-mode .bandeja-editado {
   background: #24384f;
   color: #b3dff5;
+}
+
+html.daltonico .reserva-ocupada,
+html.daltonico .reserva-muestra.reserva-ocupada {
+  background: #d6e4f0;
+  border-color: #0072b2;
+  color: #0a3d5c;
+}
+html.daltonico body.dark-mode .reserva-ocupada,
+html.daltonico body.dark-mode .reserva-muestra.reserva-ocupada {
+  background: #16324a;
+  border-color: #56b4e9;
+  color: #d6eeff;
+}
+html.daltonico .reserva-paso { color: #0a3d5c; }
+html.daltonico .reserva-paso span,
+html.daltonico .reserva-activo,
+html.daltonico .reserva-activo:hover:not(:disabled),
+html.daltonico .reserva-muestra.reserva-activo {
+  background: var(--color-principal, #0072b2);
+  border-color: var(--color-principal, #0072b2);
+  color: #fff;
+}
+html.daltonico body.dark-mode .reserva-paso { color: #d6eeff; }
+html.daltonico .reserva-disponible,
+html.daltonico .reserva-muestra.reserva-disponible {
+  background: #e7f2fc;
+  border-color: #0072b2;
+  color: #0a3d5c;
+}
+html.daltonico .reserva-no,
+html.daltonico .reserva-pasado,
+html.daltonico .reserva-otro,
+html.daltonico .reserva-fuera,
+html.daltonico .reserva-muestra.reserva-no,
+html.daltonico .reserva-muestra.reserva-pasado,
+html.daltonico .reserva-muestra.reserva-fuera {
+  background: #f4f7fb;
+  border-color: #8ec0dc;
+  color: #5c7e99;
+}
+html.daltonico .reserva-disponible:hover:not(:disabled),
+html.daltonico .reserva-hora:hover:not(:disabled),
+html.daltonico .reserva-modo:hover:not(:disabled),
+html.daltonico .reserva-mes-btn:hover:not(:disabled) {
+  background: #e7f2fc;
+  border-color: #0072b2;
+}
+html.daltonico body.dark-mode .reserva-tarjeta,
+html.daltonico body.dark-mode .reserva-hora,
+html.daltonico body.dark-mode .reserva-modo,
+html.daltonico body.dark-mode .reserva-motivo,
+html.daltonico body.dark-mode .reserva-resumen,
+html.daltonico body.dark-mode .reserva-mes-btn,
+html.daltonico body.dark-mode .reserva-no,
+html.daltonico body.dark-mode .reserva-pasado,
+html.daltonico body.dark-mode .reserva-otro,
+html.daltonico body.dark-mode .reserva-fuera {
+  background: #1b2836;
+  border-color: #3d5f86;
+  color: #9ec3de;
+}
+html.daltonico body.dark-mode .reserva-disponible,
+html.daltonico body.dark-mode .reserva-muestra.reserva-disponible {
+  background: #16324a;
+  border-color: #56b4e9;
+  color: #d6eeff;
+}
+html.daltonico body.dark-mode .reserva-disponible:hover:not(:disabled),
+html.daltonico body.dark-mode .reserva-hora:hover:not(:disabled),
+html.daltonico body.dark-mode .reserva-modo:hover:not(:disabled),
+html.daltonico body.dark-mode .reserva-mes-btn:hover:not(:disabled) {
+  background: #24384f;
+  border-color: #56b4e9;
+}
+html.daltonico .reserva-validacion {
+  background: #e7f2fc;
+  border-color: #0072b2;
+  color: #0a3d5c;
+}
+
+html.daltonico body.dark-mode .reserva-popup-caja,
+html.daltonico body.dark-mode .reserva-dato-fijo,
+html.daltonico body.dark-mode .reserva-btn-sec,
+html.daltonico.dark-mode .reserva-popup-caja,
+html.daltonico.dark-mode .reserva-dato-fijo,
+html.daltonico.dark-mode .reserva-btn-sec {
+  background: #1b2836;
+  border-color: #3d5f86;
+  color: #e8f4fc;
+}
+
+html.daltonico body.dark-mode .reserva-validacion,
+html.daltonico.dark-mode .reserva-validacion {
+  background: #16324a;
+  border-color: #56b4e9;
+  color: #d6eeff;
+}
+
+html.daltonico body.dark-mode .reserva-activo,
+html.daltonico body.dark-mode .reserva-activo:hover:not(:disabled),
+html.daltonico body.dark-mode .reserva-paso span,
+html.daltonico body.dark-mode .reserva-muestra.reserva-activo,
+html.daltonico.dark-mode .reserva-activo,
+html.daltonico.dark-mode .reserva-paso span,
+html.daltonico.dark-mode .reserva-muestra.reserva-activo {
+  background: var(--color-principal, #56b4e9);
+  border-color: var(--color-principal, #56b4e9);
+  color: #062033;
+}
+
+html.daltonico .reserva-cita .reserva-abrir,
+html.daltonico .reserva-cita .reserva-abrir:hover,
+html.daltonico .reserva-cita .reserva-abrir:focus-visible,
+html.daltonico body.dark-mode .reserva-cita .reserva-abrir,
+html.daltonico body.dark-mode .reserva-cita .reserva-abrir:hover,
+html.daltonico body.dark-mode .reserva-cita .reserva-abrir:focus-visible,
+html.daltonico.dark-mode .reserva-cita .reserva-abrir,
+html.daltonico.dark-mode .reserva-cita .reserva-abrir:hover,
+html.daltonico.dark-mode .reserva-cita .reserva-abrir:focus-visible {
+  background: #0072b2 !important;
+  color: #fff !important;
+  box-shadow: 0 14px 30px rgba(10, 61, 92, 0.28);
+}
+
+html.daltonico .reserva-cita .reserva-abrir:hover,
+html.daltonico .reserva-cita .reserva-abrir:focus-visible,
+html.daltonico body.dark-mode .reserva-cita .reserva-abrir:hover,
+html.daltonico body.dark-mode .reserva-cita .reserva-abrir:focus-visible,
+html.daltonico.dark-mode .reserva-cita .reserva-abrir:hover,
+html.daltonico.dark-mode .reserva-cita .reserva-abrir:focus-visible {
+  background: #005f96 !important;
+  color: #fff !important;
+}
+
+html.daltonico .reserva-cita .reserva-abrir-texto strong,
+html.daltonico .reserva-cita .reserva-abrir-texto small,
+html.daltonico body.dark-mode .reserva-cita .reserva-abrir-texto strong,
+html.daltonico body.dark-mode .reserva-cita .reserva-abrir-texto small,
+html.daltonico.dark-mode .reserva-cita .reserva-abrir-texto strong,
+html.daltonico.dark-mode .reserva-cita .reserva-abrir-texto small {
+  color: #fff !important;
+}
+
+html.daltonico .reserva-popup .btn,
+html.daltonico body.dark-mode .reserva-popup .btn,
+html.daltonico.dark-mode .reserva-popup .btn,
+html.daltonico body.dark-mode .reserva-popup .btn:hover,
+html.daltonico.dark-mode .reserva-popup .btn:hover {
+  background: #0072b2 !important;
+  color: #fff !important;
+}
+
+html.daltonico .reserva-popup-caja h2,
+html.daltonico .reserva-indicacion,
+html.daltonico .reserva-dato-fijo span,
+html.daltonico .reserva-dato-fijo strong,
+html.daltonico .reserva-motivo,
+html.daltonico .reserva-motivo-label,
+html.daltonico .reserva-btn-sec,
+html.daltonico .reserva-paso-num,
+html.daltonico .reserva-resumen-kicker {
+  color: #0a3d5c;
+}
+
+html.daltonico .reserva-motivo::placeholder {
+  color: #3d6280;
+}
+
+html.daltonico .reserva-btn-sec {
+  background: #fff;
+  border-color: #8ec0dc;
+}
+
+html.daltonico body.dark-mode .reserva-progreso-item.actual,
+html.daltonico body.dark-mode .reserva-progreso-item.listo,
+html.daltonico.dark-mode .reserva-progreso-item.actual,
+html.daltonico.dark-mode .reserva-progreso-item.listo {
+  background: #56b4e9;
+  color: #062033;
+}
+
+html.daltonico body.dark-mode .reserva-popup-caja h2,
+html.daltonico body.dark-mode .reserva-indicacion,
+html.daltonico body.dark-mode .reserva-dato-fijo span,
+html.daltonico body.dark-mode .reserva-dato-fijo strong,
+html.daltonico body.dark-mode .reserva-motivo-label,
+html.daltonico body.dark-mode .reserva-btn-sec,
+html.daltonico body.dark-mode .reserva-paso-num,
+html.daltonico body.dark-mode .reserva-resumen-kicker,
+html.daltonico.dark-mode .reserva-popup-caja h2,
+html.daltonico.dark-mode .reserva-indicacion,
+html.daltonico.dark-mode .reserva-dato-fijo span,
+html.daltonico.dark-mode .reserva-dato-fijo strong,
+html.daltonico.dark-mode .reserva-motivo-label,
+html.daltonico.dark-mode .reserva-btn-sec,
+html.daltonico.dark-mode .reserva-paso-num,
+html.daltonico.dark-mode .reserva-resumen-kicker {
+  color: #e8f4fc;
+}
+
+html.daltonico body.dark-mode .reserva-popup .reserva-motivo,
+html.daltonico body.dark-mode .reserva-popup textarea,
+html.daltonico body.dark-mode .reserva-popup input:not([type="hidden"]),
+html.daltonico.dark-mode .reserva-popup .reserva-motivo,
+html.daltonico.dark-mode .reserva-popup textarea,
+html.daltonico.dark-mode .reserva-popup input:not([type="hidden"]) {
+  background: #243044 !important;
+  color: #e8f4fc !important;
+  border-color: #3d5f86 !important;
+}
+
+html.daltonico body.dark-mode .reserva-popup .reserva-motivo::placeholder,
+html.daltonico body.dark-mode .reserva-popup textarea::placeholder,
+html.daltonico body.dark-mode .reserva-popup input::placeholder,
+html.daltonico.dark-mode .reserva-popup .reserva-motivo::placeholder,
+html.daltonico.dark-mode .reserva-popup textarea::placeholder,
+html.daltonico.dark-mode .reserva-popup input::placeholder {
+  color: #9ec3de !important;
+}
+
+html.daltonico body.dark-mode .reserva-btn-sec,
+html.daltonico body.dark-mode .reserva-btn-sec:hover,
+html.daltonico body.dark-mode .reserva-btn-sec:focus-visible,
+html.daltonico.dark-mode .reserva-btn-sec,
+html.daltonico.dark-mode .reserva-btn-sec:hover,
+html.daltonico.dark-mode .reserva-btn-sec:focus-visible {
+  background: #1b2836;
+  border-color: #3d5f86;
+  color: #e8f4fc;
+}
+
+html.daltonico body.dark-mode .reserva-btn-sec:hover,
+html.daltonico body.dark-mode .reserva-btn-sec:focus-visible,
+html.daltonico.dark-mode .reserva-btn-sec:hover,
+html.daltonico.dark-mode .reserva-btn-sec:focus-visible {
+  background: #24384f;
+  border-color: #56b4e9;
+}
+
+html.daltonico .cuenta-notas-cuenta {
+  background: #0072b2;
+  color: #fff;
+}
+
+html.daltonico .cuenta-notas-contacto,
+html.daltonico .cuenta-notas-afilacion,
+html.daltonico .cuenta-notas-cita,
+html.daltonico .sit-nota-contacto,
+html.daltonico .sit-nota-afilacion,
+html.daltonico .sit-nota-cita {
+  box-shadow: inset 3px 0 0 #0072b2;
+  border-left-color: #0072b2;
+}
+
+html.daltonico.dark-mode .cuenta-notas-cuenta {
+  background: #56b4e9;
+  color: #062033;
+}
+
+html.daltonico.dark-mode .cuenta-notas-contacto,
+html.daltonico.dark-mode .cuenta-notas-afilacion,
+html.daltonico.dark-mode .cuenta-notas-cita,
+html.daltonico.dark-mode .sit-nota-contacto,
+html.daltonico.dark-mode .sit-nota-afilacion,
+html.daltonico.dark-mode .sit-nota-cita {
+  box-shadow: inset 3px 0 0 #56b4e9;
+  border-left-color: #56b4e9;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-popup-caja {
+  background: #f7fbff;
+  color: #0a3d5c;
+  border: 2px solid #0072b2;
+  box-shadow: 0 24px 56px rgba(10, 61, 92, 0.16);
+}
+
+html.daltonico body:not(.dark-mode) .reserva-popup-caja h2,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-indicacion,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-ayuda,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-dato-fijo,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-dato-fijo span,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-dato-fijo strong,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-motivo-label,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-paso-num,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-exito-titulo,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-exito-texto {
+  color: #0a3d5c;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-popup-cerrar {
+  background: #e7f2fc;
+  color: #0a3d5c;
+  border: 1px solid #0072b2;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-motivo,
+html.daltonico body:not(.dark-mode) .reserva-popup textarea,
+html.daltonico body:not(.dark-mode) .reserva-popup input:not([type="hidden"]),
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-btn-sec,
+html.daltonico body:not(.dark-mode) .reserva-popup .reserva-dato-fijo {
+  background: #fff !important;
+  color: #0a3d5c !important;
+  border-color: #8ec0dc !important;
+}
+
+html.daltonico body.dark-mode .reserva-popup-caja,
+html.daltonico.dark-mode .reserva-popup-caja {
+  background: #1b2836;
+  color: #e8f4fc;
+  border: 2px solid #56b4e9;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.45);
+}
+
+html.daltonico body.dark-mode .reserva-popup-caja h2,
+html.daltonico body.dark-mode .reserva-popup .reserva-indicacion,
+html.daltonico body.dark-mode .reserva-popup .reserva-ayuda,
+html.daltonico body.dark-mode .reserva-popup .reserva-dato-fijo,
+html.daltonico body.dark-mode .reserva-popup .reserva-dato-fijo span,
+html.daltonico body.dark-mode .reserva-popup .reserva-dato-fijo strong,
+html.daltonico body.dark-mode .reserva-popup .reserva-motivo-label,
+html.daltonico body.dark-mode .reserva-popup .reserva-paso-num,
+html.daltonico body.dark-mode .reserva-popup .reserva-exito-titulo,
+html.daltonico body.dark-mode .reserva-popup .reserva-exito-texto,
+html.daltonico.dark-mode .reserva-popup-caja h2 {
+  color: #e8f4fc;
+}
+
+html.daltonico body.dark-mode .reserva-popup-cerrar,
+html.daltonico.dark-mode .reserva-popup-cerrar {
+  background: #243044;
+  color: #d6eeff;
+  border: 1px solid #56b4e9;
+}
+
+html.daltonico body.dark-mode .reserva-popup .reserva-motivo,
+html.daltonico body.dark-mode .reserva-popup textarea,
+html.daltonico body.dark-mode .reserva-popup input:not([type="hidden"]),
+html.daltonico.dark-mode .reserva-popup .reserva-motivo,
+html.daltonico.dark-mode .reserva-popup textarea,
+html.daltonico.dark-mode .reserva-popup input:not([type="hidden"]) {
+  background: #243044 !important;
+  color: #e8f4fc !important;
+  border-color: #3d5f86 !important;
+}
+
+html.daltonico body.dark-mode .reserva-popup .reserva-btn-sec,
+html.daltonico body.dark-mode .reserva-popup .reserva-dato-fijo,
+html.daltonico.dark-mode .reserva-popup .reserva-btn-sec,
+html.daltonico.dark-mode .reserva-popup .reserva-dato-fijo {
+  background: #1b2836;
+  color: #e8f4fc;
+  border-color: #3d5f86;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-disponible,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-disponible {
+  background: #e7f2fc;
+  border: 2px solid #0072b2;
+  box-shadow: 0 0 0 2px rgba(0, 114, 178, 0.35);
+  color: #0a3d5c;
+}
+
+html.daltonico .reserva-caja-calendario .reserva-muestra {
+  box-shadow: none;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-no,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-pasado,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-otro,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-fuera,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-no,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-pasado,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-fuera {
+  background: #f4f7fb;
+  border-color: #8ec0dc;
+  color: #0a3d5c;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-ocupada,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-ocupada {
+  background: #d6e4f0;
+  border-color: #0072b2;
+  color: #0a3d5c;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-no::after,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-pasado::after,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-otro::after,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-fuera::after,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-no::after,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-pasado::after,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-fuera::after {
+  color: #0072b2;
+}
+
+html.daltonico body.dark-mode .reserva-disponible,
+html.daltonico body.dark-mode .reserva-muestra.reserva-disponible,
+html.daltonico.dark-mode .reserva-disponible,
+html.daltonico.dark-mode .reserva-muestra.reserva-disponible {
+  background: #16324a;
+  border: 2px solid #56b4e9;
+  box-shadow: 0 0 0 2px rgba(86, 180, 233, 0.5);
+  color: #d6eeff;
+}
+
+html.daltonico .reserva-caja-calendario .reserva-muestra,
+html.daltonico body.dark-mode .reserva-caja-calendario .reserva-muestra,
+html.daltonico.dark-mode .reserva-caja-calendario .reserva-muestra {
+  box-shadow: none;
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-no,
+html.daltonico body.dark-mode .reserva-dia.reserva-pasado,
+html.daltonico body.dark-mode .reserva-dia.reserva-otro,
+html.daltonico body.dark-mode .reserva-dia.reserva-fuera,
+html.daltonico body.dark-mode .reserva-muestra.reserva-no,
+html.daltonico.dark-mode .reserva-dia.reserva-no,
+html.daltonico.dark-mode .reserva-dia.reserva-pasado,
+html.daltonico.dark-mode .reserva-dia.reserva-otro,
+html.daltonico.dark-mode .reserva-dia.reserva-fuera {
+  background: #121c28;
+  border-color: #3d5f86;
+  color: #d6eeff;
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-ocupada,
+html.daltonico body.dark-mode .reserva-muestra.reserva-ocupada,
+html.daltonico.dark-mode .reserva-dia.reserva-ocupada,
+html.daltonico.dark-mode .reserva-muestra.reserva-ocupada {
+  background: #16324a;
+  border-color: #56b4e9;
+  color: #d6eeff;
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-no::after,
+html.daltonico body.dark-mode .reserva-dia.reserva-pasado::after,
+html.daltonico body.dark-mode .reserva-dia.reserva-otro::after,
+html.daltonico body.dark-mode .reserva-dia.reserva-fuera::after,
+html.daltonico.dark-mode .reserva-dia.reserva-no::after {
+  color: #56b4e9;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-disponible,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-disponible:hover:not(:disabled) {
+  background: #e7f6ec;
+  border: 2px solid #157a40;
+  color: #0b3d22;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-activo,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-activo:hover:not(:disabled),
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-activo {
+  background: #c8efd6;
+  border: 2px solid #2f9d55;
+  color: #0b3d22;
+  box-shadow: 0 0 0 3px rgba(47, 157, 85, 0.28);
+}
+
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-disponible {
+  background: #e7f6ec;
+  border: 2px solid #157a40;
+  color: #0b3d22;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-disponible,
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-disponible:hover:not(:disabled) {
+  box-shadow: 0 0 0 2px rgba(21, 122, 64, 0.35);
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-activo::after {
+  content: none;
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-disponible,
+html.daltonico body.dark-mode .reserva-dia.reserva-disponible:hover:not(:disabled),
+html.daltonico.dark-mode .reserva-dia.reserva-disponible {
+  background: #143526;
+  border: 2px solid #5ee08f;
+  color: #d7ffe6;
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-activo,
+html.daltonico body.dark-mode .reserva-dia.reserva-activo:hover:not(:disabled),
+html.daltonico.dark-mode .reserva-dia.reserva-activo,
+html.daltonico body.dark-mode .reserva-muestra.reserva-activo,
+html.daltonico.dark-mode .reserva-muestra.reserva-activo {
+  background: #1f6b42;
+  border: 2px solid #8ef0b0;
+  color: #f3fff7;
+  box-shadow: 0 0 0 3px rgba(142, 240, 176, 0.35);
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-disponible,
+html.daltonico body.dark-mode .reserva-dia.reserva-disponible:hover:not(:disabled),
+html.daltonico.dark-mode .reserva-dia.reserva-disponible {
+  box-shadow: 0 0 0 2px rgba(94, 224, 143, 0.4);
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-activo::after,
+html.daltonico.dark-mode .reserva-dia.reserva-activo::after {
+  content: none;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-ocupada,
+html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-ocupada {
+  background: #e4e2e0;
+  border-color: #b9b4af;
+  color: #5e5854;
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-ocupada,
+html.daltonico body.dark-mode .reserva-muestra.reserva-ocupada,
+html.daltonico.dark-mode .reserva-dia.reserva-ocupada,
+html.daltonico.dark-mode .reserva-muestra.reserva-ocupada {
+  background: #3a3836;
+  border-color: #8d8884;
+  color: #e4e0dc;
+}
+
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-day-field,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-day-field,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-month-field,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-month-field,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-year-field,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-year-field,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-text,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-text {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
 }

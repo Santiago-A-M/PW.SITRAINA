@@ -22,11 +22,12 @@ function pagina_contacto($tipo, $titulo, $mensaje) {
     echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>' . $tituloSeguro . '</title>';
-    echo '<link rel="stylesheet" href="css/avisos.css?v=1.2">';
+    echo '<link rel="icon" type="image/png" href="img/favicon-logo.png?v=1">';
+    echo '<link rel="stylesheet" href="css/avisos.css?v=1.9">';
     $tipoAviso = ($tipo === 'exito' || $tipo === 'sesion') ? $tipo : 'error';
     echo '</head><body data-sit-aviso="' . $tipoAviso . '" data-sit-titulo="' . $tituloSeguro . '" data-sit-texto="' . $mensajeSeguro . '">';
     echo '<main style="padding:120px 20px"><p><a href="index.html#contacto">Volver al inicio</a></p></main>';
-    echo '<script src="js/avisos.js?v=1.2"></script></body></html>';
+    echo '<script src="js/avisos.js?v=1.3"></script></body></html>';
     exit;
 }
 
@@ -48,11 +49,11 @@ $mensajePlano = html_entity_decode($mensaje, ENT_QUOTES, 'UTF-8');
 $guardado = registrar_contacto_consulta($nombrePlano, $email, $asuntoPlano, $mensajePlano);
 
 if ($guardado) {
-    $detalle = 'Gracias. Tu mensaje quedó en el panel de administración.';
+    $detalle = 'Gracias. Recibimos tu mensaje.';
     if (sitraina_id_si_cuenta_en_formulario([$email])) {
         $detalle .= ' Como ya iniciaste sesión con este correo, la respuesta va a llegar a Mis mensajes.';
     } else {
-        $detalle .= ' Para que la respuesta llegue a Mis mensajes, iniciá sesión y enviá el formulario con el correo de esa cuenta.';
+        $detalle .= ' Para que la respuesta llegue a Mis mensajes, entrá con tu cuenta y usá el correo de esa cuenta.';
     }
     pagina_contacto('exito', '¡Solicitud enviada!', $detalle);
 }

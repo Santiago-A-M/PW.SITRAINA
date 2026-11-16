@@ -4,28 +4,6 @@ require __DIR__ . '/sesion.php';
 
 mysqli_report(MYSQLI_REPORT_OFF);
 
-/* Conecta con la base de administración. null si falta config.php; false si no conecta. */
-function conectar_admin() {
-    $archivo = __DIR__ . '/config.php';
-    if (!is_file($archivo)) {
-        return null;
-    }
-    $config = require $archivo;
-    if (!is_array($config)) {
-        return false;
-    }
-    try {
-        $mysqli = new mysqli($config['host'], $config['usuario'], $config['clave'], $config['nombre']);
-    } catch (Throwable $e) {
-        return false;
-    }
-    if ($mysqli->connect_errno) {
-        return false;
-    }
-    $mysqli->set_charset('utf8mb4');
-    return $mysqli;
-}
-
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = (string) ($_POST['token'] ?? '');
@@ -35,9 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $esSitraina = ($cuenta === 'sitraina@ina.ac.cr');
 
     if (!hash_equals(token_admin(), $token)) {
-        $error = 'Vuelve a enviar el formulario.';
+        $error = 'Volvé a intentarlo desde esta página.';
     } elseif ($fallos >= 8) {
-        $error = 'Demasiados intentos. Espera un momento y vuelve a probar.';
+        $error = 'Demasiados intentos. Esperá un momento y volvé a probar.';
     } elseif ($cuenta === '' || strlen($cuenta) > 120) {
         $_SESSION['admin_fallos'] = $fallos + 1;
         $error = 'Cuenta o cédula incorrectos.';
@@ -47,11 +25,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $mysqli = conectar_admin();
         if ($mysqli === null) {
-            $error = 'Falta admin/config.php en el servidor.';
+            $error = 'No pudimos entrar en este momento. Intentá más tarde.';
         } elseif ($mysqli === false) {
-            $error = 'No se pudo conectar con la base de administración.';
+            $error = 'No pudimos conectar en este momento. Intentá más tarde.';
         } else {
-            if ($esSitraina) {
+            $conRol = asegurar_rol_admin($mysqli);
+            if ($conRol && $esSitraina) {
+                $consulta = $mysqli->prepare(
+                    'SELECT cedula, rol FROM Admin_Info WHERE cuenta = ? AND activo = 1 LIMIT 1'
+                );
+                if ($consulta) {
+                    $consulta->bind_param('s', $cuenta);
+                }
+            } elseif ($conRol) {
+                $consulta = $mysqli->prepare(
+                    'SELECT cedula, rol FROM Admin_Info WHERE cuenta = ? AND cedula = ? AND activo = 1 LIMIT 1'
+                );
+                if ($consulta) {
+                    $consulta->bind_param('ss', $cuenta, $cedula);
+                }
+            } elseif ($esSitraina) {
                 $consulta = $mysqli->prepare(
                     'SELECT cedula FROM Admin_Info WHERE cuenta = ? AND activo = 1 LIMIT 1'
                 );
@@ -68,20 +61,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             if (!$consulta) {
                 $mysqli->close();
-                $error = 'No se pudo revisar la cuenta. Confirma que la tabla Admin_Info existe.';
+                $error = 'No pudimos revisar la cuenta en este momento. Intentá más tarde.';
             } else {
                 $consulta->execute();
-                $consulta->bind_result($cedulaGuardada);
+                $cedulaGuardada = '';
+                $rolGuardado = 'admin';
+                if ($conRol) {
+                    $consulta->bind_result($cedulaGuardada, $rolGuardado);
+                } else {
+                    $consulta->bind_result($cedulaGuardada);
+                }
                 $hay = $consulta->fetch();
                 $consulta->close();
                 $mysqli->close();
-                if (!$hay) {
+                if (!$hay || (string) $rolGuardado === 'abogado') {
                     $_SESSION['admin_fallos'] = $fallos + 1;
                     $error = 'Cuenta o cédula incorrectos.';
                 } else {
                     session_regenerate_id(true);
                     $_SESSION['admin_usuario'] = $esSitraina ? 'sitraina@ina.ac.cr' : $cedula;
                     $_SESSION['admin_cuenta'] = $cuenta;
+                    $_SESSION['admin_rol'] = 'admin';
                     if (!$esSitraina) {
                         $_SESSION['admin_cedula'] = $cedula;
                     } else {
@@ -89,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     $_SESSION['admin_fallos'] = 0;
                     $_SESSION['admin_token'] = bin2hex(random_bytes(16));
+                    unset($_SESSION['legal_ingreso']);
                     header('Location: index.php');
                     exit;
                 }
@@ -97,11 +98,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if (!empty($_SESSION['admin_usuario'])) {
+if (empty($_SESSION['legal_ingreso']) && !empty($_SESSION['admin_usuario'])) {
+    $rolIngreso = rol_personal_admin();
+    if ($rolIngreso === '') {
+        $_SESSION = [];
+    }
+}
+if (empty($_SESSION['legal_ingreso']) && !empty($_SESSION['admin_usuario']) && (string) ($_SESSION['admin_rol'] ?? '') === 'admin') {
     $etiqueta = !empty($_SESSION['admin_cuenta']) ? $_SESSION['admin_cuenta'] : $_SESSION['admin_usuario'];
     vista('panel.html', [
         'usuario' => 'Sesión de ' . $etiqueta . '.',
         'token' => token_admin(),
+        'rol-clase' => '',
     ]);
     exit;
 }

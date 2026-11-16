@@ -705,12 +705,43 @@ body.dark-mode .labor-popup .directiva-popup-panel img {
     gap: 12px;
 }
 
-.dato i {
-    font-size: 1.4rem;
-    color: rgba(255, 255, 255, 0.9);
+.dato-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    color: rgba(255, 255, 255, 0.95);
     background: rgba(0, 0, 0, 0.1);
-    padding: 8px;
-    border-radius: 8px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dato-icono i {
+    font-size: 1.25rem;
+    color: inherit;
+    line-height: 1;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dato-icono:hover,
+.dato-icono:focus-visible {
+    transform: translateY(-3px);
+    background: rgba(0, 0, 0, 0.22);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+    color: #ffffff;
+    outline: none;
+}
+
+.dato-icono:hover i,
+.dato-icono:focus-visible i {
+    transform: scale(1.08);
 }
 
 .dato-texto {
@@ -750,27 +781,60 @@ body.dark-mode .labor-popup .directiva-popup-panel img {
 
 .btn-social {
     background: rgba(0, 0, 0, 0.1);
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 10px;
     color: #ffffff;
     font-size: 1.2rem;
     text-decoration: none;
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), background 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-social i {
-    color: #ffffff;
+    color: inherit;
     line-height: 1;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.btn-social:hover {
-    transform: translateY(-4px);
+.btn-social:hover,
+.btn-social:focus-visible {
+    transform: translateY(-3px);
     background: rgba(0, 0, 0, 0.22);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
     color: #ffffff;
+    outline: none;
+}
+
+.btn-social:hover i,
+.btn-social:focus-visible i {
+    transform: scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dato-icono,
+    .dato-icono i,
+    .btn-social,
+    .btn-social i {
+        transition: none;
+    }
+
+    .dato-icono:hover,
+    .dato-icono:focus-visible,
+    .btn-social:hover,
+    .btn-social:focus-visible,
+    .dato-icono:hover i,
+    .dato-icono:focus-visible i,
+    .btn-social:hover i,
+    .btn-social:focus-visible i {
+        transform: none;
+    }
 }
 
 /* --- RESPONSIVO PARA MÓVIL --- */
@@ -1168,8 +1232,13 @@ body.dark-mode .labor-popup .directiva-popup-panel img {
 }
 
 .hero-servicios .btn {
-  margin-top: 22px;
+  margin-top: 26px;
   z-index: 2;
+  padding: 16px 36px;
+  border-radius: 999px;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }
 
 .hero-servicios p {
@@ -2542,12 +2611,20 @@ body.dark-mode a.btn-atras:focus-visible {
     justify-content: center;
     cursor: pointer;
     z-index: 2;
-    transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.cerrar-lightbox:hover {
+.cerrar-lightbox:hover,
+.cerrar-lightbox:focus-visible {
     background: #c81d25;
     color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+    outline: none;
 }
 
 .luz-controles {
@@ -2568,7 +2645,11 @@ body.dark-mode a.btn-atras:focus-visible {
     color: #6e1218;
     font: 700 16px/1 "Public Sans", sans-serif;
     cursor: pointer;
-    transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .luz-controles .luz-magnitud {
@@ -2580,9 +2661,13 @@ body.dark-mode a.btn-atras:focus-visible {
     font-size: 15px;
 }
 
-.luz-controles button:hover {
+.luz-controles button:hover:not(:disabled),
+.luz-controles button:focus-visible:not(:disabled) {
     background: #c81d25;
     color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+    outline: none;
 }
 
 .luz-controles button:disabled {
@@ -2593,6 +2678,8 @@ body.dark-mode a.btn-atras:focus-visible {
 .luz-controles button:disabled:hover {
     background: #fff;
     color: #6e1218;
+    transform: none;
+    box-shadow: none;
 }
 
 .imagen-noticia img,
@@ -4152,6 +4239,20 @@ body.directiva-abierta > :not(.directiva-popup):not(script) {
   font-size: 1.35rem;
   line-height: 1;
   cursor: pointer;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.directiva-cerrar:hover,
+.directiva-cerrar:focus-visible {
+  background: #fff4f2;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(110, 18, 24, 0.16);
+  outline: none;
 }
 
 .directiva-popup-panel img {
@@ -4420,6 +4521,481 @@ body.dark-mode .pagina-cita .contenedor {
   line-height: 1.5;
 }
 
+.reserva-cita {
+  margin: 18px auto 0;
+  max-width: 560px;
+}
+
+.reserva-tarjeta {
+  padding: 18px 16px 20px;
+  border: 1px solid #eadfd8;
+  border-radius: 16px;
+  background: #fffdfb;
+  box-shadow: 0 8px 22px rgba(43, 33, 31, 0.05);
+}
+
+.reserva-estado,
+.reserva-para,
+.reserva-rango {
+  text-align: center;
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.reserva-paso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 8px;
+  font-weight: 700;
+  color: var(--color-principal, #c81d25);
+}
+
+.reserva-paso span {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-principal, #c81d25);
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.reserva-nav {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+
+.reserva-mes-titulo {
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #2b211f;
+}
+
+.reserva-mes-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e4d5ce;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-principal, #c81d25);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reserva-mes-btn:hover:not(:disabled),
+.reserva-mes-btn:focus-visible:not(:disabled) {
+  background: #fff6f6;
+  border-color: var(--color-principal, #c81d25);
+}
+
+.reserva-mes-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.reserva-semana,
+.reserva-dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.reserva-semana {
+  margin-bottom: 6px;
+}
+
+.reserva-semana span {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6d5c56;
+}
+
+.reserva-dias-entra {
+  animation: reserva-mes 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes reserva-mes {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+.reserva-dia,
+.reserva-hora,
+.reserva-modo {
+  margin: 0;
+  border: 1px solid #e4d5ce;
+  border-radius: 12px;
+  background: #fff;
+  color: #2b211f;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reserva-dia {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 1;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #e4d5ce;
+  color: #8a7c76;
+}
+
+.reserva-dia strong {
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.reserva-disponible {
+  background: #e7f6ec;
+  border-color: #1f8a4c;
+  color: #0f5c32;
+}
+
+.reserva-disponible:hover:not(:disabled),
+.reserva-disponible:focus-visible:not(:disabled) {
+  background: #d4f0dc;
+  border-color: #157a40;
+}
+
+.reserva-ocupada {
+  background: #f3e4d8;
+  border-color: #c4a48a;
+  color: #5c3b28;
+  cursor: not-allowed;
+}
+
+.reserva-ocupada strong {
+  text-decoration: none;
+}
+
+.reserva-no,
+.reserva-pasado,
+.reserva-otro,
+.reserva-fuera {
+  background: #f6f1ee;
+  border-color: #e4d5ce;
+  color: #a89890;
+  cursor: not-allowed;
+}
+
+.reserva-no strong,
+.reserva-pasado strong,
+.reserva-otro strong,
+.reserva-fuera strong {
+  text-decoration: none;
+}
+
+.reserva-hora,
+.reserva-modo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+}
+
+.reserva-hora {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reserva-hora small {
+  font-size: 0.72rem;
+  line-height: 1.15;
+}
+
+.reserva-hora:disabled {
+  opacity: 0.5;
+}
+
+.reserva-horas,
+.reserva-modalidades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.reserva-hora:hover:not(:disabled),
+.reserva-modo:hover:not(:disabled),
+.reserva-hora:focus-visible:not(:disabled),
+.reserva-modo:focus-visible:not(:disabled) {
+  border-color: var(--color-principal, #c81d25);
+  background: #fff6f6;
+}
+
+.reserva-hora:disabled,
+.reserva-dia:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.reserva-activo,
+.reserva-activo:hover:not(:disabled),
+.reserva-activo:focus-visible:not(:disabled) {
+  background: var(--color-principal, #c81d25);
+  border-color: var(--color-principal, #c81d25);
+  color: #fff;
+}
+
+.reserva-activo small {
+  color: #fff;
+}
+
+.reserva-mes-btn:focus-visible,
+.reserva-dia:focus-visible,
+.reserva-hora:focus-visible,
+.reserva-modo:focus-visible,
+.reserva-motivo:focus {
+  outline: 2px solid var(--color-principal, #c81d25);
+  outline-offset: 2px;
+}
+
+.reserva-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #6d5c56;
+  font-size: 0.82rem;
+}
+
+.reserva-leyenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reserva-muestra {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  border: 1px solid #e4d5ce;
+  background: #fff;
+  font-style: normal;
+}
+
+.reserva-muestra.reserva-ocupada {
+  background: #f3e4d8;
+  border-color: #c4a48a;
+}
+
+.reserva-muestra.reserva-disponible {
+  background: #e7f6ec;
+  border-color: #1f8a4c;
+}
+
+.reserva-muestra.reserva-no,
+.reserva-muestra.reserva-pasado,
+.reserva-muestra.reserva-fuera {
+  background: #f6f1ee;
+  border-color: #e4d5ce;
+}
+
+.reserva-muestra.reserva-activo {
+  background: var(--color-principal, #c81d25);
+  border-color: var(--color-principal, #c81d25);
+}
+
+.reserva-motivo-label {
+  display: block;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.reserva-motivo {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 120px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #e4d5ce;
+  border-radius: 12px;
+  background: #fff;
+  color: #2b211f;
+  font: inherit;
+  line-height: 1.45;
+  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reserva-motivo::placeholder {
+  color: #8a7c76;
+}
+
+.reserva-seguir,
+.reserva-confirmar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.reserva-seguir:hover,
+.reserva-confirmar:hover,
+.reserva-seguir:focus-visible,
+.reserva-confirmar:focus-visible {
+  transform: none;
+}
+
+.reserva-resumen {
+  margin-top: 18px;
+  padding: 18px 18px 8px;
+  border: 1px solid #eadfd8;
+  border-radius: 16px;
+  background: #fffaf8;
+}
+
+.reserva-resumen p {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+
+.reserva-resumen span {
+  color: #6b5c56;
+}
+
+.reserva-resumen strong {
+  text-align: right;
+}
+
+body.dark-mode .reserva-tarjeta,
+body.dark-mode .reserva-hora,
+body.dark-mode .reserva-modo,
+body.dark-mode .reserva-motivo,
+body.dark-mode .reserva-resumen,
+body.dark-mode .reserva-mes-btn {
+  background: #1c1614;
+  border-color: #4a3d38;
+  color: #f6f0ec;
+}
+
+body.dark-mode .reserva-disponible {
+  background: #143526;
+  border-color: #3dce7a;
+  color: #d7ffe6;
+}
+
+body.dark-mode .reserva-disponible:hover:not(:disabled),
+body.dark-mode .reserva-disponible:focus-visible:not(:disabled) {
+  background: #1c4a34;
+  border-color: #5ee08f;
+}
+
+body.dark-mode .reserva-semana span,
+body.dark-mode .reserva-rango,
+body.dark-mode .reserva-leyenda,
+body.dark-mode .reserva-resumen span,
+body.dark-mode .reserva-motivo::placeholder {
+  color: #d9cdc6;
+}
+
+body.dark-mode .reserva-mes-titulo,
+body.dark-mode .reserva-paso {
+  color: #f7f2ee;
+}
+
+body.dark-mode .reserva-paso span,
+body.dark-mode .reserva-activo,
+body.dark-mode .reserva-activo:hover:not(:disabled),
+body.dark-mode .reserva-muestra.reserva-activo {
+  background: var(--color-principal, #c81d25);
+  border-color: var(--color-principal, #c81d25);
+  color: #fff;
+}
+
+body.dark-mode .reserva-fuera {
+  background: #241c1a;
+  border-color: #4a3d38;
+  color: #a89890;
+}
+
+body.dark-mode .reserva-ocupada,
+body.dark-mode .reserva-muestra.reserva-ocupada {
+  background: #3a2a22;
+  border-color: #c4a48a;
+  color: #f3d7c4;
+}
+
+body.dark-mode .reserva-no,
+body.dark-mode .reserva-pasado,
+body.dark-mode .reserva-otro,
+body.dark-mode .reserva-fuera {
+  background: #241c1a;
+  border-color: #4a3d38;
+  color: #a89890;
+}
+
+body.dark-mode .reserva-hora:hover:not(:disabled),
+body.dark-mode .reserva-modo:hover:not(:disabled),
+body.dark-mode .reserva-mes-btn:hover:not(:disabled) {
+  background: #2c2320;
+  border-color: #e7b0ae;
+}
+
+body.dark-mode .reserva-disponible:hover:not(:disabled) {
+  background: #1c4a34;
+  border-color: #5ee08f;
+}
+
+@media (max-width: 640px) {
+  .reserva-tarjeta {
+    padding: 14px 10px 16px;
+  }
+
+  .reserva-semana,
+  .reserva-dias {
+    gap: 4px;
+  }
+
+  .reserva-dia strong {
+    font-size: 0.85rem;
+  }
+
+  .reserva-hora,
+  .reserva-modo {
+    flex: 1 1 calc(50% - 10px);
+  }
+}
+
+@media (max-width: 420px) {
+  .reserva-horas,
+  .reserva-modalidades {
+    flex-direction: column;
+  }
+
+  .reserva-hora,
+  .reserva-modo {
+    width: 100%;
+  }
+}
+
 .cita-guia-llamada {
   text-align: center;
   margin: 12px auto 0;
@@ -4591,7 +5167,7 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   inset: 0;
   background: rgba(28, 22, 20, 0.58);
   opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .guia-cita-ventana {
@@ -4604,13 +5180,12 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   box-sizing: border-box;
   padding: 28px 24px 20px;
   border-radius: 22px;
-  border: 1px solid #eadfd8;
-  border-left: 8px solid #c81d25;
+  border: 2px solid #e3a4a7;
   background: #fffdfb;
   box-shadow: 0 24px 60px rgba(28, 22, 20, 0.3);
   opacity: 0;
   transform: translateY(24px) scale(0.96);
-  transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1), transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .guia-cita-visible .guia-cita-fondo {
@@ -4661,6 +5236,19 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   font-size: 1.45rem;
   line-height: 1;
   cursor: pointer;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-cerrar:hover,
+.guia-cita-cerrar:focus-visible {
+  background: #fff4f2;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(110, 18, 24, 0.16);
 }
 
 .guia-cita-progreso {
@@ -4753,6 +5341,18 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-flecha:hover:not(:disabled),
+.guia-cita-flecha:focus-visible:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(110, 18, 24, 0.16);
 }
 
 .guia-cita-flecha svg {
@@ -4786,6 +5386,15 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
+  transition:
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guia-cita-omitir:hover,
+.guia-cita-omitir:focus-visible {
+  transform: translateY(-2px);
 }
 
 .guia-cita-flecha:focus-visible,
@@ -4812,8 +5421,7 @@ body.dark-mode .cita-guia-abrir-inline:hover {
 
 body.dark-mode .guia-cita-ventana {
   background: #2c2320;
-  border-color: #4a3d38;
-  border-left-color: #c81d25;
+  border-color: #e3a4a7;
   color: #f7f2ee;
 }
 
@@ -4914,7 +5522,7 @@ body.dark-mode .guia-cita-punto.activo {
 
 .cita-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 28px;
   align-items: start;
 }
@@ -4949,7 +5557,12 @@ body.dark-mode .guia-cita-punto.activo {
   border-radius: 8px;
   cursor: pointer;
   font: inherit;
-  transition: background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .cita-nav {
@@ -5018,6 +5631,8 @@ body.dark-mode .guia-cita-punto.activo {
 .cita-hora:hover:not(:disabled),
 .cita-nav:hover {
   border-color: #c81d25;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(110, 18, 24, 0.12);
 }
 
 .cita-dia.elegido,
@@ -5345,6 +5960,32 @@ body.cita-bloqueada {
   overflow: hidden;
 }
 
+.formulario-sin-cuenta :is(input, textarea, select):not([type="hidden"]):not([type="file"]):not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([name="_honey"]),
+.formulario-ya-afiliado :is(input, textarea, select):not([type="hidden"]):not([type="file"]):not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([name="_honey"]) {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.formulario-sin-cuenta :is(input, textarea, select):not([type="hidden"]):not([name="_honey"])::placeholder,
+.formulario-ya-afiliado :is(input, textarea, select):not([type="hidden"]):not([name="_honey"])::placeholder {
+  text-decoration: line-through;
+}
+
+.formulario-sin-cuenta :is(button, input[type="submit"]),
+.formulario-ya-afiliado :is(button, input[type="submit"]) {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.formulario-sin-cuenta :is(.reserva-dia, .reserva-mes-btn, .reserva-hora, .reserva-modo, .reserva-abrir) {
+  pointer-events: auto;
+  opacity: 1;
+}
+
 body.dark-mode .cita-puerta-panel {
   background: #2c2320;
   color: #f7f2ee;
@@ -5456,26 +6097,31 @@ body.dark-mode .btn-contorno:hover {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 8px;
     min-height: 68px;
     padding: 10px 16px;
+    overflow: visible;
   }
 
-  /* Izquierda: tono. Centro: logo. Derecha: menú. */
-  header.header .acciones-header {
-    display: inline-flex !important;
+  /* Izquierda: logo. Derecha: tono, opciones y menú. */
+  header.header .logo {
     order: 0;
     flex: 0 0 auto;
-    position: static;
-    transform: none;
+    display: flex;
+    justify-content: flex-start;
+    margin: 0;
   }
 
-  header.header .logo {
+  header.header .acciones-header {
+    display: inline-flex !important;
     order: 1;
-    flex: 1 1 auto;
-    display: flex;
-    justify-content: center;
-    margin: 0;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    position: static;
+    transform: none;
   }
 
   header.header .acciones-header .btn-header {
@@ -6641,13 +7287,32 @@ html.daltonico textarea::placeholder {
   pointer-events: none;
   transform: translateY(-8px) scale(0.98);
   transform-origin: top right;
-  transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s;
+  transition:
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.45s;
 }
 .nav-opciones.abierto .nav-opciones-menu {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: none;
+}
+@media (max-width: 768px) {
+  header.header .nav-opciones {
+    position: static;
+  }
+
+  header.header .nav-opciones-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 12px;
+    left: auto;
+    width: min(280px, calc(100% - 24px));
+    max-height: min(70vh, calc(100dvh - 96px));
+    overflow-y: auto;
+    z-index: 6;
+  }
 }
 .nav-opciones-item[hidden] {
   display: none !important;
@@ -6669,6 +7334,10 @@ html.daltonico textarea::placeholder {
   text-align: left;
   cursor: pointer;
   box-sizing: border-box;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .nav-opciones-item:hover,
 .nav-opciones-item:focus-visible {
@@ -6687,6 +7356,11 @@ html.daltonico textarea::placeholder {
   color: #c81d25;
   font-size: 0.8rem;
   font-weight: 800;
+}
+.nav-opciones-item-icono svg {
+  width: 14px;
+  height: 14px;
+  display: block;
 }
 .nav-opciones-item.activo {
   background: rgba(200, 29, 37, 0.14);
@@ -6933,7 +7607,13 @@ html.daltonico.dark-mode .nav-opciones-item-icono {
 .cuenta-caja {
   max-width: 640px;
   margin: 0 auto;
-  padding: 24px 0 48px;
+  padding: 36px 32px 40px;
+}
+
+@media (max-width: 640px) {
+  .cuenta-caja {
+    padding: 28px 22px 32px;
+  }
 }
 
 .cuenta-aviso-error {
@@ -6964,8 +7644,8 @@ html.daltonico.dark-mode .nav-opciones-item-icono {
   cursor: pointer;
 }
 
-.bandeja-item-nuevo {
-  box-shadow: inset 3px 0 0 #8e1a20;
+.bandeja-item.bandeja-item-nuevo {
+  border: 2px solid #e3a4a7;
 }
 
 .bandeja-icono {
@@ -7056,6 +7736,12 @@ body.dark-mode .bandeja-item {
   border-color: #3a4a5c;
 }
 
+body.dark-mode .bandeja-item.bandeja-item-nuevo,
+body.dark-mode .bandeja-item.bandeja-item-nuevo:hover,
+body.dark-mode .bandeja-item.bandeja-item-nuevo:focus-visible {
+  border-color: #e3a4a7;
+}
+
 body.dark-mode .bandeja-detalle {
   background: #1b2836;
 }
@@ -7113,6 +7799,11 @@ body.dark-mode .bandeja-detalle {
   outline: none;
 }
 
+.bandeja-item.bandeja-item-nuevo:hover,
+.bandeja-item.bandeja-item-nuevo:focus-visible {
+  border-color: #e3a4a7;
+}
+
 .bandeja-item-asunto {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -7129,7 +7820,7 @@ body.dark-mode .bandeja-detalle {
   place-items: center;
   padding: 20px;
   background: rgba(18, 40, 72, 0.5);
-  animation: bandeja-fondo 0.22s ease;
+  animation: bandeja-fondo 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .bandeja-popup[hidden] {
@@ -7146,7 +7837,7 @@ body.dark-mode .bandeja-detalle {
   background: #fff;
   color: #16324f;
   box-shadow: 0 24px 60px rgba(18, 40, 72, 0.28);
-  animation: bandeja-entra 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: bandeja-entra 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .bandeja-popup-cerrar {
@@ -7162,6 +7853,18 @@ body.dark-mode .bandeja-detalle {
   font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bandeja-popup-cerrar:hover,
+.bandeja-popup-cerrar:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(18, 48, 86, 0.16);
+  outline: none;
 }
 
 .bandeja-popup-caja h3 {
@@ -7201,12 +7904,295 @@ body.dark-mode .bandeja-popup .bandeja-cuerpo {
   background: #243044;
 }
 
+.bandeja-plazo {
+  margin: 16px 0 0;
+  line-height: 1.5;
+}
+
+.bandeja-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.bandeja-accion {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: #c81d25;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bandeja-accion:hover,
+.bandeja-accion:focus-visible {
+  background: #a3161d;
+  outline: none;
+}
+
+#vista-mis-citas.pagina-contacto {
+  display: block;
+  max-width: 1040px;
+  margin: 120px auto 64px;
+  padding: 0 20px;
+}
+
+#vista-mis-citas .cuenta-citas.seccion-formulario {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 28px 40px;
+}
+
+#vista-mis-citas .cuenta-citas h2,
+#vista-mis-citas #citas-intro {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#vista-mis-citas #citas-intro {
+  max-width: 40rem;
+  margin-bottom: 8px;
+}
+
+#vista-mis-citas .vacio-bloque {
+  margin: 28px auto 8px;
+  max-width: 28rem;
+  padding: 28px 20px;
+  text-align: center;
+  border: 1px dashed #b7d4f2;
+  border-radius: 16px;
+  background: #f7fbff;
+}
+
+#vista-mis-citas .cita-grupo {
+  width: 100%;
+  margin-top: 28px;
+}
+
+#vista-mis-citas .cita-grupo h3 {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+#vista-mis-citas .cita-grupo-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+#vista-mis-citas .cita-tarjeta {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  padding: 18px 18px 16px;
+}
+
+#vista-mis-citas .cita-tarjeta p {
+  margin-bottom: 8px;
+  color: inherit;
+}
+
+#vista-mis-citas .cita-tarjeta-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+#vista-mis-citas .cita-estado {
+  align-self: flex-start;
+  margin: 0 0 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef2f7;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+#vista-mis-citas .cita-estado-aprobada { background: #e7f6ee; }
+#vista-mis-citas .cita-estado-rechazada,
+#vista-mis-citas .cita-estado-cancelada { background: #fff0ee; }
+#vista-mis-citas .cita-tachado { background: #f3f4f6; }
+
+#vista-mis-citas .cita-cuando {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #1c1614;
+}
+
+#vista-mis-citas .cita-hora-texto {
+  display: block;
+  margin-top: 2px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+#vista-mis-citas .cita-dato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+#vista-mis-citas .bandeja-acciones {
+  margin-top: auto;
+  padding-top: 8px;
+  justify-content: flex-start;
+}
+
+#vista-mis-citas .bandeja-accion {
+  min-height: 44px;
+}
+
+body.dark-mode #vista-mis-citas .vacio-bloque {
+  background: #1c2836;
+  border-color: #3d5f86;
+  color: #e8f4fc;
+}
+
+body.dark-mode #vista-mis-citas .cita-cuando { color: #f7f2ee; }
+
+body.dark-mode #vista-mis-citas .cita-estado { background: #243044; }
+body.dark-mode #vista-mis-citas .cita-estado-aprobada { background: #163528; }
+body.dark-mode #vista-mis-citas .cita-estado-rechazada,
+body.dark-mode #vista-mis-citas .cita-estado-cancelada,
+body.dark-mode #vista-mis-citas .cita-tachado { background: #3a241c; }
+
+@media (max-width: 720px) {
+  #vista-mis-citas.pagina-contacto {
+    margin-top: 100px;
+    padding: 0 14px;
+  }
+
+  #vista-mis-citas .cuenta-citas.seccion-formulario {
+    padding: 24px 16px 32px;
+  }
+}
+
+.cita-grupo {
+  margin-top: 22px;
+}
+
+.cita-grupo h3 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+}
+
+.cita-tarjeta {
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid #b7d4f2;
+  border-radius: 16px;
+  background: #f7fbff;
+  animation: bandeja-entra 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cita-estado {
+  margin: 0 0 8px;
+  font-weight: 800;
+}
+
+.cita-estado-aprobada { color: #0d6b3a; }
+.cita-estado-rechazada,
+.cita-estado-cancelada { color: #8e1a20; }
+
+.cita-tachado {
+  letter-spacing: 0.06em;
+  text-decoration: line-through;
+}
+
+.cita-etiqueta {
+  font-weight: 700;
+}
+
+.cita-nota-vigente,
+.citas-reloj {
+  margin: 12px 0 0;
+  line-height: 1.45;
+}
+
+.citas-reloj-etiqueta {
+  display: block;
+  font-weight: 700;
+}
+
+.citas-restante {
+  display: block;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+body.dark-mode .cita-tarjeta {
+  background: #1c2836;
+  border-color: #3d5f86;
+  color: #e8f4fc;
+}
+
+body.dark-mode .cita-estado-aprobada { color: #8ee0b0; }
+body.dark-mode .cita-estado-rechazada,
+body.dark-mode .cita-estado-cancelada,
+body.dark-mode .cita-tachado { color: #ffc4bc; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cita-tarjeta { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bandeja-item,
   .bandeja-popup,
-  .bandeja-popup-caja {
+  .bandeja-popup-caja,
+  .bandeja-popup-cerrar,
+  .directiva-cerrar,
+  .guia-cita-flecha,
+  .guia-cita-omitir,
+  .guia-cita-cerrar,
+  .cerrar-lightbox,
+  .luz-controles button,
+  .reserva-dias,
+  .reserva-dia,
+  .reserva-hora,
+  .reserva-modo,
+  .cita-nav,
+  .cita-dia,
+  .cita-hora,
+  .nav-opciones-item {
     transition: none;
     animation: none;
+  }
+
+  .bandeja-popup-cerrar:hover,
+  .bandeja-popup-cerrar:focus-visible,
+  .directiva-cerrar:hover,
+  .directiva-cerrar:focus-visible,
+  .guia-cita-flecha:hover,
+  .guia-cita-flecha:focus-visible,
+  .guia-cita-omitir:hover,
+  .guia-cita-omitir:focus-visible,
+  .guia-cita-cerrar:hover,
+  .guia-cita-cerrar:focus-visible,
+  .cerrar-lightbox:hover,
+  .cerrar-lightbox:focus-visible,
+  .luz-controles button:hover,
+  .reserva-dia:hover,
+  .reserva-hora:hover,
+  .reserva-modo:hover,
+  .cita-nav:hover,
+  .cita-dia:hover,
+  .cita-hora:hover {
+    transform: none;
   }
 }
 
@@ -7229,4 +8215,1112 @@ body.dark-mode .bandeja-popup .bandeja-cuerpo {
   ):not([hidden]):not([name="_honey"]) {
     transition: none;
   }
+}
+
+.reserva-cita {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.reserva-abrir {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  width: min(100%, 520px);
+  margin: 26px auto 0;
+  padding: 18px 22px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--color-principal, #c81d25);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(110, 18, 24, 0.22);
+  transition: background-color 0.45s ease, box-shadow 0.45s ease;
+}
+
+.reserva-abrir:hover,
+.reserva-abrir:focus-visible {
+  background: var(--color-secundario, #8e1a20);
+  color: #fff;
+  transform: none;
+  box-shadow: 0 16px 32px rgba(110, 18, 24, 0.28);
+  outline: none;
+}
+
+.reserva-abrir-icono {
+  display: grid;
+  place-items: center;
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.reserva-abrir-icono svg {
+  width: 28px;
+  height: 28px;
+}
+
+.reserva-abrir-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.reserva-abrir-texto strong {
+  font-size: 1.08rem;
+  line-height: 1.25;
+}
+
+.reserva-abrir-texto small {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.reserva-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.reserva-popup[hidden] {
+  display: none !important;
+}
+
+.reserva-popup-fondo {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 22, 20, 0.55);
+}
+
+.reserva-popup-caja {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(720px, calc(100vw - 40px));
+  height: min(86vh, 780px);
+  max-height: min(86vh, 780px);
+  overflow: hidden;
+  padding: 28px 32px 24px;
+  border: 1px solid #eadfd8;
+  border-radius: 22px;
+  background: #fffdfb;
+  color: #2b211f;
+  box-shadow: 0 24px 56px rgba(28, 22, 20, 0.28);
+}
+
+.reserva-popup-cerrar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f6f1ee;
+  color: #6e1218;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.55s ease, color 0.55s ease;
+}
+
+.reserva-popup-cerrar:hover,
+.reserva-popup-cerrar:focus-visible {
+  background: #f0d4d1;
+  color: #6e1218;
+  outline: none;
+}
+
+.reserva-paso-num {
+  margin: 0 42px 8px 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-principal, #c81d25);
+}
+
+.reserva-progreso {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.reserva-progreso-item {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f6f1ee;
+  color: #8a7c76;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.reserva-progreso-item b {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.reserva-progreso-item.listo,
+.reserva-progreso-item.actual {
+  background: var(--color-principal, #c81d25);
+  color: #fff;
+}
+
+.reserva-progreso-item.listo {
+  opacity: 0.72;
+}
+
+.reserva-popup-caja h2 {
+  margin: 0 36px 6px 0;
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.reserva-indicacion {
+  margin: 0 0 12px;
+  color: #5c4e49;
+  line-height: 1.45;
+}
+
+.reserva-validacion {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #e7b2ad;
+  border-radius: 12px;
+  background: #fff4f2;
+  color: #6e1218;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.reserva-paso-num,
+.reserva-progreso,
+.reserva-popup-caja h2,
+.reserva-indicacion,
+.reserva-validacion,
+.reserva-acciones {
+  flex-shrink: 0;
+}
+
+.reserva-riel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px 4px 12px 0;
+  scrollbar-gutter: stable;
+}
+
+.reserva-paso-panel.reserva-entra {
+  animation: reserva-desliza 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reserva-paso-panel.reserva-desde-atras.reserva-entra {
+  animation-name: reserva-desliza-atras;
+}
+
+@keyframes reserva-desliza {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes reserva-desliza-atras {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.reserva-dato-fijo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 10px;
+  padding: 12px 14px;
+  border: 1px solid #eadfd8;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.reserva-dato-fijo span {
+  color: #6e1218;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.reserva-dato-fijo strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.reserva-ayuda {
+  margin: 8px 0 0;
+  color: #6d5c56;
+  font-size: 0.85rem;
+}
+
+.reserva-resumen-tarjeta {
+  padding: 4px 2px 0;
+}
+
+.reserva-resumen-kicker {
+  margin: 0 0 10px;
+  color: var(--color-principal, #c81d25);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.reserva-exito-titulo {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+}
+
+.reserva-exito-texto {
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+
+.reserva-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.reserva-acciones .btn,
+.reserva-acciones .reserva-btn-sec {
+  flex: 1 1 140px;
+  min-height: 44px;
+}
+
+.reserva-btn-sec {
+  border: 1px solid #e4d5ce;
+  border-radius: 12px;
+  background: #fff;
+  color: #6e1218;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.35s ease, border-color 0.35s ease;
+}
+
+.reserva-btn-sec:hover,
+.reserva-btn-sec:focus-visible {
+  background: #fff6f6;
+  border-color: var(--color-principal, #c81d25);
+  outline: none;
+}
+
+.reserva-popup .reserva-hora {
+  display: flex;
+}
+
+body.dark-mode .reserva-popup-caja,
+body.dark-mode .reserva-dato-fijo,
+body.dark-mode .reserva-btn-sec {
+  background: #1c1614;
+  border-color: #4a3d38;
+  color: #f6f0ec;
+}
+
+body.dark-mode .reserva-indicacion,
+body.dark-mode .reserva-ayuda,
+body.dark-mode .reserva-dato-fijo strong {
+  color: #f6f0ec;
+}
+
+body.dark-mode .reserva-popup-cerrar {
+  background: #2a211e;
+  color: #ffc4bc;
+}
+
+body.dark-mode .reserva-popup-cerrar:hover,
+body.dark-mode .reserva-popup-cerrar:focus-visible {
+  background: #3a241c;
+  color: #ffc4bc;
+}
+
+body.dark-mode .reserva-progreso-item {
+  background: #2a211e;
+  color: #d7ccc6;
+}
+
+body.dark-mode .reserva-validacion {
+  background: #3a241c;
+  border-color: #8e1a20;
+  color: #ffc4bc;
+}
+
+body.reserva-abierta {
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .reserva-abrir {
+    width: 100%;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .reserva-abrir-icono {
+    flex-basis: 44px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .reserva-popup {
+    padding: 12px;
+  }
+
+  .reserva-popup-caja {
+    width: 100%;
+    height: calc(100vh - 24px);
+    max-height: calc(100vh - 24px);
+    padding: 22px 16px 16px;
+  }
+
+  .reserva-acciones {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reserva-paso-panel.reserva-entra,
+  .reserva-paso-panel.reserva-desde-atras.reserva-entra {
+    animation: none;
+  }
+}
+
+/* Cita: el botón y el popup ganan a .btn y al tono oscuro general. */
+.reserva-cita .reserva-abrir {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  width: min(100%, 540px);
+  min-height: 84px;
+  margin: 28px auto 0;
+  padding: 18px 22px;
+  border: 0;
+  border-radius: 20px;
+  background: #c81d25;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(110, 18, 24, 0.24);
+  transition: background-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.reserva-cita .reserva-abrir:hover,
+.reserva-cita .reserva-abrir:focus-visible {
+  background: #8e1a20;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(110, 18, 24, 0.32);
+  outline: none;
+}
+
+.reserva-cita .reserva-abrir-texto strong {
+  font-size: 1.16rem;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.reserva-cita .reserva-abrir-texto small {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.reserva-popup-caja,
+.reserva-popup-caja h2,
+.reserva-dato-fijo strong,
+.reserva-motivo,
+.reserva-exito-titulo {
+  color: #2b211f;
+}
+
+.reserva-indicacion,
+.reserva-ayuda,
+.reserva-estado,
+.reserva-exito-texto {
+  color: #4a403c;
+}
+
+.reserva-dato-fijo span,
+.reserva-motivo-label {
+  color: #6e1218;
+}
+
+.reserva-motivo {
+  background: #fff;
+  border-color: #e4d5ce;
+}
+
+.reserva-motivo::placeholder {
+  color: #6d5c56;
+}
+
+body.dark-mode .reserva-cita .reserva-abrir,
+body.dark-mode .reserva-cita .reserva-abrir:hover,
+body.dark-mode .reserva-cita .reserva-abrir:focus-visible {
+  background: #c81d25 !important;
+  color: #fff !important;
+}
+
+body.dark-mode .reserva-cita .reserva-abrir:hover,
+body.dark-mode .reserva-cita .reserva-abrir:focus-visible {
+  background: #8e1a20 !important;
+}
+
+body.dark-mode .reserva-cita .reserva-abrir-texto strong,
+body.dark-mode .reserva-cita .reserva-abrir-texto small {
+  color: #fff !important;
+}
+
+body.dark-mode .reserva-popup-caja,
+body.dark-mode .reserva-popup-caja h2,
+body.dark-mode .reserva-indicacion,
+body.dark-mode .reserva-ayuda,
+body.dark-mode .reserva-estado,
+body.dark-mode .reserva-dato-fijo,
+body.dark-mode .reserva-dato-fijo span,
+body.dark-mode .reserva-dato-fijo strong,
+body.dark-mode .reserva-motivo-label,
+body.dark-mode .reserva-exito-titulo,
+body.dark-mode .reserva-exito-texto,
+body.dark-mode .reserva-btn-sec {
+  color: #f6f0ec;
+}
+
+body.dark-mode .reserva-dato-fijo span,
+body.dark-mode .reserva-motivo-label {
+  color: #f0d8d4;
+}
+
+body.dark-mode .reserva-popup .reserva-motivo,
+body.dark-mode .reserva-popup textarea,
+body.dark-mode .reserva-popup input:not([type="hidden"]) {
+  background: #2a211e !important;
+  color: #f6f0ec !important;
+  border-color: #6a574f !important;
+}
+
+body.dark-mode .reserva-popup .reserva-motivo::placeholder,
+body.dark-mode .reserva-popup textarea::placeholder,
+body.dark-mode .reserva-popup input::placeholder {
+  color: #d9cdc6 !important;
+}
+
+body.dark-mode .reserva-btn-sec,
+body.dark-mode .reserva-btn-sec:hover,
+body.dark-mode .reserva-btn-sec:focus-visible {
+  background: #2a211e;
+  border-color: #6a574f;
+  color: #f6f0ec;
+}
+
+body.dark-mode .reserva-btn-sec:hover,
+body.dark-mode .reserva-btn-sec:focus-visible {
+  background: #3a2c28;
+  border-color: #c81d25;
+}
+
+@media (max-width: 800px) {
+  .pagina-cita {
+    padding: 96px 16px 48px;
+  }
+}
+
+@media (max-width: 640px) {
+  .reserva-cita .reserva-abrir {
+    width: 100%;
+    min-height: 76px;
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reserva-cita .reserva-abrir:hover,
+  .reserva-cita .reserva-abrir:focus-visible {
+    transform: none;
+  }
+}
+
+.cuenta-notas {
+  position: relative;
+}
+
+.cuenta-notas-btn {
+  position: relative;
+}
+
+.cuenta-notas-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.cuenta-notas-cuenta,
+.legal-notas-cuenta {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #fff;
+  color: #8e1a20;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.cuenta-notas-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  width: min(320px, calc(100vw - 24px));
+  max-height: min(70vh, 480px);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid #eadfd8;
+  border-radius: 16px;
+  background: #fff;
+  color: #2b211f;
+  box-shadow: 0 12px 28px rgba(43, 33, 31, 0.16);
+}
+
+.cuenta-notas-titulo,
+.cuenta-notas-vacio {
+  margin: 0 0 8px;
+}
+
+.cuenta-notas-item,
+.cuenta-notas-todas {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #f8f1ec;
+  color: #2b211f;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cuenta-notas-contacto { box-shadow: inset 3px 0 0 #c81d25; }
+.cuenta-notas-afilacion { box-shadow: inset 3px 0 0 #8e1a20; }
+.cuenta-notas-cita { box-shadow: inset 3px 0 0 #6e1218; }
+.cuenta-notas-leida { opacity: 0.62; }
+
+.cuenta-notas-todas {
+  background: transparent;
+  border: 1px solid #eadfd8;
+  font-weight: 700;
+}
+
+.sit-notas {
+  position: fixed;
+  z-index: 10020;
+  right: 16px;
+  bottom: 16px;
+  width: min(320px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.sit-nota {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #eadfd8;
+  border-radius: 14px;
+  background: #fff;
+  color: #2b211f;
+  box-shadow: 0 8px 20px rgba(43, 33, 31, 0.12);
+  animation: sit-nota-entra 0.35s ease;
+}
+
+.sit-nota-contacto { border-left: 4px solid #c81d25; }
+.sit-nota-afilacion { border-left: 4px solid #8e1a20; }
+.sit-nota-cita { border-left: 4px solid #6e1218; }
+
+.sit-nota-sale { animation: sit-nota-sale 0.28s ease forwards; }
+
+@keyframes sit-nota-entra {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes sit-nota-sale {
+  to { opacity: 0; transform: translateY(8px); }
+}
+
+body.dark-mode .cuenta-notas-menu,
+body.dark-mode .sit-nota,
+body.dark-mode .cuenta-notas-item {
+  background: #243140;
+  border-color: #3a4a5c;
+  color: #f6f1ee;
+}
+
+body.dark-mode .cuenta-notas-todas {
+  background: transparent;
+  color: #f6f1ee;
+}
+
+@media (max-width: 700px) {
+  .sit-notas {
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sit-nota,
+  .sit-nota-sale { animation: none; }
+}
+
+.reserva-popup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 112px 24px 40px;
+}
+
+.reserva-popup-caja,
+body.dark-mode .reserva-popup-caja {
+  height: auto;
+  max-height: calc(100dvh - 152px);
+  margin: auto;
+  overflow: auto;
+}
+
+.reserva-popup-cerrar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+/* Claro: crema y rojo, el mismo tono del sitio. */
+body:not(.dark-mode) .reserva-popup-caja {
+  background: #fffdfb;
+  color: #2b211f;
+  border: 1px solid #eadfd8;
+  box-shadow: 0 24px 56px rgba(28, 22, 20, 0.28);
+}
+
+body:not(.dark-mode) .reserva-popup-caja h2,
+body:not(.dark-mode) .reserva-popup .reserva-indicacion,
+body:not(.dark-mode) .reserva-popup .reserva-ayuda,
+body:not(.dark-mode) .reserva-popup .reserva-dato-fijo,
+body:not(.dark-mode) .reserva-popup .reserva-dato-fijo strong,
+body:not(.dark-mode) .reserva-popup .reserva-exito-titulo,
+body:not(.dark-mode) .reserva-popup .reserva-exito-texto {
+  color: #2b211f;
+}
+
+body:not(.dark-mode) .reserva-popup .reserva-dato-fijo span,
+body:not(.dark-mode) .reserva-popup .reserva-motivo-label,
+body:not(.dark-mode) .reserva-popup .reserva-paso-num {
+  color: #6e1218;
+}
+
+body:not(.dark-mode) .reserva-popup-cerrar {
+  background: #f6f1ee;
+  color: #6e1218;
+  border: 0;
+}
+
+body:not(.dark-mode) .reserva-popup .reserva-motivo,
+body:not(.dark-mode) .reserva-popup textarea,
+body:not(.dark-mode) .reserva-popup input:not([type="hidden"]),
+body:not(.dark-mode) .reserva-popup .reserva-btn-sec,
+body:not(.dark-mode) .reserva-popup .reserva-dato-fijo {
+  background: #fff;
+  color: #2b211f;
+  border-color: #e4d5ce;
+}
+
+/* Oscuro: el mismo marrón del modo oscuro, sin el azul fijo. */
+body.dark-mode .reserva-popup-caja {
+  background: #1c1614;
+  color: #f6f0ec;
+  border: 1px solid #4a3d38;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.45);
+}
+
+body.dark-mode .reserva-popup-caja h2,
+body.dark-mode .reserva-popup .reserva-indicacion,
+body.dark-mode .reserva-popup .reserva-ayuda,
+body.dark-mode .reserva-popup .reserva-dato-fijo,
+body.dark-mode .reserva-popup .reserva-dato-fijo span,
+body.dark-mode .reserva-popup .reserva-dato-fijo strong,
+body.dark-mode .reserva-popup .reserva-motivo-label,
+body.dark-mode .reserva-popup .reserva-exito-titulo,
+body.dark-mode .reserva-popup .reserva-exito-texto,
+body.dark-mode .reserva-popup .reserva-paso-num {
+  color: #f6f0ec;
+}
+
+body.dark-mode .reserva-popup-cerrar {
+  background: #2a211e;
+  color: #ffc4bc;
+  border: 0;
+}
+
+body.dark-mode .reserva-popup-cerrar:hover,
+body.dark-mode .reserva-popup-cerrar:focus-visible {
+  background: #3a241c;
+  color: #ffc4bc;
+}
+
+body.dark-mode .reserva-popup .reserva-motivo,
+body.dark-mode .reserva-popup textarea,
+body.dark-mode .reserva-popup input:not([type="hidden"]) {
+  background: #2a211e !important;
+  color: #f6f0ec !important;
+  border-color: #6a574f !important;
+}
+
+body.dark-mode .reserva-popup .reserva-btn-sec,
+body.dark-mode .reserva-popup .reserva-dato-fijo {
+  background: #2a211e;
+  color: #f6f0ec;
+  border-color: #6a574f;
+}
+
+@media (max-width: 640px) {
+  .reserva-popup {
+    padding: 96px 12px 20px;
+  }
+
+  .reserva-popup-caja,
+  body.dark-mode .reserva-popup-caja {
+    width: 100%;
+    height: auto;
+    max-height: calc(100dvh - 116px);
+  }
+}
+
+/* El calendario cabe en el centro, debajo de la barra, sin esconder el mes. */
+.reserva-popup:has(.reserva-caja-calendario) {
+  align-items: center;
+  justify-content: center;
+  padding: 88px 24px 28px;
+}
+
+.reserva-popup-caja.reserva-caja-calendario,
+body.dark-mode .reserva-popup-caja.reserva-caja-calendario {
+  height: auto;
+  max-height: calc(100dvh - 116px);
+  min-height: 0;
+  margin: auto;
+}
+
+.reserva-caja-calendario .reserva-paso-num {
+  margin-bottom: 4px;
+}
+
+.reserva-caja-calendario .reserva-progreso {
+  margin-bottom: 8px;
+}
+
+.reserva-caja-calendario .reserva-indicacion,
+.reserva-caja-calendario .reserva-rango {
+  margin-bottom: 8px;
+}
+
+.reserva-caja-calendario .reserva-rango {
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.reserva-caja-calendario .reserva-nav,
+.reserva-caja-calendario .reserva-semana {
+  margin-bottom: 4px;
+}
+
+.reserva-caja-calendario .reserva-dia {
+  position: relative;
+  aspect-ratio: auto;
+  height: 38px;
+  min-height: 0;
+}
+
+.reserva-caja-calendario .reserva-dias {
+  align-content: start;
+  gap: 4px;
+}
+
+.reserva-caja-calendario .reserva-leyenda {
+  justify-content: center;
+  align-items: center;
+  gap: 8px 16px;
+  margin: 10px 0 0;
+}
+
+.reserva-caja-calendario .reserva-muestra {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  box-shadow: none;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 18px;
+  overflow: hidden;
+}
+
+.reserva-disponible,
+.reserva-muestra.reserva-disponible {
+  border-width: 2px;
+  border-color: #157a40;
+  box-shadow: 0 0 0 2px rgba(21, 122, 64, 0.35);
+  background: #e7f6ec;
+  color: #0b3d22;
+}
+
+.reserva-dia.reserva-no,
+.reserva-dia.reserva-pasado,
+.reserva-dia.reserva-otro,
+.reserva-dia.reserva-fuera,
+.reserva-dia.reserva-ocupada {
+  position: relative;
+}
+
+.reserva-dia.reserva-no::after,
+.reserva-dia.reserva-pasado::after,
+.reserva-dia.reserva-otro::after,
+.reserva-dia.reserva-fuera::after,
+.reserva-muestra.reserva-no::after,
+.reserva-muestra.reserva-pasado::after,
+.reserva-muestra.reserva-fuera::after {
+  content: "×";
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  color: #8e1a20;
+}
+
+.reserva-muestra.reserva-no,
+.reserva-muestra.reserva-pasado,
+.reserva-muestra.reserva-fuera,
+.reserva-muestra.reserva-ocupada {
+  position: relative;
+}
+
+.reserva-muestra.reserva-no::after,
+.reserva-muestra.reserva-pasado::after,
+.reserva-muestra.reserva-fuera::after {
+  inset: 0;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  line-height: 1;
+}
+
+body:not(.dark-mode) .reserva-dia.reserva-no,
+body:not(.dark-mode) .reserva-dia.reserva-pasado,
+body:not(.dark-mode) .reserva-dia.reserva-otro,
+body:not(.dark-mode) .reserva-dia.reserva-fuera,
+body:not(.dark-mode) .reserva-muestra.reserva-no,
+body:not(.dark-mode) .reserva-muestra.reserva-pasado,
+body:not(.dark-mode) .reserva-muestra.reserva-fuera {
+  background: #f3eeeb;
+  border-color: #d7ccc6;
+  color: #5c463f;
+}
+
+body:not(.dark-mode) .reserva-dia.reserva-ocupada,
+body:not(.dark-mode) .reserva-muestra.reserva-ocupada {
+  background: #e4e2e0;
+  border-color: #b9b4af;
+  color: #5e5854;
+}
+
+body.dark-mode .reserva-disponible,
+body.dark-mode .reserva-muestra.reserva-disponible {
+  background: #143526;
+  border: 2px solid #5ee08f;
+  box-shadow: 0 0 0 2px rgba(94, 224, 143, 0.4);
+  color: #d7ffe6;
+}
+
+body.dark-mode .reserva-dia.reserva-no,
+body.dark-mode .reserva-dia.reserva-pasado,
+body.dark-mode .reserva-dia.reserva-otro,
+body.dark-mode .reserva-dia.reserva-fuera,
+body.dark-mode .reserva-muestra.reserva-no,
+body.dark-mode .reserva-muestra.reserva-pasado,
+body.dark-mode .reserva-muestra.reserva-fuera {
+  background: #241c1a;
+  border-color: #4a3d38;
+  color: #d7ccc6;
+}
+
+body.dark-mode .reserva-dia.reserva-ocupada,
+body.dark-mode .reserva-muestra.reserva-ocupada {
+  background: #3a3836;
+  border-color: #8d8884;
+  color: #e4e0dc;
+}
+
+body.dark-mode .reserva-dia.reserva-no::after,
+body.dark-mode .reserva-dia.reserva-pasado::after,
+body.dark-mode .reserva-dia.reserva-otro::after,
+body.dark-mode .reserva-dia.reserva-fuera::after,
+body.dark-mode .reserva-muestra.reserva-no::after,
+body.dark-mode .reserva-muestra.reserva-pasado::after,
+body.dark-mode .reserva-muestra.reserva-fuera::after {
+  color: #ffc4bc;
+}
+
+@media (max-width: 640px) {
+  .reserva-popup:has(.reserva-caja-calendario) {
+    padding: 76px 12px 16px;
+  }
+
+  .reserva-popup-caja.reserva-caja-calendario,
+  body.dark-mode .reserva-popup-caja.reserva-caja-calendario {
+    width: 100%;
+    height: auto;
+    max-height: calc(100dvh - 96px);
+    min-height: 0;
+  }
+
+  .reserva-caja-calendario .reserva-dia {
+    height: 34px;
+  }
+}
+
+.reserva-dia.reserva-activo,
+.reserva-dia.reserva-activo:hover:not(:disabled),
+.reserva-dia.reserva-activo:focus-visible:not(:disabled),
+.reserva-muestra.reserva-activo {
+  background: #c8efd6;
+  border: 2px solid #2f9d55;
+  color: #0b3d22;
+  box-shadow: 0 0 0 3px rgba(47, 157, 85, 0.28);
+}
+
+.reserva-dia.reserva-activo,
+.reserva-dia.reserva-activo:hover:not(:disabled),
+.reserva-dia.reserva-activo:focus-visible:not(:disabled) {
+  position: relative;
+}
+
+.reserva-dia.reserva-activo::after,
+.reserva-muestra.reserva-activo::after {
+  content: none;
+}
+
+.reserva-dia.reserva-ocupada::before,
+.reserva-muestra.reserva-ocupada::before {
+  content: "";
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border: 1.6px solid currentColor;
+  border-radius: 50%;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.reserva-dia.reserva-ocupada::before {
+  top: 2px;
+  right: 3px;
+}
+
+.reserva-muestra.reserva-ocupada::before {
+  top: 3px;
+  right: 3px;
+}
+
+.reserva-dia.reserva-ocupada::after,
+.reserva-muestra.reserva-ocupada::after {
+  content: "";
+  position: absolute;
+  width: 1.5px;
+  height: 4px;
+  background: currentColor;
+  pointer-events: none;
+}
+
+.reserva-dia.reserva-ocupada::after {
+  top: 4px;
+  right: 7.5px;
+}
+
+.reserva-muestra.reserva-ocupada::after {
+  top: 5px;
+  right: 7.5px;
+}
+
+body.dark-mode .reserva-dia.reserva-activo,
+body.dark-mode .reserva-dia.reserva-activo:hover:not(:disabled),
+body.dark-mode .reserva-dia.reserva-activo:focus-visible:not(:disabled),
+body.dark-mode .reserva-muestra.reserva-activo {
+  background: #1f6b42;
+  border: 2px solid #8ef0b0;
+  color: #f3fff7;
+  box-shadow: 0 0 0 3px rgba(142, 240, 176, 0.35);
+}
+
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-day-field,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-day-field,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-month-field,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-month-field,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-year-field,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-year-field,
+.formulario-sin-cuenta input[type="date"]::-webkit-datetime-edit-text,
+.formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-text {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
 }

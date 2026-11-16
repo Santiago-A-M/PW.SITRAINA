@@ -22,8 +22,7 @@
     margin: 0 auto;
     padding: 18px 28px;
     background: #fff;
-    border: 1px solid #eadfd8;
-    border-left: 6px solid #c81d25;
+    border: 2px solid #e3a4a7;
     border-radius: 18px;
     box-shadow: 0 12px 28px rgba(110, 18, 24, 0.08);
     overflow: visible;
@@ -88,15 +87,22 @@ body.dark-mode .marca-hoja .imagen-titulo image {
     font-size: 1.05rem;
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
 
-.hoja-titulo:hover {
+.hoja-titulo:hover,
+.hoja-titulo:focus-visible {
     background: #8e1a20;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(110, 18, 24, 0.16);
+    outline: none;
 }
 
 .hoja-titulo::after {
@@ -170,7 +176,20 @@ body.hoja-abierta > :not(.hoja-popup):not(script) {
     font-size: 1.35rem;
     line-height: 1;
     cursor: pointer;
-    transition: background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hoja-cerrar:hover,
+.hoja-cerrar:focus-visible {
+    background: #fff4f2;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(110, 18, 24, 0.16);
+    outline: none;
 }
 
 .hoja-popup-panel h2 {
@@ -234,6 +253,20 @@ body.hoja-abierta > :not(.hoja-popup):not(script) {
     text-align: center;
     text-decoration: none;
     cursor: pointer;
+    transition:
+        background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-copiar:hover,
+.btn-descarga:hover,
+.btn-copiar:focus-visible,
+.btn-descarga:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(110, 18, 24, 0.16);
+    outline: none;
 }
 
 .btn-descarga {
@@ -255,8 +288,7 @@ body.hoja-abierta > :not(.hoja-popup):not(script) {
 
 body.dark-mode .marca-hoja {
     background: #2c2320 !important;
-    border-color: #4a3d38;
-    border-left-color: #c81d25;
+    border-color: #e3a4a7;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 
@@ -310,7 +342,22 @@ body.dark-mode .hoja-cerrar {
 
 @media (prefers-reduced-motion: reduce) {
     .hoja-popup,
-    .hoja-popup-panel {
+    .hoja-popup-panel,
+    .hoja-cerrar,
+    .hoja-titulo,
+    .btn-copiar,
+    .btn-descarga {
         transition: none;
+    }
+
+    .hoja-cerrar:hover,
+    .hoja-cerrar:focus-visible,
+    .hoja-titulo:hover,
+    .hoja-titulo:focus-visible,
+    .btn-copiar:hover,
+    .btn-descarga:hover,
+    .btn-copiar:focus-visible,
+    .btn-descarga:focus-visible {
+        transform: none;
     }
 }

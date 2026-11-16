@@ -15,12 +15,13 @@ function pagina($titulo, $mensaje, $volver) {
     echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>' . h($titulo) . '</title>';
-    echo '<link rel="stylesheet" href="../css/estilo.css?v=3.47">';
-    echo '<link rel="stylesheet" href="../css/avisos.css?v=1.2">';
+    echo '<link rel="icon" type="image/png" href="../img/favicon-logo.png?v=1">';
+    echo '<link rel="stylesheet" href="../css/estilo.css?v=3.67">';
+    echo '<link rel="stylesheet" href="../css/avisos.css?v=1.9">';
     echo '</head><body data-sit-aviso="error" data-sit-titulo="' . h($titulo) . '" data-sit-texto="' . h($mensaje) . '">';
     echo '<main class="contenedor" style="padding:120px 20px 60px">';
     echo '<p><a class="btn" href="' . h($volver) . '">Volver</a></p>';
-    echo '</main><script src="../js/avisos.js?v=1.2"></script></body></html>';
+    echo '</main><script src="../js/avisos.js?v=1.3"></script></body></html>';
     exit;
 }
 
@@ -54,7 +55,7 @@ function campo($clave, $maximo) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    pagina('Afiliados', 'Esta dirección solo recibe el formulario.', '../index.html#afiliacion');
+    pagina('Afiliación', 'Esta página no se abre sola. Volvé al sitio para enviar tu solicitud.', '../index.html#afiliacion');
 }
 
 $accion = $_POST['accion'] ?? '';
@@ -135,6 +136,17 @@ if (!preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA
 }
 
 if ($accion === 'verificar') {
+    $marcaAfiliacion = sitraina_marca_afiliacion();
+    if ($marcaAfiliacion === 'error') {
+        pagina('Cita', 'No se pudo revisar la afiliación. Intentá de nuevo más tarde.', volver($accion));
+    }
+    if ($marcaAfiliacion !== 'si') {
+        pagina('Solicitud no procedente', 'Su pedido de cita no puede aceptarse. La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA.', volver($accion));
+    }
+    $correoCuenta = sitraina_correo_cuenta();
+    if ($correoCuenta === '' || $correo !== $correoCuenta) {
+        pagina('Cita', 'El correo de la solicitud tiene que ser el mismo de la cuenta con la que iniciaste sesión.', volver($accion));
+    }
     $nombreCita = trim((string) ($_POST['nombre'] ?? ''));
     $sedeCita = trim((string) ($_POST['sede'] ?? ''));
     $motivoCita = trim((string) ($_POST['motivo'] ?? ''));
@@ -171,7 +183,7 @@ try {
     pagina('Base de datos', 'No se pudo conectar. Revisa el host, el nombre, el usuario y la clave en config.php.', volver($accion));
 }
 if ($mysqli->connect_errno) {
-    pagina('Base de datos', 'No se pudo conectar. Intentá de nuevo más tarde.', volver($accion));
+    pagina('Afiliación', 'No pudimos conectar en este momento. Intentá de nuevo más tarde.', volver($accion));
 }
 $mysqli->set_charset('utf8mb4');
 $mysqli->query("SET time_zone = '-06:00'");
@@ -182,7 +194,7 @@ if ($accion === 'verificar') {
     $nombreCita = trim((string) ($_POST['nombre'] ?? ''));
     $afiliadosDb = abrir_afiliados();
     if (!$afiliadosDb) {
-        pagina('Afiliación', 'Falta php/config_afiliados.php o la base Info_Afiliados.', volver($accion));
+        pagina('Afiliación', 'No pudimos revisar la cuenta en este momento. Intentá de nuevo más tarde.', volver($accion));
     }
     $consulta = $afiliadosDb->prepare(
         'SELECT id FROM Cuenta WHERE cedula = ? AND nombre_completo = ? AND correo = ? LIMIT 1'
@@ -200,28 +212,15 @@ if ($accion === 'verificar') {
     if (!$encontrado) {
         pagina('Solicitud no procedente', 'Cédula, nombre completo y correo no figuran como afiliado registrado.', volver($accion));
     }
-    $fechaCita = (string) ($_POST['fecha'] ?? '');
-    $horaCita = (string) ($_POST['hora'] ?? '');
-    $adminDb = abrir_admin();
-    $reglasCita = $adminDb ? leer_agenda($adminDb) : ['fechas' => [], 'meses' => [], 'horas' => []];
-    if ($adminDb) {
-        $adminDb->close();
-    }
-    if (!is_array($reglasCita)) {
-        $reglasCita = ['fechas' => [], 'meses' => [], 'horas' => []];
-    }
-    if (!cita_permitida($fechaCita, $horaCita, $reglasCita)) {
-        pagina('Cita', 'Esa fecha u hora no está disponible.', volver($accion));
-    }
     $consultasDb = abrir_consultas();
     if (!$consultasDb) {
         pagina('Cita', 'No se pudo guardar la cita. Intentá de nuevo más tarde.', volver($accion));
     }
     $motivoCita = trim((string) ($_POST['motivo'] ?? ''));
-    $reservada = reservar_cita($consultasDb, $fechaCita, $horaCita, $nombreCita, $motivoCita, '', $correo, $cedula);
+    $reservada = reservar_solicitud_cita($consultasDb, $nombreCita, $motivoCita, $correo, $cedula);
     if ($reservada === false) {
         $consultasDb->close();
-        pagina('Cita', 'Esa hora ya está agendada.', volver($accion));
+        pagina('Cita', 'No se pudo guardar la solicitud. Intentá de nuevo más tarde.', volver($accion));
     }
     if ($reservada === null) {
         $consultasDb->close();
@@ -229,8 +228,8 @@ if ($accion === 'verificar') {
     }
     $consultasDb->close();
     $avisoCita = sitraina_id_si_cuenta_en_formulario([$correo])
-        ? 'La cita quedó en el panel. Como ya iniciaste sesión con este correo, la respuesta llega a Mis mensajes.'
-        : 'La cita quedó en el panel. Para recibir la respuesta, iniciá sesión y enviá el formulario con el correo de esa cuenta.';
+        ? 'La solicitud quedó registrada. La fecha la asigna la asesoría al aceptarla. La respuesta llega a Mis mensajes.'
+        : 'La solicitud quedó registrada. La fecha la asigna la asesoría al aceptarla. Para recibir la respuesta, entrá con tu cuenta y usá el correo de esa cuenta.';
     pagina(
         'Cita guardada',
         $avisoCita,
@@ -240,6 +239,10 @@ if ($accion === 'verificar') {
 
 if ($accion === 'guardar') {
     /* Guarda la petición en Consulta_Afiliacion. No toca Info_Afiliados.Cuenta. */
+    if (sitraina_marca_afiliacion() === 'si') {
+        $mysqli->close();
+        pagina('Ya estás afiliado', 'Tu cuenta ya está registrada como afiliada a SITRAINA. No hace falta enviar otra solicitud.', volver($accion));
+    }
     $nombre = campo('nombre', 120);
     $correoIna = campo('correo_ina', 120);
     $correoPersonal = campo('correo_personal', 120);
@@ -301,7 +304,7 @@ if ($accion === 'guardar') {
     $consulta = $mysqli->prepare('SELECT id FROM Consulta_Afiliacion WHERE cedula = ? LIMIT 1');
     if (!$consulta) {
         $mysqli->close();
-        pagina('Afiliación', 'No se pudo consultar la boleta.', volver($accion));
+        pagina('Afiliación', 'No pudimos revisar la solicitud. Intentá de nuevo más tarde.', volver($accion));
     }
     $consulta->bind_param('s', $cedula);
     $consulta->execute();
@@ -310,7 +313,7 @@ if ($accion === 'guardar') {
     $consulta->close();
     if ($yaEnviada) {
         $mysqli->close();
-        pagina('Afiliación', 'Esa cédula ya envió una boleta. No puede enviarse otra vez.', volver($accion));
+        pagina('Afiliación', 'Esa cédula ya envió una solicitud. No se puede enviar otra vez.', volver($accion));
     }
 
     $uidAfil = sitraina_id_si_cuenta_en_formulario([$correoIna, $correoPersonal]);
@@ -344,13 +347,13 @@ if ($accion === 'guardar') {
     $mysqli->close();
     if (!$guardado) {
         if ($codigo === 1062) {
-            pagina('Afiliación', 'Esa cédula ya envió una boleta. No puede enviarse otra vez.', volver($accion));
+            pagina('Afiliación', 'Esa cédula ya envió una solicitud. No se puede enviar otra vez.', volver($accion));
         }
         pagina('Afiliación', 'No se pudo guardar la afiliación.', volver($accion));
     }
     $avisoBoleta = $uidAfil
-        ? 'La boleta quedó en el panel. Como ya iniciaste sesión y el formulario incluye el correo de tu cuenta, la respuesta llega a Mis mensajes.'
-        : 'La boleta quedó en el panel. Para recibir la respuesta, iniciá sesión y poné el correo de esa cuenta en el formulario.';
+        ? 'Recibimos tu solicitud. Como ya entraste y usaste el correo de tu cuenta, la respuesta llega a Mis mensajes.'
+        : 'Recibimos tu solicitud. Para recibir la respuesta, entrá con tu cuenta y usá el correo de esa cuenta.';
     pagina(
         'Afiliación guardada',
         $avisoBoleta,
@@ -359,4 +362,4 @@ if ($accion === 'guardar') {
 }
 
 $mysqli->close();
-pagina('Afiliación', 'No se reconoció el formulario.', '../index.html#afiliacion');
+pagina('Afiliación', 'No reconocimos lo que enviaste. Volvé a intentarlo desde la página.', '../index.html#afiliacion');

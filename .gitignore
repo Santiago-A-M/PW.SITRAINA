@@ -2,6 +2,8 @@ php/config.php
 php/config_afiliados.php
 php/config_usuarios.php
 php/config_correo.php
+php/config_correo.anterior.php
+php/logs/
 php/config_respuestas.php
 admin/config.php
 admin/config_respuestas.php

@@ -19,7 +19,32 @@
  * FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace PHPMailer\PHPMailer;
+namespace Psr\Log {
+    /**
+     * Minimal PSR-3 logger. This copy of PHPMailer does not ship the psr/log package.
+     */
+    interface LoggerInterface
+    {
+        /**
+         * @param string $message
+         * @param array  $context
+         */
+        public function debug($message, array $context = []);
+    }
+}
+
+namespace PHPMailer\PHPMailer {
+
+/**
+ * Optional OAuth2 token provider for SMTP XOAUTH2.
+ */
+interface OAuthTokenProvider
+{
+    /**
+     * @return string
+     */
+    public function getOauth64();
+}
 
 /**
  * PHPMailer - PHP email creation and transport class.
@@ -2572,6 +2597,7 @@ class PHPMailer
 
             //Try and find a readable language file for the requested language.
             $foundFile = false;
+            $lang_file = '';
             foreach ($langcodes as $code) {
                 $lang_file = $lang_path . 'phpmailer.lang-' . $code . '.php';
                 if (static::fileIsAccessible($lang_file)) {
@@ -2580,7 +2606,7 @@ class PHPMailer
                 }
             }
 
-            if ($foundFile === false) {
+            if ($foundFile === false || $lang_file === '') {
                 $foundlang = false;
             } else {
                 $lines = file($lang_file);
@@ -4500,9 +4526,11 @@ class PHPMailer
     /**
      * Check whether the supplied address uses Unicode in the local part.
      *
+     * @param string $address
+     *
      * @return bool
      */
-    protected function addressHasUnicodeLocalPart($address)
+    protected function addressHasUnicodeLocalPart(string $address)
     {
         return (bool) preg_match('/[\x80-\xFF].*@/', $address);
     }
@@ -4510,9 +4538,11 @@ class PHPMailer
     /**
      * Check whether any of the supplied addresses use Unicode in the local part.
      *
+     * @param array $addresses Email addresses, or queued rows whose first item is the address
+     *
      * @return bool
      */
-    protected function anyAddressHasUnicodeLocalPart($addresses)
+    protected function anyAddressHasUnicodeLocalPart(array $addresses)
     {
         foreach ($addresses as $address) {
             if (is_array($address)) {
@@ -5522,4 +5552,5 @@ class PHPMailer
     {
         $this->oauth = $oauth;
     }
+}
 }

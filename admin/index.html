@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Administración | SITRAINA</title>
+  <link rel="icon" type="image/png" href="../img/favicon-logo.png?v=1">
   <script>
     (function () {
       try {
@@ -23,10 +24,10 @@
     body{background:transparent}
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.34">
-  <link rel="stylesheet" href="../css/avisos.css?v=1.2">
+  <link rel="stylesheet" href="admin.css?v=6.74">
+  <link rel="stylesheet" href="../css/avisos.css?v=1.9">
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.22';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.52';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body>
@@ -49,7 +50,7 @@
         </button>
       </div>
     </header>
-    <p class="panel-intro">Cuenta institucional <strong>sitraina@ina.ac.cr</strong> (sin cédula) o tu Gmail con cédula.</p>
+    <p class="panel-intro">Si tu correo es <strong>sitraina@ina.ac.cr</strong>, entrá solo con ese correo. Si es otro, también escribí tu cédula.</p>
     <p class="error" hidden>{{error}}</p>
     <form method="post" action="index.php" autocomplete="off" id="form-login-admin" class="caja-form">
       <input type="hidden" name="token" value="{{token}}">
@@ -88,8 +89,8 @@
       sincronizar();
     })();
   </script>
-  <script src="../js/avisos.js?v=1.2"></script>
-  <script src="tono.js?v=1.6"></script>
+  <script src="../js/avisos.js?v=1.5"></script>
+  <script src="tono.js?v=3.15"></script>
   <script>
     (function () {
       var aviso = document.querySelector('main .error');
@@ -119,7 +120,7 @@
         }
         var boton = form.querySelector('button[type="submit"]');
         if (boton) boton.disabled = true;
-        window.SitrainaAvisos.procesando('Comprobando acceso', 'Estamos revisando la cuenta. No vuelvas a enviar el formulario.');
+        window.SitrainaAvisos.procesando('Un momento', 'Estamos revisando tus datos. Por favor, esperá y no vuelvas a enviar.');
       });
     })();
   </script>

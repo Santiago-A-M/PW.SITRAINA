@@ -23,11 +23,11 @@
   <meta property="og:description" content="Defendiendo los derechos de los trabajadores del INA. Conoce nuestros servicios y comunicados.">
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
-  <link rel="stylesheet" href="css/estilo.css?v=3.54">
-  <link rel="stylesheet" href="css/avisos.css?v=1.2">
+  <link rel="stylesheet" href="css/estilo.css?v=3.90">
+  <link rel="stylesheet" href="css/avisos.css?v=1.9">
   <link rel="stylesheet" href="css/estilo-conve.css?v=1.0">
-  <link rel="stylesheet" href="css/estilo-hoja.css?v=1.3">
-  <link rel="icon" type="image/x-icon" href="img/ley.png">
+  <link rel="stylesheet" href="css/estilo-hoja.css?v=1.6">
+  <link rel="icon" type="image/png" href="img/favicon-logo.png?v=1">
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script type="application/ld+json">
@@ -55,7 +55,7 @@
 }
 </script>
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.13';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.38';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body class="pagina-inicio pagina-fondo">
@@ -107,6 +107,17 @@
   <a href="#contacto" data-public-nav="contacto">Contacto</a>
 </nav>
 <div class="acciones-header">
+    <div class="cuenta-notas" id="cuenta-notas" hidden>
+        <button type="button" class="cuenta-notas-btn btn-header" id="cuenta-notas-btn" aria-expanded="false" aria-controls="cuenta-notas-menu" title="Notificaciones" aria-label="Abrir notificaciones">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 7 3 7 3 7H3s3 0 3-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="cuenta-notas-cuenta" id="cuenta-notas-cuenta" hidden>0</span>
+        </button>
+        <div class="cuenta-notas-menu" id="cuenta-notas-menu" hidden>
+            <p class="cuenta-notas-titulo">Notificaciones</p>
+            <div id="cuenta-notas-lista"></div>
+            <button type="button" class="cuenta-notas-todas" id="cuenta-notas-todas">Marcar todas como leídas</button>
+        </div>
+    </div>
     <button id="toggle-oscuro" class="btn-header" title="Cambiar tono" aria-label="Cambiar tono de la página">
         <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
@@ -361,14 +372,14 @@
 <div class="vista-publica" id="vista-afiliacion" data-vista-publica="afiliacion" hidden>
 <section class="afiliacion">
     <div class="contenedor">
-      <h2 class="titulo-afiliacion">Boleta de Afiliación SITRAINA</h2>
+      <h2 class="titulo-afiliacion">Solicitud de afiliación a SITRAINA</h2>
 
       <!--
         La boleta se guarda en el panel. La respuesta aparece en Mis mensajes si la persona ingresa con el correo INA o el personal de la boleta.
       -->
       <form id="form-afiliacion" data-guia-formsubmit="afiliacion" class="boleta-afiliacion" action="php/afiliados.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="accion" value="guardar">
-        <input type="hidden" name="_subject" id="afiliacion-asunto" value="Copia de tu boleta de afiliación SITRAINA">
+        <input type="hidden" name="_subject" id="afiliacion-asunto" value="Copia de tu solicitud de afiliación a SITRAINA">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_next" value="https://sitraina.free.je/index.html?enviada=1#afiliacion">
@@ -424,14 +435,14 @@
 
         <fieldset class="nota-afiliacion">
           <legend>Firma Digital</legend>
-          <p>Al enviar, la boleta se manda por correo en un PDF con los datos que escribiste. En esta página podrás descargar ese mismo PDF para firmarlo con la aplicación Gaudi y tu certificado digital.</p>
-          <p>Sin la firma digital en Gaudi, la afiliación no es válida legalmente.</p>
+          <p>Al enviar, te llega a tu correo una copia con los datos que escribiste. También podés descargarla aquí para firmarla con Gaudi, la herramienta de firma del Estado, y tu firma digital.</p>
+          <p>La afiliación queda en firme cuando la firmás de esa manera.</p>
         </fieldset>
 
         <button type="submit" class="btn">Enviar Afiliación</button>
         <p class="cita-resultado" id="afiliacion-resultado" hidden></p>
         <p class="descarga-boleta" id="afiliacion-descarga-fila" hidden>
-          <a class="btn" id="afiliacion-descarga">Descargar PDF de afiliación</a>
+          <a class="btn" id="afiliacion-descarga">Descargar la solicitud para firmarla</a>
         </p>
       </form>
     </div>
@@ -490,71 +501,22 @@
 <main class="pagina-cita">
     <div class="contenedor">
       <h1>Solicitar cita con el asesor legal</h1>
-      <p class="cita-intro">Elige un día y una hora disponibles. Al enviar, la confirmación vuelve a esta página.</p>
+      <p class="cita-intro">Presioná el botón y completá la solicitud paso a paso. El nombre y el correo salen de tu cuenta. Después elegís el motivo, un martes o jueves dentro de los próximos 15 días y la hora de inicio. Al confirmar, ese espacio queda reservado para vos. Si más adelante la cancelás, en Opciones, dentro de Citas, tenés 15 días desde esa cancelación para volver a pedirla el mismo día.</p>
       <p class="cita-guia-llamada">
         <button type="button" class="cita-guia-abrir-inline" id="cita-guia-abrir-inline">Cómo te llega el correo</button>
       </p>
 
-      <!--
-        La cita se guarda en el panel. La respuesta aparece en Mis mensajes si la persona ingresa con el correo que escribió en la solicitud.
-      -->
-      <form class="form-cita" id="form-cita" data-guia-formsubmit="cita" action="php/afiliados.php" method="POST">
-        <input type="hidden" name="accion" value="verificar">
-        <input type="hidden" name="_subject" id="cita-asunto" value="Copia de tu solicitud de cita SITRAINA">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_next" value="https://sitraina.free.je/index.html?enviada=1#cita">
-        <input type="hidden" name="Pagina" value="https://sitraina.free.je/index.html#cita">
-        <input type="hidden" name="_replyto" id="cita-replyto">
-        <div class="cita-layout">
-          <div class="cita-calendario">
-            <div class="cita-mes">
-              <button type="button" class="cita-nav" id="cita-mes-anterior" aria-label="Mes anterior">‹</button>
-              <strong id="cita-mes-titulo"></strong>
-              <button type="button" class="cita-nav" id="cita-mes-siguiente" aria-label="Mes siguiente">›</button>
-            </div>
-            <div class="cita-semana" aria-hidden="true">
-              <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
-            </div>
-            <div class="cita-dias" id="cita-dias"></div>
-            <div class="cita-horas" id="cita-horas" hidden>
-              <p>Hora de la cita</p>
-              <div class="cita-hora-lista" id="cita-hora-lista"></div>
-            </div>
-            <p class="cita-resumen" id="cita-resumen"></p>
-            <input type="hidden" name="fecha" id="cita-fecha">
-            <input type="hidden" name="hora" id="cita-hora">
-          </div>
-          <div class="cita-datos">
-            <label>Nombre completo
-              <input type="text" name="nombre" required maxlength="120" autocomplete="name">
-            </label>
-            <label>Cédula
-              <input type="text" name="cedula" required maxlength="20" autocomplete="off">
-            </label>
-            <label>Correo electrónico
-              <input type="email" name="email" required maxlength="120" autocomplete="email" inputmode="email" spellcheck="false" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Escribe un correo válido con @ y un dominio, por ejemplo nombre@correo.com">
-              <span class="cita-ayuda">Debe incluir @ y un dominio. A este correo te llegará la respuesta de SITRAINA; revisá también spam.</span>
-            </label>
-            <label>Teléfono
-              <input type="tel" name="telefono" required inputmode="numeric" autocomplete="tel" maxlength="11" pattern="[0-9]{8}" title="El teléfono debe tener 8 dígitos">
-              <span class="cita-ayuda">8 dígitos, sin espacios ni código de país.</span>
-            </label>
-            <input type="hidden" name="afiliado" value="Sí">
-            <label>Sede o centro de trabajo
-              <input type="text" name="sede" required maxlength="120">
-            </label>
-            <label class="ancho">Motivo de la consulta
-              <textarea name="motivo" rows="4" required maxlength="800"></textarea>
-            </label>
-            <label class="cita-trampa" aria-hidden="true">No completar
-              <input type="text" name="_honey" tabindex="-1" autocomplete="off">
-            </label>
-          </div>
-        </div>
-        <button type="submit" class="btn">Enviar solicitud de cita</button>
-        <p class="cita-resultado" id="cita-resultado" hidden></p>
-      </form>
+      <!-- La reserva se guarda con la sesión del afiliado. La confirmación también queda en Mis mensajes. -->
+      <div id="reserva-cita" class="reserva-cita">
+        <button type="button" class="btn reserva-abrir" id="reserva-abrir">
+          <span class="reserva-abrir-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 3.5V7M16 3.5V7M4 10h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <span class="reserva-abrir-texto">
+            <strong>Solicitar cita de asesoría legal</strong>
+            <small>Martes y jueves, dentro de los próximos 15 días</small>
+          </span>
+        </button>
+        <p class="reserva-estado" id="reserva-estado">Un momento, estamos preparando los horarios.</p>
+      </div>
     </div>
   </main>
 </div>
@@ -562,7 +524,7 @@
 <div class="documentos-panel">
   <div class="intro-documentos">
     <h1>Documentos</h1>
-    <p>Elegí un tipo. Se abre la sección con sus documentos.</p>
+    <p>Elegí el tema que te interesa. Ahí vas a encontrar los documentos.</p>
   </div>
 
   <!-- Seis tipos. Los tres primeros abren su página con el mismo deslice. Los otros tres abren una sección aquí. -->
@@ -615,85 +577,85 @@
 <main class="contenedor pagina-documentos seccion-archivos vista-publica" id="vista-legales" data-vista-publica="legales" hidden>
 <a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
       <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="btn-atras-texto">Volver a los tipos</span>
+      <span class="btn-atras-texto">Volver a los temas</span>
     </a>
     <h2>Documentos legales</h2>
-    <p>Normativa y documentos institucionales en PDF.</p>
+    <p>Leyes y documentos del sindicato y del INA, listos para consultar.</p>
     <div class="lista-archivos">
       <article class="archivo-item">
         <div>
           <h3>Constitución Política de Costa Rica</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/constitucion_politica_digital_edincr.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Código de Trabajo</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/Codigo_Trabajo_RPL.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Ley General de la Administración Pública</h3>
-          <p>Ley 6227 · PDF</p>
+          <p>Ley 6227</p>
         </div>
         <a class="btn" href="documentos/Administraciónpublica.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Ley contra la Corrupción y el Enriquecimiento Ilícito</h3>
-          <p>Ley 8422 · PDF</p>
+          <p>Ley 8422</p>
         </div>
         <a class="btn" href="documentos/ley-contra-corrupcion.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Ley Marco de Empleo Público</h3>
-          <p>Ley 10159 · PDF</p>
+          <p>Ley 10159</p>
         </div>
         <a class="btn" href="documentos/LEYMARCODEEMPLEOPÚBLICO.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Ley de Fortalecimiento de las Finanzas Públicas</h3>
-          <p>Ley 9635 · PDF</p>
+          <p>Ley 9635</p>
         </div>
         <a class="btn" href="documentos/FORTALECIMIENTODELASFINANZASPÚBLICAS.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Ley de Igualdad de Oportunidades para las Personas con Discapacidad</h3>
-          <p>Ley 7600 · PDF</p>
+          <p>Ley 7600</p>
         </div>
         <a class="btn" href="documentos/leyigualdaddeoportunidades.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Ley Nacional de Emergencias y Prevención de Riesgos</h3>
-          <p>Ley 8488 · PDF</p>
+          <p>Ley 8488</p>
         </div>
         <a class="btn" href="documentos/LEY-8488.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Convención Colectiva</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/convencion_colectiva_INA.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Reglamento Autónomo de Servicios del INA</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/Reglamento_autonomo_servicios_INA.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Estatutos de SITRAINA</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/ESTATUTOSITRA.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
@@ -709,7 +671,7 @@
 <main class="contenedor pagina-documentos seccion-archivos vista-publica" id="vista-informes" data-vista-publica="informes" hidden>
 <a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
       <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="btn-atras-texto">Volver a los tipos</span>
+      <span class="btn-atras-texto">Volver a los temas</span>
     </a>
     <h2>Informes de labores</h2>
     <p>Agosto 2024 – Mayo 2026, más el informe de educación técnica 2025.</p>
@@ -717,105 +679,105 @@
       <article class="archivo-item">
         <div>
           <h3>Junta Directiva</h3>
-          <p>Informe de labores · PDF</p>
+          <p>Informe de labores</p>
         </div>
         <a class="btn" href="documentos/informe-jd.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Luzmilda Cerdas Rojas</h3>
-          <p>Secretaría General · PDF</p>
+          <p>Secretaría General</p>
         </div>
         <a class="btn" href="documentos/informe-luzmilda.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Raquel Uribe Berríos</h3>
-          <p>Secretaría de la mujer · PDF</p>
+          <p>Secretaría de la mujer</p>
         </div>
         <a class="btn" href="documentos/informe-raquel.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Carlos González Castro</h3>
-          <p>Secretaría de Investigación · PDF</p>
+          <p>Secretaría de Investigación</p>
         </div>
         <a class="btn" href="documentos/informe-carlos.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Luis Diego González Esquivel</h3>
-          <p>Secretaría de Educación y Docencia · PDF</p>
+          <p>Secretaría de Educación y Docencia</p>
         </div>
         <a class="btn" href="documentos/informe-diego.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Walia Baltodano Fernández</h3>
-          <p>Secretaría de Actas · PDF</p>
+          <p>Secretaría de Actas</p>
         </div>
         <a class="btn" href="documentos/informe-walia.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Aisha Blackwood Barret</h3>
-          <p>Vocal 1 · PDF</p>
+          <p>Vocal 1</p>
         </div>
         <a class="btn" href="documentos/informe-aisha.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Vanessa Monge Castillo</h3>
-          <p>Secretaría de Propaganda · PDF</p>
+          <p>Secretaría de Propaganda</p>
         </div>
         <a class="btn" href="documentos/informe-vanesa.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Miguel Vargas Arias</h3>
-          <p>Secretaría de Afiliación · PDF</p>
+          <p>Secretaría de Afiliación</p>
         </div>
         <a class="btn" href="documentos/informe-miguel.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Eunice Villalobos Sánchez</h3>
-          <p>Secretaría de Finanzas · PDF</p>
+          <p>Secretaría de Finanzas</p>
         </div>
         <a class="btn" href="documentos/informe-eunice.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Cristhofer Hernández Guzmán</h3>
-          <p>Vocal 3 · PDF</p>
+          <p>Vocal 3</p>
         </div>
         <a class="btn" href="documentos/informe-cristhofer.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Eduardo Ortega Rodríguez</h3>
-          <p>Secretaría de Conflictos · PDF</p>
+          <p>Secretaría de Conflictos</p>
         </div>
         <a class="btn" href="documentos/informe-eduardo.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Robert Rodríguez Guillén</h3>
-          <p>Suplente · PDF</p>
+          <p>Suplente</p>
         </div>
         <a class="btn" href="documentos/informe-robert.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Maribel García Fonseca</h3>
-          <p>Fiscalía · PDF</p>
+          <p>Fiscalía</p>
         </div>
         <a class="btn" href="documentos/informe-maribel.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Estado de la Educación Técnica en el INA 2025</h3>
-          <p>Informe SITRAINA · PDF</p>
+          <p>Informe SITRAINA</p>
         </div>
         <a class="btn" href="documentos/InformeEstadodelaEducaciónTécnicaenelINA2025-SITRAINA.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
@@ -824,7 +786,7 @@
 <main class="contenedor pagina-documentos seccion-archivos vista-publica" id="vista-actas" data-vista-publica="actas" hidden>
 <a class="btn-atras btn-atras-docs" href="#documentos" data-public-nav="documentos">
       <span class="btn-atras-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="btn-atras-texto">Volver a los tipos</span>
+      <span class="btn-atras-texto">Volver a los temas</span>
     </a>
     <h2>Actas de asamblea</h2>
     <p>Actas disponibles por año.</p>
@@ -832,28 +794,28 @@
       <article class="archivo-item">
         <div>
           <h3>Asamblea ordinaria · agosto 2024</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/Asamblea_Ordinaria_2024.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Asamblea extraordinaria · diciembre 2024</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/Asamblea_Extraordinaria2_2024.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Asamblea extraordinaria · mayo 2025</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/Asamblea_Extraordinaria1_2025.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
       <article class="archivo-item">
         <div>
           <h3>Asamblea extraordinaria · diciembre 2025</h3>
-          <p>PDF</p>
+          <p>Documento</p>
         </div>
         <a class="btn" href="documentos/Asamblea_Extraordinaria2_2025.pdf" target="_blank" rel="noopener">Abrir</a>
       </article>
@@ -1530,7 +1492,7 @@
 <main class="contenedor pagina-contacto vista-publica" id="vista-contacto" data-vista-publica="contacto" hidden>
         <section class="seccion-formulario">
             <h2>Contáctanos</h2>
-            <p>¿Tienes alguna duda, sugerencia o necesitas apoyo? Escríbenos a través del siguiente formulario.</p>
+            <p>¿Tenés alguna duda, una sugerencia o necesitás apoyo? Escribinos. Con gusto te leemos.</p>
 
             <!-- Contacto: se guarda en Consulta_Contacto. La respuesta se ve en Mis mensajes al ingresar con ese correo. -->
             <form id="formulario-contacto-pagina" data-guia-formsubmit="contacto" action="contacto.php" method="POST">
@@ -1541,7 +1503,7 @@
 
     <div class="form-grupo">
         <label for="email">Correo Electrónico</label>
-        <input type="email" id="email" name="email" placeholder="tu@email.com" required maxlength="120" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Escribe un correo válido con @ y un dominio">
+        <input type="email" id="email" name="email" placeholder="Escribí tu correo" required maxlength="120" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Escribí un correo completo, por ejemplo nombre@ina.ac.cr">
     </div>
 
     <div class="form-grupo">
@@ -1603,7 +1565,7 @@
 <main class="contenedor pagina-contacto vista-publica" id="vista-ingresar" data-vista-publica="ingresar" hidden>
   <section class="seccion-formulario cuenta-caja">
     <h2>Ingresar</h2>
-    <p>Iniciá sesión con tu cuenta. Después, si enviás un formulario con ese mismo correo, la respuesta de administración llega a Mis mensajes.</p>
+    <p>Entrá con el correo de tu cuenta. Si más adelante nos escribís, pedís cita o te afiliás con ese mismo correo, la respuesta del sindicato llega a Mis mensajes.</p>
     <form id="form-ingreso">
       <div class="form-grupo">
         <label for="ingreso-correo">Correo</label>
@@ -1618,7 +1580,7 @@
 <main class="contenedor pagina-contacto vista-publica" id="vista-registro" data-vista-publica="registro" hidden>
   <section class="seccion-formulario cuenta-caja">
     <h2>Crear cuenta</h2>
-    <p>Creá la cuenta e iniciá sesión. En contacto, citas o afiliación usá ese mismo correo para que la respuesta vuelva a esta cuenta.</p>
+    <p>Creá tu cuenta con tu nombre y tu correo. Usá ese mismo correo cuando nos escribas, pidas cita o te afiliés, para que la respuesta llegue aquí.</p>
     <form id="form-registro">
       <div class="form-grupo">
         <label for="registro-nombre">Nombre</label>
@@ -1638,11 +1600,18 @@
     </form>
   </section>
 </main>
+<main class="contenedor pagina-contacto vista-publica" id="vista-mis-citas" data-vista-publica="mis-citas" hidden>
+  <section class="seccion-formulario cuenta-caja cuenta-citas">
+    <h2>Citas</h2>
+    <p id="citas-intro">Aquí ves las citas que pediste con esta cuenta: confirmadas, no aceptadas y canceladas.</p>
+    <div id="citas-lista"><p class="vacio-bloque">Un momento, por favor.</p></div>
+  </section>
+</main>
 <main class="contenedor pagina-contacto vista-publica" id="vista-cuenta" data-vista-publica="cuenta" hidden>
   <section class="seccion-formulario cuenta-caja cuenta-mensajes">
     <h2>Mis mensajes</h2>
-    <p id="cuenta-saludo">Ingresá para ver tus mensajes.</p>
-    <div id="bandeja-lista"><p class="vacio-bloque">Cargando…</p></div>
+    <p id="cuenta-saludo">Entrá con tu cuenta para ver los mensajes que te hemos enviado.</p>
+    <div id="bandeja-lista"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </section>
 </main>
 <div class="bandeja-popup" id="bandeja-popup" hidden>
@@ -1656,28 +1625,36 @@
     <div class="contenedor footer-grid-compacto">
       <div class="datos-contacto-premium">
         <div class="dato">
-          <i class="fas fa-map-marker-alt"></i>
+          <a class="dato-icono" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener" aria-label="Abrir la dirección en el mapa">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+          </a>
           <div class="dato-texto">
             <span class="label">Dirección</span>
             <a class="valor" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto%20Nacional%20de%20Aprendizaje%20La%20Uruca%2C%20Avenida%2059A%2C%20Uruca%2C%20San%20Jos%C3%A9%2C%20Costa%20Rica" target="_blank" rel="noopener">La Uruca, San José</a>
           </div>
         </div>
         <div class="dato">
-          <i class="fas fa-envelope"></i>
+          <a class="dato-icono" href="mailto:sitraina@ina.ac.cr" aria-label="Escribir a sitraina@ina.ac.cr">
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+          </a>
           <div class="dato-texto">
             <span class="label">Email</span>
             <a class="valor" href="mailto:sitraina@ina.ac.cr">sitraina@ina.ac.cr</a>
           </div>
         </div>
         <div class="dato">
-          <i class="fas fa-phone-alt"></i>
+          <a class="dato-icono" href="tel:+50622202480" aria-label="Llamar al +506 2220-2480">
+            <i class="fas fa-phone-alt" aria-hidden="true"></i>
+          </a>
           <div class="dato-texto">
             <span class="label">Teléfono</span>
             <a class="valor" href="tel:+50622202480">+506 2220-2480</a>
           </div>
         </div>
         <div class="dato">
-          <i class="fab fa-whatsapp"></i>
+          <a class="dato-icono" href="https://wa.me/50684481450" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+          </a>
           <div class="dato-texto">
             <span class="label">WhatsApp</span>
             <a class="valor" href="https://wa.me/50684481450" target="_blank" rel="noopener">+506 8448-1450</a>
@@ -1685,13 +1662,13 @@
         </div>
       </div>
       <div class="redes-contacto-premium">
-        <a href="https://facebook.com/sitraina.cr" target="_blank" class="btn-social" aria-label="Facebook">
+        <a href="https://facebook.com/sitraina.cr" target="_blank" rel="noopener" class="btn-social" aria-label="Facebook">
           <i class="fab fa-facebook-f" aria-hidden="true"></i>
         </a>
-        <a href="https://www.instagram.com/sitrainacr" target="_blank" class="btn-social" aria-label="Instagram">
+        <a href="https://www.instagram.com/sitrainacr" target="_blank" rel="noopener" class="btn-social" aria-label="Instagram">
           <i class="fab fa-instagram" aria-hidden="true"></i>
         </a>
-        <a href="https://www.tiktok.com/@sitraina" target="_blank" class="btn-social" aria-label="TikTok">
+        <a href="https://www.tiktok.com/@sitraina" target="_blank" rel="noopener" class="btn-social" aria-label="TikTok">
           <i class="fab fa-tiktok" aria-hidden="true"></i>
         </a>
       </div>
@@ -1751,15 +1728,31 @@
     </div>
   </div>
 </div>
+<div class="reserva-popup" id="reserva-popup" hidden>
+  <div class="reserva-popup-fondo" data-cerrar-reserva="1"></div>
+  <div class="reserva-popup-caja" role="dialog" aria-modal="true" aria-labelledby="reserva-popup-titulo">
+    <button type="button" class="reserva-popup-cerrar" id="reserva-popup-cerrar" aria-label="Cerrar">×</button>
+    <p class="reserva-paso-num" id="reserva-paso-num"></p>
+    <ol class="reserva-progreso" id="reserva-progreso" aria-label="Progreso de la solicitud"></ol>
+    <h2 id="reserva-popup-titulo"></h2>
+    <p class="reserva-indicacion" id="reserva-indicacion"></p>
+    <p class="reserva-validacion" id="reserva-validacion" role="alert" hidden></p>
+    <div class="reserva-riel" id="reserva-riel">
+      <div class="reserva-pista" id="reserva-pista"></div>
+    </div>
+    <div class="reserva-acciones" id="reserva-acciones"></div>
+  </div>
+</div>
 <div id="modal-imagen" class="modal-lightbox" onclick="cerrarImagen()">
     <span class="cerrar-lightbox">&times;</span>
     <img id="imagen-maximizada" src="" alt="Convenio Ampliado">
 </div>
-<script src="js/avisos.js?v=1.2"></script>
-<script src="js/script.js?v=3.15"></script>
-<script src="js/vistas-publicas.js?v=1.3"></script>
-<script src="js/guia-formsubmit.js?v=1.6"></script>
-<script src="js/cuenta.js?v=1.4"></script>
+<script src="js/avisos.js?v=1.11"></script>
+<script src="js/script.js?v=3.44"></script>
+<script src="js/cita-calendario.js?v=1.16"></script>
+<script src="js/vistas-publicas.js?v=1.5"></script>
+<script src="js/guia-formsubmit.js?v=1.8"></script>
+<script src="js/cuenta.js?v=1.16"></script>
 <script src="js/script-conve.js"></script>
 <script src="js/script-hoja.js?v=1.1"></script>
 <script>
@@ -1891,7 +1884,7 @@
   }
 
   if (new URLSearchParams(location.search).get('enviada') === '1' && location.hash.replace('#', '') === 'afiliacion') {
-    mostrar('Recibimos la boleta. El PDF con tus datos fue enviado por correo. Descárgalo y fírmalo con Gaudi usando tu certificado digital.', true);
+    mostrar('Recibimos tu solicitud. Te enviamos una copia a tu correo. Descargála y firmála con Gaudi, usando tu firma digital.', true);
     prepararDescarga(sessionStorage.getItem('afiliacionPdf'));
     history.replaceState(null, '', location.pathname + (location.hash || '#afiliacion'));
   }
@@ -1962,7 +1955,7 @@
       lineas.push(linea);
     });
     lineas.push(' ');
-    cortar('Esta boleta debe firmarse con la aplicación Gaudi y el certificado digital. Sin esa firma, la afiliación no es válida legalmente.', 78).forEach(function (linea) {
+    cortar('Esta solicitud debe firmarse con Gaudi y tu firma digital. Sin esa firma, la afiliación no queda en firme.', 78).forEach(function (linea) {
       lineas.push(linea);
     });
     var pdf = crearPdf(lineas);
@@ -1973,10 +1966,10 @@
       transferencia.items.add(archivo);
       adjunto.files = transferencia.files;
     } catch (error) {
-      mostrar('No se pudo preparar el PDF. Intenta de nuevo.', false);
+      mostrar('No pudimos preparar la copia para firmar. Por favor, intentá de nuevo.', false);
       return;
     }
-    asunto.value = 'Boleta de afiliación: ' + nombre;
+    asunto.value = 'Solicitud de afiliación: ' + nombre;
     replyto.value = correoPersonal || correoIna;
     try {
       sessionStorage.setItem('afiliacionPdf', JSON.stringify({ nombre: archivoNombre, base64: btoa(pdf.binario) }));
@@ -1997,7 +1990,7 @@
       enviandoBoleta = true;
       var botonBoleta = form.querySelector('[type="submit"]');
       if (botonBoleta) botonBoleta.disabled = true;
-      window.SitrainaAvisos.procesando('Enviando solicitud', 'Estamos registrando la boleta. No vuelvas a enviarla.');
+      window.SitrainaAvisos.procesando('Enviando solicitud', 'Estamos guardando tu solicitud. Por favor, esperá y no la envíes de nuevo.');
       form.submit();
     });
   });
@@ -2089,250 +2082,87 @@
 })();
 </script>
 <script>
-/* Pregunta si la persona está afiliada antes de dejar usar el formulario de la cita. */
+/* La cita solo se abre si la sesión, revisada en el servidor, corresponde a una persona afiliada. */
     (function () {
       var puerta = document.getElementById('cita-puerta');
       var titulo = document.getElementById('cita-puerta-titulo');
       var texto = document.getElementById('cita-puerta-texto');
       var acciones = document.getElementById('cita-puerta-acciones');
       var extra = document.getElementById('cita-puerta-extra');
-      var campoCedula = document.querySelector('input[name="cedula"]');
-      var main = document.getElementById('vista-cita');
-      if (!puerta || !titulo || !texto || !acciones || !extra) return;
+      var vistaCita = document.getElementById('vista-cita');
+      if (!puerta || !titulo || !texto || !acciones || !extra || !vistaCita) return;
 
-      var enviada = false;
+      var consulta = 0;
+      var pendiente = '';
+
       try {
-        enviada = new URLSearchParams(location.search).get('enviada') === '1';
+        sessionStorage.removeItem('citaAfiliado');
+        sessionStorage.removeItem('citaCedula');
+        sessionStorage.removeItem('citaNombre');
+        sessionStorage.removeItem('citaCorreo');
       } catch (e) {}
 
-      var campoNombre = document.querySelector('input[name="nombre"]');
-      var campoCorreo = document.querySelector('input[name="email"]');
-      var guardado = { cedula: '', nombre: '', correo: '' };
-      var yaConfirmada = false;
-      try {
-        guardado.cedula = sessionStorage.getItem('citaCedula') || '';
-        guardado.nombre = sessionStorage.getItem('citaNombre') || '';
-        guardado.correo = sessionStorage.getItem('citaCorreo') || '';
-        yaConfirmada = sessionStorage.getItem('citaAfiliado') === 'si'
-          && /^[0-9]{9}$/.test(guardado.cedula)
-          && guardado.nombre
-          && guardado.correo;
-      } catch (e) {}
-
-      function cerrar() {
+      function cerrarPuerta() {
         puerta.hidden = true;
         document.body.classList.remove('cita-bloqueada');
-        if (main) main.removeAttribute('aria-hidden');
-      }
-
-      function bloquear() {
-        puerta.hidden = false;
-        document.body.classList.add('cita-bloqueada');
-        if (main) main.setAttribute('aria-hidden', 'true');
-      }
-
-      function aceptar(datosOk) {
-        if (campoCedula) campoCedula.value = datosOk.cedula;
-        if (campoNombre) campoNombre.value = datosOk.nombre;
-        if (campoCorreo) campoCorreo.value = datosOk.correo;
-        try {
-          sessionStorage.setItem('citaAfiliado', 'si');
-          sessionStorage.setItem('citaCedula', datosOk.cedula);
-          sessionStorage.setItem('citaNombre', datosOk.nombre);
-          sessionStorage.setItem('citaCorreo', datosOk.correo);
-        } catch (e) {}
-        cerrar();
-      }
-
-      function olvidar() {
-        try {
-          sessionStorage.removeItem('citaAfiliado');
-          sessionStorage.removeItem('citaCedula');
-          sessionStorage.removeItem('citaNombre');
-          sessionStorage.removeItem('citaCorreo');
-        } catch (e) {}
-      }
-
-      /* Comprueba cédula + nombre completo + correo en Info_Afiliados.Cuenta (solo lectura). */
-      function consultarCuenta(cedula, nombre, correo) {
-        var datos = new FormData();
-        datos.append('accion', 'consultar');
-        datos.append('cedula', cedula);
-        datos.append('nombre_completo', nombre);
-        datos.append('correo', correo);
-        return fetch('php/afiliados.php', {
-          method: 'POST',
-          body: datos,
-          cache: 'no-store',
-          credentials: 'same-origin'
-        }).then(function (respuesta) {
-          return respuesta.json();
-        });
-      }
-
-      function boton(etiqueta, clase, alPulsar) {
-        var botonEl = document.createElement('button');
-        botonEl.type = 'button';
-        botonEl.className = clase;
-        botonEl.textContent = etiqueta;
-        botonEl.addEventListener('click', alPulsar);
-        return botonEl;
-      }
-
-      function campoLabel(texto, entrada) {
-        var etiqueta = document.createElement('label');
-        etiqueta.className = 'cita-puerta-label';
-        etiqueta.appendChild(document.createTextNode(texto));
-        etiqueta.appendChild(entrada);
-        return etiqueta;
-      }
-
-      function mostrar(paso) {
+        vistaCita.removeAttribute('aria-hidden');
+        titulo.textContent = '';
+        texto.textContent = '';
         acciones.innerHTML = '';
         extra.innerHTML = '';
-        if (paso === 'afiliado') {
-          titulo.textContent = '¿Es persona afiliada?';
-          texto.textContent = 'La asesoría legal de SITRAINA se ofrece a las personas afiliadas. Indique si ya forma parte del sindicato.';
-          acciones.appendChild(boton('Sí, soy persona afiliada', 'btn', function () {
-            mostrar('cuenta');
-          }));
-          acciones.appendChild(boton('No, no estoy afiliada', 'btn btn-contorno', function () {
-            mostrar('ofrecer');
-          }));
-        } else if (paso === 'cuenta') {
-          titulo.textContent = 'Datos de afiliado';
-          texto.textContent = 'Escriba cédula, nombre completo y correo exactamente como los registró administración.';
-          var entradaCedula = document.createElement('input');
-          entradaCedula.type = 'text';
-          entradaCedula.inputMode = 'numeric';
-          entradaCedula.autocomplete = 'off';
-          entradaCedula.maxLength = 9;
-          entradaCedula.placeholder = '9 dígitos';
-          entradaCedula.setAttribute('aria-label', 'Cédula');
-          var entradaNombre = document.createElement('input');
-          entradaNombre.type = 'text';
-          entradaNombre.autocomplete = 'name';
-          entradaNombre.maxLength = 120;
-          entradaNombre.placeholder = 'Nombre completo';
-          entradaNombre.setAttribute('aria-label', 'Nombre completo');
-          var entradaCorreo = document.createElement('input');
-          entradaCorreo.type = 'email';
-          entradaCorreo.autocomplete = 'email';
-          entradaCorreo.maxLength = 120;
-          entradaCorreo.placeholder = 'correo@ejemplo.com';
-          entradaCorreo.setAttribute('aria-label', 'Correo');
-          var aviso = document.createElement('span');
-          aviso.className = 'cita-puerta-error';
-          extra.appendChild(campoLabel('Cédula', entradaCedula));
-          extra.appendChild(campoLabel('Nombre completo', entradaNombre));
-          extra.appendChild(campoLabel('Correo', entradaCorreo));
-          extra.appendChild(aviso);
-          entradaCedula.addEventListener('input', function () {
-            entradaCedula.value = entradaCedula.value.replace(/\D/g, '').slice(0, 9);
-            aviso.textContent = '';
-          });
-          entradaNombre.addEventListener('input', function () { aviso.textContent = ''; });
-          entradaCorreo.addEventListener('input', function () { aviso.textContent = ''; });
-          acciones.appendChild(boton('Continuar', 'btn', function () {
-            var digitos = entradaCedula.value.replace(/\D/g, '');
-            var nombre = (entradaNombre.value || '').trim();
-            var correo = (entradaCorreo.value || '').trim().toLowerCase();
-            if (!/^[0-9]{9}$/.test(digitos)) {
-              if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'La cédula debe tener 9 dígitos.');
-              entradaCedula.focus();
-              return;
-            }
-            if (!nombre) {
-              if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'Escribe el nombre completo.');
-              entradaNombre.focus();
-              return;
-            }
-            if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(correo)) {
-              if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'Escribe un correo válido.');
-              entradaCorreo.focus();
-              return;
-            }
-            var botones = acciones.querySelectorAll('button');
-            for (var i = 0; i < botones.length; i++) botones[i].disabled = true;
-            if (window.SitrainaAvisos) window.SitrainaAvisos.procesando('Comprobando la cuenta', 'Estamos verificando los datos de afiliación.');
-            consultarCuenta(digitos, nombre, correo).then(function (resultado) {
-              for (var j = 0; j < botones.length; j++) botones[j].disabled = false;
-              if (!resultado || !resultado.ok) {
-                if (window.SitrainaAvisos) {
-                  window.SitrainaAvisos.error('No se pudo comprobar', (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.');
-                }
-                return;
-              }
-              if (window.SitrainaAvisos) window.SitrainaAvisos.cerrar();
-              aceptar({ cedula: digitos, nombre: nombre, correo: correo });
-            }).catch(function () {
-              for (var k = 0; k < botones.length; k++) botones[k].disabled = false;
-              if (window.SitrainaAvisos) window.SitrainaAvisos.error('No se pudo comprobar', 'No se pudo comprobar la cuenta. Intenta de nuevo.');
-            });
-          }));
-          acciones.appendChild(boton('Volver', 'btn btn-contorno', function () {
-            mostrar('afiliado');
-          }));
-          entradaCedula.focus();
-          return;
-        } else if (paso === 'ofrecer') {
-          titulo.textContent = '¿Desea afiliarse?';
-          texto.textContent = 'Para solicitar una cita es necesario estar afiliado. Puede completar la boleta de afiliación o declinar la solicitud.';
-          acciones.appendChild(boton('Sí, deseo afiliarme', 'btn', function () {
-            if (window.mostrarVistaPublica) window.mostrarVistaPublica('afiliacion'); else location.hash = 'afiliacion';
-          }));
-          acciones.appendChild(boton('No, no deseo afiliarme', 'btn btn-contorno', function () {
-            mostrar('rechazo');
-          }));
-        } else {
-          titulo.textContent = 'Solicitud no procedente';
-          texto.textContent = 'Su pedido de cita no puede aceptarse. La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA. Al manifestar que no desea afiliarse, la solicitud queda rechazada.';
-          acciones.appendChild(boton('Volver a asesoría', 'btn', function () {
-            if (window.mostrarVistaPublica) window.mostrarVistaPublica('asesoria'); else location.hash = 'asesoria';
-          }));
-        }
-        var primero = acciones.querySelector('button');
-        if (primero) primero.focus();
       }
 
-      var arrancada = false;
-      function arrancarPuerta() {
-        if (arrancada) return;
-        arrancada = true;
-        if (enviada) return;
-        bloquear();
-        if (yaConfirmada) {
-          consultarCuenta(guardado.cedula, guardado.nombre, guardado.correo).then(function (resultado) {
-            if (resultado && resultado.ok) {
-              aceptar(guardado);
-              return;
-            }
-            olvidar();
-            mostrar('cuenta');
-            var avisoPrevio = extra.querySelector('.cita-puerta-error');
-            if (window.SitrainaAvisos) {
-              window.SitrainaAvisos.error('No se pudo comprobar', (resultado && resultado.mensaje) || 'Los datos no coinciden con un afiliado registrado.');
-            }
-          }).catch(function () {
-            olvidar();
-            mostrar('afiliado');
-          });
+      function rechazar() {
+        consulta += 1;
+        pendiente = '';
+        cerrarPuerta();
+        if (window.SitrainaAvisos && window.SitrainaAvisos.marcarFormulario) {
+          window.SitrainaAvisos.marcarFormulario('cita', true);
+        }
+        if (window.SitrainaAvisos && window.SitrainaAvisos.sesion) {
+          window.SitrainaAvisos.sesion();
+        }
+      }
+
+      window.sitrainaMostrarCitaNoProcede = function () { rechazar('no'); };
+      window.sitrainaSalirDeCita = rechazar;
+
+      function evaluar() {
+        if (vistaCita.hidden) return;
+        var marca = ++consulta;
+        if (!window.SitrainaAvisos || !window.SitrainaAvisos.estado) {
+          rechazar('error');
           return;
         }
-        mostrar('afiliado');
-      }
-      var vistaCita = document.getElementById('vista-cita');
-      if (vistaCita && vistaCita.hidden) {
-        var obs = new MutationObserver(function () {
-          if (!vistaCita.hidden) {
-            obs.disconnect();
-            arrancarPuerta();
+        window.SitrainaAvisos.estado().then(function (json) {
+          if (marca !== consulta || vistaCita.hidden) return;
+          if (json && json.ok && json.ingresado) {
+            cerrarPuerta();
+            if (window.SitrainaAvisos && window.SitrainaAvisos.cuentaVerificada) {
+              window.SitrainaAvisos.cuentaVerificada();
+            }
+            return;
           }
+          rechazar();
         });
-        obs.observe(vistaCita, { attributes: true, attributeFilter: ['hidden'] });
-      } else {
-        arrancarPuerta();
       }
+
+      document.addEventListener('sitraina-vista', function (ev) {
+        if (ev && ev.detail === 'cita') {
+          evaluar();
+          return;
+        }
+        consulta += 1;
+        cerrarPuerta();
+      });
+
+      window.addEventListener('hashchange', function () {
+        if ((location.hash || '').replace('#', '') === 'cita') return;
+        consulta += 1;
+        cerrarPuerta();
+      });
+
+      if (!vistaCita.hidden) evaluar();
     })();
 </script>
 </body></html>

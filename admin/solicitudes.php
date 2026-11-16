@@ -86,15 +86,23 @@ function listar_citas($dbUsuarios, $dbResp, $cuentas = null) {
         if ($id < 1) {
             continue;
         }
+        $cancelado = trim((string) ($cita['cancelado_en'] ?? ''));
+        $plazo = $cancelado !== '' ? plazo_reprogramacion_cita($cancelado) : null;
         $item = [
             'id' => $id,
+            'cedula' => (string) ($cita['cedula'] ?? ''),
             'persona' => (string) ($cita['persona'] ?? ''),
             'correo' => (string) ($cita['correo'] ?? ''),
             'fecha' => (string) ($cita['fecha'] ?? ''),
             'hora' => (string) ($cita['hora'] ?? ''),
             'motivo' => (string) ($cita['motivo'] ?? ''),
+            'notas' => (string) ($cita['notas'] ?? ''),
+            'modalidad' => (string) ($cita['modalidad'] ?? ''),
             'creado_en' => (string) ($cita['creado_en'] ?? ''),
             'usuario_id' => (int) ($cita['usuario_id'] ?? 0),
+            'cancelado_en' => $cancelado,
+            'plazo_limite' => $plazo['limite'] ?? '',
+            'plazo_vigente' => ($plazo && !empty($plazo['vigente'])) ? 1 : 0,
         ];
         $item['cuenta_web'] = solicitud_visible_en_bandeja('cita', $item, $cuentas) ? 1 : 0;
         $filas[] = mezclar_con_respuesta($item, $mapa[$id] ?? null);
@@ -305,37 +313,50 @@ function borrar_consulta_origen($tipo, $id) {
 }
 
 try {
-if (empty($_SESSION['admin_usuario'])) {
-    solicitudes_responder(403, ['ok' => false, 'mensaje' => 'Inicia sesión.']);
+$rolPersonal = rol_personal_admin();
+if ($rolPersonal === '') {
+    solicitudes_responder(403, ['ok' => false, 'mensaje' => 'Entrá para continuar.']);
+}
+if ($rolPersonal === 'abogado') {
+    solicitudes_responder(403, ['ok' => false, 'mensaje' => 'Las citas de asesoría se consultan en Legal.']);
 }
 
 $dbResp = abrir_respuestas();
 if (!$dbResp) {
-    solicitudes_responder(500, ['ok' => false, 'mensaje' => 'Falta admin/config_respuestas.php o las tablas Respuesta_*.']);
+    solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos guardar las respuestas en este momento. Intentá más tarde.']);
 }
 
 $dbUsuarios = abrir_consultas();
 if (!$dbUsuarios) {
     $dbResp->close();
-    solicitudes_responder(500, ['ok' => false, 'mensaje' => 'Falta php/config.php o la base Info_Consultas.']);
+    solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos abrir las solicitudes en este momento. Intentá más tarde.']);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $tipo = (string) ($_GET['tipo'] ?? 'todas');
     if ($tipo === 'todas') {
-        $datos = [
-            'contacto' => listar_contactos($dbUsuarios, $dbResp),
-            'cita' => listar_citas($dbUsuarios, $dbResp),
-            'afilacion' => listar_afilaciones($dbUsuarios, $dbResp),
-            'afiliados' => listar_afiliados(),
-        ];
+        if ($rolPersonal === 'abogado') {
+            $datos = [
+                'contacto' => [],
+                'cita' => listar_citas($dbUsuarios, $dbResp),
+                'afilacion' => [],
+                'afiliados' => [],
+            ];
+        } else {
+            $datos = [
+                'contacto' => listar_contactos($dbUsuarios, $dbResp),
+                'cita' => listar_citas($dbUsuarios, $dbResp),
+                'afilacion' => listar_afilaciones($dbUsuarios, $dbResp),
+                'afiliados' => listar_afiliados(),
+            ];
+        }
         $dbUsuarios->close();
         $dbResp->close();
         foreach ($datos as $clave => $lista) {
             if ($lista === null) {
                 solicitudes_responder(500, [
                     'ok' => false,
-                    'mensaje' => 'No se pudieron leer los datos. Revisá configs y sql/01–04.',
+                    'mensaje' => 'No pudimos leer los datos. Intentá más tarde.',
                 ]);
             }
         }
@@ -346,9 +367,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $dbUsuarios->close();
         $dbResp->close();
         if ($lista === null) {
-            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo leer Cuenta (Info_Afiliados).']);
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos leer las personas afiliadas. Intentá más tarde.']);
         }
         solicitudes_responder(200, ['ok' => true, 'tipo' => 'afiliados', 'filas' => $lista]);
+    }
+    if ($tipo === 'cupos') {
+        $cupos = listar_cupos_asignacion();
+        $dbUsuarios->close();
+        $dbResp->close();
+        if ($cupos === null) {
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudieron leer los horarios.']);
+        }
+        solicitudes_responder(200, ['ok' => true, 'cupos' => $cupos]);
     }
     if (!in_array($tipo, ['contacto', 'cita', 'afilacion'], true)) {
         $dbUsuarios->close();
@@ -373,14 +403,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $dbUsuarios->close();
     $dbResp->close();
-    solicitudes_responder(405, ['ok' => false, 'mensaje' => 'Método no permitido.']);
+        solicitudes_responder(405, ['ok' => false, 'mensaje' => 'No se pudo completar. Volvé a intentarlo desde la página.']);
 }
 
 $token = (string) ($_POST['token'] ?? '');
 if (!hash_equals(token_admin(), $token)) {
     $dbUsuarios->close();
     $dbResp->close();
-    solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Vuelve a cargar la página.']);
+    solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Volvé a abrir la página e intentá de nuevo.']);
 }
 
 $accion = (string) ($_POST['accion'] ?? '');
@@ -391,28 +421,28 @@ if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado') {
     $dbResp->close();
     $dbAfiliados = abrir_afiliados();
     if (!$dbAfiliados) {
-        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo abrir Info_Afiliados.']);
+        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos abrir las personas afiliadas. Intentá más tarde.']);
     }
     $dbAfiliados->query("SET @sitraina_panel = '1'");
     if ($accion === 'eliminar_afiliado') {
         $idAfiliado = (int) ($_POST['id'] ?? 0);
         if ($idAfiliado < 1) {
             $dbAfiliados->close();
-            solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí un afiliado.']);
+            solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí a la persona.']);
         }
         $borrar = $dbAfiliados->prepare('DELETE FROM Cuenta WHERE id = ? LIMIT 1');
         if (!$borrar) {
             $dbAfiliados->close();
-            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo eliminar el afiliado.']);
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos quitar a esa persona.']);
         }
         $borrar->bind_param('i', $idAfiliado);
         $borro = $borrar->execute() && $borrar->affected_rows > 0;
         $borrar->close();
         $dbAfiliados->close();
         if (!$borro) {
-            solicitudes_responder(404, ['ok' => false, 'mensaje' => 'Ese afiliado ya no está en la lista.']);
+            solicitudes_responder(404, ['ok' => false, 'mensaje' => 'Esa persona ya no está en la lista.']);
         }
-        solicitudes_responder(200, ['ok' => true, 'mensaje' => 'Afiliado eliminado.']);
+        solicitudes_responder(200, ['ok' => true, 'mensaje' => 'Listo, se quitó a esa persona.']);
     }
     $cedulaNueva = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
     $nombreNuevo = trim((string) ($_POST['nombre_completo'] ?? ''));
@@ -434,7 +464,7 @@ if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado') {
     $insertar = $dbAfiliados->prepare('INSERT INTO Cuenta (cedula, nombre_completo, correo, creado_en) VALUES (?, ?, ?, ?)');
     if (!$insertar) {
         $dbAfiliados->close();
-        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo guardar el afiliado.']);
+        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos anotar a esa persona.']);
     }
     $insertar->bind_param('ssss', $cedulaNueva, $nombreNuevo, $correoNuevo, $creadoEn);
     $guardo = $insertar->execute();
@@ -445,9 +475,9 @@ if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado') {
         solicitudes_responder(409, ['ok' => false, 'mensaje' => 'Esa cédula o ese correo ya está registrado.']);
     }
     if (!$guardo) {
-        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo guardar el afiliado.']);
+        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos anotar a esa persona.']);
     }
-    solicitudes_responder(200, ['ok' => true, 'mensaje' => 'Afiliado registrado.']);
+    solicitudes_responder(200, ['ok' => true, 'mensaje' => 'Listo, la persona quedó anotada.']);
 }
 
 /* Borrar una o varias consultas (sección o papelera). */
@@ -469,7 +499,7 @@ if ($accion === 'eliminar_consulta' || $accion === 'eliminar_papelera') {
         }
     }
     if (!$items) {
-        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Seleccioná al menos una consulta.']);
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí al menos una solicitud.']);
     }
     $borrados = 0;
     foreach ($items as $item) {
@@ -514,13 +544,13 @@ if ($accion === 'eliminar_consulta' || $accion === 'eliminar_papelera') {
         }
     }
     if ($borrados < 1) {
-        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'No se borró nada. Revisá la selección.']);
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'No se quitó nada. Revisá lo que elegiste.']);
     }
     solicitudes_responder(200, [
         'ok' => true,
         'mensaje' => $borrados === 1
-            ? 'Se borró 1 consulta de la base de datos.'
-            : ('Se borraron ' . $borrados . ' consultas de la base de datos.'),
+            ? 'Se quitó 1 solicitud.'
+            : ('Se quitaron ' . $borrados . ' solicitudes.'),
         'borrados' => $borrados,
     ]);
 }
@@ -542,10 +572,10 @@ if ($id < 1) {
     solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí una solicitud.']);
 }
 if (!in_array($estado, ['aceptada', 'rechazada', 'neutral'], true)) {
-    solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí Aceptar, Rechazar o Respuesta neutral.']);
+    solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí aceptar, no aceptar, o una respuesta sin decisión.']);
 }
 if ($respuesta === '' || strlen($respuesta) > 4000) {
-    solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Escribí la respuesta (máximo 4000 caracteres).']);
+    solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Escribí la respuesta. Si quedó muy larga, acortala un poco.']);
 }
 
 $fila = buscar_consulta($tipo, $id);
@@ -554,15 +584,114 @@ if (!$fila) {
 }
 
 $enBandeja = solicitud_visible_en_bandeja($tipo, $fila);
+$horarioMovido = false;
+$tomoNuevo = false;
+$fechaPrevia = '';
+$horaPrevia = '';
+
+if ($tipo === 'cita' && $estado === 'aceptada') {
+    $estadoPrevio = '';
+    $dbEstado = abrir_respuestas();
+    if ($dbEstado) {
+        $tablaEstado = tabla_respuesta_por_tipo('cita');
+        $consultaEstado = $dbEstado->prepare('SELECT estado FROM `' . $tablaEstado . '` WHERE origen_id = ? LIMIT 1');
+        if ($consultaEstado) {
+            $consultaEstado->bind_param('i', $id);
+            $consultaEstado->execute();
+            $consultaEstado->bind_result($estadoPrevio);
+            if (!$consultaEstado->fetch()) {
+                $estadoPrevio = '';
+            }
+            $consultaEstado->close();
+        }
+        $dbEstado->close();
+    }
+    $fechaPrevia = normalizar_fecha_cita((string) ($fila['fecha'] ?? ''));
+    $horaPrevia = normalizar_hora_cita((string) ($fila['hora'] ?? ''));
+    $fechaPost = normalizar_fecha_cita((string) ($_POST['fecha_asignada'] ?? ''));
+    $horaPost = normalizar_hora_cita((string) ($_POST['hora_asignada'] ?? ''));
+    $fechaCita = $fechaPost !== '' ? $fechaPost : $fechaPrevia;
+    $horaCita = $horaPost !== '' ? $horaPost : $horaPrevia;
+    $cambiaHorario = $fechaCita !== '' && $horaCita !== '' && ($fechaCita !== $fechaPrevia || $horaCita !== $horaPrevia);
+    if ($estadoPrevio !== 'aceptada' || $cambiaHorario) {
+        if ($fechaCita === '' || $horaCita === '') {
+            solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí el mes, el día y la hora.']);
+        }
+        $preparado = ($rolPersonal === 'admin') ? preparar_horario_asignado($fechaCita, $horaCita) : 'ok';
+        $dbCupo = abrir_consultas();
+        $horarioActual = $dbCupo ? cita_horario_por_id($dbCupo, $id) : null;
+        if ($dbCupo) {
+            $dbCupo->close();
+        }
+        $cupoActual = $horarioActual ? normalizar_clave_cupo((string) $horarioActual['cupo_activo']) : '';
+        $claveNueva = clave_cupo_dia($fechaCita);
+        if ($preparado !== 'ok') {
+            $reclamo = $preparado;
+        } elseif ($cupoActual !== '' && $cupoActual === $claveNueva && !$cambiaHorario) {
+            $reclamo = 'ok';
+        } elseif ($cupoActual !== '' || $estadoPrevio === 'aceptada') {
+            $reclamo = mover_horario_cita($id, $fechaCita, $horaCita);
+            $horarioMovido = $reclamo === 'ok';
+        } else {
+            $reclamo = reclamar_horario_cita($id, $fechaCita, $horaCita, false);
+            $tomoNuevo = $reclamo === 'ok';
+        }
+        if ($reclamo === 'ocupada') {
+            solicitudes_responder(409, ['ok' => false, 'mensaje' => 'Ese día ya está ocupado. Elegí otro.']);
+        }
+        if ($reclamo === 'bloqueada') {
+            solicitudes_responder(409, ['ok' => false, 'mensaje' => 'Ese día no se ofrece.']);
+        }
+        if ($reclamo === 'hora_no_habil') {
+            solicitudes_responder(409, ['ok' => false, 'mensaje' => 'Esa hora no está disponible en el horario.']);
+        }
+        if ($reclamo === 'pasada') {
+            solicitudes_responder(409, ['ok' => false, 'mensaje' => 'Elegí el día de hoy o uno posterior.']);
+        }
+        if ($reclamo === 'no_habil' || $reclamo === 'invalida') {
+            solicitudes_responder(409, ['ok' => false, 'mensaje' => 'Ese día no está disponible.']);
+        }
+        if ($reclamo !== 'ok') {
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo reservar ese horario.']);
+        }
+        $lineaCita = 'Cita confirmada para el ' . etiqueta_momento_es($fechaCita . ' ' . $horaCita) . '.';
+        if (stripos($respuesta, 'Cita confirmada para el') === false) {
+            $respuesta .= "\n\n" . $lineaCita;
+        }
+        if (strlen($respuesta) > 4000) {
+            if ($horarioMovido && $fechaPrevia !== '' && $horaPrevia !== '') {
+                if (mover_horario_cita($id, $fechaPrevia, $horaPrevia) !== 'ok') {
+                    soltar_horario_cita($id, $fechaPrevia, $horaPrevia);
+                }
+            } elseif ($tomoNuevo) {
+                soltar_horario_cita($id, $fechaPrevia, $horaPrevia);
+            }
+            solicitudes_responder(400, ['ok' => false, 'mensaje' => 'La respuesta quedó demasiado larga al agregar la fecha y la hora. Acortala e intentá de nuevo.']);
+        }
+    }
+}
 
 if (!guardar_respuesta_enviada($tipo, $id, $estado, $respuesta, $admin, $editar)) {
-    solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo guardar la respuesta en Info_Respuestas.']);
+    if ($tipo === 'cita' && $estado === 'aceptada' && isset($reclamo) && $reclamo === 'ok') {
+        if ($horarioMovido && $fechaPrevia !== '' && $horaPrevia !== '') {
+            if (mover_horario_cita($id, $fechaPrevia, $horaPrevia) !== 'ok') {
+                soltar_horario_cita($id, $fechaPrevia, $horaPrevia);
+            }
+        } elseif ($tomoNuevo) {
+            soltar_horario_cita($id, $fechaPrevia, $horaPrevia);
+        }
+    }
+    solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos guardar la respuesta.']);
+}
+
+if ($tipo === 'cita' && $estado === 'rechazada') {
+    liberar_cupo_cita($id);
 }
 
 if ($enBandeja) {
     solicitudes_responder(200, [
         'ok' => true,
-        'mensaje' => 'Respuesta guardada. Llega a Mis mensajes porque la persona ya había iniciado sesión con esa cuenta.',
+        'mensaje' => 'Respuesta guardada. La persona la verá en Mis mensajes, porque ya había entrado con esa cuenta.',
         'estado' => $estado,
         'bandeja' => true,
     ]);
@@ -570,10 +699,10 @@ if ($enBandeja) {
 
 solicitudes_responder(200, [
     'ok' => true,
-    'mensaje' => 'Respuesta guardada. Esta solicitud no se envió con la cuenta iniciada: no aparece en Mis mensajes.',
+    'mensaje' => 'Respuesta guardada. Esta solicitud no se envió con la cuenta abierta, así que no aparece en Mis mensajes.',
     'estado' => $estado,
     'bandeja' => false,
 ]);
 } catch (Throwable $e) {
-    solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudieron cargar las solicitudes.']);
+    solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos traer las solicitudes. Intentá más tarde.']);
 }

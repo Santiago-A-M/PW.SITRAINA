@@ -8,33 +8,43 @@
     var configs = {
         ayuda: {
             storageKey: 'ayuda-envio-vista',
-            botonTitulo: 'Cómo llega tu solicitud',
-            botonTexto: 'Cómo llega tu solicitud',
+            botonTitulo: 'Ayuda',
+            botonTexto: 'Ayuda',
             omitir: false,
             pasos: [
                 {
-                    titulo: '¿Qué ocurre cuando envías una solicitud?',
-                    texto: 'Cuando completás un formulario del sitio y lo enviás, SITRAINA recibe tu solicitud. Puede ser un mensaje de contacto, una cita o consulta de asesoría, o una petición de afiliación.',
+                    titulo: 'Cómo moverte por la página',
+                    texto: 'El menú de arriba tiene Inicio, Conócenos, Afiliación, Asesoría, Documentos y Contacto. Elegí el tema que querés ver. En el teléfono, el botón de las tres rayas abre ese mismo menú.',
                     icono: '1'
                 },
                 {
-                    titulo: '¿Qué sucede con tus datos?',
-                    texto: 'Tu solicitud queda en el panel. La respuesta llega a Mis mensajes si ya iniciaste sesión y el formulario incluye el correo de esa cuenta. El sindicato no recibe un correo automático en sitraina@ina.ac.cr.',
+                    titulo: 'Opciones',
+                    texto: 'El engranaje, arriba a la derecha, abre Opciones. Ahí están el modo daltónico, esta ayuda y lo de tu cuenta. Podés cerrar este recuadro y volver a abrirlo cuando quieras.',
                     icono: '2'
                 },
                 {
-                    titulo: '¿Quién revisa la solicitud?',
-                    texto: 'Las personas administradoras de SITRAINA revisan lo que enviaste y deciden la respuesta que corresponde.',
+                    titulo: 'Tu cuenta',
+                    texto: 'Si todavía no entraste, vas a ver Ingresar y Crear cuenta. La cuenta pide tu nombre y tu correo. Cuando ya entraste, esas dos se ocultan y aparecen Citas, Mis mensajes y Cerrar sesión.',
                     icono: '3'
                 },
                 {
-                    titulo: '¿Cómo recibirás una respuesta?',
-                    texto: 'Primero iniciá sesión. Después enviá la solicitud con el correo de esa cuenta. La respuesta de administración aparece en Opciones → Mis mensajes. Si no había sesión, la respuesta queda solo en el panel.',
+                    titulo: 'Citas y mensajes',
+                    texto: 'En Citas ves las que pediste con esta cuenta: confirmadas, no aceptadas y canceladas. En Mis mensajes están las respuestas del sindicato, si usaste el mismo correo de tu cuenta. Tocá un mensaje para leerlo completo.',
                     icono: '4'
                 },
                 {
-                    titulo: 'Recomendaciones',
-                    texto: 'Usá información correcta y un correo que revisés. Antes de enviar, comprobá los datos y guardá lo que te ayude a identificar la solicitud. La respuesta depende de la revisión de los administradores. Podés cerrar esta ayuda cuando quieras.',
+                    titulo: 'Escribirle al sindicato',
+                    texto: 'En Asesoría elegís un día disponible, una hora libre y si preferís la cita en persona o en línea. En Afiliación completás la solicitud. En Contacto nos escribís. La respuesta llega a Mis mensajes.',
+                    icono: '5'
+                },
+                {
+                    titulo: 'El tono de la página',
+                    texto: 'El sol o la luna, junto al engranaje, cambia entre claro y oscuro. En Opciones, Modo daltónico cambia el rojo por azul. La página recuerda lo que elegiste en este dispositivo.',
+                    icono: '6'
+                },
+                {
+                    titulo: 'Si necesitás una orientación',
+                    texto: 'Abajo a la derecha está Sitrabot. Podés preguntarle sobre el sindicato, la afiliación, las citas y el contacto. Esta ayuda se vuelve a abrir en Opciones, en Ayuda.',
                     icono: '✓'
                 }
             ]
@@ -47,12 +57,12 @@
             pasos: [
                 {
                     titulo: 'Cómo te llega el correo',
-                    texto: 'Tu solicitud de cita queda en el panel de SITRAINA. La respuesta llega a Mis mensajes si ya iniciaste sesión y el formulario lleva el correo de esa cuenta.',
+                    texto: 'Tu solicitud de cita queda con el sindicato. La respuesta llega a Mis mensajes si ya entraste y usaste el correo de esa cuenta.',
                     icono: '✉'
                 },
                 {
                     titulo: 'Usá un correo que revisés',
-                    texto: 'Iniciá sesión y, en el formulario, poné el correo de esa cuenta. Así la respuesta de administración vuelve a Mis mensajes.',
+                    texto: 'Entrá con tu cuenta y usá ese mismo correo. Así la respuesta del sindicato vuelve a Mis mensajes.',
                     icono: '1'
                 },
                 {
@@ -89,18 +99,18 @@
             omitir: true,
             pasos: [
                 {
-                    titulo: 'Cómo llega tu boleta',
-                    texto: 'Tu boleta queda en el panel. La respuesta llega a Mis mensajes si ya iniciaste sesión y el correo INA o el personal es el de esa cuenta.',
+                    titulo: 'Cómo llega tu solicitud',
+                    texto: 'Tu solicitud queda con el sindicato. La respuesta llega a Mis mensajes si ya entraste y el correo del INA o el personal es el de esa cuenta.',
                     icono: '✉'
                 },
                 {
-                    titulo: 'Correos del formulario',
+                    titulo: 'Tus correos',
                     texto: 'Completá correo INA y/o personal. Si ya iniciaste sesión y uno de esos correos es el de tu cuenta, la respuesta llega a Mis mensajes.',
                     icono: '1'
                 },
                 {
-                    titulo: 'Al enviar la boleta',
-                    texto: 'La página te muestra la confirmación y tu boleta queda en el panel.',
+                    titulo: 'Al enviar la solicitud',
+                    texto: 'La página te muestra la confirmación y tu solicitud queda con el sindicato.',
                     icono: '2'
                 },
                 {
@@ -128,7 +138,7 @@
             pasos: [
                 {
                     titulo: 'Cómo llega tu mensaje',
-                    texto: 'Tu consulta queda en el panel. La respuesta llega a Mis mensajes si ya iniciaste sesión y el formulario usa el correo de esa cuenta.',
+                    texto: 'Tu mensaje queda con el sindicato. La respuesta llega a Mis mensajes si ya entraste y usaste el correo de esa cuenta.',
                     icono: '✉'
                 },
                 {
@@ -138,12 +148,12 @@
                 },
                 {
                     titulo: 'Al enviar',
-                    texto: 'Verás la confirmación en la página. Tu mensaje queda en el panel.',
+                    texto: 'Vas a ver la confirmación en la página. Tu mensaje queda con el sindicato.',
                     icono: '2'
                 },
                 {
                     titulo: 'Cuando te respondan',
-                    texto: 'La respuesta queda en Mis mensajes si enviaste el formulario con la cuenta ya iniciada y con el correo de esa cuenta.',
+                    texto: 'La respuesta queda en Mis mensajes si ya habías entrado y usaste el correo de esa cuenta.',
                     icono: '3'
                 },
                 {

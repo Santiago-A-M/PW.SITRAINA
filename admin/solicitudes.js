@@ -10,7 +10,6 @@
         afilacion: document.getElementById('vista-afilacion'),
         afiliados: document.getElementById('vista-afiliados'),
         cita: document.getElementById('vista-cita'),
-        horario: document.getElementById('vista-horario'),
         contacto: document.getElementById('vista-contacto')
     };
     var vistasLista = { afilacion: 1, cita: 1, contacto: 1 };
@@ -48,8 +47,23 @@
         return tokenCampo.value || '';
     }
 
-    function contarPendientes(lista) {
-        return (lista || []).filter(function (f) { return (f.estado || 'pendiente') === 'pendiente'; }).length;
+    /* La reserva pública guarda la cita como aceptada a nombre de reserva-afiliado.
+       Para el panel sigue pendiente hasta que un administrador la responda. */
+    function filaPendiente(tipo, fila) {
+        if (!fila) return false;
+        if (tipo === 'cita' && String(fila.cancelado_en || '').trim() !== '') return false;
+        var estado = String(fila.estado || 'pendiente').trim().toLowerCase();
+        if (estado === '' || estado === 'pendiente') return true;
+        if (tipo === 'cita' && estado === 'aceptada' && String(fila.admin_usuario || '').trim() === 'reserva-afiliado') {
+            return true;
+        }
+        return false;
+    }
+
+    function contarPendientes(tipo) {
+        return (datos[tipo] || []).filter(function (fila) {
+            return filaPendiente(tipo, fila);
+        }).length;
     }
 
     function etiquetaTipo(tipo) {
@@ -119,9 +133,9 @@
     }
 
     function pintarInicio() {
-        var nAfil = contarPendientes(datos.afilacion);
-        var nCita = contarPendientes(datos.cita);
-        var nContacto = contarPendientes(datos.contacto);
+        var nAfil = contarPendientes('afilacion');
+        var nCita = contarPendientes('cita');
+        var nContacto = contarPendientes('contacto');
         if (inicioPend.afilacion) inicioPend.afilacion.textContent = String(nAfil);
         if (inicioPend.cita) inicioPend.cita.textContent = String(nCita);
         if (inicioPend.contacto) inicioPend.contacto.textContent = String(nContacto);
@@ -326,9 +340,9 @@
             return;
         }
         var mensaje = items.length === 1
-            ? '¿Borrar definitivamente esta consulta de la base de datos?'
-            : ('¿Borrar definitivamente estas ' + items.length + ' consultas de la base de datos?');
-        pedirConfirmacion('Eliminar de la base', mensaje).then(function (aceptado) {
+            ? '¿Querés quitar esta solicitud para siempre? No se puede deshacer.'
+            : ('¿Querés quitar estas ' + items.length + ' solicitudes para siempre? No se puede deshacer.');
+        pedirConfirmacion('Quitar para siempre', mensaje).then(function (aceptado) {
         if (!aceptado) return;
         borrandoPapelera = true;
         actualizarSeleccionPapelera();
@@ -360,8 +374,22 @@
         });
     }
 
+    function ambitoSolicitud() {
+        var papelera = document.getElementById('papelera');
+        if (papelera && !papelera.hidden) return 'papelera';
+        if (vistaActiva === 'cita') return 'cita';
+        if (vistaActiva === 'afiliados' || vistaActiva === 'afilacion') return 'afiliado';
+        if (vistaActiva === 'contacto') return 'contacto';
+        return 'solicitud';
+    }
+
     function mostrarAviso(texto, esError) {
         if (!texto) return;
+        if (window.SitrainaAvisos && window.SitrainaAvisos.contextual) {
+            var tipo = esError ? 'error' : (/…$/.test(texto) ? 'proceso' : 'exito');
+            window.SitrainaAvisos.contextual(tipo, texto, ambitoSolicitud());
+            return;
+        }
         if (window.SitrainaAvisos) {
             if (esError) window.SitrainaAvisos.error('No se pudo completar', texto);
             else if (/…$/.test(texto)) window.SitrainaAvisos.procesando(texto, 'Esperá un momento. No repitas la acción.');
@@ -398,6 +426,13 @@
         return 'Pendiente';
     }
 
+    function textoEstadoFila(fila) {
+        if (fila && fila.cancelado_en) {
+            return parseInt(fila.plazo_vigente, 10) === 1 ? 'Cancelada' : 'Plazo vencido';
+        }
+        return etiquetaEstado((fila && fila.estado) || 'pendiente');
+    }
+
     function claseEstado(estado) {
         if (estado === 'aceptada') return 'sol-estado-aceptada';
         if (estado === 'rechazada') return 'sol-estado-rechazada';
@@ -424,6 +459,68 @@
         return (fila.nombre || 'Sin nombre') + (fila.cedula ? ' · ' + fila.cedula : '');
     }
 
+    function diaSemanaIso(iso) {
+        var partes = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (!partes) return '';
+        var fecha = new Date(Date.UTC(Number(partes[1]), Number(partes[2]) - 1, Number(partes[3])));
+        var nombres = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+        return nombres[fecha.getUTCDay()] || '';
+    }
+
+    function finLegible(hora) {
+        var partes = String(hora || '').split(':');
+        var numero = parseInt(partes[0], 10);
+        if (!partes[1] || isNaN(numero)) return '';
+        numero += 1;
+        if (numero > 23) return '';
+        return horaLegible((numero < 10 ? '0' : '') + numero + ':' + partes[1]);
+    }
+
+    function textoModalidadCita(valor) {
+        if (valor === 'virtual') return 'En línea';
+        if (valor === 'presencial') return 'En persona';
+        return '';
+    }
+
+    function filaGrupo(etiqueta, valor) {
+        if (!valor) return '';
+        return '<p class="item-meta-fila"><span class="item-meta-etiqueta">' + escapar(etiqueta) + '</span><span class="item-meta-valor">' + escapar(valor) + '</span></p>';
+    }
+
+    function htmlGruposCita(fila, estado) {
+        var modalidad = textoModalidadCita(fila.modalidad);
+        var html = '<div class="sol-grupos">';
+        html += '<section class="sol-grupo"><h3>Información del usuario</h3>';
+        html += filaGrupo('Nombre', fila.persona || '—');
+        html += filaGrupo('Correo electrónico', fila.correo || '—');
+        html += filaGrupo('Cédula', fila.cedula || '');
+        html += '</section>';
+        html += '<section class="sol-grupo"><h3>Información de la cita</h3>';
+        html += '<p class="sol-badge ' + claseEstado(fila.cancelado_en ? 'rechazada' : estado) + '">' + escapar(textoEstadoFila(fila)) + '</p>';
+        html += filaGrupo('Fecha', fila.fecha ? textoFechaHora(fila.fecha) : '');
+        html += filaGrupo('Día de la semana', diaSemanaIso(fila.fecha));
+        html += filaGrupo('Hora de inicio', fila.hora ? horaLegible(fila.hora) : '');
+        html += filaGrupo('Hora de finalización', finLegible(fila.hora));
+        html += filaGrupo('Modalidad', modalidad);
+        if (fila.cancelado_en) html += filaGrupo('Cancelada', textoFechaHora(fila.cancelado_en));
+        if (fila.plazo_limite) {
+            html += filaGrupo(
+                'Reprogramar hasta',
+                textoFechaHora(fila.plazo_limite) + (parseInt(fila.plazo_vigente, 10) === 1 ? ' (360 horas desde la cancelación)' : ' (plazo vencido)')
+            );
+        }
+        html += '</section>';
+        html += '<section class="sol-grupo"><h3>Información de la solicitud</h3>';
+        html += filaGrupo('Motivo', fila.motivo || '');
+        html += filaGrupo('Notas', fila.notas || '');
+        html += filaGrupo('Recibida', fila.creado_en ? textoFechaHora(fila.creado_en) : '');
+        html += filaGrupo('Respuesta guardada', fila.respuesta || '');
+        html += filaGrupo('Respondió', fila.admin_usuario || '');
+        html += filaGrupo('Respondido', fila.respondido_en ? textoFechaHora(fila.respondido_en) : '');
+        html += '</section></div>';
+        return html;
+    }
+
     function metaFila(tipo, fila) {
         var partes = [];
         if (fila.correo) partes.push({ et: 'Correo', val: fila.correo });
@@ -432,8 +529,19 @@
             if (fila.mensaje) partes.push({ et: 'Mensaje', val: fila.mensaje });
         }
         if (tipo === 'cita') {
-            if (fila.fecha) partes.push({ et: 'Fecha', val: fila.fecha });
+            if (fila.fecha) partes.push({ et: fila.cancelado_en ? 'Día que tenía' : 'Fecha', val: fila.fecha });
             if (fila.hora) partes.push({ et: 'Hora', val: fila.hora });
+            if (fila.cancelado_en) {
+                partes.push({ et: 'Cancelada', val: textoFechaHora(fila.cancelado_en) });
+                if (fila.plazo_limite) {
+                    partes.push({
+                        et: 'Reprogramar hasta',
+                        val: textoFechaHora(fila.plazo_limite) + (parseInt(fila.plazo_vigente, 10) === 1
+                            ? ' (360 horas desde la cancelación)'
+                            : ' (plazo vencido)')
+                    });
+                }
+            }
             if (fila.motivo) partes.push({ et: 'Motivo', val: fila.motivo });
         }
         if (tipo === 'afilacion') {
@@ -446,7 +554,226 @@
         return partes;
     }
 
-    function htmlResponder(estadoActual, texto, oculto) {
+    var cuposActuales = { fechas: {}, horas: [], ocupados: {} };
+
+    function horaLegible(hora) {
+        var partes = String(hora || '').split(':');
+        var numero = parseInt(partes[0], 10);
+        if (!partes[1] || isNaN(numero)) return String(hora || '');
+        var sufijo = numero >= 12 ? 'p. m.' : 'a. m.';
+        var doce = numero % 12;
+        if (doce === 0) doce = 12;
+        return doce + ':' + partes[1] + ' ' + sufijo;
+    }
+
+    function cupoOcupado(fecha, hora, propia) {
+        var dia = String(fecha || '').slice(0, 10);
+        if (propia && dia === propia) return false;
+        if (cuposActuales.ocupados[dia]) return true;
+        return !!cuposActuales.ocupados[dia + ' ' + hora];
+    }
+
+    function horasLibres(fecha) {
+        return cuposActuales.horas.filter(function (hora) { return !cupoOcupado(fecha, hora); }).length;
+    }
+
+    function isoDia(anio, mes, dia) {
+        return anio + '-' + String(mes).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
+    }
+
+    function hoyIso() {
+        var hoy = new Date();
+        return isoDia(hoy.getFullYear(), hoy.getMonth() + 1, hoy.getDate());
+    }
+
+    function iniciarCupos(caja) {
+        var estado = caja.querySelector('.sol-cupos-estado');
+        var mes = caja.querySelector('.sol-cita-mes');
+        if (mes && !mes.value) {
+            var ahora = new Date();
+            mes.value = ahora.getFullYear() + '-' + String(ahora.getMonth() + 1).padStart(2, '0');
+        }
+        if (estado) estado.textContent = 'Un momento, estamos preparando el mes.';
+        Promise.all([
+            fetch('agenda.php', { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.json().catch(function () { return null; }); }),
+            fetch('solicitudes.php?tipo=cupos', { credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.json().catch(function () { return null; }); })
+        ]).then(function (respuestas) {
+            if (!caja.isConnected) return;
+            var agenda = respuestas[0] || {};
+            var cupos = respuestas[1] || {};
+            cuposActuales = { fechas: {}, horas: [], ocupados: {} };
+            (agenda.reglas || []).forEach(function (fila) {
+                if (fila.tipo === 'fecha') cuposActuales.fechas[fila.valor] = fila.estado || '';
+                if (fila.tipo === 'hora' && fila.estado === 'abierta') cuposActuales.horas.push(fila.valor);
+            });
+            cuposActuales.horas.sort();
+            if (cupos.ok && cupos.cupos) {
+                (cupos.cupos.ocupados || []).forEach(function (clave) {
+                    var texto = String(clave || '');
+                    cuposActuales.ocupados[texto] = true;
+                    var dia = texto.slice(0, 10);
+                    if (/^\d{4}-\d{2}-\d{2}$/.test(dia)) cuposActuales.ocupados[dia] = true;
+                });
+            }
+            pintarMesCita(caja);
+        }).catch(function () {
+            if (estado && caja.isConnected) estado.textContent = 'No se pudo cargar el calendario.';
+        });
+    }
+
+    function pintarMesCita(caja) {
+        var mesCampo = caja.querySelector('.sol-cita-mes');
+        var dias = caja.querySelector('.sol-cita-dias');
+        var estado = caja.querySelector('.sol-cupos-estado');
+        if (!mesCampo || !dias || !/^\d{4}-\d{2}$/.test(mesCampo.value)) return;
+        var partes = mesCampo.value.split('-');
+        var anio = Number(partes[0]);
+        var mes = Number(partes[1]);
+        var inicio = new Date(anio, mes - 1, 1);
+        var desplazamiento = (inicio.getDay() + 6) % 7;
+        var total = new Date(anio, mes, 0).getDate();
+        var hoy = hoyIso();
+        var elegida = caja.getAttribute('data-fecha') || '';
+        var html = '';
+        var i;
+        for (i = 0; i < desplazamiento; i += 1) html += '<span></span>';
+        for (var dia = 1; dia <= total; dia += 1) {
+            var iso = isoDia(anio, mes, dia);
+            var marca = cuposActuales.fechas[iso] || '';
+            var cerrado = marca === 'bloqueada' || marca === 'ocupada' || iso < hoy;
+            var clase = 'sol-cita-dia';
+            if (marca === 'bloqueada') clase += ' sol-cita-no-habil';
+            if (marca === 'ocupada') clase += ' sol-cita-ocupada';
+            if (iso === elegida) clase += ' sol-cita-activo';
+            html += '<button type="button" class="' + clase + '" data-cita-dia="' + iso + '"' + (cerrado ? ' disabled' : '') + ' aria-pressed="' + (iso === elegida ? 'true' : 'false') + '">';
+            html += String(dia);
+            html += '</button>';
+        }
+        dias.innerHTML = html;
+        if (estado) {
+            estado.textContent = elegida
+                ? 'Día ' + textoFechaHora(elegida) + '. Elegí la hora.'
+                : 'Elegí el día. Los que no están disponibles no se pueden usar.';
+        }
+        pintarHorasCupo(caja, elegida);
+    }
+
+    function pintarHorasCupo(caja, fecha) {
+        var horas = caja.querySelector('.sol-cupos-horas');
+        var reloj = caja.querySelector('.sol-cita-reloj');
+        if (reloj) reloj.hidden = !fecha;
+        if (!horas) return;
+        if (!fecha) {
+            horas.hidden = true;
+            horas.innerHTML = '';
+            return;
+        }
+        horas.hidden = !cuposActuales.horas.length;
+        var actual = caja.getAttribute('data-hora') || '';
+        var propia = caja.getAttribute('data-cupo-propio') || '';
+        var html = '';
+        cuposActuales.horas.forEach(function (hora) {
+            var tomado = cupoOcupado(fecha, hora, propia);
+            var activo = !tomado && hora === actual;
+            html += '<button type="button" class="sol-cupo' + (tomado ? ' sol-cupo-ocupado' : '') + (activo ? ' sol-cupo-activo' : '') + '" data-cupo-hora="' + escapar(hora) + '"' + (tomado ? ' disabled' : '') + ' aria-pressed="' + (activo ? 'true' : 'false') + '">';
+            html += escapar(horaLegible(hora));
+            if (tomado) html += ' · Ocupado';
+            html += '</button>';
+        });
+        horas.innerHTML = html;
+    }
+
+    function horaDesdeReloj(caja) {
+        var campoHora = caja.querySelector('.sol-cita-h12');
+        var campoMin = caja.querySelector('.sol-cita-min');
+        var pm = caja.querySelector('.sol-cita-periodo[data-periodo="pm"]');
+        if (!campoHora || !campoMin) return '';
+        var hora = parseInt(campoHora.value, 10);
+        var minuto = parseInt(campoMin.value, 10);
+        if (!(hora >= 1 && hora <= 12) || !(minuto >= 0 && minuto <= 59)) return '';
+        var esPm = pm && pm.getAttribute('aria-pressed') === 'true';
+        if (hora === 12) hora = 0;
+        if (esPm) hora += 12;
+        return String(hora).padStart(2, '0') + ':' + String(minuto).padStart(2, '0');
+    }
+
+    function ponerReloj(caja, hora) {
+        var partes = String(hora || '').split(':');
+        var numero = parseInt(partes[0], 10);
+        var campoHora = caja.querySelector('.sol-cita-h12');
+        var campoMin = caja.querySelector('.sol-cita-min');
+        if (!campoHora || !campoMin || isNaN(numero)) return;
+        var esPm = numero >= 12;
+        var doce = numero % 12;
+        if (doce === 0) doce = 12;
+        campoHora.value = String(doce);
+        campoMin.value = partes[1] || '00';
+        caja.querySelectorAll('.sol-cita-periodo').forEach(function (boton) {
+            var activo = boton.getAttribute('data-periodo') === (esPm ? 'pm' : 'am');
+            boton.setAttribute('aria-pressed', activo ? 'true' : 'false');
+        });
+    }
+
+    function textoElegidoCita(caja) {
+        var elegido = caja.querySelector('.sol-cupo-elegido');
+        if (!elegido) return;
+        var fecha = caja.getAttribute('data-fecha') || '';
+        var hora = caja.getAttribute('data-hora') || '';
+        if (!fecha) {
+            elegido.textContent = 'Todavía no elegiste el día.';
+            return;
+        }
+        if (!hora) {
+            elegido.textContent = 'Día: ' + textoFechaHora(fecha) + '. Falta la hora.';
+            return;
+        }
+        elegido.textContent = 'Se hará el ' + textoFechaHora(fecha) + ' · ' + horaLegible(hora);
+    }
+
+    function aplicarReloj(caja) {
+        if (!caja) return;
+        var fecha = caja.getAttribute('data-fecha') || '';
+        var hora = horaDesdeReloj(caja);
+        if (!fecha || !hora) {
+            caja.removeAttribute('data-hora');
+            pintarHorasCupo(caja, fecha);
+            textoElegidoCita(caja);
+            return;
+        }
+        if (cupoOcupado(fecha, hora, caja.getAttribute('data-cupo-propio') || '')) {
+            caja.removeAttribute('data-hora');
+            pintarHorasCupo(caja, fecha);
+            var elegido = caja.querySelector('.sol-cupo-elegido');
+            if (elegido) elegido.textContent = 'Esa hora ya está ocupada en ese día.';
+            return;
+        }
+        caja.setAttribute('data-hora', hora);
+        pintarHorasCupo(caja, fecha);
+        textoElegidoCita(caja);
+    }
+
+    function elegirDiaCita(boton) {
+        var caja = boton.closest('.sol-cupos');
+        if (!caja || boton.disabled) return;
+        var fecha = boton.getAttribute('data-cita-dia') || '';
+        caja.setAttribute('data-fecha', fecha);
+        caja.removeAttribute('data-hora');
+        pintarMesCita(caja);
+        aplicarReloj(caja);
+    }
+
+    function elegirCupo(boton) {
+        var caja = boton.closest('.sol-cupos');
+        if (!caja) return;
+        var hora = boton.getAttribute('data-cupo-hora');
+        if (!hora) return;
+        ponerReloj(caja, hora);
+        caja.setAttribute('data-hora', hora);
+        pintarHorasCupo(caja, caja.getAttribute('data-fecha') || '');
+        textoElegidoCita(caja);
+    }
+
+    function htmlResponder(estadoActual, texto, oculto, pedirFecha) {
         var elegido = estadoActual === 'aceptada' || estadoActual === 'rechazada' || estadoActual === 'neutral'
             ? estadoActual
             : 'neutral';
@@ -455,8 +782,29 @@
         html += '<div class="sol-decisiones" role="group" aria-label="Decisión">';
         html += '<button type="button" class="sol-chip" data-estado="aceptada" aria-pressed="' + (elegido === 'aceptada' ? 'true' : 'false') + '">Aceptar</button>';
         html += '<button type="button" class="sol-chip" data-estado="rechazada" aria-pressed="' + (elegido === 'rechazada' ? 'true' : 'false') + '">Rechazar</button>';
-        html += '<button type="button" class="sol-chip" data-estado="neutral" aria-pressed="' + (elegido === 'neutral' ? 'true' : 'false') + '">Neutral</button>';
+        html += '<button type="button" class="sol-chip" data-estado="neutral" aria-pressed="' + (elegido === 'neutral' ? 'true' : 'false') + '">Sin decisión</button>';
         html += '</div>';
+        if (pedirFecha) {
+            html += '<div class="sol-cupos">';
+            html += '<p class="sol-decision-label">Cuándo se hará</p>';
+            html += '<p class="asistente-nota">Elegí el mes, el día y la hora. Si el día no está disponible, no se ofrece. Si no la aceptás, esa hora queda libre.</p>';
+            html += '<label class="asistente-label" for="sol-cita-mes">Mes';
+            html += '<input id="sol-cita-mes" class="sol-cita-mes" type="month">';
+            html += '</label>';
+            html += '<div class="sol-cita-semana" aria-hidden="true"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>';
+            html += '<div class="sol-cita-dias" role="group" aria-label="Días del mes"></div>';
+            html += '<p class="sol-cupos-estado">Un momento, estamos preparando el mes.</p>';
+            html += '<div class="sol-cupos-horas" role="group" aria-label="Horas guardadas" hidden></div>';
+            html += '<div class="sol-cita-reloj" hidden>';
+            html += '<label>Hora <input class="sol-cita-h12" inputmode="numeric" maxlength="2" value="7" autocomplete="off"></label>';
+            html += '<label>Minutos <input class="sol-cita-min" inputmode="numeric" maxlength="2" value="00" autocomplete="off"></label>';
+            html += '<div class="sol-cita-periodo-grupo" role="group" aria-label="a. m. o p. m.">';
+            html += '<button type="button" class="sol-cita-periodo" data-periodo="am" aria-pressed="true">a. m.</button>';
+            html += '<button type="button" class="sol-cita-periodo" data-periodo="pm" aria-pressed="false">p. m.</button>';
+            html += '</div></div>';
+            html += '<p class="sol-cupo-elegido">Todavía no elegiste el día.</p>';
+            html += '</div>';
+        }
         html += '<label class="asistente-label" for="sol-ficha-mensaje">Mensaje de la respuesta';
         html += '<textarea id="sol-ficha-mensaje" class="sol-mensaje" rows="5" maxlength="4000" placeholder="Escribí con claridad qué se acepta, qué se rechaza o la información que necesitás dar.">' + escapar(texto || '') + '</textarea>';
         html += '</label>';
@@ -488,48 +836,14 @@
 
     function htmlConsultaReciente(tipo, fila) {
         var nombre = tipo === 'cita' ? (fila.persona || 'Sin nombre') : (fila.nombre || 'Sin nombre');
-        var detalle = '';
-        if (tipo === 'contacto') detalle = fila.asunto || '';
-        else if (tipo === 'cita') detalle = fila.motivo || '';
-        else if (fila.cedula) detalle = 'Cédula ' + fila.cedula;
         var cuando = textoFechaHora(claveReciente(fila));
-        var html = '<li class="inicio-card inicio-card-cita inicio-card-enlace" data-admin-nav="' + escapar(tipo) + '" role="button" tabindex="0">';
-        html += '<div class="inicio-card-cuerpo">';
-        html += '<div class="inicio-card-top">';
-        html += '<strong>' + escapar(nombre) + '</strong>';
-        html += '<span class="sol-badge ' + claseEstado(fila.estado || 'pendiente') + '">' + escapar(etiquetaEstado(fila.estado || 'pendiente')) + '</span>';
-        html += '</div>';
-        html += '<p class="inicio-card-meta">' + escapar(etiquetaTipo(tipo));
-        if (cuando) html += ' · ' + escapar(cuando);
-        html += '</p>';
-        if (detalle) html += '<p class="inicio-card-meta">' + escapar(detalle) + '</p>';
         var seccion = tipo === 'cita' ? 'Citas' : (tipo === 'afilacion' ? 'Afiliaciones' : 'Contacto');
-        html += '<p class="inicio-card-meta inicio-card-accion">Abrir en ' + escapar(seccion) + '</p>';
+        var html = '<li class="inicio-card inicio-card-cita inicio-card-enlace" data-admin-nav="' + escapar(tipo) + '" role="button" tabindex="0"';
+        html += ' aria-label="' + escapar(nombre + (cuando ? ', ' + cuando : '') + '. Abrir en ' + seccion) + '">';
+        html += '<div class="inicio-card-cuerpo">';
+        html += '<strong>' + escapar(nombre) + '</strong>';
+        if (cuando) html += '<p class="inicio-card-meta">' + escapar(cuando) + '</p>';
         html += '</div></li>';
-        return html;
-    }
-
-    function partesCita(fila) {
-        var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-        var trozos = String(fila.fecha || '').split('-');
-        var dia = '—';
-        var mes = '';
-        if (trozos.length === 3) {
-            var nDia = parseInt(trozos[2], 10);
-            var nMes = parseInt(trozos[1], 10);
-            if (nDia > 0) dia = String(nDia);
-            if (nMes >= 1 && nMes <= 12) mes = meses[nMes - 1];
-        }
-        return { dia: dia, mes: mes, hora: String(fila.hora || '').trim() };
-    }
-
-    function htmlSelloCita(fila) {
-        var sello = partesCita(fila);
-        var html = '<span class="cita-sello" aria-hidden="true">';
-        html += '<span class="cita-sello-dia">' + escapar(sello.dia) + '</span>';
-        if (sello.mes) html += '<span class="cita-sello-mes">' + escapar(sello.mes) + '</span>';
-        if (sello.hora) html += '<span class="cita-sello-hora">' + escapar(sello.hora) + '</span>';
-        html += '</span>';
         return html;
     }
 
@@ -538,7 +852,9 @@
         if (!caja) return;
         var filas = datos[tipo] || [];
         if (!filas.length) {
-            caja.innerHTML = '<p class="vacio-bloque">No hay solicitudes de este tipo todavía.</p>';
+            caja.innerHTML = '<p class="vacio-bloque">' + (tipo === 'cita'
+                ? 'Todavía no hay citas.'
+                : 'No hay solicitudes de este tipo todavía.') + '</p>';
             return;
         }
         var html = '<ul class="rejilla-casillas sol-rejilla">';
@@ -546,15 +862,19 @@
             var id = String(fila.id);
             var estado = fila.estado || 'pendiente';
             var tieneCuenta = parseInt(fila.cuenta_web, 10) === 1;
-            html += '<li class="sol-item' + (tipo === 'cita' ? ' sol-item-cita' : '') + '" data-sol-id="' + escapar(id) + '" data-sol-tipo="' + escapar(tipo) + '" data-sol-cuenta="' + (tieneCuenta ? '1' : '0') + '">';
-            html += '<button type="button" class="sol-tarjeta">';
-            if (tipo === 'cita') html += htmlSelloCita(fila);
-            html += '<span class="sol-tarjeta-cuerpo">';
-            html += '<span class="sol-tapa-tipo">' + escapar(etiquetaTipo(tipo)) + '</span>';
-            html += '<span class="casilla-titulo">' + escapar(tipo === 'cita' ? (fila.persona || 'Sin nombre') : tituloFila(tipo, fila)) + '</span>';
-            if (tipo !== 'cita') html += '<span class="sol-tapa-fecha">' + escapar(fila.creado_en || '') + '</span>';
-            html += '<span class="sol-badge ' + claseEstado(estado) + '">' + escapar(etiquetaEstado(estado)) + '</span>';
-            html += '</span></button></li>';
+            var nombre = tipo === 'cita' ? (fila.persona || 'Sin nombre') : (fila.nombre || 'Sin nombre');
+            var cuando = tipo === 'cita'
+                ? (fila.fecha ? textoFechaHora([fila.fecha, fila.hora].filter(Boolean).join(' ')) : '')
+                : textoFechaHora(fila.creado_en || '');
+            var estadoTexto = textoEstadoFila(fila);
+            html += '<li class="sol-item sol-fila" data-sol-id="' + escapar(id) + '" data-sol-tipo="' + escapar(tipo) + '" data-sol-cuenta="' + (tieneCuenta ? '1' : '0') + '">';
+            html += '<button type="button" class="sol-tarjeta" aria-label="' + escapar(nombre + (cuando ? ', ' + cuando : '') + '. ' + estadoTexto) + '">';
+            html += '<span class="sol-fila-texto">';
+            html += '<span class="casilla-titulo">' + escapar(nombre) + '</span>';
+            if (cuando) html += '<span class="sol-tapa-fecha">' + escapar(cuando) + '</span>';
+            html += '</span>';
+            html += '<span class="sol-badge ' + claseEstado(estado) + '">' + escapar(estadoTexto) + '</span>';
+            html += '</button></li>';
         });
         html += '</ul>';
         caja.innerHTML = html;
@@ -564,7 +884,7 @@
         var tipo = item.getAttribute('data-sol-tipo');
         var id = parseInt(item.getAttribute('data-sol-id'), 10);
         if (!tipo || !(id > 0)) return;
-        pedirConfirmacion('Eliminar de la base', '¿Eliminar esta consulta de la base de datos? Esta acción no se puede deshacer.').then(function (aceptado) {
+        pedirConfirmacion('Quitar para siempre', '¿Querés quitar esta solicitud para siempre? No se puede deshacer.').then(function (aceptado) {
         if (!aceptado) return;
         mostrarAviso('Eliminando…');
         var cuerpo = new FormData();
@@ -617,7 +937,7 @@
     function eliminarAfiliado(id) {
         var idNum = parseInt(id, 10);
         if (!(idNum > 0) || guardandoAfiliado) return;
-        pedirConfirmacion('Eliminar afiliado', '¿Eliminar este afiliado de la base? Ya no podrá validar Solicitar cita con esos datos.').then(function (aceptado) {
+        pedirConfirmacion('Quitar a esta persona', '¿Querés quitar a esta persona? Ya no podrá pedir cita con esos datos.').then(function (aceptado) {
             if (!aceptado) return;
             guardandoAfiliado = true;
             var cuerpo = new FormData();
@@ -652,14 +972,15 @@
             listaAfiliados.innerHTML = '<p class="vacio-bloque">Todavía no hay afiliados. Usá Añadir afiliado para registrar cédula, nombre y correo.</p>';
             return;
         }
+        var icono = '<span class="afiliado-icono" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.5" fill="currentColor"/><path fill="currentColor" d="M5 19.4c.5-3.5 3.2-5.3 7-5.3s6.5 1.8 7 5.3c.1.4-.2.8-.6.8H5.6c-.4 0-.7-.4-.6-.8z"/></svg></span>';
         var html = '<ul class="rejilla-casillas sol-rejilla">';
         filas.forEach(function (fila) {
             var id = String(fila.id);
-            html += '<li class="sol-item" data-sol-id="' + escapar(id) + '" data-sol-tipo="afiliados">';
-            html += '<button type="button" class="sol-tarjeta">';
-            html += '<span class="sol-tapa-tipo">Afiliado</span>';
-            html += '<span class="casilla-titulo">' + escapar((fila.nombre_completo || 'Sin nombre') + (fila.cedula ? ' · ' + fila.cedula : '')) + '</span>';
-            html += '<span class="sol-badge sol-estado-aceptada">Cuenta</span>';
+            var nombre = fila.nombre_completo || 'Sin nombre';
+            html += '<li class="sol-item afiliado-casilla" data-sol-id="' + escapar(id) + '" data-sol-tipo="afiliados">';
+            html += '<button type="button" class="sol-tarjeta" aria-label="' + escapar(nombre) + '">';
+            html += icono;
+            html += '<span class="afiliado-nombre">' + escapar(nombre) + '</span>';
             html += '</button></li>';
         });
         html += '</ul>';
@@ -669,9 +990,9 @@
     function cargar(silencioso, sinAviso) {
         if (!silencioso) {
             Object.keys(listas).forEach(function (clave) {
-                if (listas[clave]) listas[clave].innerHTML = '<p class="vacio-bloque">Cargando…</p>';
+                if (listas[clave]) listas[clave].innerHTML = '<p class="vacio-bloque">Un momento, por favor.</p>';
             });
-            if (listaAfiliados) listaAfiliados.innerHTML = '<p class="vacio-bloque">Cargando…</p>';
+            if (listaAfiliados) listaAfiliados.innerHTML = '<p class="vacio-bloque">Un momento, por favor.</p>';
         }
         return fetch('solicitudes.php?tipo=todas', { cache: 'no-store', credentials: 'same-origin' })
             .then(function (r) { return r.json().catch(function () { return null; }); })
@@ -720,35 +1041,109 @@
     }
 
     function sincronizarAdvertencias() {
-        var pendientes = [];
-        ['contacto', 'cita', 'afilacion'].forEach(function (tipo) {
-            (datos[tipo] || []).forEach(function (fila) {
-                if ((fila.estado || 'pendiente') !== 'pendiente') return;
-                pendientes.push({ tipo: tipo, fila: fila });
-            });
-        });
-        pendientes.sort(function (a, b) {
-            var ca = claveReciente(a.fila);
-            var cb = claveReciente(b.fila);
-            if (ca !== cb) return cb.localeCompare(ca);
-            return (parseInt(b.fila.id, 10) || 0) - (parseInt(a.fila.id, 10) || 0);
-        });
-        var claves = pendientes.map(function (item) { return claveAviso(item.tipo, item.fila); });
-        var llegaronNuevas = false;
-        if (avisosConocidos) {
-            llegaronNuevas = claves.some(function (clave) {
-                return avisosConocidos.indexOf(clave) === -1;
-            });
-        }
-        avisosConocidos = claves;
+        /* La campana se llena desde notificaciones.php. */
+    }
+
+    var firmaAvisos = '';
+    var avisosListos = false;
+    var notasVistas = null;
+
+    function textoNota(aviso) {
+        var cuando = aviso.cuando ? ' · ' + aviso.cuando : '';
+        return (aviso.titulo ? aviso.titulo + ': ' : '') + (aviso.texto || '') + cuando;
+    }
+
+    function pintarNotas(json, avisar) {
         if (!window.adminSincronizarConsultas) return;
-        window.adminSincronizarConsultas(pendientes.slice(0, 12).map(function (item) {
+        var lista = (json.avisos || []).map(function (aviso) {
             return {
-                tipo: item.tipo,
-                id: item.fila.id,
-                texto: textoAviso(item.tipo, item.fila)
+                tipo: aviso.tipo,
+                id: aviso.origen_id,
+                marca: aviso.marca,
+                leido: aviso.leido === 1 || aviso.leido === true,
+                titulo: aviso.titulo || '',
+                detalle: aviso.texto || '',
+                cuando: aviso.cuando || '',
+                texto: textoNota(aviso)
             };
-        }), llegaronNuevas);
+        });
+        window.adminSincronizarConsultas(lista, avisar, json.no_leidas);
+    }
+
+    function marcarNota(tipo, id, marca, todas) {
+        if (!tokenCampo) return;
+        var cuerpo = new FormData();
+        cuerpo.append('token', tokenCampo.value || '');
+        cuerpo.append('accion', todas ? 'leidas' : 'leida');
+        if (!todas) {
+            cuerpo.append('tipo', tipo || '');
+            cuerpo.append('id', id || '');
+            cuerpo.append('marca', marca || '');
+        }
+        fetch('notificaciones.php', { method: 'POST', body: cuerpo, credentials: 'same-origin', cache: 'no-store' })
+            .then(function (r) { return r.json().catch(function () { return null; }); })
+            .then(function (json) {
+                if (!json || !json.ok) return;
+                firmaAvisos = json.firma || firmaAvisos;
+                pintarNotas(json, false);
+            })
+            .catch(function () {});
+    }
+
+    window.adminMarcarNotificacion = function (tipo, id, marca) {
+        marcarNota(tipo, id, marca, false);
+    };
+
+    function mostrarNotaEsquina(texto, tipo) {
+        if (!texto) return;
+        var caja = document.getElementById('admin-notas-flotantes');
+        if (!caja) {
+            caja = document.createElement('div');
+            caja.id = 'admin-notas-flotantes';
+            caja.className = 'sit-notas';
+            caja.setAttribute('aria-live', 'polite');
+            document.body.appendChild(caja);
+        }
+        var nota = document.createElement('p');
+        nota.className = 'sit-nota sit-nota-' + (tipo || 'cita');
+        nota.textContent = texto;
+        caja.appendChild(nota);
+        window.setTimeout(function () {
+            nota.classList.add('sit-nota-sale');
+            window.setTimeout(function () {
+                if (nota.parentNode) nota.parentNode.removeChild(nota);
+            }, 280);
+        }, 5600);
+    }
+
+    function consultarNotas() {
+        if (document.hidden) return;
+        fetch('notificaciones.php', { credentials: 'same-origin', cache: 'no-store' })
+            .then(function (r) { return r.json().catch(function () { return null; }); })
+            .then(function (json) {
+                if (!json || !json.ok) return;
+                var cambio = avisosListos && json.firma && json.firma !== firmaAvisos;
+                var primeras = !avisosListos;
+                firmaAvisos = json.firma || '';
+                avisosListos = true;
+                if (!primeras && (cambio || !cargado)) cargar(true, true);
+                var nuevas = [];
+                if (!primeras) {
+                    (json.avisos || []).forEach(function (aviso) {
+                        if (aviso.leido) return;
+                        var clave = aviso.tipo + ':' + aviso.origen_id + ':' + aviso.marca;
+                        if (!notasVistas || notasVistas.indexOf(clave) === -1) nuevas.push(aviso);
+                    });
+                }
+                notasVistas = (json.avisos || []).map(function (aviso) {
+                    return aviso.tipo + ':' + aviso.origen_id + ':' + aviso.marca;
+                });
+                pintarNotas(json, nuevas.length > 0);
+                nuevas.slice(0, 3).forEach(function (aviso) {
+                    mostrarNotaEsquina(textoNota(aviso), aviso.tipo);
+                });
+            })
+            .catch(function () {});
     }
 
     window.adminAbrirConsulta = function (tipo, id) {
@@ -818,6 +1213,7 @@
 
     function mostrarVista(nombre) {
         cerrarFicha();
+        if (document.body.classList.contains('panel-abogado')) nombre = 'cita';
         if (!vistas[nombre]) nombre = 'agenda';
         if (cambiandoVista) return;
         if (nombre === vistaActiva) {
@@ -1067,33 +1463,43 @@
             : metaFila(tipo, fila);
         if (tipo === 'afiliados' && fila.creado_en) partes.push({ et: 'Registrado', val: fila.creado_en });
         var html = '';
-        if (tipo !== 'afiliados') {
-            html += '<p class="sol-badge ' + claseEstado(estado) + '">' + escapar(etiquetaEstado(estado)) + '</p>';
+        if (tipo === 'cita') {
+            html = htmlGruposCita(fila, estado);
+        } else {
+            if (tipo !== 'afiliados') {
+                html += '<p class="sol-badge ' + claseEstado(estado) + '">' + escapar(textoEstadoFila(fila)) + '</p>';
+            }
+            partes.forEach(function (m) {
+                html += '<p class="item-meta-fila"><span class="item-meta-etiqueta">' + escapar(m.et) + '</span>';
+                html += '<span class="item-meta-valor">' + escapar(m.val) + '</span></p>';
+            });
         }
-        partes.forEach(function (m) {
-            html += '<p class="item-meta-fila"><span class="item-meta-etiqueta">' + escapar(m.et) + '</span>';
-            html += '<span class="item-meta-valor">' + escapar(m.val) + '</span></p>';
-        });
         meta.innerHTML = html;
         var acc = '';
         if (tipo === 'afiliados') {
-            acc += '<button type="button" class="btn-atajo btn-atajo-secundario sol-eliminar-afiliado">Eliminar de la base</button>';
+            acc += '<button type="button" class="btn-atajo btn-atajo-secundario sol-eliminar-afiliado">Quitar para siempre</button>';
         } else {
             if (!tieneCuenta) {
                 acc += '<p class="sol-sin-cuenta">No se envió con la cuenta iniciada: la respuesta queda en el panel, no en Mis mensajes.</p>';
             }
+            var pedirHorario = tipo === 'cita' && estado !== 'aceptada';
             if (ya) {
-                acc += htmlResponder(estado, fila.respuesta || '', true);
+                acc += htmlResponder(estado, fila.respuesta || '', true, pedirHorario);
                 acc += '<div class="sol-acciones-pie">';
                 acc += '<button type="button" class="btn-atajo sol-editar">Editar</button>';
-                acc += '<button type="button" class="btn-atajo btn-atajo-secundario sol-eliminar">Eliminar de la base</button>';
+                acc += '<button type="button" class="btn-atajo btn-atajo-secundario sol-eliminar">Quitar para siempre</button>';
                 acc += '</div>';
             } else {
-                acc += htmlResponder('neutral', '', false);
-                acc += '<button type="button" class="btn-atajo btn-atajo-secundario sol-eliminar">Eliminar de la base</button>';
+                acc += htmlResponder('neutral', '', false, tipo === 'cita');
+                acc += '<button type="button" class="btn-atajo btn-atajo-secundario sol-eliminar">Quitar para siempre</button>';
             }
         }
         acciones.innerHTML = acc;
+        var cuposCaja = acciones.querySelector('.sol-cupos');
+        if (cuposCaja && tipo === 'cita' && fila.fecha && !String(fila.cancelado_en || '').trim() && (fila.estado || '') !== 'rechazada') {
+            cuposCaja.setAttribute('data-cupo-propio', String(fila.fecha).slice(0, 10));
+        }
+        if (cuposCaja) iniciarCupos(cuposCaja);
         caja.hidden = false;
         var foco = caja.querySelector('.sol-ficha-cerrar');
         if (foco) foco.focus();
@@ -1125,7 +1531,18 @@
             textarea.focus();
             return;
         }
-        previewPendiente = { item: item, tipo: tipo, id: id, estado: estado, mensaje: mensaje };
+        var fechaAsignada = '';
+        var horaAsignada = '';
+        var cupos = item.querySelector('.sol-cupos');
+        if (estado === 'aceptada' && cupos) {
+            fechaAsignada = cupos.getAttribute('data-fecha') || '';
+            horaAsignada = cupos.getAttribute('data-hora') || '';
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaAsignada) || !/^\d{2}:\d{2}$/.test(horaAsignada)) {
+                mostrarAviso('Elegí un día disponible y una hora libre.', true);
+                return;
+            }
+        }
+        previewPendiente = { item: item, tipo: tipo, id: id, estado: estado, mensaje: mensaje, fecha: fechaAsignada, hora: horaAsignada };
         var caja = document.getElementById('sol-preview');
         var estadoNodo = document.getElementById('sol-preview-estado');
         var cuentaNodo = document.getElementById('sol-preview-cuenta');
@@ -1139,7 +1556,13 @@
                 cuentaNodo.textContent += ' Al guardar, el mensaje lleva la etiqueta Editado.';
             }
         }
-        if (cuerpoNodo) cuerpoNodo.textContent = mensaje;
+        if (cuerpoNodo) {
+            var extraCita = '';
+            if (estado === 'aceptada' && fechaAsignada && horaAsignada && mensaje.toLowerCase().indexOf('cita confirmada para el') === -1) {
+                extraCita = '\n\nCita confirmada para el ' + textoFechaHora(fechaAsignada + ' ' + horaAsignada) + '.';
+            }
+            cuerpoNodo.textContent = mensaje + extraCita;
+        }
         if (caja) caja.hidden = false;
     }
 
@@ -1158,6 +1581,10 @@
         if (item.getAttribute('data-sol-editar') === '1') {
             cuerpo.append('editar', '1');
         }
+        if (estado === 'aceptada' && previewPendiente && previewPendiente.fecha && previewPendiente.hora) {
+            cuerpo.append('fecha_asignada', previewPendiente.fecha);
+            cuerpo.append('hora_asignada', previewPendiente.hora);
+        }
         fetch('solicitudes.php', { method: 'POST', body: cuerpo, credentials: 'same-origin' })
             .then(function (r) { return r.json().catch(function () { return null; }); })
             .then(function (json) {
@@ -1166,6 +1593,9 @@
                     throw new Error((json && json.mensaje) || 'No se pudo enviar.');
                 }
                 mostrarAviso(json.mensaje || 'Respuesta guardada.');
+                if (tipo === 'cita' && (json.estado || estado) === 'aceptada') {
+                    document.dispatchEvent(new CustomEvent('sitraina-agenda-actualizar'));
+                }
                 cerrarPreview();
                 cerrarFicha();
                 aplicarEstadoLocal(tipo, id, json.estado || estado, {
@@ -1225,6 +1655,27 @@
                 cerrarFicha();
                 return;
             }
+            var diaCita = evento.target.closest('.sol-cita-dia');
+            if (diaCita && !diaCita.disabled) {
+                elegirDiaCita(diaCita);
+                return;
+            }
+            var periodo = evento.target.closest('.sol-cita-periodo');
+            if (periodo) {
+                var grupoPeriodo = periodo.parentNode;
+                if (grupoPeriodo) {
+                    grupoPeriodo.querySelectorAll('.sol-cita-periodo').forEach(function (boton) {
+                        boton.setAttribute('aria-pressed', boton === periodo ? 'true' : 'false');
+                    });
+                }
+                aplicarReloj(periodo.closest('.sol-cupos'));
+                return;
+            }
+            var cupo = evento.target.closest('.sol-cupo');
+            if (cupo && !cupo.disabled) {
+                elegirCupo(cupo);
+                return;
+            }
             var chip = evento.target.closest('.sol-chip');
             if (chip) {
                 var grupo = chip.closest('.sol-decisiones');
@@ -1254,6 +1705,19 @@
             }
             if (evento.target.closest('.sol-eliminar')) {
                 eliminarConsulta(fichaCaja);
+            }
+        });
+        fichaCaja.addEventListener('input', function (evento) {
+            var caja = evento.target.closest('.sol-cupos');
+            if (!caja) return;
+            if (evento.target.classList.contains('sol-cita-mes')) {
+                caja.removeAttribute('data-fecha');
+                caja.removeAttribute('data-hora');
+                pintarMesCita(caja);
+                return;
+            }
+            if (evento.target.classList.contains('sol-cita-h12') || evento.target.classList.contains('sol-cita-min')) {
+                aplicarReloj(caja);
             }
         });
     }
@@ -1292,16 +1756,28 @@
         });
     }
 
-    window.setInterval(function () {
-        if (document.hidden) return;
-        cargar(true, true);
-    }, 20000);
+    var botonNotasTodas = document.getElementById('admin-alerta-todas');
+    if (botonNotasTodas) {
+        botonNotasTodas.addEventListener('click', function () {
+            marcarNota('', '', '', true);
+        });
+    }
+
+    window.setInterval(consultarNotas, 20000);
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) consultarNotas();
+    });
+    consultarNotas();
+
+    function vistaDesdeHash() {
+        var hash = (location.hash || '#agenda').replace('#', '');
+        if (hash === 'horario') hash = 'cita';
+        return vistas[hash] ? hash : 'agenda';
+    }
 
     window.addEventListener('hashchange', function () {
-        var hash = (location.hash || '#agenda').replace('#', '');
-        if (vistas[hash]) mostrarVista(hash);
+        mostrarVista(vistaDesdeHash());
     });
 
-    var inicial = (location.hash || '#agenda').replace('#', '');
-    mostrarVista(vistas[inicial] ? inicial : 'agenda');
+    mostrarVista(vistaDesdeHash());
 })();

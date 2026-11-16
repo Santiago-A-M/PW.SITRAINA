@@ -4,48 +4,38 @@
 
     var pasos = [
         {
-            titulo: 'Bienvenido al panel',
-            texto: 'Arriba tenes el menu: Inicio, Afiliaciones, Afiliados, Citas con Asesoria, Horario y Contacto. Inicio es el resumen; Horario solo define dias y horas para citas con asesoria.',
+            titulo: 'El menú',
+            texto: 'Arriba están Inicio, Afiliaciones, Afiliados, Citas con Asesoría y Contacto. Elegí la sección en la que querés trabajar. En el teléfono, las tres rayas abren ese mismo menú.',
             icono: '1'
         },
         {
-            titulo: 'Afiliaciones, citas y contacto',
-            texto: 'En Afiliaciones ves boletas (Consulta_Afiliacion). En Afiliados registrás o eliminás la cédula, el nombre y el correo. En Citas y Contacto respondés consultas. Abrí una casilla, elegí Aceptar, Rechazar o Respuesta neutral y enviá.',
+            titulo: 'Inicio',
+            texto: 'En Inicio ves lo que está pendiente y lo que llegó hace poco. El aviso de arriba indica lo que todavía espera respuesta. En la papelera revisás las solicitudes que no se aceptaron y, si lo decidís, las quitás para siempre.',
             icono: '2'
         },
         {
-            titulo: 'Seccion Horario',
-            texto: 'En Horario configura unicamente la disponibilidad de citas con asesoria. «Agregar fecha y hora» abre el asistente: mes, tipo de fecha, dia y hora si aplica.',
+            titulo: 'Cómo responder',
+            texto: 'En Afiliaciones, Citas con Asesoría o Contacto, abrí cada solicitud. Elegí Aceptar, Rechazar o Sin decisión, escribí el mensaje con respeto y envialo. Si la persona ya había entrado con ese correo, la respuesta le llega a Mis mensajes.',
             icono: '3'
         },
         {
-            titulo: 'Hábil, ocupada o no hábil',
-            texto: 'Antes del día elegís el estado: Hábil (se puede agendar), Ocupada (ya la tiene alguien) o No hábil (ese día no se ofrece). Solo afecta Solicitar cita.',
+            titulo: 'Personas afiliadas',
+            texto: 'En Afiliados anotás la cédula, el nombre y el correo de quien puede pedir cita. Esos tres datos tienen que ser los mismos que la persona escribe. Para quitar a alguien, abrí su tarjeta y elegí Quitar para siempre.',
             icono: '4'
         },
         {
-            titulo: 'Ver fechas guardadas',
-            texto: 'Con «Ver fechas guardadas» revisás los horarios de asesoria. Para aceptar o rechazar una cita pedida usa la seccion Citas con Asesoria.',
+            titulo: 'Días y horas',
+            texto: 'En Citas con Asesoría, Agregar fecha y hora es para excepciones. Los martes y jueves de los próximos 15 días cambian solos. Acá podés cerrar uno de esos días si el abogado no va, abrir un día que no sea martes o jueves, o indicar hasta qué hora atiende. Esa hora es el cierre de ese día y no mueve los 15 días.',
             icono: '5'
         },
         {
-            titulo: 'Casillas del horario',
-            texto: 'En fechas guardadas ves casillas con meses, dias y horarios. Tocala para abrirla, ver la informacion o eliminarla.',
+            titulo: 'Las citas',
+            texto: 'En Citas con Asesoría, la lista muestra las citas que pidieron las personas, con el nombre, el día y la hora. Abrí una para responder. Si no la aceptás, esa hora queda libre.',
             icono: '6'
         },
         {
-            titulo: 'Tono claro u oscuro',
-            texto: 'El botón de sol o luna (arriba a la derecha) cambia el tono. Usa la misma preferencia que el sitio público.',
-            icono: '7'
-        },
-        {
-            titulo: 'Sitrabot Admin',
-            texto: 'Abajo a la derecha está Sitrabot Admin. Explica el panel con palabras sencillas: consultas, afiliados, advertencias, horario y el tono de la página.',
-            icono: '8'
-        },
-        {
-            titulo: 'Listo para usar',
-            texto: 'Cuando termines, abrí Opciones arriba a la derecha y elegí Cerrar sesión. Podés volver a abrir esta guía desde Opciones → Ayuda.',
+            titulo: 'Tono, ayuda y salida',
+            texto: 'El sol o la luna cambia entre claro y oscuro. En Opciones está el modo daltónico, que usa azul en lugar de rojo. Abajo a la derecha, Sitrabot responde dudas sobre estas secciones. Esta guía se vuelve a abrir en Opciones, en Ayuda. Para salir, elegí Cerrar sesión.',
             icono: '✓'
         }
     ];
@@ -56,7 +46,7 @@
     var raiz = document.createElement('div');
     raiz.id = 'guia-admin';
     raiz.innerHTML = [
-        '<button type="button" class="guia-boton" id="guia-abrir" aria-expanded="false" aria-controls="guia-overlay" title="Guía del panel" hidden tabindex="-1">',
+        '<button type="button" class="guia-boton" id="guia-abrir" aria-expanded="false" aria-controls="guia-overlay" title="Guía de ayuda" hidden tabindex="-1">',
         '  <span class="guia-boton-anillo" aria-hidden="true"></span>',
         '  <span class="guia-boton-icono" aria-hidden="true">?</span>',
         '  <span class="guia-boton-texto">Ayuda</span>',

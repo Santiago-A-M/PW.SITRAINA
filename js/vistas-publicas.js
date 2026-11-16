@@ -25,7 +25,8 @@
         contacto: 'contacto',
         ingresar: 'inicio',
         registro: 'inicio',
-        cuenta: 'inicio'
+        cuenta: 'inicio',
+        'mis-citas': 'inicio'
     };
     var guias = { afiliacion: 1, cita: 1, contacto: 1 };
 
@@ -180,6 +181,7 @@
                 siguiente.classList.add('vista-publica-visible');
                 cambiandoVista = false;
                 aplicarChrome(nombre);
+                document.dispatchEvent(new CustomEvent('sitraina-vista', { detail: nombre }));
                 return;
             }
             siguiente.classList.add('vista-publica-entrando');
@@ -193,6 +195,7 @@
                 });
             });
             aplicarChrome(nombre);
+            document.dispatchEvent(new CustomEvent('sitraina-vista', { detail: nombre }));
             timerVista = window.setTimeout(function () {
                 cambiandoVista = false;
                 timerVista = null;

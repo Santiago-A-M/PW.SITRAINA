@@ -1,8 +1,8 @@
 <?php
 /* Registro, ingreso y cierre de sesión de Usuario_Web. */
 ob_start();
+require_once __DIR__ . '/conexion.php';
 require_once __DIR__ . '/sesion_usuario.php';
-require_once __DIR__ . '/disponibilidad.php';
 ob_end_clean();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -15,18 +15,104 @@ function usuario_auth_responder($codigo, $datos) {
     exit;
 }
 
+/* null si no existe, false si la consulta falló. */
+function usuario_web_por_correo($db, $correo) {
+    $consulta = $db->prepare('SELECT id, nombre, activo FROM Usuario_Web WHERE LOWER(TRIM(correo)) = ? LIMIT 1');
+    if (!$consulta) {
+        $consulta = $db->prepare('SELECT id, nombre, 1 FROM Usuario_Web WHERE LOWER(TRIM(correo)) = ? LIMIT 1');
+    }
+    if (!$consulta) {
+        return false;
+    }
+    $consulta->bind_param('s', $correo);
+    if (!$consulta->execute()) {
+        $consulta->close();
+        return false;
+    }
+    $id = 0;
+    $nombre = '';
+    $activo = 0;
+    $consulta->bind_result($id, $nombre, $activo);
+    $hay = $consulta->fetch();
+    $consulta->close();
+    if (!$hay) {
+        return null;
+    }
+    return ['id' => (int) $id, 'nombre' => (string) $nombre, 'activo' => (int) $activo];
+}
+
+/* Si el correo ya está en Cuenta, abre la misma cuenta de ingreso. null si no es afiliado. */
+function usuario_web_desde_afiliado($db, $correo) {
+    $afiliados = abrir_afiliados();
+    if (!$afiliados) {
+        return false;
+    }
+    $consulta = $afiliados->prepare('SELECT nombre_completo, cedula FROM Cuenta WHERE LOWER(TRIM(correo)) = ? LIMIT 1');
+    if (!$consulta) {
+        $afiliados->close();
+        return false;
+    }
+    $consulta->bind_param('s', $correo);
+    if (!$consulta->execute()) {
+        $consulta->close();
+        $afiliados->close();
+        return false;
+    }
+    $nombre = '';
+    $cedula = '';
+    $consulta->bind_result($nombre, $cedula);
+    $hay = $consulta->fetch();
+    $consulta->close();
+    $afiliados->close();
+    if (!$hay) {
+        return null;
+    }
+    $nombre = trim((string) $nombre);
+    if ($nombre === '') {
+        $nombre = 'Cuenta';
+    }
+    $cedula = preg_replace('/\D+/', '', (string) $cedula);
+    if (strlen($cedula) === 9) {
+        $alta = $db->prepare('INSERT INTO Usuario_Web (nombre, correo, cedula, activo) VALUES (?, ?, ?, 1)');
+        if (!$alta) {
+            return false;
+        }
+        $alta->bind_param('sss', $nombre, $correo, $cedula);
+    } else {
+        $alta = $db->prepare('INSERT INTO Usuario_Web (nombre, correo, activo) VALUES (?, ?, 1)');
+        if (!$alta) {
+            return false;
+        }
+        $alta->bind_param('ss', $nombre, $correo);
+    }
+    $ok = $alta->execute();
+    $codigo = (int) $alta->errno;
+    $alta->close();
+    if (!$ok && $codigo !== 1062) {
+        return false;
+    }
+    $cuenta = usuario_web_por_correo($db, $correo);
+    if ($cuenta === false || !$cuenta || !(int) $cuenta['activo']) {
+        return $cuenta === false ? false : null;
+    }
+    return $cuenta;
+}
+
 function usuario_auth_estado() {
     $id = sitraina_usuario_id();
     $nombre = '';
     if ($id > 0) {
         $nombre = (string) ($_SESSION['usuario_nombre'] ?? '');
     }
+    $marca = $id > 0 ? sitraina_marca_afiliacion() : 'sin_sesion';
     return [
         'ok' => true,
         'ingresado' => $id > 0,
         'usuario_id' => $id,
         'nombre' => $nombre,
         'token' => sitraina_usuario_token(),
+        'afiliado' => $marca === 'si',
+        'afiliacion' => $marca,
     ];
 }
 
@@ -38,15 +124,16 @@ if ($accion === 'estado') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    usuario_auth_responder(405, ['ok' => false, 'mensaje' => 'Usá POST.']);
+    usuario_auth_responder(405, ['ok' => false, 'mensaje' => 'No se pudo completar. Volvé a intentarlo desde la página.']);
 }
 
 $token = (string) ($_POST['token'] ?? '');
 if (!sitraina_usuario_token_ok($token)) {
-    usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Volvé a enviar el formulario.']);
+    usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Volvé a intentarlo desde la página.']);
 }
 
 if ($accion === 'salir') {
+    sitraina_usuario_soltar((int) ($_SESSION['usuario_id'] ?? 0), (string) ($_SESSION['usuario_sesion'] ?? ''));
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {
         $p = session_get_cookie_params();
@@ -54,7 +141,7 @@ if ($accion === 'salir') {
     }
     session_destroy();
     sitraina_sesion_usuario();
-    usuario_auth_responder(200, array_merge(usuario_auth_estado(), ['mensaje' => 'Sesión cerrada.']));
+    usuario_auth_responder(200, array_merge(usuario_auth_estado(), ['mensaje' => 'Cerraste la sesión. Hasta pronto.']));
 }
 
 $fallos = (int) ($_SESSION['usuario_fallos'] ?? 0);
@@ -65,8 +152,8 @@ if ($fallos >= 8 && ($accion === 'ingresar' || $accion === 'registrar')) {
 $db = abrir_cuentas_web();
 if (!$db) {
     $avisoCuentas = is_file(__DIR__ . '/config_usuarios.php')
-        ? 'No se pudo conectar con if0_43158097_Usuario_Web. Revisá que esa base exista y que sql/07_Usuarios_Web.sql ya se haya ejecutado.'
-        : 'No se pudo abrir Usuarios_Web. Falta php/config_usuarios.php en el servidor.';
+        ? 'No pudimos abrir tu cuenta en este momento. Intentá de nuevo más tarde.'
+        : 'No pudimos abrir tu cuenta en este momento. Intentá de nuevo más tarde.';
     usuario_auth_responder(500, ['ok' => false, 'mensaje' => $avisoCuentas]);
 }
 
@@ -75,33 +162,57 @@ if ($accion === 'ingresar') {
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
         $_SESSION['usuario_fallos'] = $fallos + 1;
         $db->close();
-        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'El correo es obligatorio.']);
+        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Escribí tu correo para continuar.']);
     }
-    $consulta = $db->prepare('SELECT id, nombre, activo FROM Usuario_Web WHERE correo = ? LIMIT 1');
-    if (!$consulta) {
+    $cuentaWeb = usuario_web_por_correo($db, $correo);
+    if ($cuentaWeb === false) {
         $db->close();
         usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo consultar la cuenta.']);
     }
-    $consulta->bind_param('s', $correo);
-    $consulta->execute();
-    $id = 0;
-    $nombre = '';
-    $activo = 0;
-    $consulta->bind_result($id, $nombre, $activo);
-    $hay = $consulta->fetch();
-    $consulta->close();
-    $db->close();
-    if (!$hay || !(int) $activo) {
+    if ($cuentaWeb && !(int) $cuentaWeb['activo']) {
+        $db->close();
         $_SESSION['usuario_fallos'] = $fallos + 1;
-        usuario_auth_responder(401, ['ok' => false, 'mensaje' => 'Ese correo no tiene una cuenta activa.']);
+        usuario_auth_responder(401, ['ok' => false, 'mensaje' => 'Ese correo todavía no tiene una cuenta. Podés crearla.']);
     }
+    if (!$cuentaWeb) {
+        $cuentaWeb = usuario_web_desde_afiliado($db, $correo);
+        if ($cuentaWeb === false) {
+            $db->close();
+            usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo consultar la cuenta.']);
+        }
+    }
+    if (!$cuentaWeb) {
+        $db->close();
+        $_SESSION['usuario_fallos'] = $fallos + 1;
+        usuario_auth_responder(401, ['ok' => false, 'mensaje' => 'Ese correo todavía no tiene una cuenta. Podés crearla.']);
+    }
+    if (sitraina_usuario_id() > 0) {
+        $db->close();
+        usuario_auth_responder(409, ['ok' => false, 'mensaje' => 'Ya iniciaste sesión en este navegador. Cerrala antes de entrar de nuevo.']);
+    }
+    $ocupada = sitraina_cuenta_sesion_ocupada($db, (int) $cuentaWeb['id']);
+    if ($ocupada === null) {
+        $db->close();
+        usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo consultar la cuenta.']);
+    }
+    if ($ocupada) {
+        $db->close();
+        usuario_auth_responder(409, ['ok' => false, 'mensaje' => 'Ya hay una sesión abierta en otra pestaña o dispositivo. Cerrala ahí para poder entrar acá.']);
+    }
+    $claveSesion = sitraina_usuario_tomar($db, (int) $cuentaWeb['id']);
+    if ($claveSesion === false) {
+        $db->close();
+        usuario_auth_responder(409, ['ok' => false, 'mensaje' => 'Ya hay una sesión abierta en otra pestaña o dispositivo. Cerrala ahí para poder entrar acá.']);
+    }
+    $db->close();
     session_regenerate_id(true);
-    $_SESSION['usuario_id'] = (int) $id;
-    $_SESSION['usuario_nombre'] = (string) $nombre;
+    $_SESSION['usuario_sesion'] = $claveSesion;
+    $_SESSION['usuario_id'] = (int) $cuentaWeb['id'];
+    $_SESSION['usuario_nombre'] = (string) $cuentaWeb['nombre'];
     $_SESSION['usuario_correo'] = $correo;
     $_SESSION['usuario_fallos'] = 0;
     unset($_SESSION['usuario_token']);
-    usuario_auth_responder(200, array_merge(usuario_auth_estado(), ['mensaje' => 'Ingreso correcto.']));
+    usuario_auth_responder(200, array_merge(usuario_auth_estado(), ['mensaje' => 'Listo, ya entraste.']));
 }
 
 if ($accion === 'registrar') {
@@ -116,24 +227,33 @@ if ($accion === 'registrar') {
     }
     if ($nombre === '' || strlen($nombre) > 120) {
         $db->close();
-        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Escribí tu nombre (máximo 120 caracteres).']);
+        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Escribí tu nombre. Si quedó muy largo, acortalo un poco.']);
     }
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL) || strlen($correo) > 120) {
         $db->close();
-        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'El correo no es válido.']);
+        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Revisá el correo. Tiene que estar completo.']);
+    }
+    if (sitraina_usuario_id() > 0) {
+        $db->close();
+        usuario_auth_responder(409, ['ok' => false, 'mensaje' => 'Ya iniciaste sesión en este navegador. Cerrala antes de crear otra cuenta.']);
     }
     $consulta = $db->prepare(
         'INSERT INTO Usuario_Web (nombre, correo, cedula, activo) VALUES (?, ?, ?, 1)'
     );
     if (!$consulta) {
         $db->close();
-        usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo crear la cuenta. Ejecutá sql/07_Usuarios_Web.sql en phpMyAdmin.']);
+        usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No pudimos crear la cuenta en este momento. Intentá de nuevo más tarde.']);
     }
     $consulta->bind_param('sss', $nombre, $correo, $cedula);
     $ok = $consulta->execute();
     $codigo = $consulta->errno;
     $nuevoId = $ok ? (int) $db->insert_id : 0;
     $consulta->close();
+    $claveSesion = ($ok && $nuevoId > 0) ? sitraina_usuario_tomar($db, $nuevoId) : false;
+    if ($ok && $nuevoId > 0 && $claveSesion === false) {
+        $db->close();
+        usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo crear la cuenta.']);
+    }
     $db->close();
     if (!$ok) {
         if ($codigo === 1062) {
@@ -142,12 +262,13 @@ if ($accion === 'registrar') {
         usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo crear la cuenta.']);
     }
     session_regenerate_id(true);
+    $_SESSION['usuario_sesion'] = $claveSesion;
     $_SESSION['usuario_id'] = $nuevoId;
     $_SESSION['usuario_nombre'] = $nombre;
     $_SESSION['usuario_correo'] = $correo;
     $_SESSION['usuario_fallos'] = 0;
     unset($_SESSION['usuario_token']);
-    usuario_auth_responder(200, array_merge(usuario_auth_estado(), ['mensaje' => 'Cuenta creada.']));
+    usuario_auth_responder(200, array_merge(usuario_auth_estado(), ['mensaje' => 'Listo, tu cuenta quedó creada.']));
 }
 
-usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Acción no reconocida.']);
+usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'No reconocimos lo que pediste. Volvé a intentarlo.']);

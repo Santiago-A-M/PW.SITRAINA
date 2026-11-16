@@ -72,21 +72,21 @@
     var titulos = {
         1: 'Elegí el mes',
         2: 'Tipo de fecha',
-        3: 'Elegí el día',
+        3: 'Elegí los días',
         4: 'Elegí la hora',
         5: 'Revisá y guardá'
     };
     var ayudas = {
         1: 'Primero el mes en el que querés trabajar.',
-        2: 'Antes del día, elegí si será hábil, ocupada por alguien o no hábil.',
-        3: 'Tocá un día del calendario.',
-        4: 'Escribí la hora y los minutos, y elegí a. m. o p. m.',
-        5: 'Así quedaría esa fecha. Si está bien, guardala.'
+        2: 'Elegí si el día está disponible, si no se ofrece, o si querés reservar los 15 días que siguen. Una hora se ocupa solo cuando se acepta una cita.',
+        3: 'Tocá uno o varios días, aunque no sean seguidos.',
+        4: 'Escribí la hora y los minutos, y elegí a. m. o p. m. Esa hora vale para todos los días disponibles.',
+        5: 'Revisá las fechas. Si están bien, guardalas.'
     };
     var textosEstado = {
-        abierta: 'Hábil / disponible para citas',
-        ocupada: 'Ocupada por alguien',
-        bloqueada: 'No hábil'
+        abierta: 'Disponible para citas',
+        ocupada: 'Ya tiene una cita',
+        bloqueada: 'No se ofrece'
     };
     var reglas = [];
     var citas = [];
@@ -94,17 +94,23 @@
     var revision = 0;
     var paso = 1;
     var diaSeleccionado = '';
+    var diasSeleccionados = [];
+    var modoBloqueo = false;
+    var bloqueoCorriendo = false;
     var estadoFinal = 'abierta';
     var horaAyuda = document.getElementById('hora-ayuda');
 
-    function renderAlertas() {
+    var totalNotasConocidas = null;
+
+    function renderAlertas(totalAvisos) {
+        if (typeof totalAvisos === 'number') totalNotasConocidas = totalAvisos;
         if (!alertaLista) return;
         alertaLista.innerHTML = '';
         if (!alertas.length && !consultasAvisos.length) {
             var vacio = document.createElement('p');
             vacio.className = 'admin-alerta-vacio';
             vacio.id = 'admin-alerta-vacio';
-            vacio.textContent = 'No hay consultas pendientes por ahora.';
+            vacio.textContent = 'No hay avisos por ahora.';
             alertaLista.appendChild(vacio);
             alertaVacio = vacio;
         } else {
@@ -112,12 +118,38 @@
         }
         for (var c = 0; c < consultasAvisos.length; c++) {
             var aviso = consultasAvisos[c];
+            var tipoAviso = aviso.tipo || 'cita';
             var boton = document.createElement('button');
             boton.type = 'button';
-            boton.className = 'admin-alerta-item admin-alerta-consulta';
-            boton.setAttribute('data-alerta-tipo', aviso.tipo);
-            boton.setAttribute('data-alerta-id', String(aviso.id));
-            boton.textContent = aviso.texto;
+            boton.className = 'admin-alerta-item admin-alerta-consulta admin-alerta-' + tipoAviso + (aviso.leido ? ' admin-alerta-leida' : '');
+            boton.setAttribute('data-alerta-tipo', aviso.tipo || '');
+            boton.setAttribute('data-alerta-id', String(aviso.id || ''));
+            boton.setAttribute('data-alerta-marca', aviso.marca || '');
+            boton.setAttribute('aria-label', aviso.texto || 'Abrir aviso');
+
+            var cabeza = document.createElement('span');
+            cabeza.className = 'admin-alerta-cabeza';
+            var etiqueta = document.createElement('span');
+            etiqueta.className = 'admin-alerta-tipo';
+            etiqueta.textContent = tipoAviso === 'afilacion' ? 'Afiliación' : (tipoAviso === 'contacto' ? 'Contacto' : 'Cita');
+            var estado = document.createElement('span');
+            estado.className = 'admin-alerta-estado';
+            estado.textContent = aviso.leido ? 'Leída' : 'Nueva';
+            cabeza.appendChild(etiqueta);
+            cabeza.appendChild(estado);
+
+            var cuerpo = document.createElement('span');
+            cuerpo.className = 'admin-alerta-texto';
+            cuerpo.textContent = aviso.detalle || aviso.texto || '';
+
+            boton.appendChild(cabeza);
+            boton.appendChild(cuerpo);
+            if (aviso.cuando) {
+                var cuando = document.createElement('span');
+                cuando.className = 'admin-alerta-cuando';
+                cuando.textContent = aviso.cuando;
+                boton.appendChild(cuando);
+            }
             alertaLista.appendChild(boton);
         }
         for (var i = 0; i < alertas.length; i++) {
@@ -126,7 +158,10 @@
             p.textContent = alertas[i].texto;
             alertaLista.appendChild(p);
         }
-        var n = consultasAvisos.length + alertas.length;
+        var nAvisos = typeof totalNotasConocidas === 'number'
+            ? totalNotasConocidas
+            : consultasAvisos.filter(function (aviso) { return !aviso.leido; }).length;
+        var n = nAvisos + alertas.length;
         if (alertaCaja) alertaCaja.classList.toggle('admin-alerta-con-avisos', n > 0);
         if (alertaCuenta) {
             alertaCuenta.hidden = n < 1;
@@ -162,10 +197,10 @@
 
     window.adminMostrarAlerta = pintarAlerta;
 
-    window.adminSincronizarConsultas = function (lista, llegaronNuevas) {
-        consultasAvisos = Array.isArray(lista) ? lista.slice(0, 12) : [];
-        renderAlertas();
-        if (!llegaronNuevas || !alertaCaja || !consultasAvisos.length) return;
+    window.adminSincronizarConsultas = function (lista, llegaronNuevas, totalAvisos) {
+        consultasAvisos = Array.isArray(lista) ? lista.slice(0, 30) : [];
+        renderAlertas(totalAvisos);
+        if (!llegaronNuevas || !alertaCaja || !consultasAvisos.some(function (aviso) { return !aviso.leido; })) return;
         alertaCaja.classList.remove('admin-alerta-llegada');
         void alertaCaja.offsetWidth;
         alertaCaja.classList.add('admin-alerta-llegada');
@@ -180,10 +215,11 @@
             var boton = evento.target.closest('[data-alerta-tipo]');
             if (!boton || !window.adminAbrirConsulta) return;
             setAlertaAbierta(false);
-            window.adminAbrirConsulta(
-                boton.getAttribute('data-alerta-tipo'),
-                boton.getAttribute('data-alerta-id')
-            );
+            var tipoAviso = boton.getAttribute('data-alerta-tipo');
+            var idAviso = boton.getAttribute('data-alerta-id');
+            var marcaAviso = boton.getAttribute('data-alerta-marca');
+            if (window.adminMarcarNotificacion) window.adminMarcarNotificacion(tipoAviso, idAviso, marcaAviso);
+            window.adminAbrirConsulta(tipoAviso, idAviso);
         });
     }
 
@@ -209,21 +245,32 @@
     });
     renderAlertas();
 
+    function ambitoDeAgenda(texto) {
+        if (/cita|comentario|correo|Respuesta enviada/i.test(texto || '')) return 'cita';
+        return 'horario';
+    }
+
     function mostrarAviso(texto) {
         if (!texto) return;
-        if (window.SitrainaAvisos) window.SitrainaAvisos.error('No se pudo completar', texto);
+        if (window.SitrainaAvisos && window.SitrainaAvisos.contextual) {
+            window.SitrainaAvisos.contextual('error', texto, ambitoDeAgenda(texto));
+        } else if (window.SitrainaAvisos) window.SitrainaAvisos.error('No se pudo completar', texto);
         else pintarAlerta(texto, true, 0);
     }
 
     function mostrarGuardado(texto) {
         if (!texto) return;
-        if (window.SitrainaAvisos) window.SitrainaAvisos.exito('Listo', texto);
+        if (window.SitrainaAvisos && window.SitrainaAvisos.contextual) {
+            window.SitrainaAvisos.contextual('exito', texto, ambitoDeAgenda(texto));
+        } else if (window.SitrainaAvisos) window.SitrainaAvisos.exito('Listo', texto);
         else pintarAlerta(texto, false, 2400);
     }
 
     function mostrarErrorGuardado(texto) {
         if (!texto) return;
-        if (window.SitrainaAvisos) window.SitrainaAvisos.error('No se pudo completar', texto);
+        if (window.SitrainaAvisos && window.SitrainaAvisos.contextual) {
+            window.SitrainaAvisos.contextual('error', texto, ambitoDeAgenda(texto));
+        } else if (window.SitrainaAvisos) window.SitrainaAvisos.error('No se pudo completar', texto);
         else pintarAlerta(texto, true, 0);
     }
 
@@ -324,7 +371,9 @@
 
     function citasDelDia(valor) {
         if (!Array.isArray(citas)) return [];
-        return citas.filter(function (cita) { return cita.fecha === valor; })
+        return citas.filter(function (cita) {
+            return cita.fecha === valor && cita.hora && !String(cita.cancelado_en || '').trim();
+        })
             .map(function (cita) { return cita.hora; })
             .sort();
     }
@@ -362,7 +411,7 @@
     function aplicarMarca(boton, dia, iso, valor) {
         var marca = estadoDia(iso);
         var horasCita = citasDelDia(iso);
-        var elegido = iso === diaSeleccionado;
+        var elegido = diasSeleccionados.indexOf(iso) !== -1;
         boton.classList.remove('habil', 'ocupada', 'cerrado', 'dia-seleccionado');
         if (elegido) boton.classList.add('dia-seleccionado');
         if (marca === 'abierta') boton.classList.add('habil');
@@ -431,9 +480,13 @@
             diasMes.appendChild(boton);
         }
         if (diaElegido) {
-            diaElegido.textContent = diaSeleccionado
-                ? 'Día elegido: ' + etiquetaFecha(diaSeleccionado)
-                : 'Todavía no elegiste un día.';
+            if (modoBloqueo && !bloqueoCorriendo) {
+                diaElegido.textContent = 'Tocá el día que queda disponible. Los 15 siguientes se bloquean solos.';
+            } else if (diasSeleccionados.length) {
+                diaElegido.textContent = diasSeleccionados.length + (diasSeleccionados.length === 1 ? ' fecha: ' : ' fechas: ') + diasSeleccionados.map(etiquetaFecha).join(', ');
+            } else if (!modoBloqueo) {
+                diaElegido.textContent = 'Todavía no elegiste un día. Podés marcar varios, aunque no sean seguidos.';
+            }
         }
     }
 
@@ -458,14 +511,14 @@
                 claseEstado: claseEstado(fila.estado || 'abierta'),
                 filasMeta: [
                     { etiqueta: 'Tipo', valor: opciones.tipoTexto },
-                    { etiqueta: 'Valor', valor: fila.valor },
+                    { etiqueta: 'Dato', valor: fila.valor },
                     { etiqueta: 'Estado', valor: etiquetaEstado(fila.estado || 'abierta') }
                 ],
                 acciones: [
                     {
-                        texto: 'Ver en base',
+                        texto: 'Ver el detalle',
                         clase: 'btn-item',
-                        aria: 'Ver ' + titulo + ' en fechas guardadas',
+                        aria: 'Ver el detalle de ' + titulo,
                         alClick: function () {
                             abrirGuardadas();
                             mostrarPestanaGuardadas(opciones.pestana === 'citas' ? 'citas' : 'disponibilidad');
@@ -479,7 +532,7 @@
                         clase: 'btn-item btn-item-peligro',
                         aria: 'Eliminar ' + titulo,
                         alClick: function () {
-                            pedirConfirmacion('Eliminar de la base', '¿Eliminar «' + titulo + '»? Esta acción no se puede deshacer.').then(function (aceptado) {
+                            pedirConfirmacion('Quitar para siempre', '¿Eliminar «' + titulo + '»? Esta acción no se puede deshacer.').then(function (aceptado) {
                                 if (!aceptado) return;
                                 opciones.alQuitar(fila);
                             });
@@ -516,7 +569,7 @@
         var horas = reglas.filter(function (fila) {
             return fila.tipo === 'hora' && fila.estado === 'abierta';
         }).sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
-        pintarListaCasillas(listaHora, horas, 'Sin horas. Se usan de 7:00 a. m. a 2:00 p. m.', {
+        pintarListaCasillas(listaHora, horas, 'Todavía no hay horas. Se usan de 7:00 a. m. a 2:00 p. m.', {
             tipo: 'hora',
             tipoTexto: 'Hora',
             formatear: function (fila) { return etiquetaHora(fila.valor); },
@@ -529,9 +582,9 @@
     }
 
     function etiquetaEstado(estado) {
-        if (estado === 'abierta') return 'Hábil';
-        if (estado === 'bloqueada') return 'No hábil';
-        if (estado === 'ocupada') return 'Ocupada';
+        if (estado === 'abierta') return 'Disponible';
+        if (estado === 'bloqueada') return 'No se ofrece';
+        if (estado === 'ocupada') return 'Con cita';
         return estado || 'Sin estado';
     }
 
@@ -686,6 +739,12 @@
         mes.textContent = opciones.mes || '';
         boton.appendChild(dia);
         boton.appendChild(mes);
+        if (opciones.nombre) {
+            var nombre = document.createElement('span');
+            nombre.className = 'fecha-casilla-nombre';
+            nombre.textContent = opciones.nombre;
+            boton.appendChild(nombre);
+        }
         boton.addEventListener('click', function () {
             abrirDetalleFecha(opciones.clave);
         });
@@ -708,13 +767,45 @@
         contenedor.appendChild(fila);
     }
 
+    function grupoDetalle(titulo) {
+        var seccion = document.createElement('section');
+        seccion.className = 'fecha-grupo';
+        var encabezado = document.createElement('h3');
+        encabezado.className = 'fecha-grupo-titulo';
+        encabezado.textContent = titulo;
+        var cuerpo = document.createElement('div');
+        cuerpo.className = 'fecha-datos';
+        seccion.appendChild(encabezado);
+        seccion.appendChild(cuerpo);
+        return { seccion: seccion, cuerpo: cuerpo };
+    }
+
+    function finDeHora(valor) {
+        var partes = String(valor || '').split(':');
+        if (partes.length < 2) return '';
+        var hora = Number(partes[0]);
+        var minuto = partes[1];
+        if (isNaN(hora)) return '';
+        hora += 1;
+        if (hora > 23) return '';
+        return etiquetaHora(String(hora).padStart(2, '0') + ':' + minuto);
+    }
+
+    function textoModalidad(valor) {
+        if (valor === 'virtual') return 'En línea';
+        if (valor === 'presencial') return 'En persona';
+        return '';
+    }
+
     function horasAbiertas() {
-        return reglas.filter(function (fila) { return fila.tipo === 'hora' && fila.estado === 'abierta'; })
+        return reglas.filter(function (fila) { return fila.tipo === 'hora' && fila.estado === 'abierta' && /^\d{2}:\d{2}$/.test(String(fila.valor || '')); })
             .sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
     }
 
     function citasDeFecha(iso) {
-        return citas.filter(function (cita) { return cita.fecha === iso && cita.hora; })
+        return citas.filter(function (cita) {
+            return cita.fecha === iso && cita.hora && !String(cita.cancelado_en || '').trim();
+        })
             .sort(function (a, b) { return a.hora < b.hora ? -1 : 1; });
     }
 
@@ -813,11 +904,25 @@
             return;
         }
         if (estado === 'bloqueada') {
-            agregarDato(contenedor, 'Hora', 'Sin hora. El día está marcado como no hábil.');
+            agregarDato(contenedor, 'Excepción', 'El abogado no atiende este día, aunque entre en los 15 días.');
+            return;
+        }
+        var cierreManual = '';
+        reglas.forEach(function (filaHora) {
+            if (filaHora.tipo === 'hora' && filaHora.estado === 'abierta' && String(filaHora.valor || '').indexOf(iso + ' ') === 0) {
+                cierreManual = String(filaHora.valor).slice(11, 16);
+            }
+        });
+        if (cierreManual) {
+            agregarDato(contenedor, 'Atiende hasta', etiquetaHora(cierreManual));
+            var notaManual = document.createElement('p');
+            notaManual.className = 'fecha-dato-nota';
+            notaManual.textContent = 'Esta excepción queda guardada aunque pasen los 15 días. Las citas son de una hora, desde las 8:00 a. m.';
+            contenedor.appendChild(notaManual);
             return;
         }
         if (estado !== 'abierta') {
-            agregarDato(contenedor, 'Hora', 'No hay una hora guardada para esta fecha.');
+            agregarDato(contenedor, 'Hora', 'No hay una excepción guardada para esta fecha.');
             return;
         }
         var abiertas = horasAbiertas();
@@ -831,8 +936,8 @@
         var nota = document.createElement('p');
         nota.className = 'fecha-dato-nota';
         nota.textContent = abiertas.length > 1
-            ? 'Estas horas están guardadas en el horario y aplican a los días hábiles.'
-            : 'Esta hora está guardada en el horario y aplica a los días hábiles.';
+            ? 'Estas horas quedan para los días que se ofrecen.'
+            : 'Esta hora queda para los días que se ofrecen.';
         contenedor.appendChild(nota);
     }
 
@@ -869,47 +974,67 @@
         cuerpo.innerHTML = '';
         if (titulo) titulo.textContent = 'Información';
         pintarSello(cuerpo, datos.partes);
-        var datosFila = document.createElement('div');
-        datosFila.className = 'fecha-datos';
-        agregarDato(datosFila, 'Día', capitalizar(datos.partes.semana));
+        var grupos = document.createElement('div');
+        grupos.className = 'fecha-grupos';
         if (datos.tipo === 'fecha') {
-            agregarDato(datosFila, 'Estado', etiquetaEstado(datos.fila.estado));
-            pintarHorasDetalle(datosFila, datos.fila.valor, datos.fila.estado);
+            var diaGrupo = grupoDetalle('Día');
+            agregarDato(diaGrupo.cuerpo, 'Día de la semana', capitalizar(datos.partes.semana));
+            agregarDato(diaGrupo.cuerpo, 'Estado', etiquetaEstado(datos.fila.estado));
+            grupos.appendChild(diaGrupo.seccion);
+            var horarioGrupo = grupoDetalle('Horario');
+            pintarHorasDetalle(horarioGrupo.cuerpo, datos.fila.valor, datos.fila.estado);
+            grupos.appendChild(horarioGrupo.seccion);
         } else {
-            agregarDato(datosFila, 'Hora', etiquetaHora(datos.cita.hora) || '');
-            if (datos.cita.correo) agregarDato(datosFila, 'Correo', datos.cita.correo);
-            if (datos.cita.persona) agregarDato(datosFila, 'De quién', datos.cita.persona);
-            if (datos.cita.motivo) agregarDato(datosFila, 'Para qué', datos.cita.motivo);
-            if (datos.cita.notas) agregarDato(datosFila, 'Notas', datos.cita.notas);
+            var cita = datos.cita;
+            var usuario = grupoDetalle('Información del usuario');
+            agregarDato(usuario.cuerpo, 'Nombre', cita.persona || '');
+            agregarDato(usuario.cuerpo, 'Correo electrónico', cita.correo || '');
+            agregarDato(usuario.cuerpo, 'Cédula', cita.cedula || '');
+            if (usuario.cuerpo.childElementCount) grupos.appendChild(usuario.seccion);
+            var deLaCita = grupoDetalle('Información de la cita');
+            agregarDato(deLaCita.cuerpo, 'Fecha', etiquetaFecha(cita.fecha));
+            agregarDato(deLaCita.cuerpo, 'Día de la semana', capitalizar(datos.partes.semana));
+            agregarDato(deLaCita.cuerpo, 'Hora de inicio', etiquetaHora(cita.hora));
+            agregarDato(deLaCita.cuerpo, 'Hora de finalización', finDeHora(cita.hora));
+            agregarDato(deLaCita.cuerpo, 'Modalidad', textoModalidad(cita.modalidad));
+            agregarDato(deLaCita.cuerpo, 'Estado', String(cita.cancelado_en || '').trim() ? 'Cancelada' : 'Activa');
+            grupos.appendChild(deLaCita.seccion);
+            var solicitud = grupoDetalle('Información de la solicitud');
+            agregarDato(solicitud.cuerpo, 'Motivo', cita.motivo || '');
+            agregarDato(solicitud.cuerpo, 'Notas', cita.notas || '');
+            agregarDato(solicitud.cuerpo, 'Recibida', cita.creado_en || '');
+            if (solicitud.cuerpo.childElementCount) grupos.appendChild(solicitud.seccion);
         }
-        cuerpo.appendChild(datosFila);
+        cuerpo.appendChild(grupos);
 
         var acciones = document.createElement('div');
         acciones.className = 'fecha-detalle-acciones';
         if (datos.tipo === 'fecha') {
             var fila = datos.fila;
             var tituloTexto = etiquetaFecha(fila.valor);
-            if (fila.estado !== 'abierta') {
-                acciones.appendChild(crearBotonAccion('Marcar hábil', 'btn-item', 'Marcar hábil: ' + tituloTexto, function () {
-                    guardar('guardar', 'fecha', fila.valor, 'abierta', 'Estado actualizado.');
+            if (fila.estado === 'ocupada') {
+                var avisoOcupada = document.createElement('p');
+                avisoOcupada.className = 'asistente-nota';
+                avisoOcupada.textContent = 'Este día está ocupado porque se aceptó una cita. No se cambia desde aquí.';
+                acciones.appendChild(avisoOcupada);
+            } else {
+                if (fila.estado !== 'abierta') {
+                    acciones.appendChild(crearBotonAccion('Marcar disponible', 'btn-item', 'Marcar disponible: ' + tituloTexto, function () {
+                        guardar('guardar', 'fecha', fila.valor, 'abierta', 'Listo, quedó actualizado.');
+                    }));
+                }
+                if (fila.estado !== 'bloqueada') {
+                    acciones.appendChild(crearBotonAccion('Marcar no disponible', 'btn-item', 'Marcar no disponible: ' + tituloTexto, function () {
+                        guardar('guardar', 'fecha', fila.valor, 'bloqueada', 'Listo, quedó actualizado.');
+                    }));
+                }
+                acciones.appendChild(crearBotonAccion('Quitar', 'btn-item btn-item-peligro', 'Quitar el día ' + tituloTexto, function () {
+                    pedirConfirmacion('Quitar para siempre', '¿Querés quitar el día «' + tituloTexto + '»? No se puede deshacer.').then(function (aceptado) {
+                        if (!aceptado) return;
+                        guardar('quitar', 'fecha', fila.valor, '', 'Listo, se quitó.');
+                    });
                 }));
             }
-            if (fila.estado !== 'bloqueada') {
-                acciones.appendChild(crearBotonAccion('Marcar no hábil', 'btn-item', 'Marcar no hábil: ' + tituloTexto, function () {
-                    guardar('guardar', 'fecha', fila.valor, 'bloqueada', 'Estado actualizado.');
-                }));
-            }
-            if (fila.estado !== 'ocupada') {
-                acciones.appendChild(crearBotonAccion('Marcar ocupada', 'btn-item btn-item-ocupada', 'Marcar ocupada: ' + tituloTexto, function () {
-                    guardar('guardar', 'fecha', fila.valor, 'ocupada', 'Marcada como ocupada.');
-                }));
-            }
-            acciones.appendChild(crearBotonAccion('Eliminar', 'btn-item btn-item-peligro', 'Eliminar día ' + tituloTexto, function () {
-                pedirConfirmacion('Eliminar de la base', '¿Eliminar el día «' + tituloTexto + '» de la base? Esta acción no se puede deshacer.').then(function (aceptado) {
-                    if (!aceptado) return;
-                    guardar('quitar', 'fecha', fila.valor, '', 'Eliminado.');
-                });
-            }));
         } else {
             var cita = datos.cita;
             var tituloCita = etiquetaFecha(cita.fecha) + ' · ' + etiquetaHora(cita.hora);
@@ -917,14 +1042,14 @@
                 volverFechas();
                 cargarCitaEnFormulario(cita);
             }));
-            acciones.appendChild(crearBotonAccion('Eliminar', 'btn-item btn-item-peligro', 'Eliminar cita del ' + tituloCita, function () {
-                pedirConfirmacion('Eliminar de la base', '¿Eliminar la cita del ' + tituloCita + '? Esta acción no se puede deshacer.').then(function (aceptado) {
+            acciones.appendChild(crearBotonAccion('Quitar', 'btn-item btn-item-peligro', 'Quitar la cita del ' + tituloCita, function () {
+                pedirConfirmacion('Quitar para siempre', '¿Querés quitar la cita del ' + tituloCita + '? No se puede deshacer.').then(function (aceptado) {
                     if (!aceptado) return;
                     eliminarCita(cita);
                 });
             }));
         }
-        acciones.appendChild(crearBotonAccion('Cerrar', 'btn-item', 'Cerrar fechas guardadas', function () {
+        acciones.appendChild(crearBotonAccion('Cerrar', 'btn-item', 'Cerrar', function () {
             cerrarGuardadas();
         }));
         cuerpo.appendChild(acciones);
@@ -953,8 +1078,8 @@
             marcarPaneles();
             var detalle = document.getElementById('fechas-panel-detalle');
             if (detalle) detalle.scrollTop = 0;
-            var volver = document.getElementById('fechas-volver');
-            if (volver && volver.focus) volver.focus();
+            var cerrar = document.getElementById('cerrar-guardadas');
+            if (cerrar && cerrar.focus) cerrar.focus();
         }
         return true;
     }
@@ -975,7 +1100,7 @@
     }
 
     function pintarGuardadas() {
-        if (!listaDisponibilidad || !listaCitas) return;
+        if (!listaCitas) return;
         var panelLista = document.getElementById('fechas-panel-lista');
         var scrollPrevio = panelLista ? panelLista.scrollTop : scrollLista;
         var claveAbierta = detalleClave;
@@ -984,24 +1109,28 @@
             .sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
         var dias = reglas.filter(function (f) { return f.tipo === 'fecha'; })
             .sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
-        var horas = reglas.filter(function (f) { return f.tipo === 'hora'; })
+        var horas = reglas.filter(function (f) { return f.tipo === 'hora' && /^\d{2}:\d{2}$/.test(String(f.valor || '')); })
             .sort(function (a, b) { return a.valor < b.valor ? -1 : 1; });
         var totalDisp = mesesGuardados.length + dias.length + horas.length;
 
         if (cuentaDisponibilidad) cuentaDisponibilidad.textContent = '(' + totalDisp + ')';
-        if (cuentaCitas) cuentaCitas.textContent = '(' + citas.length + ')';
+        var citasVisibles = citas.filter(function (cita) {
+            return /^\d{4}-\d{2}-\d{2}$/.test(String(cita.fecha || ''));
+        });
+        if (cuentaCitas) cuentaCitas.textContent = '(' + citasVisibles.length + ')';
         if (tabDisponibilidad) {
-            tabDisponibilidad.setAttribute('aria-label', 'Disponibilidad, ' + totalDisp + ' registros');
+            tabDisponibilidad.setAttribute('aria-label', 'Días disponibles, ' + totalDisp);
         }
         if (tabCitas) {
-            tabCitas.setAttribute('aria-label', 'Citas reservadas, ' + citas.length + ' registros');
+            tabCitas.setAttribute('aria-label', 'Citas guardadas, ' + citasVisibles.length);
         }
 
+        if (listaDisponibilidad) {
         listaDisponibilidad.innerHTML = '';
         if (!dias.length) {
             var vacioDisp = document.createElement('p');
             vacioDisp.className = 'vacio-bloque';
-            vacioDisp.textContent = 'Todavía no hay días guardados en la base.';
+            vacioDisp.textContent = 'Todavía no hay días guardados.';
             listaDisponibilidad.appendChild(vacioDisp);
         } else {
             var rejilla = document.createElement('ul');
@@ -1031,20 +1160,20 @@
                     tipo === 'mes' ? 'Meses abiertos' : 'Horas guardadas',
                     tipo === 'mes'
                         ? 'Estos meses siguen guardados. Podés eliminarlos desde aquí.'
-                        : 'Estas horas aplican a los días hábiles. Podés cambiarlas o eliminarlas.'
+                        : 'Estas horas valen para los días que se ofrecen. Podés cambiarlas o quitarlas.'
                 );
                 filas.forEach(function (fila) {
                     var tituloTexto = fila.tipo === 'mes' ? nombreMes(fila.valor) : etiquetaHora(fila.valor);
                     var acciones = [];
                     if (fila.tipo === 'hora') {
                         var otro = fila.estado === 'abierta' ? 'bloqueada' : 'abierta';
-                        var textoOtro = otro === 'abierta' ? 'Marcar hábil' : 'Marcar no hábil';
+                        var textoOtro = otro === 'abierta' ? 'Marcar disponible' : 'Marcar no disponible';
                         acciones.push({
                             texto: textoOtro,
                             clase: 'btn-item',
                             aria: textoOtro + ': ' + tituloTexto,
                             alClick: function () {
-                                guardar('guardar', 'hora', fila.valor, otro, 'Estado actualizado.');
+                                guardar('guardar', 'hora', fila.valor, otro, 'Listo, quedó actualizado.');
                             }
                         });
                     }
@@ -1053,11 +1182,11 @@
                         clase: 'btn-item btn-item-peligro',
                         aria: 'Eliminar ' + etiquetaTipo(fila.tipo).toLowerCase() + ' ' + tituloTexto,
                         alClick: function () {
-                            var aviso = '¿Eliminar ' + etiquetaTipo(fila.tipo).toLowerCase() + ' «' + tituloTexto + '» de la base? Esta acción no se puede deshacer.';
-                            pedirConfirmacion('Eliminar de la base', aviso).then(function (aceptado) {
+                            var aviso = '¿Querés quitar ' + (fila.tipo === 'mes' ? 'el mes' : 'la hora') + ' «' + tituloTexto + '»? No se puede deshacer.';
+                            pedirConfirmacion('Quitar para siempre', aviso).then(function (aceptado) {
                                 if (!aceptado) return;
                                 if (fila.tipo === 'mes') quitarMes(fila.valor);
-                                else guardar('quitar', 'hora', fila.valor, '', 'Eliminado.');
+                                else guardar('quitar', 'hora', fila.valor, '', 'Listo, se quitó.');
                             });
                         }
                     });
@@ -1081,8 +1210,9 @@
             if (horas.length) pintarExtra(horas, 'hora');
             listaDisponibilidad.appendChild(extra);
         }
+        }
 
-        var citasOrden = citas.slice().sort(function (a, b) {
+        var citasOrden = citasVisibles.slice().sort(function (a, b) {
             if (a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
             return a.hora < b.hora ? -1 : 1;
         });
@@ -1090,7 +1220,7 @@
         if (!citasOrden.length) {
             var vacioCita = document.createElement('p');
             vacioCita.className = 'vacio-bloque';
-            vacioCita.textContent = 'Todavía no hay citas reservadas en la base.';
+            vacioCita.textContent = 'Todavía no hay citas con fecha.';
         } else {
             var rejillaCitas = document.createElement('ul');
             rejillaCitas.className = 'fechas-rejilla';
@@ -1103,7 +1233,8 @@
                     clave: claveCita,
                     dia: partesCita.dia,
                     mes: partesCita.mesNombre,
-                    aria: 'Cita del ' + partesCita.dia + ' de ' + partesCita.mesNombre + ' de ' + partesCita.anio +
+                    nombre: cita.persona || 'Sin nombre',
+                    aria: 'Cita de ' + (cita.persona || 'sin nombre') + ' del ' + partesCita.dia + ' de ' + partesCita.mesNombre + ' de ' + partesCita.anio +
                         (cita.hora ? ', ' + etiquetaHora(cita.hora) : '') + '. Ver información.'
                 }, indiceCita));
                 indiceCita += 1;
@@ -1120,18 +1251,14 @@
         }
     }
 
-    function mostrarPestanaGuardadas(cual) {
-        var esCitas = cual === 'citas';
-        if (tabDisponibilidad) {
-            tabDisponibilidad.setAttribute('aria-selected', esCitas ? 'false' : 'true');
-            tabDisponibilidad.tabIndex = esCitas ? -1 : 0;
+    function mostrarPestanaGuardadas() {
+        var tituloGuardadas = document.getElementById('guardadas-titulo');
+        var ayudaGuardadas = document.getElementById('guardadas-ayuda');
+        if (tituloGuardadas) tituloGuardadas.textContent = 'Citas guardadas';
+        if (ayudaGuardadas) {
+            ayudaGuardadas.textContent = 'Cada tarjeta es una cita que ya tiene fecha. Abrila para verla y actualizar sus datos.';
         }
-        if (tabCitas) {
-            tabCitas.setAttribute('aria-selected', esCitas ? 'true' : 'false');
-            tabCitas.tabIndex = esCitas ? 0 : -1;
-        }
-        if (panelDisponibilidad) panelDisponibilidad.hidden = esCitas;
-        if (panelCitas) panelCitas.hidden = !esCitas;
+        if (panelCitas) panelCitas.hidden = false;
     }
 
     function limpiarFormularioCita() {
@@ -1194,7 +1321,7 @@
         marcarPaneles();
         var ventana = guardadas.querySelector('.asistente-ventana');
         if (ventana) ventana.setAttribute('aria-labelledby', 'guardadas-titulo');
-        mostrarPestanaGuardadas('disponibilidad');
+        mostrarPestanaGuardadas('citas');
         pintarGuardadas();
         guardadas.hidden = false;
         document.body.classList.add('asistente-abierto');
@@ -1330,27 +1457,39 @@
     }
 
     function marcarTipoFecha(estado) {
-        estadoFinal = estado === 'ocupada' || estado === 'bloqueada' ? estado : 'abierta';
+        if (estado === 'quince') estadoFinal = 'quince';
+        else estadoFinal = estado === 'bloqueada' ? 'bloqueada' : 'abierta';
+        modoBloqueo = estadoFinal === 'quince';
         var botones = document.querySelectorAll('.tipo-fecha-modos .pincel');
         for (var i = 0; i < botones.length; i += 1) {
             botones[i].setAttribute('aria-pressed', botones[i].getAttribute('data-estado') === estadoFinal ? 'true' : 'false');
         }
-        if (horaAyuda) {
-            if (estadoFinal === 'ocupada') {
-                horaAyuda.textContent = 'Indicá a qué hora está ocupada esa fecha.';
+        var notaTipo = document.getElementById('tipo-fecha-ayuda');
+        if (notaTipo) {
+            if (estadoFinal === 'quince') {
+                notaTipo.textContent = 'En el siguiente paso elegís un día. Ese día queda disponible y los 15 siguientes no se ofrecen.';
             } else if (estadoFinal === 'bloqueada') {
-                horaAyuda.textContent = 'No hace falta hora: el día queda no hábil.';
+                notaTipo.textContent = 'El abogado no va esos días. También podés marcar un martes o un jueves de los 15 días. Los 15 días automáticos no se borran: solo se cierra el día que elijas.';
             } else {
-                horaAyuda.textContent = 'Esta hora queda disponible para los días hábiles (igual en la página pública).';
+                notaTipo.textContent = 'El abogado sí atiende esos días. Podés elegir un día que no sea martes o jueves, o corregir uno de los 15 días. Después indicás hasta qué hora atiende.';
+            }
+        }
+        if (horaAyuda) {
+            if (estadoFinal === 'bloqueada') {
+                horaAyuda.textContent = 'No hace falta hora: esos días no se ofrecen.';
+            } else {
+                horaAyuda.textContent = 'Esta hora es el cierre de ese día. No mueve los 15 días, que cambian solos cada día.';
             }
         }
     }
 
     function totalPasos() {
+        if (estadoFinal === 'quince') return 3;
         return estadoFinal === 'bloqueada' ? 4 : 5;
     }
 
     function etiquetaPasoActual(numero) {
+        if (estadoFinal === 'quince') return numero;
         if (estadoFinal === 'bloqueada') {
             if (numero <= 3) return numero;
             return 4;
@@ -1370,9 +1509,12 @@
 
     function actualizarVistaPrevia() {
         var hora = horaActual();
-        if (vistaFecha) vistaFecha.textContent = etiquetaFecha(diaSeleccionado) || 'Sin fecha';
+        if (vistaFecha) {
+            if (diasSeleccionados.length) vistaFecha.textContent = diasSeleccionados.map(etiquetaFecha).join(', ');
+            else vistaFecha.textContent = 'Sin fecha';
+        }
         if (vistaHora) {
-            if (estadoFinal === 'bloqueada') vistaHora.textContent = 'Sin hora (día no hábil)';
+            if (estadoFinal === 'bloqueada') vistaHora.textContent = 'Sin hora, porque ese día no se ofrece';
             else vistaHora.textContent = hora ? etiquetaHora(hora) : 'Sin hora';
         }
         if (vistaEstado) vistaEstado.textContent = textosEstado[estadoFinal] || textosEstado.abierta;
@@ -1397,17 +1539,42 @@
         }
         if (asistenteTitulo) asistenteTitulo.textContent = titulos[numero];
         if (asistenteAyuda) asistenteAyuda.textContent = ayudas[numero];
-        if (botonAtras) botonAtras.hidden = numero === 1;
-        if (botonSiguiente) botonSiguiente.hidden = numero === 5;
+        if (botonAtras) botonAtras.hidden = numero === 1 || bloqueoCorriendo;
+        if (botonSiguiente) botonSiguiente.hidden = numero === 5 || (modoBloqueo && numero === 3);
         if (botonGuardar) botonGuardar.hidden = numero !== 5;
+        if (modoBloqueo && numero === 3) {
+            if (asistenteTitulo) asistenteTitulo.textContent = 'Elegí el día disponible';
+            if (asistenteAyuda) asistenteAyuda.textContent = 'Ese día queda disponible. Los 15 que le siguen no se ofrecen.';
+        }
         if (numero === 2) marcarTipoFecha(estadoFinal);
         if (numero === 3) pintarDias();
         if (numero === 5) actualizarVistaPrevia();
+        pintarAvisoModo();
     }
 
-    function abrirAsistente() {
+    function pintarAvisoModo() {
+        var aviso = document.getElementById('bloqueo-modo');
+        var nota = document.getElementById('bloqueo-quince-nota');
+        var anterior = document.getElementById('mes-anterior');
+        var siguiente = document.getElementById('mes-siguiente');
+        if (aviso) aviso.hidden = !(modoBloqueo && paso === 3);
+        if (anterior) anterior.hidden = !modoBloqueo;
+        if (siguiente) siguiente.hidden = !modoBloqueo;
+        if (anterior) anterior.disabled = bloqueoCorriendo;
+        if (siguiente) siguiente.disabled = bloqueoCorriendo;
+        if (botonAtras && modoBloqueo && paso === 3) botonAtras.hidden = bloqueoCorriendo;
+        if (asistente) asistente.classList.toggle('asistente-modo-bloqueo', modoBloqueo);
+        if (nota && modoBloqueo && !bloqueoCorriendo) {
+            nota.textContent = 'Elegí un día. Ese día queda disponible y los 15 siguientes no se ofrecen. Si volvés atrás, no se guarda nada.';
+        }
+    }
+
+    function abrirAsistente(entrarEnBloqueo) {
+        if (bloqueoCorriendo) return;
         if (guardadas && !guardadas.hidden) cerrarGuardadas();
         diaSeleccionado = '';
+        diasSeleccionados = [];
+        modoBloqueo = false;
         estadoFinal = 'abierta';
         marcarTipoFecha('abierta');
         if (!campoMes.value) {
@@ -1423,6 +1590,9 @@
     }
 
     function cerrarAsistente() {
+        if (bloqueoCorriendo) return;
+        modoBloqueo = false;
+        pintarAvisoModo();
         asistente.classList.remove('asistente-visible');
         document.body.classList.remove('asistente-abierto');
         window.setTimeout(function () {
@@ -1440,15 +1610,15 @@
             return true;
         }
         if (numero === 2) {
-            if (!estadoFinal || !textosEstado[estadoFinal]) {
-                mostrarErrorGuardado('Elegí si la fecha será hábil, ocupada o no hábil.');
+            if (estadoFinal !== 'abierta' && estadoFinal !== 'bloqueada') {
+                mostrarErrorGuardado('Elegí si ese día queda disponible o si el abogado no va.');
                 return false;
             }
             return true;
         }
         if (numero === 3) {
-            if (!diaSeleccionado || diaSeleccionado.slice(0, 7) !== campoMes.value) {
-                mostrarErrorGuardado('Elegí un día del mes.');
+            if (!diasSeleccionados.length) {
+                mostrarErrorGuardado('Elegí al menos un día.');
                 return false;
             }
             return true;
@@ -1456,8 +1626,8 @@
         if (numero === 4) {
             if (estadoFinal === 'bloqueada') return true;
             var hora = horaActual();
-            if (!hora) {
-                mostrarErrorGuardado('Escribí una hora de 1 a 12.');
+            if (!hora || hora < '09:00') {
+                mostrarErrorGuardado('El cierre tiene que ser a las 9:00 a. m. o después, para que quepa una cita de una hora.');
                 return false;
             }
             return true;
@@ -1520,6 +1690,133 @@
                 if (!datos || !datos.ok) {
                     throw new Error((datos && datos.mensaje) || 'No se pudo guardar. Entra de nuevo a Administración.');
                 }
+                return datos;
+            });
+    }
+
+    function fijarEstadoLocal(iso, estado) {
+        var i;
+        for (i = 0; i < reglas.length; i += 1) {
+            if (reglas[i].tipo === 'fecha' && reglas[i].valor === iso) {
+                reglas[i].estado = estado;
+                return;
+            }
+        }
+        reglas.push({ tipo: 'fecha', valor: iso, estado: estado });
+    }
+
+    function moverMes(delta) {
+        if (bloqueoCorriendo || !/^\d{4}-\d{2}$/.test(campoMes.value)) return;
+        var partes = campoMes.value.split('-');
+        var fecha = new Date(Date.UTC(Number(partes[0]), Number(partes[1]) - 1 + delta, 1));
+        campoMes.value = fecha.getUTCFullYear() + '-' + String(fecha.getUTCMonth() + 1).padStart(2, '0');
+        pintarDias();
+    }
+
+    function mostrarMesDe(iso) {
+        var mes = iso.slice(0, 7);
+        if (campoMes.value === mes) return;
+        campoMes.value = mes;
+        pintarDias();
+    }
+
+    function animarBloqueo(detalle, mensaje) {
+        var nota = document.getElementById('bloqueo-quince-nota');
+        var reducido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var espera = reducido ? 0 : 260;
+        var indice = 0;
+        var ocupadas = [];
+
+        function pintarCelda(item) {
+            mostrarMesDe(item.fecha);
+            var boton = diasMes.querySelector('[data-fecha="' + item.fecha + '"]');
+            if (!boton) return;
+            var disponible = item.estado === 'abierta';
+            if (item.resultado === 'omitida_ocupada') {
+                ocupadas.push(item.fecha);
+                boton.classList.add('dia-quince-conflicto');
+                if (disponible) boton.classList.add('dia-quince-inicio');
+                return;
+            }
+            fijarEstadoLocal(item.fecha, disponible ? 'abierta' : 'bloqueada');
+            window.requestAnimationFrame(function () {
+                var celda = diasMes.querySelector('[data-fecha="' + item.fecha + '"]');
+                if (!celda) return;
+                aplicarMarca(celda, Number(item.fecha.slice(8)), item.fecha, item.fecha.slice(0, 7));
+                celda.classList.remove('dia-quince-relleno', 'dia-quince-disponible', 'dia-quince-inicio', 'dia-quince-conflicto');
+                void celda.offsetWidth;
+                if (disponible) celda.classList.add('dia-quince-disponible', 'dia-quince-inicio');
+                else celda.classList.add('dia-quince-relleno');
+            });
+        }
+
+        function siguiente() {
+            if (indice >= detalle.length) {
+                if (nota) {
+                    nota.textContent = mensaje || 'La fecha elegida queda disponible y las siguientes no se ofrecen.';
+                    if (ocupadas.length) {
+                        nota.textContent += ' Siguen ocupadas: ' + ocupadas.map(etiquetaFecha).join(', ') + '.';
+                    }
+                }
+                window.setTimeout(function () {
+                    cargar().then(function () {
+                        bloqueoCorriendo = false;
+                        modoBloqueo = false;
+                        pintarAvisoModo();
+                        mostrarGuardado(nota ? nota.textContent : 'Fechas guardadas.');
+                        cerrarAsistente();
+                    });
+                }, reducido ? 0 : 820);
+                return;
+            }
+            var item = detalle[indice];
+            indice += 1;
+            if (nota) {
+                if (item.estado === 'abierta') {
+                    nota.textContent = item.resultado === 'omitida_ocupada'
+                        ? 'Esa fecha sigue ocupada por una cita aceptada…'
+                        : 'La fecha elegida queda disponible…';
+                }
+                else nota.textContent = 'Bloqueando ' + (indice - 1) + ' de 15…';
+            }
+            pintarCelda(item);
+            window.setTimeout(siguiente, espera);
+        }
+
+        siguiente();
+    }
+
+    function iniciarBloqueo(fecha) {
+        if (bloqueoCorriendo || !modoBloqueo) return;
+        bloqueoCorriendo = true;
+        diaSeleccionado = fecha;
+        pintarAvisoModo();
+        var nota = document.getElementById('bloqueo-quince-nota');
+        if (nota) nota.textContent = 'Guardando: el día elegido queda disponible y se bloquean los 15 siguientes…';
+        var marcado = diasMes.querySelector('[data-fecha="' + fecha + '"]');
+        if (marcado) marcado.classList.add('dia-quince-inicio');
+        var datos = new FormData();
+        datos.append('token', token.value);
+        datos.append('accion', 'bloquear_quince');
+        datos.append('tipo', 'fecha');
+        datos.append('valor', fecha);
+        datos.append('estado', 'bloqueada');
+        fetch('agenda.php', { method: 'POST', body: datos, credentials: 'same-origin' })
+            .then(function (respuesta) {
+                return respuesta.json().catch(function () { return null; });
+            })
+            .then(function (datosRespuesta) {
+                var detalle = datosRespuesta && datosRespuesta.detalle;
+                if (!datosRespuesta || !datosRespuesta.ok || !detalle || !detalle.length) {
+                    throw new Error((datosRespuesta && datosRespuesta.mensaje) || 'No se pudo bloquear ese período.');
+                }
+                animarBloqueo(detalle, datosRespuesta.mensaje);
+            })
+            .catch(function (error) {
+                bloqueoCorriendo = false;
+                pintarAvisoModo();
+                pintarDias();
+                mostrarErrorGuardado(error.message || 'No se pudo bloquear ese período.');
             });
     }
 
@@ -1571,12 +1868,9 @@
         var hora = estadoFinal === 'bloqueada' ? '' : horaActual();
         var items = [];
         if (!mesAgregado(mes)) items.push({ tipo: 'mes', valor: mes, estado: 'abierta' });
-        items.push({ tipo: 'fecha', valor: diaSeleccionado, estado: estadoFinal });
         if (hora) {
-            items.push({
-                tipo: 'hora',
-                valor: hora,
-                estado: estadoFinal === 'ocupada' ? 'ocupada' : 'abierta'
+            diasSeleccionados.forEach(function (fecha) {
+                items.push({ tipo: 'hora', valor: fecha + ' ' + hora, estado: 'abierta' });
             });
         }
 
@@ -1587,13 +1881,29 @@
                     return enviar('guardar', item.tipo, item.valor, item.estado);
                 });
             });
+            cadena = cadena.then(function () {
+                var datos = new FormData();
+                datos.append('token', token.value);
+                datos.append('accion', 'guardar_lote');
+                datos.append('tipo', 'fecha');
+                datos.append('estado', estadoFinal);
+                datos.append('fechas', diasSeleccionados.join(','));
+                datos.append('valor', diasSeleccionados[0] || '');
+                return fetch('agenda.php', { method: 'POST', body: datos, credentials: 'same-origin' })
+                    .then(function (respuesta) {
+                        return respuesta.json().catch(function () { return null; });
+                    })
+                    .then(function (datosRespuesta) {
+                        if (!datosRespuesta || !datosRespuesta.ok) {
+                            throw new Error((datosRespuesta && datosRespuesta.mensaje) || 'No se pudo guardar.');
+                        }
+                        return datosRespuesta;
+                    });
+            });
             return cadena
-                .then(function () {
+                .then(function (datosGuardados) {
                     mostrarAviso('');
-                    var mensaje = 'Fecha guardada.';
-                    if (estadoFinal === 'abierta') mensaje = 'Fecha hábil y hora guardadas.';
-                    else if (estadoFinal === 'ocupada') mensaje = 'Fecha marcada como ocupada.';
-                    else mensaje = 'Fecha marcada como no hábil.';
+                    var mensaje = (datosGuardados && datosGuardados.mensaje) || 'Fechas guardadas.';
                     mostrarGuardado(mensaje);
                     cerrarAsistente();
                     return cargar();
@@ -1612,8 +1922,6 @@
     });
     if (botonAbrirGuardadas) botonAbrirGuardadas.addEventListener('click', abrirGuardadas);
     if (botonCerrarGuardadas) botonCerrarGuardadas.addEventListener('click', cerrarGuardadas);
-    var botonVolverFechas = document.getElementById('fechas-volver');
-    if (botonVolverFechas) botonVolverFechas.addEventListener('click', volverFechas);
     if (guardadas) {
         guardadas.addEventListener('click', function (evento) {
             if (evento.target && evento.target.getAttribute('data-cerrar-guardadas') === '1') cerrarGuardadas();
@@ -1634,10 +1942,6 @@
     document.addEventListener('keydown', function (evento) {
         if (evento.key !== 'Escape') return;
         if (guardadas && !guardadas.hidden) {
-            if (guardadas.classList.contains('fechas-viendo-detalle')) {
-                volverFechas();
-                return;
-            }
             cerrarGuardadas();
             return;
         }
@@ -1653,25 +1957,49 @@
         botonSiguiente.addEventListener('click', function () {
             if (!validarPaso(paso)) return;
             mostrarGuardado('');
+            if (paso === 2 && estadoFinal === 'quince') {
+                diasSeleccionados = [];
+                diaSeleccionado = '';
+            }
             mostrarPaso(siguientePaso(paso));
         });
     }
     if (botonGuardar) botonGuardar.addEventListener('click', guardarAsistente);
 
     campoMes.addEventListener('change', function () {
-        if (diaSeleccionado && diaSeleccionado.slice(0, 7) !== campoMes.value) {
-            diaSeleccionado = '';
-        }
         if (paso === 3) pintarDias();
     });
 
     diasMes.addEventListener('click', function (evento) {
         var boton = evento.target.closest ? evento.target.closest('.dia-mes') : null;
         if (!boton || !diasMes.contains(boton)) return;
-        diaSeleccionado = boton.getAttribute('data-fecha') || '';
+        var iso = boton.getAttribute('data-fecha') || '';
+        if (!iso) return;
+        if (modoBloqueo) {
+            if (bloqueoCorriendo) return;
+            if (estadoDia(iso) === 'ocupada') {
+                mostrarErrorGuardado('Ese día está ocupado por una cita aceptada. Elegí otro: la fecha de inicio tiene que poder quedar disponible.');
+                return;
+            }
+            iniciarBloqueo(iso);
+            return;
+        }
+        if (estadoDia(iso) === 'ocupada') {
+            mostrarErrorGuardado('Ese día está ocupado por una cita aceptada y no se puede cambiar.');
+            return;
+        }
+        var posicion = diasSeleccionados.indexOf(iso);
+        if (posicion === -1) diasSeleccionados.push(iso);
+        else diasSeleccionados.splice(posicion, 1);
+        diaSeleccionado = iso;
         pintarDias();
         mostrarGuardado('');
     });
+
+    var botonMesAnterior = document.getElementById('mes-anterior');
+    var botonMesSiguiente = document.getElementById('mes-siguiente');
+    if (botonMesAnterior) botonMesAnterior.addEventListener('click', function () { moverMes(-1); });
+    if (botonMesSiguiente) botonMesSiguiente.addEventListener('click', function () { moverMes(1); });
 
     campoHora.addEventListener('input', function () { limitarCampo(campoHora, 12); });
     campoHora.addEventListener('blur', normalizarHora);
@@ -1710,5 +2038,8 @@
     }
 
     pintarResumen();
+    document.addEventListener('sitraina-agenda-actualizar', function () {
+        cargar();
+    });
     cargar();
 })();

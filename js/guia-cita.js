@@ -5,22 +5,22 @@
     var pasos = [
         {
             titulo: 'Cómo te llega el correo',
-            texto: 'Tu solicitud de cita queda en el panel. La respuesta llega a Mis mensajes si ya iniciaste sesión y el formulario lleva el correo de esa cuenta.',
+            texto: 'Tu solicitud de cita queda con el sindicato. La respuesta llega a Mis mensajes si ya entraste y usaste el correo de esa cuenta.',
             icono: '✉'
         },
         {
             titulo: 'Usá un correo que revisés',
-            texto: 'Iniciá sesión y, en el formulario, poné el correo de esa cuenta. Así la respuesta vuelve a Mis mensajes.',
+            texto: 'Entrá con tu cuenta y usá ese mismo correo al pedir la cita. Así la respuesta vuelve a Mis mensajes.',
             icono: '1'
         },
         {
             titulo: 'Al enviar tu solicitud',
-            texto: 'En esta misma página verás la confirmación. El sindicato ve la cita en el panel.',
+            texto: 'En esta misma página vas a ver la confirmación. El sindicato recibe tu cita.',
             icono: '2'
         },
         {
             titulo: 'Cómo se ve el remitente',
-            texto: 'Cuando administración te responda, el mensaje aparece en Mis mensajes porque ya habías iniciado sesión con el correo del formulario.',
+            texto: 'Cuando el sindicato te responda, el mensaje aparece en Mis mensajes, porque ya habías entrado con ese correo.',
             icono: '3'
         },
         {

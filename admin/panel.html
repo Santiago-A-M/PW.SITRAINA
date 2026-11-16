@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Administración | SITRAINA</title>
+  <link rel="icon" type="image/png" href="../img/favicon-logo.png?v=1">
   <script>
     (function () {
       try {
@@ -37,13 +38,13 @@
     body.pagina-panel { background: transparent; }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.42">
-  <link rel="stylesheet" href="../css/avisos.css?v=1.2">
+  <link rel="stylesheet" href="admin.css?v=6.74">
+  <link rel="stylesheet" href="../css/avisos.css?v=1.9">
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.26';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.52';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
-<body class="pagina-panel">
+<body class="pagina-panel {{rol-clase}}">
   <script>if (document.documentElement.classList.contains('dark-mode')) document.body.classList.add('dark-mode'); if (document.documentElement.classList.contains('daltonico')) document.body.classList.add('daltonico');</script>
 
   <header class="admin-header" role="banner">
@@ -89,12 +90,6 @@
           </span>
           <span class="admin-nav-label">Citas con Asesoría</span>
         </a>
-        <a href="#horario" data-admin-nav="horario" title="Horario" aria-label="Horario">
-          <span class="admin-nav-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M3 11h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 14.8v1.4l.9.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </span>
-          <span class="admin-nav-label">Horario</span>
-        </a>
         <a href="#contacto" data-admin-nav="contacto" title="Contacto" aria-label="Contacto">
           <span class="admin-nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -122,12 +117,12 @@
             </button>
             <div class="admin-opciones-menu" id="admin-opciones-menu" role="menu" hidden>
               <button type="button" class="admin-opciones-item" id="admin-opcion-daltonico" role="menuitem" aria-pressed="false">
-                <span class="admin-opciones-item-icono" aria-hidden="true">◐</span>
+                <span class="admin-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/></svg></span>
                 <span>Modo daltónico</span>
                 <span class="admin-opciones-item-estado">Off</span>
               </button>
               <button type="button" class="admin-opciones-item" id="admin-opcion-ayuda" role="menuitem">
-                <span class="admin-opciones-item-icono" aria-hidden="true">?</span>
+                <span class="admin-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.2 9.3a2.8 2.8 0 1 1 4.4 2.3c-.8.4-1.6 1-1.6 2V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 17.6h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span>
                 <span>Ayuda</span>
               </button>
               <a class="admin-opciones-item admin-opciones-salir" id="cerrar-sesion" href="salir.php" role="menuitem">
@@ -146,7 +141,7 @@
   <p class="sesion admin-sesion" hidden>{{usuario}}</p>
 
   <aside id="admin-alerta" class="admin-alerta">
-    <button type="button" class="admin-alerta-abrir" id="admin-alerta-abrir" aria-expanded="false" aria-controls="admin-alerta-popup" title="Advertencias" aria-label="Abrir advertencias">
+    <button type="button" class="admin-alerta-abrir" id="admin-alerta-abrir" aria-expanded="false" aria-controls="admin-alerta-popup" title="Notificaciones" aria-label="Abrir notificaciones">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2L2.8 19.5h18.4L12 3.2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v5.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.15" fill="currentColor"/></svg>
       <span class="admin-alerta-cuenta" id="admin-alerta-cuenta" hidden>0</span>
     </button>
@@ -156,10 +151,11 @@
         <button type="button" class="admin-alerta-cerrar" id="admin-alerta-cerrar" aria-label="Cerrar advertencias">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
         </button>
-        <h2 class="admin-alerta-titulo" id="admin-alerta-titulo">Advertencias</h2>
-        <p class="admin-alerta-ayuda">Consultas pendientes. Solo se ve el tipo y cuándo llegó.</p>
+        <h2 class="admin-alerta-titulo" id="admin-alerta-titulo">Notificaciones</h2>
+        <p class="admin-alerta-ayuda">Lo que llegó y todavía no marcaste como leído. Las solicitudes siguen en su sección.</p>
+        <button type="button" class="admin-alerta-todas" id="admin-alerta-todas">Marcar todas como leídas</button>
         <div class="admin-alerta-lista" id="admin-alerta-lista" role="status" aria-live="polite">
-          <p class="admin-alerta-vacio" id="admin-alerta-vacio">No hay advertencias por ahora.</p>
+          <p class="admin-alerta-vacio" id="admin-alerta-vacio">No hay avisos por ahora.</p>
         </div>
       </div>
     </div>
@@ -168,7 +164,7 @@
   <main class="caja caja-panel admin-vista" id="vista-agenda" data-vista="agenda">
     <header class="vista-cabeza">
       <h1>Inicio</h1>
-      <p class="panel-intro">Resumen para administración: pendientes y consultas recientes. Abrí la papelera para revisar o borrar consultas rechazadas.</p>
+      <p class="panel-intro">Aquí ves lo que está pendiente y lo que llegó hace poco. En la papelera podés revisar o quitar las solicitudes que no se aceptaron.</p>
     </header>
 
     <section class="inicio-stats" aria-label="Pendientes por tipo">
@@ -190,7 +186,7 @@
       <div class="inicio-bloque-cabeza">
         <h2 id="inicio-citas-titulo">Consultas recientes</h2>
       </div>
-      <div id="inicio-citas-recientes" class="inicio-lista"><p class="vacio-bloque">Cargando...</p></div>
+      <div id="inicio-citas-recientes" class="inicio-lista"><p class="vacio-bloque">Un momento, por favor.</p></div>
     </section>
 
     <section class="inicio-bloque" aria-labelledby="inicio-papelera-abrir-titulo">
@@ -198,42 +194,9 @@
         <h2 id="inicio-papelera-abrir-titulo">Papelera de rechazados</h2>
         <span class="inicio-bloque-nota" id="inicio-papelera-nota">0 rechazadas</span>
       </div>
-      <p class="resumen-ayuda">Consultas marcadas como rechazadas. Podes revisarlas y borrarlas definitivamente de la base.</p>
+      <p class="resumen-ayuda">Solicitudes que no se aceptaron. Podés revisarlas y, si lo decidís, quitarlas de forma definitiva.</p>
       <div class="panel-acciones">
         <button type="button" class="btn-abrir-asistente btn-abrir-secundario" id="abrir-papelera">Abrir papelera</button>
-      </div>
-    </section>
-  </main>
-
-  <main class="caja caja-panel admin-vista" id="vista-horario" data-vista="horario" hidden>
-    <header class="vista-cabeza">
-      <h1>Horario de citas con asesoría</h1>
-      <p class="panel-intro">Aquí se definen únicamente los días y horas permitidos para pedir cita con asesoría legal. No afecta afiliaciones ni contacto.</p>
-    </header>
-
-    <section class="horario-herramientas" aria-labelledby="horario-herramientas-titulo">
-      <h2 id="horario-herramientas-titulo">Disponibilidad publica</h2>
-      <p class="resumen-ayuda">Lo que configures aquí es lo que ve la persona en Solicitar cita. Solo aplica a citas con asesoría.</p>
-      <div class="panel-acciones">
-        <button type="button" class="btn-abrir-asistente" id="abrir-asistente">Agregar fecha y hora</button>
-        <button type="button" class="btn-abrir-asistente btn-abrir-secundario" id="abrir-guardadas">Ver fechas guardadas</button>
-      </div>
-    </section>
-
-    <!-- Listas ocultas: agenda.js sigue pintando el resumen aquí. -->
-    <section class="resumen-agenda" aria-hidden="true" hidden>
-      <h2 id="titulo-resumen">Resumen interno</h2>
-      <div class="resumen-bloque">
-        <h3>Meses</h3>
-        <ul class="rejilla-casillas rejilla-casillas-resumen" id="lista-mes-resumen"><li class="vacio-bloque">Sin meses todavia.</li></ul>
-      </div>
-      <div class="resumen-bloque">
-        <h3>Dias disponibles</h3>
-        <ul class="rejilla-casillas rejilla-casillas-resumen" id="lista-dias-resumen"><li class="vacio-bloque">Sin dias todavia.</li></ul>
-      </div>
-      <div class="resumen-bloque">
-        <h3>Horarios</h3>
-        <ul class="rejilla-casillas rejilla-casillas-resumen" id="lista-hora"><li class="vacio-bloque">Sin horas.</li></ul>
       </div>
     </section>
   </main>
@@ -241,40 +204,62 @@
   <main class="caja caja-panel admin-vista" id="vista-afilacion" data-vista="afilacion" hidden>
     <header class="vista-cabeza">
       <h1>Afiliaciones</h1>
-      <p class="panel-intro">Boletas enviadas desde Afiliacion. Si la persona ya inició sesión y el formulario trae el correo de su cuenta, la respuesta llega a Mis mensajes.</p>
+      <p class="panel-intro">Solicitudes de afiliación que enviaron las personas. Si ya tenían cuenta con ese correo, la respuesta les llega a Mis mensajes.</p>
     </header>
-    <p class="guardadas-panel-ayuda">Cada casilla es una solicitud de afiliación. Ábrela, elige la decisión, escribe el mensaje y envía.</p>
-    <div id="lista-sol-afilacion" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Cargando...</p></div>
+    <p class="guardadas-panel-ayuda">Abrí cada solicitud, elegí la respuesta, escribí el mensaje con respeto y envialo.</p>
+    <div id="lista-sol-afilacion" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
   <main class="caja caja-panel admin-vista" id="vista-afiliados" data-vista="afiliados" hidden>
     <header class="vista-cabeza">
       <h1>Afiliados</h1>
-      <p class="panel-intro">Personas registradas para validar Solicitar cita. La cédula, el nombre completo y el correo se cargan solo desde este panel.</p>
+      <p class="panel-intro">Personas afiliadas que pueden pedir cita. Su cédula, su nombre y su correo se anotan aquí.</p>
     </header>
-    <p class="guardadas-panel-ayuda">Las boletas que envía la gente siguen en Afiliaciones. Aquí solo se agregan o eliminan afiliados.</p>
+    <p class="guardadas-panel-ayuda">Las solicitudes que envía la gente siguen en Afiliaciones. Aquí solo se agregan o se quitan personas afiliadas.</p>
     <div class="panel-acciones">
       <button type="button" class="btn-abrir-asistente" id="abrir-afiliado">Añadir afiliado</button>
     </div>
-    <div id="lista-afiliados" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Cargando...</p></div>
+    <div id="lista-afiliados" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
   <main class="caja caja-panel admin-vista" id="vista-cita" data-vista="cita" hidden>
     <header class="vista-cabeza">
       <h1>Citas con Asesoría</h1>
-      <p class="panel-intro">Solicitudes de cita legal enviadas desde Asesoria. Responde para confirmar, rechazar o aclarar dudas sobre el turno.</p>
+      <p class="panel-intro">Citas que las personas pidieron en Asesoría. Respondé para confirmar, no aceptar o aclarar con amabilidad.</p>
     </header>
-    <p class="guardadas-panel-ayuda">Cada casilla es una cita pedida. Ábrela, elige Aceptar, Rechazar o Neutral, previsualizá y guardá la respuesta.</p>
-    <div id="lista-sol-cita" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Cargando...</p></div>
+    <p class="guardadas-panel-ayuda">Abajo están las citas que pidieron las personas. Abrí una para responder.</p>
+    <section class="horario-herramientas" aria-labelledby="horario-herramientas-titulo">
+      <h2 id="horario-herramientas-titulo">Días y horas disponibles</h2>
+      <p class="resumen-ayuda">Esto es lo que ve la persona al pedir cita. Desde aquí marcás los días disponibles, los que no se ofrecen, o reservás 15 días seguidos.</p>
+      <div class="panel-acciones">
+        <button type="button" class="btn-abrir-asistente" id="abrir-asistente">Agregar fecha y hora</button>
+      </div>
+    </section>
+    <section class="resumen-agenda" aria-hidden="true" hidden>
+      <h2 id="titulo-resumen">Resumen interno</h2>
+      <div class="resumen-bloque">
+        <h3>Meses</h3>
+        <ul class="rejilla-casillas rejilla-casillas-resumen" id="lista-mes-resumen"><li class="vacio-bloque">Todavía no hay meses.</li></ul>
+      </div>
+      <div class="resumen-bloque">
+        <h3>Dias disponibles</h3>
+        <ul class="rejilla-casillas rejilla-casillas-resumen" id="lista-dias-resumen"><li class="vacio-bloque">Todavía no hay días.</li></ul>
+      </div>
+      <div class="resumen-bloque">
+        <h3>Horarios</h3>
+        <ul class="rejilla-casillas rejilla-casillas-resumen" id="lista-hora"><li class="vacio-bloque">Todavía no hay horas.</li></ul>
+      </div>
+    </section>
+    <div id="lista-sol-cita" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
   <main class="caja caja-panel admin-vista" id="vista-contacto" data-vista="contacto" hidden>
     <header class="vista-cabeza">
       <h1>Contacto</h1>
-      <p class="panel-intro">Mensajes enviados desde Contacto. Si quien escribió ya había iniciado sesión con ese correo, la respuesta llega a Mis mensajes.</p>
+      <p class="panel-intro">Mensajes que las personas enviaron desde Contacto. Si ya tenían cuenta con ese correo, la respuesta les llega a Mis mensajes.</p>
     </header>
-    <p class="guardadas-panel-ayuda">Cada casilla es un mensaje. Ábrela, elige la decisión, escribe la respuesta y envía.</p>
-    <div id="lista-sol-contacto" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Cargando...</p></div>
+    <p class="guardadas-panel-ayuda">Abrí cada mensaje, elegí la respuesta, escribila con respeto y enviala.</p>
+    <div id="lista-sol-contacto" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
   <div class="asistente" id="popup-afiliado" hidden>
@@ -282,7 +267,7 @@
     <div class="asistente-ventana" role="dialog" aria-modal="true" aria-labelledby="afiliado-titulo">
       <button type="button" class="asistente-cerrar" id="cerrar-afiliado" aria-label="Cerrar">&times;</button>
       <h2 class="asistente-titulo" id="afiliado-titulo">Añadir afiliado</h2>
-      <p class="asistente-ayuda">Estos tres datos tienen que coincidir exactamente cuando la persona pida cita.</p>
+      <p class="asistente-ayuda">Estos tres datos tienen que ser los mismos que la persona usa cuando pide cita.</p>
       <form id="form-afiliado">
         <label class="asistente-label" for="afiliado-cedula">Cédula
           <input id="afiliado-cedula" name="cedula" inputmode="numeric" maxlength="9" autocomplete="off" required>
@@ -305,8 +290,8 @@
     <div class="asistente-ventana" role="dialog" aria-modal="true" aria-labelledby="asistente-titulo">
       <button type="button" class="asistente-cerrar" id="cerrar-asistente" aria-label="Cerrar">&times;</button>
       <p class="asistente-pasos" id="asistente-pasos" aria-live="polite">Paso 1 de 5</p>
-      <h2 class="asistente-titulo" id="asistente-titulo">Elige el mes</h2>
-      <p class="asistente-ayuda" id="asistente-ayuda">Primero el mes en el que quieres trabajar.</p>
+      <h2 class="asistente-titulo" id="asistente-titulo">Elegí el mes</h2>
+      <p class="asistente-ayuda" id="asistente-ayuda">Primero, el mes en el que querés trabajar.</p>
 
       <section class="asistente-paso" id="paso-1" data-paso="1">
         <label class="asistente-label" for="mes">Mes</label>
@@ -316,27 +301,30 @@
       <section class="asistente-paso" id="paso-2" data-paso="2" hidden>
         <div class="pinceles tipo-fecha-modos" role="group" aria-label="Tipo de fecha">
           <button type="button" class="pincel" data-estado="abierta" aria-pressed="true">
-            <span class="muestra muestra-habil" aria-hidden="true"></span> Habil
-          </button>
-          <button type="button" class="pincel" data-estado="ocupada" aria-pressed="false">
-            <span class="muestra muestra-ocupada" aria-hidden="true">
-              <svg class="icono-reloj" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </span> Ocupada
+            <span class="muestra muestra-habil" aria-hidden="true"></span> Disponible
           </button>
           <button type="button" class="pincel" data-estado="bloqueada" aria-pressed="false">
-            <span class="muestra muestra-x" aria-hidden="true">&times;</span> No habil
+            <span class="muestra muestra-x" aria-hidden="true">&times;</span> No disponible
           </button>
         </div>
-        <p class="asistente-nota" id="tipo-fecha-ayuda">Solo para citas con asesoría. Hábil: se puede agendar. Ocupada: ya la tiene alguien. No hábil: no se ofrece ese día.</p>
+        <p class="asistente-nota" id="tipo-fecha-ayuda">Disponible: el abogado sí atiende ese día, aunque no sea martes o jueves ni entre en los 15 días. No disponible: no va, aunque sea un martes o jueves de esos 15 días. Los 15 días siguen cambiando solos cada día.</p>
       </section>
 
       <section class="asistente-paso" id="paso-3" data-paso="3" hidden>
-        <p class="mes-activo" id="mes-activo"></p>
+        <div class="bloqueo-modo" id="bloqueo-modo" hidden>
+          <p class="bloqueo-modo-titulo">La fecha que elijas queda disponible</p>
+          <p class="asistente-nota" id="bloqueo-quince-nota">Elegí un día. Ese día queda disponible y los 15 siguientes no se ofrecen. Si volvés atrás, no se guarda nada.</p>
+        </div>
+        <div class="mes-fila">
+          <button type="button" class="mes-flecha" id="mes-anterior" hidden aria-label="Mes anterior">‹</button>
+          <p class="mes-activo" id="mes-activo"></p>
+          <button type="button" class="mes-flecha" id="mes-siguiente" hidden aria-label="Mes siguiente">›</button>
+        </div>
         <div class="semana" aria-hidden="true">
           <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
         </div>
         <div class="dias" id="dias-mes"></div>
-        <p class="asistente-elegido" id="dia-elegido">Todavia no elegiste un dia.</p>
+        <p class="asistente-elegido" id="dia-elegido">Todavía no elegiste un día. Podés marcar varios, aunque no sean seguidos.</p>
       </section>
 
       <section class="asistente-paso" id="paso-4" data-paso="4" hidden>
@@ -352,7 +340,7 @@
             <button type="button" id="periodo-pm" aria-pressed="false">p. m.</button>
           </div>
         </div>
-        <p class="asistente-nota" id="hora-ayuda">Esta hora queda disponible solo para citas con asesoría en los días hábiles (igual en Solicitar cita).</p>
+        <p class="asistente-nota" id="hora-ayuda">Esta hora es hasta cuándo atiende ese día. Las citas siguen siendo de una hora, desde las 8:00 a. m. Si es un martes o un jueves de los 15 días, esta hora reemplaza el cierre de las 2:00 p. m. o la 1:00 p. m. solo en los días que marques.</p>
       </section>
 
       <section class="asistente-paso" id="paso-5" data-paso="5" hidden>
@@ -367,7 +355,7 @@
       </section>
 
       <div class="asistente-acciones">
-        <button type="button" class="btn-atajo btn-atajo-secundario" id="asistente-atras" hidden>Atras</button>
+        <button type="button" class="btn-atajo btn-atajo-secundario" id="asistente-atras" hidden>Atrás</button>
         <button type="button" class="btn-atajo" id="asistente-siguiente">Siguiente</button>
         <button type="button" class="btn-atajo" id="asistente-guardar" hidden>Guardar horario</button>
       </div>
@@ -381,29 +369,11 @@
       <div class="fechas-riel" id="fechas-riel">
       <div class="fechas-panel fechas-panel-lista" id="fechas-panel-lista">
       <p class="asistente-pasos">Base de datos</p>
-      <h2 class="asistente-titulo" id="guardadas-titulo">Horarios de asesoría</h2>
-      <p class="asistente-ayuda">Cada casilla es un día guardado. Tocála para ver el año, el día de la semana y la hora.</p>
+      <h2 class="asistente-titulo" id="guardadas-titulo">Citas guardadas</h2>
+      <p class="asistente-ayuda" id="guardadas-ayuda">Cada tarjeta es una cita que ya tiene fecha. Abrila para verla y actualizar sus datos.</p>
 
-      <div class="guardadas-leyenda" aria-label="Significado de los estados">
-        <span class="estado-badge estado-habil"><span class="estado-punto" aria-hidden="true"></span> Habil</span>
-        <span class="estado-badge estado-ocupada"><span class="estado-punto" aria-hidden="true"></span> Ocupada</span>
-        <span class="estado-badge estado-bloqueada"><span class="estado-punto" aria-hidden="true"></span> No habil</span>
-      </div>
-
-      <div class="guardadas-pestanas" role="tablist" aria-label="Tipo de registro">
-        <button type="button" class="guardadas-pestana" id="tab-disponibilidad" role="tab" aria-selected="true" aria-controls="panel-disponibilidad" tabindex="0">Disponibilidad <span class="pestana-cuenta" id="cuenta-disponibilidad">(0)</span></button>
-        <button type="button" class="guardadas-pestana" id="tab-citas" role="tab" aria-selected="false" aria-controls="panel-citas" tabindex="-1">Citas reservadas <span class="pestana-cuenta" id="cuenta-citas">(0)</span></button>
-      </div>
-
-      <section class="guardadas-panel" id="panel-disponibilidad" role="tabpanel" aria-labelledby="tab-disponibilidad">
-        <p class="guardadas-panel-ayuda">Días guardados para pedir cita con asesoría. El número es el día y debajo va el mes.</p>
-        <div id="lista-disponibilidad" class="lista-guardadas-wrap">
-          <p class="vacio-bloque">Sin fechas de disponibilidad todavia.</p>
-        </div>
-      </section>
-
-      <section class="guardadas-panel" id="panel-citas" role="tabpanel" aria-labelledby="tab-citas" hidden>
-        <p class="guardadas-panel-ayuda">Aqui solo revisas las citas pedidas en la web. Puedes comentarlas o eliminarlas. Para aceptar o rechazar usa la seccion &quot;Citas con Asesoría&quot; del menu.</p>
+      <section class="guardadas-panel" id="panel-citas">
+        <p class="guardadas-panel-ayuda">Estas citas ya tienen fecha. El número es el día y debajo va el mes. Las que todavía no tienen fecha siguen en la lista anterior.</p>
         <div class="cita-formulario" id="cita-formulario" hidden>
           <h3 class="cita-form-titulo" id="cita-form-titulo">Comentarios de la cita</h3>
           <input type="hidden" id="cita-id" value="">
@@ -433,12 +403,11 @@
           </div>
         </div>
         <div id="lista-citas" class="lista-guardadas-wrap">
-          <p class="vacio-bloque">Todavia no hay citas reservadas para comentar.</p>
+          <p class="vacio-bloque">Todavía no hay citas para comentar.</p>
         </div>
       </section>
       </div>
       <div class="fechas-panel fechas-panel-detalle" id="fechas-panel-detalle">
-        <button type="button" class="btn-atajo btn-atajo-secundario fechas-volver" id="fechas-volver">Volver</button>
         <p class="asistente-pasos">Fecha guardada</p>
         <h2 class="asistente-titulo" id="fechas-detalle-titulo">Información</h2>
         <div id="fechas-detalle-cuerpo"></div>
@@ -453,7 +422,7 @@
       <button type="button" class="asistente-cerrar" id="cerrar-papelera" aria-label="Cerrar papelera">&times;</button>
       <p class="asistente-pasos">Rechazados</p>
       <h2 class="asistente-titulo" id="papelera-titulo">Papelera de rechazados</h2>
-      <p class="asistente-ayuda">Marcá una o varias casillas. El botón de borrar de la esquina elimina definitivamente de la base de datos.</p>
+      <p class="asistente-ayuda">Elegí una o varias solicitudes. El botón de la esquina las quita de forma definitiva. Esta acción no se puede deshacer.</p>
       <div class="papelera-toolbar">
         <label class="papelera-seleccionar-todo">
           <input type="checkbox" id="papelera-todas">
@@ -462,10 +431,10 @@
         <span class="papelera-seleccion-cuenta" id="papelera-seleccion-cuenta">0 seleccionadas</span>
       </div>
       <div id="lista-papelera" class="papelera-rejilla-wrap">
-        <p class="vacio-bloque">Cargando...</p>
+        <p class="vacio-bloque">Un momento, por favor.</p>
       </div>
     </div>
-    <button type="button" class="papelera-flotante" id="borrar-papelera" hidden title="Borrar seleccionadas de la base" aria-label="Borrar seleccionadas definitivamente">
+    <button type="button" class="papelera-flotante" id="borrar-papelera" hidden title="Quitar las solicitudes elegidas" aria-label="Quitar de forma definitiva las solicitudes elegidas">
       <span class="papelera-flotante-icono" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M8 7l1 13h6l1-13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </span>
@@ -499,12 +468,12 @@
 
   <input type="hidden" id="agenda-token" value="{{token}}">
   <div id="lista-mes" hidden></div>
-  <script src="../js/avisos.js?v=1.2"></script>
-  <script src="agenda.js?v=4.0"></script>
-  <script src="solicitudes.js?v=4.8"></script>
-  <script src="tono.js?v=2.0"></script>
-  <script src="sitrabot-admin.js?v=3.3"></script>
+  <script src="../js/avisos.js?v=1.5"></script>
+  <script src="agenda.js?v=4.15"></script>
+  <script src="solicitudes.js?v=4.28"></script>
+  <script src="tono.js?v=3.15"></script>
+  <script src="sitrabot-admin.js?v=4.7"></script>
 
-  <script src="guia.js?v=2.4"></script>
+  <script src="guia.js?v=3.8"></script>
 </body>
 </html>

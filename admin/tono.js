@@ -12,13 +12,13 @@
     };
 
     var hojaDaltonicoAdmin = function () {
-        var href = 'daltonico-admin.css?v=1.26';
+        var href = 'daltonico-admin.css?v=1.52';
         try {
             var scripts = document.getElementsByTagName('script');
             for (var i = 0; i < scripts.length; i++) {
                 var src = scripts[i].src || '';
                 if (src.indexOf('tono.js') !== -1) {
-                    href = src.replace(/tono\.js.*$/, 'daltonico-admin.css?v=1.26');
+                    href = src.replace(/tono\.js.*$/, 'daltonico-admin.css?v=1.52');
                     break;
                 }
             }
@@ -196,7 +196,7 @@
             '</button>' +
             '<div class="nav-opciones-menu" role="menu">' +
             '<button type="button" class="admin-opciones-item" id="toggle-daltonico" role="menuitem" aria-pressed="false">' +
-            '<span class="admin-opciones-item-icono" aria-hidden="true">◐</span>' +
+            '<span class="admin-opciones-item-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2"/></svg></span>' +
             '<span>Modo daltónico</span>' +
             '<span class="admin-opciones-item-estado">Off</span>' +
             '</button></div>';

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Legal | SITRAINA</title>
+  <link rel="icon" type="image/png" href="../../img/ley.png">
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('modoOscuro') === 'true') {
+          document.documentElement.classList.add('dark-mode');
+        }
+        if (localStorage.getItem('modoDaltonico') === 'true') {
+          document.documentElement.classList.add('daltonico');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    html{color-scheme:light;background-color:#d7e8fb;background-image:linear-gradient(105deg,#8ec4f6 0%,#d7e8fb 34%,#f6d3be 66%,#f0a06a 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}
+    html.dark-mode{color-scheme:dark;background-color:#1b2836;background-image:linear-gradient(105deg,#123056 0%,#1b2836 34%,#3a241c 66%,#6e3014 100%);background-size:100% 130%;background-attachment:scroll;background-position:center 30%}
+    body{background:transparent}
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../admin.css?v=6.74">
+  <link rel="stylesheet" href="../../css/avisos.css?v=1.9">
+  <script>
+    (function () {
+      try {
+        if (!document.documentElement.classList.contains('daltonico')) return;
+        var link = document.createElement('link');
+        link.id = 'daltonico-css';
+        link.rel = 'stylesheet';
+        link.href = '../daltonico-admin.css?v=1.52';
+        document.head.appendChild(link);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <script>if (document.documentElement.classList.contains('dark-mode')) document.body.classList.add('dark-mode'); if (document.documentElement.classList.contains('daltonico')) document.body.classList.add('daltonico');</script>
+  <main class="caja caja-acceso">
+    <header class="panel-cabeza">
+      <div class="admin-marca">
+        <span class="admin-marca-logo">
+          <img src="../../img/logo-transparente.png" alt="SITRAINA" width="64" height="64" decoding="async">
+        </span>
+        <div class="admin-marca-texto">
+          <p class="admin-marca-nombre">SITRAINA</p>
+          <h1>Legal</h1>
+        </div>
+      </div>
+      <div class="panel-cabeza-acciones">
+        <button id="toggle-oscuro" class="admin-tono btn-header" type="button" title="Cambiar tono" aria-label="Cambiar tono de la página">
+          <svg class="icono-tono icono-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icono-tono icono-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.2v5M12 16.8v5M2.2 12h5M16.8 12h5M5.2 5.2l3.4 3.4M15.4 15.4l3.4 3.4M18.8 5.2l-3.4 3.4M8.6 15.4l-3.4 3.4"/></svg>
+        </button>
+      </div>
+    </header>
+    <p class="panel-intro">Ingreso del equipo de asesoría legal. Escribí el correo y la cédula de tu cuenta.</p>
+    <p class="error" hidden>{{error}}</p>
+    <form method="post" action="index.php" autocomplete="off" id="form-login-legal" class="caja-form">
+      <input type="hidden" name="token" value="{{token}}">
+      <div class="caja-campo">
+        <label for="cuenta">Correo</label>
+        <input id="cuenta" name="cuenta" type="email" maxlength="120" autocomplete="username" required>
+      </div>
+      <div class="caja-campo">
+        <label for="cedula">Cédula</label>
+        <input id="cedula" name="cedula" type="text" inputmode="numeric" maxlength="9" pattern="[0-9]{9}" autocomplete="off" required>
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+  </main>
+  <script src="../../js/avisos.js?v=1.5"></script>
+  <script src="../tono.js?v=3.15"></script>
+  <script>
+    (function () {
+      var aviso = document.querySelector('main .error');
+      if (aviso && !aviso.hidden && aviso.textContent && window.SitrainaAvisos) {
+        window.SitrainaAvisos.error('No se pudo entrar', aviso.textContent.trim());
+        aviso.hidden = true;
+      }
+      var form = document.getElementById('form-login-legal');
+      if (!form || !window.SitrainaAvisos) return;
+      form.noValidate = true;
+      form.addEventListener('submit', function (ev) {
+        var cuenta = document.getElementById('cuenta');
+        var cedula = document.getElementById('cedula');
+        var correoOk = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/.test(String(cuenta.value || '').trim());
+        if (!correoOk) {
+          ev.preventDefault();
+          window.SitrainaAvisos.campos('Revisá la información', 'Escribí un correo válido.');
+          if (cuenta) cuenta.focus();
+          return;
+        }
+        if (!/^[0-9]{9}$/.test(String(cedula.value || '').replace(/\D/g, ''))) {
+          ev.preventDefault();
+          window.SitrainaAvisos.campos('Revisá la información', 'La cédula debe tener 9 dígitos.');
+          if (cedula) cedula.focus();
+          return;
+        }
+        var boton = form.querySelector('button[type="submit"]');
+        if (boton) boton.disabled = true;
+        window.SitrainaAvisos.procesando('Un momento', 'Estamos revisando tus datos. Por favor, esperá y no vuelvas a enviar.');
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -18,6 +18,7 @@ function pagina($titulo, $cuerpo) {
     echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>' . h($titulo) . '</title>';
+    echo '<link rel="icon" type="image/png" href="img/favicon-logo.png?v=1">';
     echo '<link rel="stylesheet" href="css/estilo.css?v=2.27">';
     echo '<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">';
     echo '</head><body>';
@@ -103,31 +104,25 @@ foreach ($datos as $etiqueta => $valor) {
     $filas .= '<p><strong>' . h($etiqueta) . ':</strong> ' . nl2br(h($valor)) . '</p>';
 }
 
-$preparar = function () {
-    $mail = new PHPMailer(true);
-    $mail->isSMTP();
-    $mail->Host = 'smtp.ina.ac.cr';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'sitraina@ina.ac.cr';
-    $mail->Password = 'TU_CONTRASEÑA';
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = 587;
-    $mail->CharSet = 'UTF-8';
-    $mail->setFrom('sitraina@ina.ac.cr', 'SITRAINA');
-    $mail->isHTML(true);
-    return $mail;
-};
-
-$correoPrueba = $preparar();
-if ($correoPrueba->Password === 'TU_CONTRASEÑA') {
+require_once __DIR__ . '/php/correo_smtp.php';
+if (!sitraina_config_correo()) {
     pagina(
         'No se pudo enviar la cita',
         '<h1>La cita está lista, pero el correo aún no sale</h1>'
-        . '<p>La solicitud está dirigida a <strong>sitraina@ina.ac.cr</strong>. El servidor sigue usando la clave de relleno del correo sitraina@ina.ac.cr, así que el mensaje no puede salir.</p>'
+        . '<p>Falta el correo remitente o la contraseña de aplicación en la configuración SMTP.</p>'
         . '<p><a class="btn" href="solicitar-cita.html">Volver al formulario</a></p>'
     );
     exit;
 }
+
+$preparar = function () {
+    $mail = sitraina_correo_nuevo();
+    if (!$mail) {
+        throw new Exception('SMTP no configurado');
+    }
+    $mail->isHTML(true);
+    return $mail;
+};
 
 try {
     $oficina = $preparar();
@@ -146,6 +141,7 @@ try {
         . '<p><a class="btn" href="asesoria-legal.html">Volver a asesoría</a></p>'
     );
 } catch (Exception $e) {
+    sitraina_registrar_correo($email, false, $e->getMessage());
     pagina(
         'No se pudo enviar la cita',
         '<h1>No se pudo entregar la solicitud</h1>'
