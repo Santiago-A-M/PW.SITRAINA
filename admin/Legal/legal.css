@@ -577,14 +577,34 @@ html.daltonico.dark-mode .legal-estado-papelera {
   top: calc(100% + 8px);
   right: 0;
   z-index: 40;
-  width: min(320px, calc(100vw - 24px));
-  max-height: min(70vh, 480px);
+  width: min(300px, calc(100vw - 24px));
+  max-height: min(70vh, 420px);
   overflow: auto;
   padding: 12px;
   border-radius: 16px;
   background: #fff;
   color: #2b211f;
   box-shadow: 0 12px 28px rgba(43, 33, 31, 0.16);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  transition:
+    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.28s;
+}
+
+.legal-notas-menu.legal-notas-menu-abierto {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+
+.legal-notas-menu[hidden] {
+  display: block !important;
 }
 
 .legal-notas-titulo,
@@ -594,38 +614,204 @@ html.daltonico.dark-mode .legal-estado-papelera {
 }
 
 .legal-notas-item,
-.legal-notas-todas {
-  display: block;
+.legal-notas-todas,
+.legal-notas-ver-todas {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
   width: 100%;
   margin: 0 0 8px;
   padding: 10px 12px;
-  border: 0;
+  border: 1px solid #ead7d0;
   border-radius: 12px;
   background: #f8f1ec;
   color: #2b211f;
   text-align: left;
   cursor: pointer;
+  box-shadow: none;
+  transition:
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.legal-notas-todas {
+.legal-notas-item:hover,
+.legal-notas-item:focus-visible {
+  border-color: #d9b8b0;
+  box-shadow: 0 2px 8px rgba(110, 18, 24, 0.06);
+  outline: none;
+}
+
+.legal-notas-item-titulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #2b211f;
+}
+
+.legal-notas-item-cuando {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #6a564e;
+}
+
+.legal-notas-todas,
+.legal-notas-ver-todas {
+  display: block;
   background: transparent;
   border: 1px solid #eadfd8;
   font-weight: 700;
+  text-align: center;
 }
 
 .legal-notas-leida { opacity: 0.62; }
-.legal-notas-cita { box-shadow: inset 3px 0 0 #6e1218; }
+.legal-notas-cita {
+  box-shadow: none;
+  border-color: #ead7d0;
+}
+
+.legal-notas-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 10040;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.legal-notas-popup[hidden] {
+  display: none !important;
+}
+
+.legal-notas-popup-fondo {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(28, 22, 20, 0.45);
+  cursor: pointer;
+}
+
+.legal-notas-popup-caja {
+  position: relative;
+  z-index: 1;
+  width: min(400px, 100%);
+  max-height: min(76vh, 560px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 20px 18px;
+  border: 1px solid #eadfd8;
+  border-radius: 18px;
+  background: #fffaf8;
+  color: #2b211f;
+  box-shadow: 0 18px 40px rgba(28, 22, 20, 0.22);
+  animation: legal-notas-popup-entra 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.legal-notas-popup-titulo {
+  margin: 0 40px 0 0;
+  font-size: 1.15rem;
+  color: #8e1a20;
+}
+
+.legal-notas-popup-lista {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 64px;
+  max-height: min(48vh, 360px);
+  padding-right: 2px;
+}
+
+.legal-notas-popup-lista .legal-notas-item {
+  margin: 0;
+}
+
+.legal-notas-popup-cerrar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #6d5c56;
+  cursor: pointer;
+}
+
+.legal-notas-popup-cerrar svg {
+  width: 16px;
+  height: 16px;
+}
+
+.legal-notas-popup-cerrar:hover,
+.legal-notas-popup-cerrar:focus-visible {
+  background: rgba(43, 33, 31, 0.06);
+  outline: none;
+}
+
+@keyframes legal-notas-popup-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 body.dark-mode .legal-notas-menu,
+body.dark-mode .legal-notas-popup-caja,
 body.dark-mode .legal-notas-item {
   background: #243140;
   color: #f6f1ee;
+  border-color: #3f5166;
+}
+
+body.dark-mode .legal-notas-item:hover,
+body.dark-mode .legal-notas-item:focus-visible {
+  border-color: #5a6f86;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+}
+
+body.dark-mode .legal-notas-cita {
+  border-color: #3f5166;
+  box-shadow: none;
 }
 
 body.dark-mode .legal-notas-titulo,
 body.dark-mode .legal-notas-vacio,
-body.dark-mode .legal-notas-todas {
+body.dark-mode .legal-notas-todas,
+body.dark-mode .legal-notas-ver-todas,
+body.dark-mode .legal-notas-item-titulo,
+body.dark-mode .legal-notas-popup-titulo {
   color: #f6f1ee;
+}
+
+body.dark-mode .legal-notas-item-cuando {
+  color: #d4c4bb;
+}
+
+body.dark-mode .legal-notas-todas,
+body.dark-mode .legal-notas-ver-todas {
+  border-color: #3f5166;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .legal-notas-menu,
+  .legal-notas-popup-caja {
+    transition: none;
+    animation: none;
+  }
 }
 
 html.daltonico .legal-notas-cuenta {
@@ -633,8 +819,32 @@ html.daltonico .legal-notas-cuenta {
   color: #062033;
 }
 
+html.daltonico .legal-notas-item,
 html.daltonico .legal-notas-cita {
-  box-shadow: inset 3px 0 0 #0072b2;
+  box-shadow: none;
+  border: 1px solid #b7d4ea;
+}
+
+html.daltonico .legal-notas-item:hover,
+html.daltonico .legal-notas-item:focus-visible {
+  border-color: #0072b2;
+  box-shadow: 0 2px 8px rgba(0, 114, 178, 0.1);
+}
+
+html.daltonico.dark-mode .legal-notas-item,
+html.daltonico.dark-mode .legal-notas-cita,
+html.daltonico body.dark-mode .legal-notas-item,
+html.daltonico body.dark-mode .legal-notas-cita {
+  border-color: #2a6f99;
+  box-shadow: none;
+}
+
+html.daltonico.dark-mode .legal-notas-item:hover,
+html.daltonico.dark-mode .legal-notas-item:focus-visible,
+html.daltonico body.dark-mode .legal-notas-item:hover,
+html.daltonico body.dark-mode .legal-notas-item:focus-visible {
+  border-color: #56b4e9;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
 body.pagina-panel.legal-pagina {

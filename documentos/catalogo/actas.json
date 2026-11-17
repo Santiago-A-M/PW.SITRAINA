@@ -1,0 +1,30 @@
+[
+  {
+    "id": "actas-1",
+    "titulo": "Asamblea ordinaria · agosto 2024",
+    "desc": "Documento",
+    "archivo": "documentos/Asamblea_Ordinaria_2024.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "actas-2",
+    "titulo": "Asamblea extraordinaria · diciembre 2024",
+    "desc": "Documento",
+    "archivo": "documentos/Asamblea_Extraordinaria2_2024.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "actas-3",
+    "titulo": "Asamblea extraordinaria · mayo 2025",
+    "desc": "Documento",
+    "archivo": "documentos/Asamblea_Extraordinaria1_2025.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "actas-4",
+    "titulo": "Asamblea extraordinaria · diciembre 2025",
+    "desc": "Documento",
+    "archivo": "documentos/Asamblea_Extraordinaria2_2025.pdf",
+    "origen": "base"
+  }
+]

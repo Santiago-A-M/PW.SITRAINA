@@ -5,7 +5,7 @@
     var pasos = [
         {
             titulo: 'El menú',
-            texto: 'Arriba están Inicio, Afiliaciones, Afiliados, Citas con Asesoría y Contacto. Elegí la sección en la que querés trabajar. En el teléfono, las tres rayas abren ese mismo menú.',
+            texto: 'Arriba están Inicio, Afiliaciones, Afiliados, Citas con Asesoría, Contacto y Documentación. Elegí la sección en la que querés trabajar. En el teléfono, las tres rayas abren ese mismo menú.',
             icono: '1'
         },
         {
@@ -32,6 +32,11 @@
             titulo: 'Las citas',
             texto: 'En Citas con Asesoría, la lista muestra las citas que pidieron las personas, con el nombre, el día y la hora. Abrí una para responder. Si no la aceptás, esa hora queda libre.',
             icono: '6'
+        },
+        {
+            titulo: 'Tono, ayuda y salida',
+            texto: 'En Documentación administrás lo que se ve en Documentos del sitio: las seis categorías. Abrí Administrar documentos; a la izquierda elegís la categoría y a la derecha agregás, editás o quitás. La gente solo consulta.',
+            icono: '7'
         },
         {
             titulo: 'Tono, ayuda y salida',

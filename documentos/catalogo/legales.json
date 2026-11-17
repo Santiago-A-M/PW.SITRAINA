@@ -1,0 +1,86 @@
+[
+  {
+    "id": "legales-1",
+    "titulo": "Constitución Política de Costa Rica",
+    "desc": "Documento",
+    "archivo": "documentos/constitucion_politica_digital_edincr.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-2",
+    "titulo": "Código de Trabajo",
+    "desc": "Documento",
+    "archivo": "documentos/Codigo_Trabajo_RPL.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-3",
+    "titulo": "Ley General de la Administración Pública",
+    "desc": "Ley 6227",
+    "archivo": "documentos/Administraciónpublica.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-4",
+    "titulo": "Ley contra la Corrupción y el Enriquecimiento Ilícito",
+    "desc": "Ley 8422",
+    "archivo": "documentos/ley-contra-corrupcion.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-5",
+    "titulo": "Ley Marco de Empleo Público",
+    "desc": "Ley 10159",
+    "archivo": "documentos/LEYMARCODEEMPLEOPÚBLICO.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-6",
+    "titulo": "Ley de Fortalecimiento de las Finanzas Públicas",
+    "desc": "Ley 9635",
+    "archivo": "documentos/FORTALECIMIENTODELASFINANZASPÚBLICAS.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-7",
+    "titulo": "Ley de Igualdad de Oportunidades para las Personas con Discapacidad",
+    "desc": "Ley 7600",
+    "archivo": "documentos/leyigualdaddeoportunidades.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-8",
+    "titulo": "Ley Nacional de Emergencias y Prevención de Riesgos",
+    "desc": "Ley 8488",
+    "archivo": "documentos/LEY-8488.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-9",
+    "titulo": "Convención Colectiva",
+    "desc": "Documento",
+    "archivo": "documentos/convencion_colectiva_INA.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-10",
+    "titulo": "Reglamento Autónomo de Servicios del INA",
+    "desc": "Documento",
+    "archivo": "documentos/Reglamento_autonomo_servicios_INA.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-11",
+    "titulo": "Estatutos de SITRAINA",
+    "desc": "Documento",
+    "archivo": "documentos/ESTATUTOSITRA.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "legales-12",
+    "titulo": "Machote de oficios 2026",
+    "desc": "DOCX",
+    "archivo": "documentos/MACHOTE OFICIOS.2026.docx",
+    "origen": "base"
+  }
+]

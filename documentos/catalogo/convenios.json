@@ -1,0 +1,186 @@
+[
+  {
+    "id": "convenios-1",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (1).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-2",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (2).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-3",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (3).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-4",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (4).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-5",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (5).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-6",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (6).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-7",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (7).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-8",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (8).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-9",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (9).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-10",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Asembis/asembis (10).jpg",
+    "titulo": "Asembis",
+    "nota": "Requiere código de afiliación",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-11",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Zhen/Zhen (1).png",
+    "titulo": "Clinica Zhen",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-12",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Zhen/Zhen (2).png",
+    "titulo": "Clinica Zhen",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-13",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Zhen/Zhen (3).png",
+    "titulo": "Clinica Zhen",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-14",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Zhen/Zhen (4).png",
+    "titulo": "Clinica Zhen",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-15",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Zhen/Zhen (5).png",
+    "titulo": "Clinica Zhen",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-16",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/Zhen/Zhen (6).png",
+    "titulo": "Clinica Zhen",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-17",
+    "rubro": "salud",
+    "imagen": "convenios/img-conv/SmartFit/Smartfit.png",
+    "titulo": "SmartFit",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-18",
+    "rubro": "educacion",
+    "imagen": "convenios/img-conv/ucienciasarte/ucienciaarte.png",
+    "titulo": "U. Ciencias y Artes",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-19",
+    "rubro": "educacion",
+    "imagen": "convenios/img-conv/ufidelitas/ufidelitas.png",
+    "titulo": "U. Fidélitas",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-20",
+    "rubro": "educacion",
+    "imagen": "convenios/img-conv/UStaLucia/sta.png",
+    "titulo": "U. Sta.Lucía",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-21",
+    "rubro": "turismo",
+    "imagen": "convenios/img-conv/bestwester/best.png",
+    "titulo": "Best Wester",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-22",
+    "rubro": "turismo",
+    "imagen": "convenios/img-conv/ponderosa/ponderosa.png",
+    "titulo": "Ponderosa",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  },
+  {
+    "id": "convenios-23",
+    "rubro": "turismo",
+    "imagen": "convenios/img-conv/termomania/thermo.png",
+    "titulo": "Thermomanía",
+    "nota": "Requiere identificación como afiliado",
+    "origen": "base"
+  }
+]

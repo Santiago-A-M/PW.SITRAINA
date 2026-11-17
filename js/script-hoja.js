@@ -1,7 +1,8 @@
-/* Hoja del Miércoles: abre la edición con un clic y reproduce el video en el panel. */
+/* Hoja del Miércoles: carga los volúmenes y abre el video en el panel. */
 document.addEventListener('DOMContentLoaded', () => {
     const popup = document.getElementById('hoja-popup');
-    if (!popup) return;
+    const grid = document.getElementById('hoja-grid') || document.querySelector('.grid-videos');
+    if (!popup || !grid) return;
 
     const video = document.getElementById('hoja-popup-video');
     const titulo = document.getElementById('hoja-popup-titulo');
@@ -11,6 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const cerrar = popup.querySelector('.hoja-cerrar');
     let origen = null;
     let rutaActual = '';
+
+    const escapar = (texto) => String(texto == null ? '' : texto)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 
     /* Muestra el primer cuadro del video para que no se vea en negro. */
     const mostrarCuadro = () => {
@@ -82,8 +89,48 @@ document.addEventListener('DOMContentLoaded', () => {
         if (origen) origen.focus();
     };
 
-    document.querySelectorAll('.hoja-titulo').forEach((boton) => {
-        boton.addEventListener('click', () => abrir(boton));
+    const pintarVolumenes = (volumenes) => {
+        if (!Array.isArray(volumenes) || !volumenes.length) {
+            grid.innerHTML = '<p class="hoja-cargando">Todavía no hay ediciones publicadas.</p>';
+            return;
+        }
+        grid.innerHTML = volumenes.map((item) => {
+            const tituloVol = escapar(item.titulo || 'Volumen');
+            const desc = escapar(item.desc || '');
+            const src = escapar(item.src || '');
+            const pdfHref = escapar(item.pdf || '');
+            const pdfNombre = escapar(item.pdf_nombre || '');
+            let attrs = ' type="button" class="hoja-titulo"';
+            attrs += ' data-titulo="' + tituloVol + '"';
+            attrs += ' data-src="' + src + '"';
+            attrs += ' data-desc="' + desc + '"';
+            if (pdfHref) {
+                attrs += ' data-pdf="' + pdfHref + '"';
+                attrs += ' data-pdf-nombre="' + (pdfNombre || 'Descargar') + '"';
+            }
+            return '<button' + attrs + '>' + tituloVol + '</button>';
+        }).join('');
+    };
+
+    const cargarVolumenes = () => {
+        fetch('php/hoja_volumenes.php', { credentials: 'same-origin', cache: 'no-store' })
+            .then((r) => r.json().catch(() => null))
+            .then((json) => {
+                if (!json || !json.ok) {
+                    grid.innerHTML = '<p class="hoja-cargando">No se pudieron cargar las ediciones.</p>';
+                    return;
+                }
+                pintarVolumenes(json.volumenes || []);
+            })
+            .catch(() => {
+                grid.innerHTML = '<p class="hoja-cargando">No se pudieron cargar las ediciones.</p>';
+            });
+    };
+
+    grid.addEventListener('click', (evento) => {
+        const boton = evento.target.closest('.hoja-titulo');
+        if (!boton || !grid.contains(boton)) return;
+        abrir(boton);
     });
 
     cerrar.addEventListener('click', cerrarPopup);
@@ -96,6 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
     copiar.addEventListener('click', () => {
         if (rutaActual) copiarVinculo(rutaActual, copiar);
     });
+
+    cargarVolumenes();
 });
 
 /* Copia la dirección del video y cambia el botón a "Copiado" por dos segundos. */

@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const hojaDaltonico = () => {
-        var href = "css/daltonico.css?v=1.38";
+        var href = "css/daltonico.css?v=1.39";
         try {
             var links = document.getElementsByTagName("link");
             for (var i = 0; i < links.length; i++) {
                 var h = links[i].getAttribute("href") || "";
                 if (h.indexOf("estilo.css") !== -1) {
-                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.38");
+                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.39");
                     break;
                 }
             }
@@ -879,30 +879,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 5. LISTA DE EFEMÉRIDES ---
-    document.querySelectorAll('.efemeride-resumen').forEach((boton) => {
-        boton.addEventListener('click', () => {
-            const item = boton.closest('.efemeride');
-            const estabaAbierta = item.classList.contains('abierta');
+    // --- 5. LISTA DE EFEMÉRIDES (delegación: también sirve si se cargan después) ---
+    document.addEventListener('click', (evento) => {
+        const boton = evento.target.closest('.efemeride-resumen');
+        if (!boton) return;
+        const item = boton.closest('.efemeride');
+        if (!item) return;
+        const estabaAbierta = item.classList.contains('abierta');
 
-            document.querySelectorAll('.efemeride.abierta').forEach((otra) => {
-                otra.classList.remove('abierta');
-                otra.querySelector('.efemeride-resumen').setAttribute('aria-expanded', 'false');
-                otra.querySelectorAll('video').forEach((video) => video.pause());
-            });
-
-            if (!estabaAbierta) {
-                item.classList.add('abierta');
-                boton.setAttribute('aria-expanded', 'true');
-            }
+        document.querySelectorAll('.efemeride.abierta').forEach((otra) => {
+            otra.classList.remove('abierta');
+            const resumen = otra.querySelector('.efemeride-resumen');
+            if (resumen) resumen.setAttribute('aria-expanded', 'false');
+            otra.querySelectorAll('video').forEach((video) => video.pause());
         });
+
+        if (!estabaAbierta) {
+            item.classList.add('abierta');
+            boton.setAttribute('aria-expanded', 'true');
+        }
     });
 
     // La reserva de cita vive en js/cita-calendario.js.
 
     // --- 7. ZOOM PARA COMUNICADOS Y EFEMÉRIDES ---
-    var imagenesZoom = document.querySelectorAll('.img-zoomable, .imagen-noticia img');
-    if (imagenesZoom.length) {
+    {
         var lightbox = document.getElementById('lightbox');
         if (!lightbox) {
             lightbox = document.createElement('div');
@@ -993,17 +994,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cerrarBtn && !cerrarBtn.hasAttribute('tabindex')) cerrarBtn.tabIndex = 0;
         if (cerrarBtn && !cerrarBtn.getAttribute('aria-label')) cerrarBtn.setAttribute('aria-label', 'Cerrar imagen');
 
-        imagenesZoom.forEach(function (img) {
-            img.tabIndex = 0;
-            img.setAttribute('role', 'button');
-            if (!img.title) img.title = 'Ampliar imagen';
-            var abrirEsta = function () { abrirZoom(img); };
-            img.addEventListener('click', abrirEsta);
-            img.addEventListener('keydown', function (evento) {
-                if (evento.key !== 'Enter' && evento.key !== ' ') return;
-                evento.preventDefault();
-                abrirEsta();
-            });
+        document.addEventListener('click', function (evento) {
+            var img = evento.target.closest('.img-zoomable, .imagen-noticia img');
+            if (!img || img.closest('#lightbox')) return;
+            abrirZoom(img);
+        });
+        document.addEventListener('keydown', function (evento) {
+            if (evento.key !== 'Enter' && evento.key !== ' ') return;
+            var img = evento.target.closest('.img-zoomable, .imagen-noticia img');
+            if (!img || img.closest('#lightbox')) return;
+            evento.preventDefault();
+            abrirZoom(img);
         });
 
         if (cerrarBtn) cerrarBtn.addEventListener('click', cerrarZoom);

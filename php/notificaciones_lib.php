@@ -123,7 +123,7 @@ function notif_aviso($tipo, $id, $marca, $titulo, $texto, $cuando) {
         'tipo' => $tipo,
         'origen_id' => (int) $id,
         'marca' => $marca,
-        'titulo' => notif_recorte($titulo, 80),
+        'titulo' => notif_recorte($titulo, 40),
         'texto' => notif_recorte($texto, 160),
         'cuando' => notif_momento($cuando) !== '' ? str_replace('T', ' ', notif_momento($cuando)) : substr(trim((string) $cuando), 0, 16),
     ];
@@ -140,6 +140,39 @@ function notif_estado_texto($estado) {
         return 'respondida';
     }
     return 'actualizada';
+}
+
+function notif_titulo_evento($tipo, $evento, $estado = '') {
+    if ($evento === 'nuevo') {
+        if ($tipo === 'cita') {
+            return 'Nueva cita';
+        }
+        if ($tipo === 'afilacion') {
+            return 'Nueva afiliación';
+        }
+        return 'Nueva consulta';
+    }
+    if ($evento === 'cancelado') {
+        return 'Cita cancelada';
+    }
+    if ($evento === 'horario') {
+        return 'Cita programada';
+    }
+    $palabra = 'actualizada';
+    if ($estado === 'aceptada') {
+        $palabra = $tipo === 'cita' ? 'aprobada' : 'aceptada';
+    } elseif ($estado === 'rechazada') {
+        $palabra = 'rechazada';
+    } elseif ($estado === 'neutral') {
+        $palabra = 'respondida';
+    }
+    if ($tipo === 'cita') {
+        return 'Cita ' . $palabra;
+    }
+    if ($tipo === 'afilacion') {
+        return 'Afiliación ' . $palabra;
+    }
+    return 'Consulta ' . $palabra;
 }
 
 function notif_citas_breves($db) {
@@ -217,13 +250,14 @@ function notif_armar_eventos($audiencia, $cedulaAbogado, $usuarioId) {
             $nombre = trim((string) ($fila['nombre'] ?? '')) !== '' ? $fila['nombre'] : 'Sin nombre';
             $dueno = (int) ($fila['usuario_id'] ?? 0);
             if ($audiencia === 'admin' && notif_reciente($fila['creado_en'] ?? '')) {
-                $avisos[] = notif_aviso('contacto', $id, 'nuevo', 'Consulta', 'Nueva consulta de ' . $nombre, $fila['creado_en']);
+                $avisos[] = notif_aviso('contacto', $id, 'nuevo', notif_titulo_evento('contacto', 'nuevo'), 'Nueva consulta de ' . $nombre, $fila['creado_en']);
             }
             $resp = $respContacto[$id] ?? null;
             if ($resp && $audiencia === 'usuario' && $dueno === $usuarioId && notif_reciente($resp['respondido_en'] ?? '')) {
-                $estado = notif_estado_texto($resp['estado'] ?? '');
-                $marca = 'estado:' . preg_replace('/[^a-z]/', '', (string) ($resp['estado'] ?? '')) . ':' . notif_momento($resp['respondido_en']) . ':' . ((int) ($resp['editado'] ?? 0));
-                $avisos[] = notif_aviso('contacto', $id, $marca, 'Consulta', 'Tu consulta fue ' . $estado . '.', $resp['respondido_en']);
+                $estadoRaw = (string) ($resp['estado'] ?? '');
+                $estado = notif_estado_texto($estadoRaw);
+                $marca = 'estado:' . preg_replace('/[^a-z]/', '', $estadoRaw) . ':' . notif_momento($resp['respondido_en']) . ':' . ((int) ($resp['editado'] ?? 0));
+                $avisos[] = notif_aviso('contacto', $id, $marca, notif_titulo_evento('contacto', 'estado', $estadoRaw), 'Tu consulta fue ' . $estado . '.', $resp['respondido_en']);
             }
         }
         foreach ($afiliaciones as $fila) {
@@ -231,13 +265,14 @@ function notif_armar_eventos($audiencia, $cedulaAbogado, $usuarioId) {
             $nombre = trim((string) ($fila['nombre'] ?? '')) !== '' ? $fila['nombre'] : 'Sin nombre';
             $dueno = (int) ($fila['usuario_id'] ?? 0);
             if ($audiencia === 'admin' && notif_reciente($fila['creado_en'] ?? '')) {
-                $avisos[] = notif_aviso('afilacion', $id, 'nuevo', 'Afiliación', 'Nueva afiliación de ' . $nombre, $fila['creado_en']);
+                $avisos[] = notif_aviso('afilacion', $id, 'nuevo', notif_titulo_evento('afilacion', 'nuevo'), 'Nueva afiliación de ' . $nombre, $fila['creado_en']);
             }
             $resp = $respAfiliacion[$id] ?? null;
             if ($resp && $audiencia === 'usuario' && $dueno === $usuarioId && notif_reciente($resp['respondido_en'] ?? '')) {
-                $estado = notif_estado_texto($resp['estado'] ?? '');
-                $marca = 'estado:' . preg_replace('/[^a-z]/', '', (string) ($resp['estado'] ?? '')) . ':' . notif_momento($resp['respondido_en']) . ':' . ((int) ($resp['editado'] ?? 0));
-                $avisos[] = notif_aviso('afilacion', $id, $marca, 'Afiliación', 'Tu afiliación fue ' . $estado . '.', $resp['respondido_en']);
+                $estadoRaw = (string) ($resp['estado'] ?? '');
+                $estado = notif_estado_texto($estadoRaw);
+                $marca = 'estado:' . preg_replace('/[^a-z]/', '', $estadoRaw) . ':' . notif_momento($resp['respondido_en']) . ':' . ((int) ($resp['editado'] ?? 0));
+                $avisos[] = notif_aviso('afilacion', $id, $marca, notif_titulo_evento('afilacion', 'estado', $estadoRaw), 'Tu afiliación fue ' . $estado . '.', $resp['respondido_en']);
             }
         }
     }
@@ -262,29 +297,31 @@ function notif_armar_eventos($audiencia, $cedulaAbogado, $usuarioId) {
             $hora = trim((string) ($fila['hora'] ?? ''));
             $cancelado = trim((string) ($fila['cancelado_en'] ?? ''));
             if (($audiencia === 'admin' || $audiencia === 'abogado') && notif_reciente($fila['creado_en'] ?? '')) {
-                $avisos[] = notif_aviso('cita', $id, 'nuevo', 'Cita', $nombre . ' hizo una consulta de cita con asesoría.', $fila['creado_en']);
+                $avisos[] = notif_aviso('cita', $id, 'nuevo', notif_titulo_evento('cita', 'nuevo'), $nombre . ' hizo una consulta de cita con asesoría.', $fila['creado_en']);
             }
             $resp = $respCita[$id] ?? null;
             $respuestaAutomatica = $resp && trim((string) ($resp['admin_usuario'] ?? '')) === 'reserva-afiliado';
             if ($resp && notif_reciente($resp['respondido_en'] ?? '')) {
-                $estado = notif_estado_texto($resp['estado'] ?? '');
-                $marca = 'estado:' . preg_replace('/[^a-z]/', '', (string) ($resp['estado'] ?? '')) . ':' . notif_momento($resp['respondido_en']) . ':' . ((int) ($resp['editado'] ?? 0));
+                $estadoRaw = (string) ($resp['estado'] ?? '');
+                $estado = notif_estado_texto($estadoRaw);
+                $marca = 'estado:' . preg_replace('/[^a-z]/', '', $estadoRaw) . ':' . notif_momento($resp['respondido_en']) . ':' . ((int) ($resp['editado'] ?? 0));
+                $tituloCita = notif_titulo_evento('cita', 'estado', $estadoRaw);
                 if ($audiencia === 'abogado' && !$respuestaAutomatica) {
-                    $avisos[] = notif_aviso('cita', $id, $marca, 'Cita', 'La cita de ' . $nombre . ' fue ' . $estado . '.', $resp['respondido_en']);
+                    $avisos[] = notif_aviso('cita', $id, $marca, $tituloCita, 'La cita de ' . $nombre . ' fue ' . $estado . '.', $resp['respondido_en']);
                 }
                 if ($audiencia === 'usuario' && $dueno === $usuarioId) {
-                    $avisos[] = notif_aviso('cita', $id, $marca, 'Cita', 'Tu cita fue ' . $estado . '.', $resp['respondido_en']);
+                    $avisos[] = notif_aviso('cita', $id, $marca, $tituloCita, 'Tu cita fue ' . $estado . '.', $resp['respondido_en']);
                 }
             }
             if ($cancelado !== '' && notif_reciente($cancelado) && ($audiencia === 'admin' || $audiencia === 'abogado')) {
-                $avisos[] = notif_aviso('cita', $id, 'cancelado:' . notif_momento($cancelado), 'Cita', 'Se canceló la cita de ' . $nombre . '.', $cancelado);
+                $avisos[] = notif_aviso('cita', $id, 'cancelado:' . notif_momento($cancelado), notif_titulo_evento('cita', 'cancelado'), 'Se canceló la cita de ' . $nombre . '.', $cancelado);
             }
             if ($cancelado !== '' && notif_reciente($cancelado) && $audiencia === 'usuario' && $dueno === $usuarioId) {
-                $avisos[] = notif_aviso('cita', $id, 'cancelado:' . notif_momento($cancelado), 'Cita', 'Tu cita fue cancelada.', $cancelado);
+                $avisos[] = notif_aviso('cita', $id, 'cancelado:' . notif_momento($cancelado), notif_titulo_evento('cita', 'cancelado'), 'Tu cita fue cancelada.', $cancelado);
             }
             if ($fecha !== '' && $hora !== '' && $cancelado === '' && notif_reciente($fila['creado_en'] ?? '') && $audiencia === 'usuario' && $dueno === $usuarioId) {
                 $horaCorta = substr($hora, 0, 5);
-                $avisos[] = notif_aviso('cita', $id, 'horario:' . $fecha . 'T' . $horaCorta, 'Cita', 'Tu cita quedó para el ' . $fecha . ' a las ' . $horaCorta . '.', $fila['creado_en']);
+                $avisos[] = notif_aviso('cita', $id, 'horario:' . $fecha . 'T' . $horaCorta, notif_titulo_evento('cita', 'horario'), 'Tu cita quedó para el ' . $fecha . ' a las ' . $horaCorta . '.', $fila['creado_en']);
             }
         }
     }

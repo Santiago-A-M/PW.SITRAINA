@@ -38,10 +38,10 @@
     body.pagina-panel { background: transparent; }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.74">
+  <link rel="stylesheet" href="admin.css?v=6.87">
   <link rel="stylesheet" href="../css/avisos.css?v=1.9">
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.52';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.57';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body class="pagina-panel {{rol-clase}}">
@@ -96,6 +96,12 @@
           </span>
           <span class="admin-nav-label">Contacto</span>
         </a>
+        <a href="#documentacion" data-admin-nav="documentacion" title="Documentación" aria-label="Documentación">
+          <span class="admin-nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <span class="admin-nav-label">Documentación</span>
+        </a>
       </nav>
 
       <div class="admin-header-acciones">
@@ -141,17 +147,22 @@
   <p class="sesion admin-sesion" hidden>{{usuario}}</p>
 
   <aside id="admin-alerta" class="admin-alerta">
-    <button type="button" class="admin-alerta-abrir" id="admin-alerta-abrir" aria-expanded="false" aria-controls="admin-alerta-popup" title="Notificaciones" aria-label="Abrir notificaciones">
+    <button type="button" class="admin-alerta-abrir" id="admin-alerta-abrir" aria-expanded="false" aria-controls="admin-alerta-menu" title="Notificaciones" aria-label="Abrir notificaciones">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2L2.8 19.5h18.4L12 3.2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v5.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.15" fill="currentColor"/></svg>
       <span class="admin-alerta-cuenta" id="admin-alerta-cuenta" hidden>0</span>
     </button>
+    <div class="admin-alerta-menu" id="admin-alerta-menu" hidden>
+      <p class="admin-alerta-menu-titulo">Notificaciones</p>
+      <div class="admin-alerta-menu-lista" id="admin-alerta-menu-lista"></div>
+      <button type="button" class="admin-alerta-ver-todas" id="admin-alerta-ver-todas">Todas las notificaciones</button>
+    </div>
     <div class="admin-alerta-popup" id="admin-alerta-popup" hidden>
       <div class="admin-alerta-fondo" id="admin-alerta-fondo" aria-hidden="true"></div>
       <div class="admin-alerta-ventana" role="dialog" aria-modal="true" aria-labelledby="admin-alerta-titulo">
         <button type="button" class="admin-alerta-cerrar" id="admin-alerta-cerrar" aria-label="Cerrar advertencias">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
         </button>
-        <h2 class="admin-alerta-titulo" id="admin-alerta-titulo">Notificaciones</h2>
+        <h2 class="admin-alerta-titulo" id="admin-alerta-titulo">Todas las notificaciones</h2>
         <p class="admin-alerta-ayuda">Lo que llegó y todavía no marcaste como leído. Las solicitudes siguen en su sección.</p>
         <button type="button" class="admin-alerta-todas" id="admin-alerta-todas">Marcar todas como leídas</button>
         <div class="admin-alerta-lista" id="admin-alerta-lista" role="status" aria-live="polite">
@@ -166,6 +177,10 @@
       <h1>Inicio</h1>
       <p class="panel-intro">Aquí ves lo que está pendiente y lo que llegó hace poco. En la papelera podés revisar o quitar las solicitudes que no se aceptaron.</p>
     </header>
+    <div class="admin-buscar">
+      <label class="admin-buscar-label" for="buscar-agenda">Buscar</label>
+      <input type="search" id="buscar-agenda" class="admin-buscar-input" placeholder="Nombre, fecha, correo…" autocomplete="off">
+    </div>
 
     <section class="inicio-stats" aria-label="Pendientes por tipo">
       <button type="button" class="inicio-stat" data-admin-nav="afilacion" aria-label="Ir a Afiliaciones pendientes">
@@ -207,6 +222,10 @@
       <p class="panel-intro">Solicitudes de afiliación que enviaron las personas. Si ya tenían cuenta con ese correo, la respuesta les llega a Mis mensajes.</p>
     </header>
     <p class="guardadas-panel-ayuda">Abrí cada solicitud, elegí la respuesta, escribí el mensaje con respeto y envialo.</p>
+    <div class="admin-buscar">
+      <label class="admin-buscar-label" for="buscar-afilacion">Buscar</label>
+      <input type="search" id="buscar-afilacion" class="admin-buscar-input" placeholder="Nombre, cédula, correo, fecha…" autocomplete="off">
+    </div>
     <div id="lista-sol-afilacion" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
@@ -219,6 +238,10 @@
     <div class="panel-acciones">
       <button type="button" class="btn-abrir-asistente" id="abrir-afiliado">Añadir afiliado</button>
     </div>
+    <div class="admin-buscar">
+      <label class="admin-buscar-label" for="buscar-afiliados">Buscar</label>
+      <input type="search" id="buscar-afiliados" class="admin-buscar-input" placeholder="Nombre, cédula, correo…" autocomplete="off">
+    </div>
     <div id="lista-afiliados" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
@@ -228,6 +251,10 @@
       <p class="panel-intro">Citas que las personas pidieron en Asesoría. Respondé para confirmar, no aceptar o aclarar con amabilidad.</p>
     </header>
     <p class="guardadas-panel-ayuda">Abajo están las citas que pidieron las personas. Abrí una para responder.</p>
+    <div class="admin-buscar">
+      <label class="admin-buscar-label" for="buscar-cita">Buscar</label>
+      <input type="search" id="buscar-cita" class="admin-buscar-input" placeholder="Nombre, fecha, correo, cédula…" autocomplete="off">
+    </div>
     <section class="horario-herramientas" aria-labelledby="horario-herramientas-titulo">
       <h2 id="horario-herramientas-titulo">Días y horas disponibles</h2>
       <p class="resumen-ayuda">Esto es lo que ve la persona al pedir cita. Desde aquí marcás los días disponibles, los que no se ofrecen, o reservás 15 días seguidos.</p>
@@ -259,10 +286,88 @@
       <p class="panel-intro">Mensajes que las personas enviaron desde Contacto. Si ya tenían cuenta con ese correo, la respuesta les llega a Mis mensajes.</p>
     </header>
     <p class="guardadas-panel-ayuda">Abrí cada mensaje, elegí la respuesta, escribila con respeto y enviala.</p>
+    <div class="admin-buscar">
+      <label class="admin-buscar-label" for="buscar-contacto">Buscar</label>
+      <input type="search" id="buscar-contacto" class="admin-buscar-input" placeholder="Nombre, asunto, correo, fecha…" autocomplete="off">
+    </div>
     <div id="lista-sol-contacto" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
-  <div class="asistente" id="popup-afiliado" hidden>
+    <main class="caja caja-panel admin-vista" id="vista-documentacion" data-vista="documentacion" hidden>
+    <header class="vista-cabeza">
+      <h1>Documentación</h1>
+      <p class="panel-intro">Acá administrás lo que la gente ve en Documentos: efemérides, Hoja del Miércoles, convenios, legales, informes y actas. Las personas solo pueden consultar; vos podés agregar, editar o quitar.</p>
+    </header>
+    <section class="docs-admin-landing" aria-labelledby="docs-admin-landing-titulo">
+      <h2 id="docs-admin-landing-titulo">Cómo funciona</h2>
+      <p class="guardadas-panel-ayuda">Abrí el administrador de documentos. A la izquierda elegís una de las seis categorías. A la derecha ves la lista (detalle o iconos, como un explorador) y desde ahí publicás, editás o quitás un elemento. Los cambios se reflejan en la sección Documentos del sitio.</p>
+      <div class="panel-acciones">
+        <button type="button" class="btn-abrir-asistente" id="docs-abrir-explorador">Administrar documentos</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="asistente docs-explorador" id="popup-docs-explorador" hidden>
+    <div class="asistente-fondo" id="docs-explorador-fondo" aria-hidden="true"></div>
+    <div class="asistente-ventana asistente-ventana-ancha docs-explorador-ventana" role="dialog" aria-modal="true" aria-labelledby="docs-explorador-titulo">
+      <button type="button" class="asistente-cerrar" id="docs-explorador-cerrar" aria-label="Cerrar">&times;</button>
+      <div class="docs-explorador-cabeza">
+        <div>
+          <h2 class="asistente-titulo" id="docs-explorador-titulo">Administrar documentos</h2>
+          <p class="asistente-ayuda docs-explorador-ayuda">Elegí una categoría a la izquierda. A la derecha aparecen sus documentos.</p>
+        </div>
+        <button type="button" class="docs-vista-switch" id="docs-vista-switch" aria-pressed="false" title="Cambiar a vista de iconos" aria-label="Cambiar a vista de iconos">
+          <svg class="docs-vista-icono docs-vista-icono-lista" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7h12M8 12h12M8 17h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="4.5" cy="7" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="17" r="1.2" fill="currentColor"/></svg>
+          <svg class="docs-vista-icono docs-vista-icono-cuadricula" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="docs-explorador-cuerpo">
+        <aside class="docs-explorador-cats" aria-label="Categorías de documentos">
+          <button type="button" class="docs-cat-btn" data-docs-cat="efemerides">Efemérides</button>
+          <button type="button" class="docs-cat-btn" data-docs-cat="hoja">Hoja del Miércoles</button>
+          <button type="button" class="docs-cat-btn" data-docs-cat="convenios">Convenios</button>
+          <button type="button" class="docs-cat-btn" data-docs-cat="legales">Documentos legales</button>
+          <button type="button" class="docs-cat-btn" data-docs-cat="informes">Informes de labores</button>
+          <button type="button" class="docs-cat-btn" data-docs-cat="actas">Actas de asamblea</button>
+        </aside>
+        <section class="docs-explorador-panel" aria-labelledby="docs-panel-titulo">
+          <div class="docs-panel-toolbar">
+            <h3 id="docs-panel-titulo">Efemérides</h3>
+            <div class="docs-panel-acciones">
+              <input type="search" id="docs-buscar" class="admin-buscar-input docs-buscar" placeholder="Buscar…" autocomplete="off" aria-label="Buscar en esta categoría">
+              <button type="button" class="btn-atajo" id="docs-agregar">Agregar</button>
+            </div>
+          </div>
+          <div id="docs-lista" class="docs-lista docs-lista-detalle" aria-live="polite">
+            <p class="vacio-bloque">Elegí una categoría.</p>
+          </div>
+          <p class="hoja-admin-estado" id="docs-estado" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="asistente" id="popup-docs-form" hidden>
+    <div class="asistente-fondo" id="docs-form-fondo" aria-hidden="true"></div>
+    <div class="asistente-ventana" role="dialog" aria-modal="true" aria-labelledby="docs-form-titulo">
+      <button type="button" class="asistente-cerrar" id="docs-form-cerrar" aria-label="Cerrar">&times;</button>
+      <h2 class="asistente-titulo" id="docs-form-titulo">Agregar documento</h2>
+      <p class="asistente-ayuda" id="docs-form-ayuda">Completá los datos y guardá.</p>
+      <form id="form-docs" enctype="multipart/form-data">
+        <input type="hidden" id="docs-form-id" name="id" value="">
+        <input type="hidden" id="docs-form-accion" name="accion" value="agregar">
+        <input type="hidden" id="docs-form-categoria" name="categoria" value="">
+        <div id="docs-form-campos"></div>
+        <p class="hoja-admin-estado" id="docs-form-estado" role="status" aria-live="polite"></p>
+        <div class="asistente-acciones">
+          <button type="button" class="btn-atajo btn-atajo-secundario" id="docs-form-cancelar">Cancelar</button>
+          <button type="submit" class="btn-atajo" id="docs-form-guardar">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<div class="asistente" id="popup-afiliado" hidden>
     <div class="asistente-fondo" data-cerrar-afiliado="1" aria-hidden="true"></div>
     <div class="asistente-ventana" role="dialog" aria-modal="true" aria-labelledby="afiliado-titulo">
       <button type="button" class="asistente-cerrar" id="cerrar-afiliado" aria-label="Cerrar">&times;</button>
@@ -469,11 +574,12 @@
   <input type="hidden" id="agenda-token" value="{{token}}">
   <div id="lista-mes" hidden></div>
   <script src="../js/avisos.js?v=1.5"></script>
-  <script src="agenda.js?v=4.15"></script>
-  <script src="solicitudes.js?v=4.28"></script>
-  <script src="tono.js?v=3.15"></script>
+  <script src="agenda.js?v=4.16"></script>
+  <script src="solicitudes.js?v=4.33"></script>
+  <script src="documentacion.js?v=1.6"></script>
+  <script src="tono.js?v=3.18"></script>
   <script src="sitrabot-admin.js?v=4.7"></script>
 
-  <script src="guia.js?v=3.8"></script>
+  <script src="guia.js?v=3.9"></script>
 </body>
 </html>

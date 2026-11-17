@@ -10,7 +10,9 @@
         afilacion: document.getElementById('vista-afilacion'),
         afiliados: document.getElementById('vista-afiliados'),
         cita: document.getElementById('vista-cita'),
-        contacto: document.getElementById('vista-contacto')
+        contacto: document.getElementById('vista-contacto'),
+        documentacion: document.getElementById('vista-documentacion'),
+        hoja: document.getElementById('vista-documentacion')
     };
     var vistasLista = { afilacion: 1, cita: 1, contacto: 1 };
 
@@ -22,6 +24,7 @@
     var listaAfiliados = document.getElementById('lista-afiliados');
 
     var datos = { contacto: [], cita: [], afilacion: [], afiliados: [] };
+    var filtrosBusqueda = { agenda: '', afilacion: '', afiliados: '', cita: '', contacto: '' };
     var vistaActiva = 'agenda';
     var enviando = false;
     var cargado = false;
@@ -156,9 +159,11 @@
         );
 
         if (inicioCitas) {
+            var consultaInicio = filtrosBusqueda.agenda || '';
             var recientes = [];
             ['contacto', 'cita', 'afilacion'].forEach(function (tipo) {
                 (datos[tipo] || []).forEach(function (fila) {
+                    if (!coincideBusqueda(textoBusquedaFila(tipo, fila), consultaInicio)) return;
                     recientes.push({ tipo: tipo, fila: fila });
                 });
             });
@@ -171,9 +176,12 @@
                 if (ca !== cb) return cb.localeCompare(ca);
                 return (parseInt(b.fila.id, 10) || 0) - (parseInt(a.fila.id, 10) || 0);
             });
-            recientes = recientes.slice(0, 5);
+            if (!normalizarBusqueda(consultaInicio)) recientes = recientes.slice(0, 5);
+            else recientes = recientes.slice(0, 20);
             if (!recientes.length) {
-                inicioCitas.innerHTML = '<p class="vacio-bloque">Todavía no hay consultas registradas.</p>';
+                inicioCitas.innerHTML = '<p class="vacio-bloque">' + (normalizarBusqueda(consultaInicio)
+                    ? 'No hay consultas que coincidan con esa búsqueda.'
+                    : 'Todavía no hay consultas registradas.') + '</p>';
             } else {
                 var htmlC = '<ul class="inicio-cards">';
                 recientes.forEach(function (item) {
@@ -446,6 +454,46 @@
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
+    }
+
+    function normalizarBusqueda(texto) {
+        return String(texto == null ? '' : texto)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function coincideBusqueda(haystack, consulta) {
+        var q = normalizarBusqueda(consulta);
+        if (!q) return true;
+        return normalizarBusqueda(haystack).indexOf(q) !== -1;
+    }
+
+    function textoBusquedaFila(tipo, fila) {
+        var partes = [];
+        if (!fila) return '';
+        if (tipo === 'cita') {
+            partes.push(fila.persona, fila.correo, fila.cedula, fila.fecha, fila.hora, fila.motivo, fila.notas, fila.creado_en, fila.estado, fila.modalidad);
+            if (fila.fecha) partes.push(textoFechaHora([fila.fecha, fila.hora].filter(Boolean).join(' ')));
+        } else if (tipo === 'afiliados') {
+            partes.push(fila.nombre_completo, fila.correo, fila.cedula);
+        } else {
+            partes.push(fila.nombre, fila.correo, fila.cedula, fila.asunto, fila.creado_en, fila.estado);
+            if (fila.creado_en) partes.push(textoFechaHora(fila.creado_en));
+        }
+        partes.push(textoEstadoFila(fila));
+        return partes.filter(Boolean).join(' ');
+    }
+
+    function filasFiltradas(tipo) {
+        var filas = datos[tipo] || [];
+        var consulta = filtrosBusqueda[tipo] || '';
+        if (!normalizarBusqueda(consulta)) return filas.slice();
+        return filas.filter(function (fila) {
+            return coincideBusqueda(textoBusquedaFila(tipo, fila), consulta);
+        });
     }
 
     function tituloFila(tipo, fila) {
@@ -850,11 +898,19 @@
     function pintarLista(tipo) {
         var caja = listas[tipo];
         if (!caja) return;
-        var filas = datos[tipo] || [];
-        if (!filas.length) {
+        var todas = datos[tipo] || [];
+        var filas = filasFiltradas(tipo);
+        var hayFiltro = !!normalizarBusqueda(filtrosBusqueda[tipo] || '');
+        if (!todas.length) {
             caja.innerHTML = '<p class="vacio-bloque">' + (tipo === 'cita'
                 ? 'Todavía no hay citas.'
                 : 'No hay solicitudes de este tipo todavía.') + '</p>';
+            return;
+        }
+        if (!filas.length) {
+            caja.innerHTML = '<p class="vacio-bloque">' + (hayFiltro
+                ? 'No hay resultados para esa búsqueda.'
+                : (tipo === 'cita' ? 'Todavía no hay citas.' : 'No hay solicitudes de este tipo todavía.')) + '</p>';
             return;
         }
         var html = '<ul class="rejilla-casillas sol-rejilla">';
@@ -967,9 +1023,17 @@
 
     function pintarAfiliados() {
         if (!listaAfiliados) return;
-        var filas = datos.afiliados || [];
-        if (!filas.length) {
+        var todas = datos.afiliados || [];
+        var filas = filasFiltradas('afiliados');
+        var hayFiltro = !!normalizarBusqueda(filtrosBusqueda.afiliados || '');
+        if (!todas.length) {
             listaAfiliados.innerHTML = '<p class="vacio-bloque">Todavía no hay afiliados. Usá Añadir afiliado para registrar cédula, nombre y correo.</p>';
+            return;
+        }
+        if (!filas.length) {
+            listaAfiliados.innerHTML = '<p class="vacio-bloque">' + (hayFiltro
+                ? 'No hay afiliados que coincidan con esa búsqueda.'
+                : 'Todavía no hay afiliados. Usá Añadir afiliado para registrar cédula, nombre y correo.') + '</p>';
             return;
         }
         var icono = '<span class="afiliado-icono" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.5" fill="currentColor"/><path fill="currentColor" d="M5 19.4c.5-3.5 3.2-5.3 7-5.3s6.5 1.8 7 5.3c.1.4-.2.8-.6.8H5.6c-.4 0-.7-.4-.6-.8z"/></svg></span>';
@@ -1048,9 +1112,15 @@
     var avisosListos = false;
     var notasVistas = null;
 
+    function formatearCuandoNota(cuando) {
+        var m = String(cuando || '').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+        if (!m) return String(cuando || '');
+        return m[3] + '/' + m[2] + '/' + m[1] + ' · ' + m[4] + ':' + m[5];
+    }
+
     function textoNota(aviso) {
-        var cuando = aviso.cuando ? ' · ' + aviso.cuando : '';
-        return (aviso.titulo ? aviso.titulo + ': ' : '') + (aviso.texto || '') + cuando;
+        var cuando = formatearCuandoNota(aviso.cuando);
+        return (aviso.titulo || aviso.texto || 'Aviso') + (cuando ? ' · ' + cuando : '');
     }
 
     function pintarNotas(json, avisar) {
@@ -1201,6 +1271,8 @@
             cargar(true);
         } else if (nombre === 'afiliados') {
             pintarAfiliados();
+        } else if (nombre === 'documentacion' || nombre === 'hoja') {
+            /* La carga del catálogo ocurre al abrir el explorador. */
         } else if (vistasLista[nombre]) {
             pintarLista(nombre);
         }
@@ -1214,6 +1286,7 @@
     function mostrarVista(nombre) {
         cerrarFicha();
         if (document.body.classList.contains('panel-abogado')) nombre = 'cita';
+        if (nombre === 'hoja') nombre = 'documentacion';
         if (!vistas[nombre]) nombre = 'agenda';
         if (cambiandoVista) return;
         if (nombre === vistaActiva) {
@@ -1763,6 +1836,23 @@
         });
     }
 
+    function enlazarBuscador(idCampo, clave, alBuscar) {
+        var campo = document.getElementById(idCampo);
+        if (!campo) return;
+        var aplicar = function () {
+            filtrosBusqueda[clave] = campo.value || '';
+            alBuscar();
+        };
+        campo.addEventListener('input', aplicar);
+        campo.addEventListener('search', aplicar);
+    }
+
+    enlazarBuscador('buscar-agenda', 'agenda', function () { pintarInicio(); });
+    enlazarBuscador('buscar-afilacion', 'afilacion', function () { pintarLista('afilacion'); });
+    enlazarBuscador('buscar-afiliados', 'afiliados', function () { pintarAfiliados(); });
+    enlazarBuscador('buscar-cita', 'cita', function () { pintarLista('cita'); });
+    enlazarBuscador('buscar-contacto', 'contacto', function () { pintarLista('contacto'); });
+
     window.setInterval(consultarNotas, 20000);
     document.addEventListener('visibilitychange', function () {
         if (!document.hidden) consultarNotas();
@@ -1772,6 +1862,7 @@
     function vistaDesdeHash() {
         var hash = (location.hash || '#agenda').replace('#', '');
         if (hash === 'horario') hash = 'cita';
+        if (hash === 'hoja') hash = 'documentacion';
         return vistas[hash] ? hash : 'agenda';
     }
 

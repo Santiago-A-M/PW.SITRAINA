@@ -7395,14 +7395,25 @@ html.daltonico .cuenta-notas-cuenta {
   color: #fff;
 }
 
+html.daltonico .cuenta-notas-item,
 html.daltonico .cuenta-notas-contacto,
 html.daltonico .cuenta-notas-afilacion,
-html.daltonico .cuenta-notas-cita,
+html.daltonico .cuenta-notas-cita {
+  box-shadow: none;
+  border: 1px solid #b7d4ea;
+}
+
+html.daltonico .cuenta-notas-item:hover,
+html.daltonico .cuenta-notas-item:focus-visible {
+  border-color: #0072b2;
+  box-shadow: 0 2px 8px rgba(0, 114, 178, 0.1);
+}
+
 html.daltonico .sit-nota-contacto,
 html.daltonico .sit-nota-afilacion,
 html.daltonico .sit-nota-cita {
-  box-shadow: inset 3px 0 0 #0072b2;
-  border-left-color: #0072b2;
+  box-shadow: none;
+  border-left: 3px solid #0072b2;
 }
 
 html.daltonico.dark-mode .cuenta-notas-cuenta {
@@ -7410,14 +7421,25 @@ html.daltonico.dark-mode .cuenta-notas-cuenta {
   color: #062033;
 }
 
+html.daltonico.dark-mode .cuenta-notas-item,
 html.daltonico.dark-mode .cuenta-notas-contacto,
 html.daltonico.dark-mode .cuenta-notas-afilacion,
-html.daltonico.dark-mode .cuenta-notas-cita,
+html.daltonico.dark-mode .cuenta-notas-cita {
+  box-shadow: none;
+  border-color: #2a6f99;
+}
+
+html.daltonico.dark-mode .cuenta-notas-item:hover,
+html.daltonico.dark-mode .cuenta-notas-item:focus-visible {
+  border-color: #56b4e9;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
 html.daltonico.dark-mode .sit-nota-contacto,
 html.daltonico.dark-mode .sit-nota-afilacion,
 html.daltonico.dark-mode .sit-nota-cita {
-  box-shadow: inset 3px 0 0 #56b4e9;
-  border-left-color: #56b4e9;
+  box-shadow: none;
+  border-left: 3px solid #56b4e9;
 }
 
 html.daltonico body:not(.dark-mode) .reserva-popup-caja {

@@ -74,6 +74,18 @@ body.dark-mode .marca-hoja .imagen-titulo image {
     align-items: start;
 }
 
+.hoja-cargando {
+    margin: 0;
+    padding: 18px 4px;
+    color: #6a564e;
+    font-size: 1rem;
+    grid-column: 1 / -1;
+}
+
+body.dark-mode .hoja-cargando {
+    color: #d4c4bb;
+}
+
 .hoja-titulo {
     width: 100%;
     margin: 0;

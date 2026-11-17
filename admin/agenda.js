@@ -3,6 +3,9 @@
     var token = document.getElementById('agenda-token');
     var alertaCaja = document.getElementById('admin-alerta');
     var alertaAbrir = document.getElementById('admin-alerta-abrir');
+    var alertaMenu = document.getElementById('admin-alerta-menu');
+    var alertaMenuLista = document.getElementById('admin-alerta-menu-lista');
+    var alertaVerTodas = document.getElementById('admin-alerta-ver-todas');
     var alertaPopup = document.getElementById('admin-alerta-popup');
     var alertaFondo = document.getElementById('admin-alerta-fondo');
     var alertaLista = document.getElementById('admin-alerta-lista');
@@ -14,6 +17,7 @@
     var alertaId = 0;
     var timerAlerta = null;
     var timerPulso = null;
+    var timerMenuAlerta = null;
     var campoMes = document.getElementById('mes');
     var listaHora = document.getElementById('lista-hora');
     var listaMesResumen = document.getElementById('lista-mes-resumen');
@@ -102,61 +106,85 @@
 
     var totalNotasConocidas = null;
 
+    function formatearCuandoAlerta(cuando) {
+        var m = String(cuando || '').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+        if (!m) return String(cuando || '');
+        return m[3] + '/' + m[2] + '/' + m[1] + ' · ' + m[4] + ':' + m[5];
+    }
+
+    function preferirMenosMovimientoAlerta() {
+        try {
+            return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function crearBotonAviso(aviso) {
+        var tipoAviso = aviso.tipo || 'cita';
+        var boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'admin-alerta-item admin-alerta-consulta admin-alerta-' + tipoAviso + (aviso.leido ? ' admin-alerta-leida' : '');
+        boton.setAttribute('data-alerta-tipo', aviso.tipo || '');
+        boton.setAttribute('data-alerta-id', String(aviso.id || ''));
+        boton.setAttribute('data-alerta-marca', aviso.marca || '');
+        boton.setAttribute('aria-label', aviso.titulo || aviso.texto || 'Abrir aviso');
+
+        var cuerpo = document.createElement('span');
+        cuerpo.className = 'admin-alerta-texto';
+        cuerpo.textContent = aviso.titulo || aviso.detalle || aviso.texto || 'Aviso';
+        boton.appendChild(cuerpo);
+
+        var cuandoTxt = formatearCuandoAlerta(aviso.cuando);
+        if (cuandoTxt) {
+            var cuando = document.createElement('span');
+            cuando.className = 'admin-alerta-cuando';
+            cuando.textContent = cuandoTxt;
+            boton.appendChild(cuando);
+        }
+        return boton;
+    }
+
     function renderAlertas(totalAvisos) {
         if (typeof totalAvisos === 'number') totalNotasConocidas = totalAvisos;
-        if (!alertaLista) return;
-        alertaLista.innerHTML = '';
+        if (alertaLista) alertaLista.innerHTML = '';
+        if (alertaMenuLista) alertaMenuLista.innerHTML = '';
+
         if (!alertas.length && !consultasAvisos.length) {
-            var vacio = document.createElement('p');
-            vacio.className = 'admin-alerta-vacio';
-            vacio.id = 'admin-alerta-vacio';
-            vacio.textContent = 'No hay avisos por ahora.';
-            alertaLista.appendChild(vacio);
-            alertaVacio = vacio;
+            if (alertaLista) {
+                var vacio = document.createElement('p');
+                vacio.className = 'admin-alerta-vacio';
+                vacio.id = 'admin-alerta-vacio';
+                vacio.textContent = 'No hay avisos por ahora.';
+                alertaLista.appendChild(vacio);
+                alertaVacio = vacio;
+            }
+            if (alertaMenuLista) {
+                var vacioMenu = document.createElement('p');
+                vacioMenu.className = 'admin-alerta-menu-vacio';
+                vacioMenu.textContent = 'No hay avisos por ahora.';
+                alertaMenuLista.appendChild(vacioMenu);
+            }
         } else {
             alertaVacio = null;
         }
+
         for (var c = 0; c < consultasAvisos.length; c++) {
             var aviso = consultasAvisos[c];
-            var tipoAviso = aviso.tipo || 'cita';
-            var boton = document.createElement('button');
-            boton.type = 'button';
-            boton.className = 'admin-alerta-item admin-alerta-consulta admin-alerta-' + tipoAviso + (aviso.leido ? ' admin-alerta-leida' : '');
-            boton.setAttribute('data-alerta-tipo', aviso.tipo || '');
-            boton.setAttribute('data-alerta-id', String(aviso.id || ''));
-            boton.setAttribute('data-alerta-marca', aviso.marca || '');
-            boton.setAttribute('aria-label', aviso.texto || 'Abrir aviso');
-
-            var cabeza = document.createElement('span');
-            cabeza.className = 'admin-alerta-cabeza';
-            var etiqueta = document.createElement('span');
-            etiqueta.className = 'admin-alerta-tipo';
-            etiqueta.textContent = tipoAviso === 'afilacion' ? 'Afiliación' : (tipoAviso === 'contacto' ? 'Contacto' : 'Cita');
-            var estado = document.createElement('span');
-            estado.className = 'admin-alerta-estado';
-            estado.textContent = aviso.leido ? 'Leída' : 'Nueva';
-            cabeza.appendChild(etiqueta);
-            cabeza.appendChild(estado);
-
-            var cuerpo = document.createElement('span');
-            cuerpo.className = 'admin-alerta-texto';
-            cuerpo.textContent = aviso.detalle || aviso.texto || '';
-
-            boton.appendChild(cabeza);
-            boton.appendChild(cuerpo);
-            if (aviso.cuando) {
-                var cuando = document.createElement('span');
-                cuando.className = 'admin-alerta-cuando';
-                cuando.textContent = aviso.cuando;
-                boton.appendChild(cuando);
-            }
-            alertaLista.appendChild(boton);
+            if (alertaLista) alertaLista.appendChild(crearBotonAviso(aviso));
+            if (alertaMenuLista && c < 3) alertaMenuLista.appendChild(crearBotonAviso(aviso));
         }
         for (var i = 0; i < alertas.length; i++) {
             var p = document.createElement('p');
             p.className = 'admin-alerta-item' + (alertas[i].esError ? '' : ' admin-alerta-item-ok');
             p.textContent = alertas[i].texto;
-            alertaLista.appendChild(p);
+            if (alertaLista) alertaLista.appendChild(p);
+            if (alertaMenuLista && consultasAvisos.length + i < 3) {
+                var pMenu = document.createElement('p');
+                pMenu.className = 'admin-alerta-item' + (alertas[i].esError ? '' : ' admin-alerta-item-ok');
+                pMenu.textContent = alertas[i].texto;
+                alertaMenuLista.appendChild(pMenu);
+            }
         }
         var nAvisos = typeof totalNotasConocidas === 'number'
             ? totalNotasConocidas
@@ -169,11 +197,44 @@
         }
     }
 
-    function setAlertaAbierta(abierto) {
-        if (!alertaPopup || !alertaAbrir) return;
+    function setMenuAlerta(abierto) {
+        if (!alertaMenu || !alertaAbrir) return;
+        if (timerMenuAlerta) {
+            window.clearTimeout(timerMenuAlerta);
+            timerMenuAlerta = null;
+        }
+        if (abierto) {
+            setPopupAlerta(false);
+            alertaMenu.hidden = false;
+            alertaAbrir.setAttribute('aria-expanded', 'true');
+            window.requestAnimationFrame(function () {
+                alertaMenu.classList.add('admin-alerta-menu-abierto');
+            });
+            return;
+        }
+        alertaMenu.classList.remove('admin-alerta-menu-abierto');
+        alertaAbrir.setAttribute('aria-expanded', 'false');
+        timerMenuAlerta = window.setTimeout(function () {
+            alertaMenu.hidden = true;
+            timerMenuAlerta = null;
+        }, preferirMenosMovimientoAlerta() ? 0 : 300);
+    }
+
+    function setPopupAlerta(abierto) {
+        if (!alertaPopup) return;
         alertaPopup.hidden = !abierto;
-        alertaAbrir.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-        if (abierto && alertaCerrar) alertaCerrar.focus();
+        if (abierto) {
+            setMenuAlerta(false);
+            if (alertaCerrar) alertaCerrar.focus();
+        }
+    }
+
+    function setAlertaAbierta(abierto) {
+        if (abierto) setMenuAlerta(true);
+        else {
+            setMenuAlerta(false);
+            setPopupAlerta(false);
+        }
     }
 
     function quitarAlerta(id) {
@@ -210,38 +271,53 @@
         }, 2200);
     };
 
-    if (alertaLista) {
-        alertaLista.addEventListener('click', function (evento) {
-            var boton = evento.target.closest('[data-alerta-tipo]');
-            if (!boton || !window.adminAbrirConsulta) return;
-            setAlertaAbierta(false);
-            var tipoAviso = boton.getAttribute('data-alerta-tipo');
-            var idAviso = boton.getAttribute('data-alerta-id');
-            var marcaAviso = boton.getAttribute('data-alerta-marca');
-            if (window.adminMarcarNotificacion) window.adminMarcarNotificacion(tipoAviso, idAviso, marcaAviso);
-            window.adminAbrirConsulta(tipoAviso, idAviso);
-        });
+    function alClicAviso(evento) {
+        var boton = evento.target.closest('[data-alerta-tipo]');
+        if (!boton || !window.adminAbrirConsulta) return;
+        setAlertaAbierta(false);
+        var tipoAviso = boton.getAttribute('data-alerta-tipo');
+        var idAviso = boton.getAttribute('data-alerta-id');
+        var marcaAviso = boton.getAttribute('data-alerta-marca');
+        if (window.adminMarcarNotificacion) window.adminMarcarNotificacion(tipoAviso, idAviso, marcaAviso);
+        window.adminAbrirConsulta(tipoAviso, idAviso);
     }
 
+    if (alertaLista) alertaLista.addEventListener('click', alClicAviso);
+    if (alertaMenuLista) alertaMenuLista.addEventListener('click', alClicAviso);
+
     if (alertaAbrir) {
-        alertaAbrir.addEventListener('click', function () {
-            setAlertaAbierta(alertaPopup ? alertaPopup.hidden : true);
+        alertaAbrir.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            var abierto = alertaAbrir.getAttribute('aria-expanded') === 'true';
+            setMenuAlerta(!abierto);
+        });
+    }
+    if (alertaVerTodas) {
+        alertaVerTodas.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            setPopupAlerta(true);
         });
     }
     if (alertaCerrar) {
         alertaCerrar.addEventListener('click', function () {
-            setAlertaAbierta(false);
+            setPopupAlerta(false);
         });
     }
     if (alertaFondo) {
         alertaFondo.addEventListener('click', function () {
-            setAlertaAbierta(false);
+            setPopupAlerta(false);
         });
     }
+    document.addEventListener('click', function (evento) {
+        if (!alertaCaja || alertaCaja.contains(evento.target)) return;
+        setMenuAlerta(false);
+    });
     document.addEventListener('keydown', function (evento) {
-        if (evento.key === 'Escape' && alertaPopup && !alertaPopup.hidden) {
-            setAlertaAbierta(false);
-        }
+        if (evento.key !== 'Escape') return;
+        if (alertaPopup && !alertaPopup.hidden) setPopupAlerta(false);
+        else setMenuAlerta(false);
     });
     renderAlertas();
 

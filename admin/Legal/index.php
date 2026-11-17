@@ -80,8 +80,8 @@ $sesionTexto = !empty($_SESSION['admin_cuenta']) ? (string) $_SESSION['admin_cue
     })();
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../admin.css?v=6.74">
-  <link rel="stylesheet" href="legal.css?v=7">
+  <link rel="stylesheet" href="../admin.css?v=6.79">
+  <link rel="stylesheet" href="legal.css?v=9">
   <script>
     (function () {
       try {
@@ -89,7 +89,7 @@ $sesionTexto = !empty($_SESSION['admin_cuenta']) ? (string) $_SESSION['admin_cue
         var link = document.createElement('link');
         link.id = 'daltonico-css';
         link.rel = 'stylesheet';
-        link.href = '../daltonico-admin.css?v=1.52';
+        link.href = '../daltonico-admin.css?v=1.54';
         document.head.appendChild(link);
       } catch (e) {}
     })();
@@ -120,7 +120,7 @@ $sesionTexto = !empty($_SESSION['admin_cuenta']) ? (string) $_SESSION['admin_cue
           <div class="legal-notas-menu" id="legal-notas-menu" hidden>
             <p class="legal-notas-titulo">Notificaciones</p>
             <div id="legal-notas-lista"></div>
-            <button type="button" class="legal-notas-todas" id="legal-notas-todas">Marcar todas como leídas</button>
+            <button type="button" class="legal-notas-ver-todas" id="legal-notas-ver-todas">Todas las notificaciones</button>
           </div>
         </div>
         <button id="toggle-oscuro" class="admin-tono btn-header" type="button" title="Cambiar tono" aria-label="Cambiar tono de la página">
@@ -217,8 +217,20 @@ $sesionTexto = !empty($_SESSION['admin_cuenta']) ? (string) $_SESSION['admin_cue
     </section>
   </div>
 
+  <div class="legal-notas-popup" id="legal-notas-popup" hidden>
+    <button type="button" class="legal-notas-popup-fondo" id="legal-notas-popup-fondo" aria-label="Cerrar notificaciones"></button>
+    <div class="legal-notas-popup-caja" role="dialog" aria-modal="true" aria-labelledby="legal-notas-popup-titulo">
+      <button type="button" class="legal-notas-popup-cerrar" id="legal-notas-popup-cerrar" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+      <h2 class="legal-notas-popup-titulo" id="legal-notas-popup-titulo">Todas las notificaciones</h2>
+      <div class="legal-notas-popup-lista" id="legal-notas-popup-lista"></div>
+      <button type="button" class="legal-notas-todas" id="legal-notas-todas">Marcar todas como leídas</button>
+    </div>
+  </div>
+
   <script src="../tono.js?v=3.15"></script>
-  <script src="legal.js?v=4"></script>
+  <script src="legal.js?v=5"></script>
   <script src="asistente.js?v=1"></script>
 </body>
 </html>

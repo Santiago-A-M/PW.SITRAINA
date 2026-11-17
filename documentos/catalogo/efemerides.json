@@ -1,0 +1,146 @@
+[
+  {
+    "id": "efemerides-1",
+    "fecha": "14 de febrero",
+    "titulo": "Día de la Amistad",
+    "texto": "Una fecha dedicada a resaltar los valores de la fraternidad y el compañerismo entre las personas trabajadoras, fortaleciendo los lazos de unidad sindical y respeto mutuo.",
+    "media": "efemerides/san_valentin.jpg",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-2",
+    "fecha": "8 de marzo",
+    "titulo": "Día Internacional de la Mujer",
+    "texto": "Conmemoramos la lucha histórica de las mujeres por la igualdad, el reconocimiento y el ejercicio efectivo de sus derechos. En SITRAINA reafirmamos el compromiso con la equidad de género.",
+    "media": "efemerides/mujer.jpg",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-3",
+    "fecha": "11 de abril",
+    "titulo": "Día de la Batalla de Rivas",
+    "texto": "Honramos la gesta heroica de Juan Santamaría y los valientes costarricenses que defendieron nuestra soberanía nacional frente a los filibusteros en la histórica gesta de 1856.",
+    "media": "efemerides/batallarivas.png",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-4",
+    "fecha": "28 de abril",
+    "titulo": "Día Mundial de la Salud Ocupacional",
+    "texto": "Cada rincón del INA debe ser un lugar donde estudiantes, docentes y trabajadores se sientan protegidos, tranquilos y respetados.",
+    "media": "efemerides/saludocupacional.png",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-5",
+    "fecha": "1 de mayo",
+    "titulo": "Día Mundial del Trabajador",
+    "texto": "Conmemoramos la lucha histórica de la clase trabajadora. Los derechos que hoy disfrutamos no fueron concesiones, sino conquistas logradas con organización y sacrificio frente a la explotación. Honrar el pasado es defender el presente. Por un salario justo, condiciones dignas y el fin de la precarización laboral: ¡Que viva la lucha de los trabajadores!",
+    "media": "efemerides/trabajador.jpg",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-6",
+    "fecha": "29 de mayo",
+    "titulo": "Día Nacional de las Personas con Discapacidad",
+    "texto": "Cada 29 de mayo, Costa Rica conmemora el Día Nacional de las Personas con Discapacidad, de conformidad con el artículo 1 de la Ley N.° 8671, con la finalidad de promover el respeto, la igualdad, los derechos y la comprensión hacia las personas que presentan alguna discapacidad, celebración que se realiza desde el año 2008.",
+    "media": "efemerides/Personascondiscapacidad.png",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-7",
+    "fecha": "5 de junio",
+    "titulo": "Día del ambiente",
+    "texto": "Junio es el Mes del Ambiente. En SITRAINA nos unimos a la celebración con un firme compromiso por el planeta. Por eso, te invitamos a ser parte activa de todas las actividades que tenemos programadas para este mes. Tu participación es clave para marcar la diferencia y promover el cuidado de nuestro entorno. SITRAINA camina hacia un futuro más sostenible.",
+    "media": "efemerides/ambiente.jpeg",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-8",
+    "fecha": "12 de junio",
+    "titulo": "Cuidemos Nuestros Océanos",
+    "texto": "Hoy más que nunca, nuestros océanos necesitan de nosotros. SITRAINA te invita a sumarte en la Semana 2 del Mes del Ambiente a seguir armando la Frase Secreta (Parte 2) para participar y ganar fabulosos premios.",
+    "media": "efemerides/12dejunio.png",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-9",
+    "fecha": "12 de junio",
+    "titulo": "Día Mundial de la Descontaminación Acústica",
+    "texto": "¡Menos ruido, más bienestar! La contaminación acústica afecta directamente nuestra salud, el descanso, la concentración y la calidad de vida. Desde SITRAINA, te invitamos a promover entornos laborales y educativos más saludables reduciendo el ruido innecesario.",
+    "media": "efemerides/12dejunio-menosruido.png",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-10",
+    "fecha": "15 de junio",
+    "titulo": "Sembrando Futuro, Cultivando Vida",
+    "texto": "¡Cuidemos hoy lo que nos da vida mañana! En el marco de la celebración del Día del Árbol en Costa Rica y otras efemérides ambientales del mes, te invitamos a sumarte a nuestras iniciativas ecológicas.",
+    "media": "efemerides/diadelarbol.png",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-11",
+    "fecha": "21 de junio",
+    "titulo": "Día del Padre",
+    "texto": "Celebramos con alegría el Día del Padre en SITRAINA. Reconocemos y valoramos el esfuerzo, la dedicación y el amor de todos los padres que forman parte de nuestra gran familia. ¡Feliz día a todos!",
+    "media": "efemerides/díadelpadre2026.mp4",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-12",
+    "fecha": "26 de junio",
+    "titulo": "Con pequeñas acciones, generamos grandes cambios",
+    "texto": "¡Por un INA más verde, sostenible y consciente! Llegamos a la recta final del Mes del Medio Ambiente. Proteger nuestro entorno es un esfuerzo diario y una responsabilidad colectiva: recordar acciones esenciales como reducir, reutilizar, reciclar y reforestar es vital para asegurar el bienestar de nuestro planeta.",
+    "media": "efemerides/26dejunio-mesdelambiente.jpeg",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-13",
+    "fecha": "30 de junio",
+    "titulo": "Canje vidrio x vidrio",
+    "texto": "¡Te invitamos a participar en nuestra jornada ecológica! Este martes 30 de junio, únete a la iniciativa Vidrio x Vidrio en la Sede Central del INA, Uruca (Oficinas de SITRAINA), de 9:00 a.m. a 2:00 p.m.",
+    "media": "efemerides/vidrioxvidrio.jpg",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-14",
+    "fecha": "15 de julio",
+    "titulo": "Día Nacional de la Educación Técnica y Formación Profesional",
+    "texto": "Este miércoles 15 de julio, celebramos el Día Nacional de la Educación Técnica y Formación Profesional. Desde SITRAINA, expresamos nuestro más profundo reconocimiento y agradecimiento a todas las personas trabajadoras del Instituto Nacional de Aprendizaje (INA).",
+    "media": "efemerides/diaeducacióntécnica.jpeg",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-15",
+    "fecha": "25 de julio",
+    "titulo": "Anexión del Partido de Nicoya a Guanacaste",
+    "texto": "Este 25 de julio celebramos el Día de la Anexión del Partido de Nicoya. Un día que nos recuerda nuestra historia, nuestra identidad y el orgullo de ser guanacastecos.",
+    "media": "efemerides/25dejulio.jpeg",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-16",
+    "fecha": "15 de agosto",
+    "titulo": "Día de la Madre",
+    "texto": "En SITRAINA conmemoramos y celebramos con orgullo el Día de la Madre. Reconocemos el valioso rol, la dedicación y el amor incondicional que las madres aportan cada día a nuestra institución. ¡Feliz día a todas!",
+    "media": "efemerides/diadelamadre.mp4",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-17",
+    "fecha": "9 de setiembre",
+    "titulo": "Día de la Niñez",
+    "texto": "Que los años nos traigan sabiduría, pero que jamás nos quiten la capacidad de asombrarnos, de soñar sin límites y de mirar el mundo con la curiosidad de nuestros primeros años. Crecer y asumir responsabilidades no significa apagar la chispa que nos impulsa a explorar; significa usar nuestra experiencia para seguir construyendo, transformando realidades y creando cosas nuevas con la misma pasión, imaginación y valentía que teníamos de niños.",
+    "media": "efemerides/Díadelniño.mp4",
+    "origen": "base"
+  },
+  {
+    "id": "efemerides-18",
+    "fecha": "15 de setiembre",
+    "titulo": "Día de la Independencia",
+    "texto": "Celebrar nuestra independencia es rendir homenaje a la libertad, la paz y la democracia que definen a Costa Rica. Es recordar que la patria no solo se contempla, sino que se construye día a día con esfuerzo, ética, justicia social y el trabajo con el que aportamos al desarrollo de nuestro país.",
+    "media": "efemerides/setiembre1.mp4",
+    "origen": "base"
+  }
+]

@@ -592,14 +592,72 @@
     var firmaNotas = '';
     var notasListas = false;
     var notasVistas = null;
+    var notasAvisos = [];
+    var notasMenuTimer = null;
     var notasBtn = $('cuenta-notas-btn');
     var notasMenu = $('cuenta-notas-menu');
     var notasLista = $('cuenta-notas-lista');
     var notasCuenta = $('cuenta-notas-cuenta');
+    var notasPopup = $('cuenta-notas-popup');
+    var notasPopupLista = $('cuenta-notas-popup-lista');
+    var notasVerTodas = $('cuenta-notas-ver-todas');
+    var notasPopupFondo = $('cuenta-notas-popup-fondo');
+    var notasPopupCerrar = $('cuenta-notas-popup-cerrar');
+
+    function formatearCuando(cuando) {
+        var m = String(cuando || '').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+        if (!m) return String(cuando || '');
+        return m[3] + '/' + m[2] + '/' + m[1] + ' · ' + m[4] + ':' + m[5];
+    }
 
     function textoNota(aviso) {
-        var cuando = aviso.cuando ? ' · ' + aviso.cuando : '';
-        return (aviso.titulo ? aviso.titulo + ': ' : '') + (aviso.texto || '') + cuando;
+        var cuando = formatearCuando(aviso.cuando);
+        return (aviso.titulo || aviso.texto || 'Aviso') + (cuando ? ' · ' + cuando : '');
+    }
+
+    function htmlNotaItem(aviso) {
+        var titulo = escapar(aviso.titulo || aviso.texto || 'Aviso');
+        var cuando = escapar(formatearCuando(aviso.cuando));
+        return '<button type="button" class="cuenta-notas-item cuenta-notas-' + escapar(aviso.tipo || 'contacto') + (aviso.leido ? ' cuenta-notas-leida' : '') + '" data-tipo="' + escapar(aviso.tipo) + '" data-id="' + escapar(aviso.origen_id) + '" data-marca="' + escapar(aviso.marca) + '">' +
+            '<span class="cuenta-notas-item-titulo">' + titulo + '</span>' +
+            (cuando ? '<span class="cuenta-notas-item-cuando">' + cuando + '</span>' : '') +
+            '</button>';
+    }
+
+    function preferirMenosMovimientoNotas() {
+        try {
+            return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function setMenuNotas(abierto) {
+        if (!notasMenu || !notasBtn) return;
+        if (notasMenuTimer) {
+            window.clearTimeout(notasMenuTimer);
+            notasMenuTimer = null;
+        }
+        if (abierto) {
+            notasMenu.hidden = false;
+            notasBtn.setAttribute('aria-expanded', 'true');
+            window.requestAnimationFrame(function () {
+                notasMenu.classList.add('cuenta-notas-menu-abierto');
+            });
+            return;
+        }
+        notasMenu.classList.remove('cuenta-notas-menu-abierto');
+        notasBtn.setAttribute('aria-expanded', 'false');
+        notasMenuTimer = window.setTimeout(function () {
+            notasMenu.hidden = true;
+            notasMenuTimer = null;
+        }, preferirMenosMovimientoNotas() ? 0 : 300);
+    }
+
+    function setPopupNotas(abierto) {
+        if (!notasPopup) return;
+        notasPopup.hidden = !abierto;
+        if (abierto) setMenuNotas(false);
     }
 
     function mostrarNotaEsquina(texto, tipo) {
@@ -625,15 +683,27 @@
     }
 
     function pintarNotas(json) {
-        if (!notasLista) return;
-        var avisos = json.avisos || [];
+        notasAvisos = json.avisos || [];
         var n = typeof json.no_leidas === 'number' ? json.no_leidas : 0;
-        var html = '';
-        avisos.forEach(function (aviso) {
-            if (typeof json.no_leidas !== 'number' && !aviso.leido) n += 1;
-            html += '<button type="button" class="cuenta-notas-item cuenta-notas-' + escapar(aviso.tipo || 'contacto') + (aviso.leido ? ' cuenta-notas-leida' : '') + '" data-tipo="' + escapar(aviso.tipo) + '" data-id="' + escapar(aviso.origen_id) + '" data-marca="' + escapar(aviso.marca) + '">' + escapar(textoNota(aviso)) + '</button>';
+        if (typeof json.no_leidas !== 'number') {
+            notasAvisos.forEach(function (aviso) {
+                if (!aviso.leido) n += 1;
+            });
+        }
+        var htmlPreview = '';
+        notasAvisos.slice(0, 3).forEach(function (aviso) {
+            htmlPreview += htmlNotaItem(aviso);
         });
-        notasLista.innerHTML = html || '<p class="cuenta-notas-vacio">No hay avisos por ahora.</p>';
+        if (notasLista) {
+            notasLista.innerHTML = htmlPreview || '<p class="cuenta-notas-vacio">No hay avisos por ahora.</p>';
+        }
+        if (notasPopupLista) {
+            var htmlTodas = '';
+            notasAvisos.forEach(function (aviso) {
+                htmlTodas += htmlNotaItem(aviso);
+            });
+            notasPopupLista.innerHTML = htmlTodas || '<p class="cuenta-notas-vacio">No hay avisos por ahora.</p>';
+        }
         if (notasCuenta) {
             notasCuenta.hidden = n < 1;
             notasCuenta.textContent = n > 9 ? '9+' : String(n);
@@ -697,32 +767,42 @@
             .catch(function () {});
     }
 
+    function alClicNota(ev) {
+        var boton = ev.target.closest('.cuenta-notas-item');
+        if (!boton) return;
+        var tipo = boton.getAttribute('data-tipo');
+        marcarNota(tipo, boton.getAttribute('data-id'), boton.getAttribute('data-marca'), false);
+        setMenuNotas(false);
+        setPopupNotas(false);
+        location.hash = tipo === 'cita' ? 'mis-citas' : 'cuenta';
+    }
+
     if (notasBtn && notasMenu) {
         notasBtn.addEventListener('click', function (ev) {
             ev.preventDefault();
             ev.stopPropagation();
-            var abrirMenu = notasMenu.hidden;
-            notasMenu.hidden = !abrirMenu;
-            notasBtn.setAttribute('aria-expanded', abrirMenu ? 'true' : 'false');
+            var abierto = notasBtn.getAttribute('aria-expanded') === 'true';
+            setMenuNotas(!abierto);
         });
         document.addEventListener('click', function (ev) {
             var caja = $('cuenta-notas');
-            if (caja && !caja.contains(ev.target)) {
-                notasMenu.hidden = true;
-                notasBtn.setAttribute('aria-expanded', 'false');
-            }
+            if (caja && !caja.contains(ev.target)) setMenuNotas(false);
         });
     }
-    if (notasLista) {
-        notasLista.addEventListener('click', function (ev) {
-            var boton = ev.target.closest('.cuenta-notas-item');
-            if (!boton) return;
-            var tipo = boton.getAttribute('data-tipo');
-            marcarNota(tipo, boton.getAttribute('data-id'), boton.getAttribute('data-marca'), false);
-            if (notasMenu) notasMenu.hidden = true;
-            location.hash = tipo === 'cita' ? 'mis-citas' : 'cuenta';
+    if (notasLista) notasLista.addEventListener('click', alClicNota);
+    if (notasPopupLista) notasPopupLista.addEventListener('click', alClicNota);
+    if (notasVerTodas) {
+        notasVerTodas.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            setPopupNotas(true);
         });
     }
+    if (notasPopupFondo) notasPopupFondo.addEventListener('click', function () { setPopupNotas(false); });
+    if (notasPopupCerrar) notasPopupCerrar.addEventListener('click', function () { setPopupNotas(false); });
+    document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape' && notasPopup && !notasPopup.hidden) setPopupNotas(false);
+    });
     var notasTodas = $('cuenta-notas-todas');
     if (notasTodas) notasTodas.addEventListener('click', function () { marcarNota('', '', '', true); });
 

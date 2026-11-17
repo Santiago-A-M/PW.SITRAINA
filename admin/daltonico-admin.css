@@ -4509,14 +4509,19 @@ body.dark-mode .vista-previa-tarjeta.cerrada .vista-previa-estado {
   box-sizing: border-box;
   padding: 28px 24px 20px;
   border-radius: 18px;
-  border: 1.5px solid #8ec0dc;
+  border: 1.5px solid #f0a06a;
   background: #fffdfb;
+  color: #2b211f;
   box-shadow: 0 18px 40px rgba(28, 22, 20, 0.22);
   opacity: 0;
   transform: translateY(24px) scale(0.96);
   transition:
     opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .guia-visible .guia-fondo {
@@ -4720,10 +4725,14 @@ body.dark-mode .guia-boton {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
 }
 
-body.dark-mode .guia-ventana {
+body.dark-mode .guia-ventana,
+html.dark-mode .guia-ventana,
+html.daltonico.dark-mode .guia-ventana,
+html.daltonico body.dark-mode .guia-ventana {
   background: #2c2320;
-  border-color: #8ec4f6;
+  border-color: #f0a06a;
   color: #f7f2ee;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.42);
 }
 
 body.dark-mode .guia-titulo,
@@ -6448,8 +6457,15 @@ html.daltonico .sit-nota-cita {
 html.daltonico button.admin-alerta-consulta {
   background: #f7fbfe !important;
   color: #0a3d5c !important;
-  border-color: #b7d4ea !important;
-  --alerta-acento: #0072b2;
+  border: 1px solid #b7d4ea !important;
+  --alerta-acento: #7eb6d8;
+  box-shadow: none !important;
+}
+
+html.daltonico button.admin-alerta-consulta:hover,
+html.daltonico button.admin-alerta-consulta:focus-visible {
+  border-color: #0072b2 !important;
+  box-shadow: 0 2px 10px rgba(0, 114, 178, 0.12) !important;
 }
 
 html.daltonico .admin-alerta-tipo,
@@ -6498,8 +6514,17 @@ html.daltonico.dark-mode button.admin-alerta-consulta,
 html.daltonico body.dark-mode button.admin-alerta-consulta {
   background: #16324a !important;
   color: #f4f7fb !important;
-  border-color: #2a6f99 !important;
+  border: 1px solid #2a6f99 !important;
   --alerta-acento: #56b4e9;
+  box-shadow: none !important;
+}
+
+html.daltonico.dark-mode button.admin-alerta-consulta:hover,
+html.daltonico.dark-mode button.admin-alerta-consulta:focus-visible,
+html.daltonico body.dark-mode button.admin-alerta-consulta:hover,
+html.daltonico body.dark-mode button.admin-alerta-consulta:focus-visible {
+  border-color: #56b4e9 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28) !important;
 }
 
 html.daltonico.dark-mode .admin-alerta-tipo,
@@ -6694,4 +6719,44 @@ html.daltonico body.dark-mode :is(#lista-sol-cita, #lista-sol-contacto, #lista-s
   background: #243646 !important;
   color: #d5e4ef !important;
   border-color: #355066 !important;
+}
+/* Documentación: borde del explorador según tono daltónico */
+html.daltonico .docs-explorador .docs-explorador-ventana,
+html.daltonico #popup-docs-form .asistente-ventana {
+  border-color: #8ec0dc;
+}
+
+html.daltonico.dark-mode .docs-explorador .docs-explorador-ventana,
+html.daltonico body.dark-mode .docs-explorador .docs-explorador-ventana,
+html.daltonico.dark-mode #popup-docs-form .asistente-ventana,
+html.daltonico body.dark-mode #popup-docs-form .asistente-ventana {
+  border-color: #8ec4f6;
+}
+
+html.daltonico .docs-vista-switch,
+html.daltonico body .docs-vista-switch,
+body.daltonico .docs-vista-switch,
+.docs-vista-switch {
+  background: #0072b2 !important;
+  box-shadow: 0 6px 14px rgba(10, 61, 92, 0.22) !important;
+  color: #fff !important;
+}
+
+html.daltonico.dark-mode .docs-vista-switch,
+html.daltonico body.dark-mode .docs-vista-switch,
+body.daltonico.dark-mode .docs-vista-switch,
+body.dark-mode .docs-vista-switch {
+  background: #0b4f7a !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.daltonico .docs-ficha-atras:hover,
+html.daltonico .docs-ficha-atras:focus-visible,
+html.daltonico .docs-ficha {
+  border-color: #0072b2;
+}
+
+html.daltonico.dark-mode .docs-ficha,
+html.daltonico body.dark-mode .docs-ficha {
+  border-color: #56b4e9;
 }

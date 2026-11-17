@@ -1,0 +1,107 @@
+[
+  {
+    "id": "informes-1",
+    "titulo": "Junta Directiva",
+    "desc": "Informe de labores",
+    "archivo": "documentos/informe-jd.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-2",
+    "titulo": "Luzmilda Cerdas Rojas",
+    "desc": "Secretaría General",
+    "archivo": "documentos/informe-luzmilda.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-3",
+    "titulo": "Raquel Uribe Berríos",
+    "desc": "Secretaría de la mujer",
+    "archivo": "documentos/informe-raquel.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-4",
+    "titulo": "Carlos González Castro",
+    "desc": "Secretaría de Investigación",
+    "archivo": "documentos/informe-carlos.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-5",
+    "titulo": "Luis Diego González Esquivel",
+    "desc": "Secretaría de Educación y Docencia",
+    "archivo": "documentos/informe-diego.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-6",
+    "titulo": "Walia Baltodano Fernández",
+    "desc": "Secretaría de Actas",
+    "archivo": "documentos/informe-walia.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-7",
+    "titulo": "Aisha Blackwood Barret",
+    "desc": "Vocal 1",
+    "archivo": "documentos/informe-aisha.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-8",
+    "titulo": "Vanessa Monge Castillo",
+    "desc": "Secretaría de Propaganda",
+    "archivo": "documentos/informe-vanesa.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-9",
+    "titulo": "Miguel Vargas Arias",
+    "desc": "Secretaría de Afiliación",
+    "archivo": "documentos/informe-miguel.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-10",
+    "titulo": "Eunice Villalobos Sánchez",
+    "desc": "Secretaría de Finanzas",
+    "archivo": "documentos/informe-eunice.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-11",
+    "titulo": "Cristhofer Hernández Guzmán",
+    "desc": "Vocal 3",
+    "archivo": "documentos/informe-cristhofer.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-12",
+    "titulo": "Eduardo Ortega Rodríguez",
+    "desc": "Secretaría de Conflictos",
+    "archivo": "documentos/informe-eduardo.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-13",
+    "titulo": "Robert Rodríguez Guillén",
+    "desc": "Suplente",
+    "archivo": "documentos/informe-robert.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-14",
+    "titulo": "Maribel García Fonseca",
+    "desc": "Fiscalía",
+    "archivo": "documentos/informe-maribel.pdf",
+    "origen": "base"
+  },
+  {
+    "id": "informes-15",
+    "titulo": "Estado de la Educación Técnica en el INA 2025",
+    "desc": "Informe SITRAINA",
+    "archivo": "documentos/InformeEstadodelaEducaciónTécnicaenelINA2025-SITRAINA.pdf",
+    "origen": "base"
+  }
+]

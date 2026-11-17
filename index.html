@@ -23,10 +23,10 @@
   <meta property="og:description" content="Defendiendo los derechos de los trabajadores del INA. Conoce nuestros servicios y comunicados.">
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
-  <link rel="stylesheet" href="css/estilo.css?v=3.90">
+  <link rel="stylesheet" href="css/estilo.css?v=3.93">
   <link rel="stylesheet" href="css/avisos.css?v=1.9">
   <link rel="stylesheet" href="css/estilo-conve.css?v=1.0">
-  <link rel="stylesheet" href="css/estilo-hoja.css?v=1.6">
+  <link rel="stylesheet" href="css/estilo-hoja.css?v=1.7">
   <link rel="icon" type="image/png" href="img/favicon-logo.png?v=1">
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -55,7 +55,7 @@
 }
 </script>
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.38';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.39';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body class="pagina-inicio pagina-fondo">
@@ -115,7 +115,7 @@
         <div class="cuenta-notas-menu" id="cuenta-notas-menu" hidden>
             <p class="cuenta-notas-titulo">Notificaciones</p>
             <div id="cuenta-notas-lista"></div>
-            <button type="button" class="cuenta-notas-todas" id="cuenta-notas-todas">Marcar todas como leídas</button>
+            <button type="button" class="cuenta-notas-ver-todas" id="cuenta-notas-ver-todas">Todas las notificaciones</button>
         </div>
     </div>
     <button id="toggle-oscuro" class="btn-header" title="Cambiar tono" aria-label="Cambiar tono de la página">
@@ -124,6 +124,18 @@
     </button>
 </div>
 </header>
+
+<div class="cuenta-notas-popup" id="cuenta-notas-popup" hidden>
+    <button type="button" class="cuenta-notas-popup-fondo" id="cuenta-notas-popup-fondo" aria-label="Cerrar notificaciones"></button>
+    <div class="cuenta-notas-popup-caja" role="dialog" aria-modal="true" aria-labelledby="cuenta-notas-popup-titulo">
+        <button type="button" class="cuenta-notas-popup-cerrar" id="cuenta-notas-popup-cerrar" aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        </button>
+        <h2 class="cuenta-notas-popup-titulo" id="cuenta-notas-popup-titulo">Todas las notificaciones</h2>
+        <div class="cuenta-notas-popup-lista" id="cuenta-notas-popup-lista"></div>
+        <button type="button" class="cuenta-notas-todas" id="cuenta-notas-todas">Marcar todas como leídas</button>
+    </div>
+</div>
 
 <div class="vista-publica" id="vista-inicio" data-vista-publica="inicio">
 
@@ -581,91 +593,8 @@
     </a>
     <h2>Documentos legales</h2>
     <p>Leyes y documentos del sindicato y del INA, listos para consultar.</p>
-    <div class="lista-archivos">
-      <article class="archivo-item">
-        <div>
-          <h3>Constitución Política de Costa Rica</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/constitucion_politica_digital_edincr.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Código de Trabajo</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/Codigo_Trabajo_RPL.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Ley General de la Administración Pública</h3>
-          <p>Ley 6227</p>
-        </div>
-        <a class="btn" href="documentos/Administraciónpublica.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Ley contra la Corrupción y el Enriquecimiento Ilícito</h3>
-          <p>Ley 8422</p>
-        </div>
-        <a class="btn" href="documentos/ley-contra-corrupcion.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Ley Marco de Empleo Público</h3>
-          <p>Ley 10159</p>
-        </div>
-        <a class="btn" href="documentos/LEYMARCODEEMPLEOPÚBLICO.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Ley de Fortalecimiento de las Finanzas Públicas</h3>
-          <p>Ley 9635</p>
-        </div>
-        <a class="btn" href="documentos/FORTALECIMIENTODELASFINANZASPÚBLICAS.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Ley de Igualdad de Oportunidades para las Personas con Discapacidad</h3>
-          <p>Ley 7600</p>
-        </div>
-        <a class="btn" href="documentos/leyigualdaddeoportunidades.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Ley Nacional de Emergencias y Prevención de Riesgos</h3>
-          <p>Ley 8488</p>
-        </div>
-        <a class="btn" href="documentos/LEY-8488.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Convención Colectiva</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/convencion_colectiva_INA.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Reglamento Autónomo de Servicios del INA</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/Reglamento_autonomo_servicios_INA.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Estatutos de SITRAINA</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/ESTATUTOSITRA.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Machote de oficios 2026</h3>
-          <p>DOCX</p>
-        </div>
-        <a class="btn" href="documentos/MACHOTE%20OFICIOS.2026.docx" target="_blank" rel="noopener">Abrir</a>
-      </article>
+    <div class="lista-archivos" id="lista-docs-legales">
+      <p class="vacio-bloque">Cargando…</p>
     </div>
 </main>
 <main class="contenedor pagina-documentos seccion-archivos vista-publica" id="vista-informes" data-vista-publica="informes" hidden>
@@ -675,112 +604,8 @@
     </a>
     <h2>Informes de labores</h2>
     <p>Agosto 2024 – Mayo 2026, más el informe de educación técnica 2025.</p>
-    <div class="lista-archivos">
-      <article class="archivo-item">
-        <div>
-          <h3>Junta Directiva</h3>
-          <p>Informe de labores</p>
-        </div>
-        <a class="btn" href="documentos/informe-jd.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Luzmilda Cerdas Rojas</h3>
-          <p>Secretaría General</p>
-        </div>
-        <a class="btn" href="documentos/informe-luzmilda.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Raquel Uribe Berríos</h3>
-          <p>Secretaría de la mujer</p>
-        </div>
-        <a class="btn" href="documentos/informe-raquel.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Carlos González Castro</h3>
-          <p>Secretaría de Investigación</p>
-        </div>
-        <a class="btn" href="documentos/informe-carlos.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Luis Diego González Esquivel</h3>
-          <p>Secretaría de Educación y Docencia</p>
-        </div>
-        <a class="btn" href="documentos/informe-diego.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Walia Baltodano Fernández</h3>
-          <p>Secretaría de Actas</p>
-        </div>
-        <a class="btn" href="documentos/informe-walia.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Aisha Blackwood Barret</h3>
-          <p>Vocal 1</p>
-        </div>
-        <a class="btn" href="documentos/informe-aisha.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Vanessa Monge Castillo</h3>
-          <p>Secretaría de Propaganda</p>
-        </div>
-        <a class="btn" href="documentos/informe-vanesa.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Miguel Vargas Arias</h3>
-          <p>Secretaría de Afiliación</p>
-        </div>
-        <a class="btn" href="documentos/informe-miguel.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Eunice Villalobos Sánchez</h3>
-          <p>Secretaría de Finanzas</p>
-        </div>
-        <a class="btn" href="documentos/informe-eunice.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Cristhofer Hernández Guzmán</h3>
-          <p>Vocal 3</p>
-        </div>
-        <a class="btn" href="documentos/informe-cristhofer.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Eduardo Ortega Rodríguez</h3>
-          <p>Secretaría de Conflictos</p>
-        </div>
-        <a class="btn" href="documentos/informe-eduardo.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Robert Rodríguez Guillén</h3>
-          <p>Suplente</p>
-        </div>
-        <a class="btn" href="documentos/informe-robert.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Maribel García Fonseca</h3>
-          <p>Fiscalía</p>
-        </div>
-        <a class="btn" href="documentos/informe-maribel.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Estado de la Educación Técnica en el INA 2025</h3>
-          <p>Informe SITRAINA</p>
-        </div>
-        <a class="btn" href="documentos/InformeEstadodelaEducaciónTécnicaenelINA2025-SITRAINA.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
+    <div class="lista-archivos" id="lista-docs-informes">
+      <p class="vacio-bloque">Cargando…</p>
     </div>
 </main>
 <main class="contenedor pagina-documentos seccion-archivos vista-publica" id="vista-actas" data-vista-publica="actas" hidden>
@@ -790,35 +615,8 @@
     </a>
     <h2>Actas de asamblea</h2>
     <p>Actas disponibles por año.</p>
-    <div class="lista-archivos">
-      <article class="archivo-item">
-        <div>
-          <h3>Asamblea ordinaria · agosto 2024</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/Asamblea_Ordinaria_2024.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Asamblea extraordinaria · diciembre 2024</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/Asamblea_Extraordinaria2_2024.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Asamblea extraordinaria · mayo 2025</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/Asamblea_Extraordinaria1_2025.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
-      <article class="archivo-item">
-        <div>
-          <h3>Asamblea extraordinaria · diciembre 2025</h3>
-          <p>Documento</p>
-        </div>
-        <a class="btn" href="documentos/Asamblea_Extraordinaria2_2025.pdf" target="_blank" rel="noopener">Abrir</a>
-      </article>
+    <div class="lista-archivos" id="lista-docs-actas">
+      <p class="vacio-bloque">Cargando…</p>
     </div>
 </main>
 <div class="vista-publica" id="vista-efemerides" data-vista-publica="efemerides" hidden>
@@ -829,353 +627,8 @@
 <main class="contenedor-efemerides">
         <h1 class="titulo-seccion">Fechas importantes</h1>
         
-        <div class="lista-efemerides">
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">14 de febrero</span>
-                    <span class="efemeride-titulo">Día de la Amistad</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/san_valentin.jpg" alt="Día de la Amistad" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Una fecha dedicada a resaltar los valores de la fraternidad y el compañerismo entre las personas trabajadoras, fortaleciendo los lazos de unidad sindical y respeto mutuo.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">8 de marzo</span>
-                    <span class="efemeride-titulo">Día Internacional de la Mujer</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/mujer.jpg" alt="Día Internacional de la Mujer" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Conmemoramos la lucha histórica de las mujeres por la igualdad, el reconocimiento y el ejercicio efectivo de sus derechos. En SITRAINA reafirmamos el compromiso con la equidad de género.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">11 de abril</span>
-                    <span class="efemeride-titulo">Día de la Batalla de Rivas</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/batallarivas.png" alt="Batalla de Rivas" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Honramos la gesta heroica de Juan Santamaría y los valientes costarricenses que defendieron nuestra soberanía nacional frente a los filibusteros en la histórica gesta de 1856.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">28 de abril</span>
-                    <span class="efemeride-titulo">Día Mundial de la Salud Ocupacional</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/saludocupacional.png" alt="Salud Ocupacional" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Cada rincón del INA debe ser un lugar donde estudiantes, docentes y trabajadores se sientan protegidos, tranquilos y respetados.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">1 de mayo</span>
-                    <span class="efemeride-titulo">Día Mundial del Trabajador</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/trabajador.jpg" alt="Día del trabajador" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Conmemoramos la lucha histórica de la clase trabajadora. Los derechos que hoy disfrutamos no fueron concesiones, sino conquistas logradas con organización y sacrificio frente a la explotación. Honrar el pasado es defender el presente. Por un salario justo, condiciones dignas y el fin de la precarización laboral: ¡Que viva la lucha de los trabajadores!</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">29 de mayo</span>
-                    <span class="efemeride-titulo">Día Nacional de las Personas con Discapacidad</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/Personascondiscapacidad.png" alt="Día Nacional de las Personas con Discapacidad" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Cada 29 de mayo, Costa Rica conmemora el Día Nacional de las Personas con Discapacidad, de conformidad con el artículo 1 de la Ley N.° 8671, con la finalidad de promover el respeto, la igualdad, los derechos y la comprensión hacia las personas que presentan alguna discapacidad, celebración que se realiza desde el año 2008.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">5 de junio</span>
-                    <span class="efemeride-titulo">Día del ambiente</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/ambiente.jpeg" alt="Día del ambiente" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Junio es el Mes del Ambiente. En SITRAINA nos unimos a la celebración con un firme compromiso por el planeta. Por eso, te invitamos a ser parte activa de todas las actividades que tenemos programadas para este mes. Tu participación es clave para marcar la diferencia y promover el cuidado de nuestro entorno. SITRAINA camina hacia un futuro más sostenible.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">12 de junio</span>
-                    <span class="efemeride-titulo">Cuidemos Nuestros Océanos</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/12dejunio.png" alt="Cuidemos Nuestros Océanos" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Hoy más que nunca, nuestros océanos necesitan de nosotros. SITRAINA te invita a sumarte en la <strong>Semana 2</strong> del Mes del Ambiente a seguir armando la <strong>Frase Secreta (Parte 2)</strong> para participar y ganar fabulosos premios.</p>
-                            <p><strong>Recordatorio:</strong> Ve guardando tus botellas y frascos de vidrio (limpios, sin tapa ni etiquetas). La recolección oficial se realizará el próximo <strong>30 de junio</strong> en las oficinas centrales de SITRAINA. ¡Reduce, reutiliza y disminuye los residuos!</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">12 de junio</span>
-                    <span class="efemeride-titulo">Día Mundial de la Descontaminación Acústica</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/12dejunio-menosruido.png" alt="Día Mundial de la Descontaminación Acústica" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>¡Menos ruido, más bienestar! La <strong>contaminación acústica</strong> afecta directamente nuestra salud, el descanso, la concentración y la calidad de vida. Desde SITRAINA, te invitamos a promover entornos laborales y educativos más saludables reduciendo el ruido innecesario.</p>
-                            <p>Recuerda: un espacio de trabajo y estudio en armonía contribuye a una mejor convivencia para todas las personas. ¡Cuidemos nuestros ambientes!</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">15 de junio</span>
-                    <span class="efemeride-titulo">Sembrando Futuro, Cultivando Vida</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/diadelarbol.png" alt="Sembrando Futuro, Cultivando Vida" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>¡Cuidemos hoy lo que nos da vida mañana! En el marco de la celebración del <strong>Día del Árbol en Costa Rica</strong> y otras efemérides ambientales del mes, te invitamos a sumarte a nuestras iniciativas ecológicas.</p>
-                            <p>¡Participa, aprende y gana! Completa la <strong>Frase Secreta (Parte 3)</strong> que revelamos cada viernes para descubrir el mensaje ambiental de SITRAINA y participa en nuestra gran <strong>Rifa de Plantas</strong>. ¡Pequeñas acciones generan grandes cambios!</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">21 de junio</span>
-                    <span class="efemeride-titulo">Día del Padre</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <video controls preload="metadata">
-                                <source src="efemerides/díadelpadre2026.mp4" type="video/mp4">
-                            </video>
-                        </div>
-                        <div class="evento-texto">
-                            <p>Celebramos con alegría el Día del Padre en SITRAINA. Reconocemos y valoramos el esfuerzo, la dedicación y el amor de todos los padres que forman parte de nuestra gran familia. ¡Feliz día a todos!</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">26 de junio</span>
-                    <span class="efemeride-titulo">Con pequeñas acciones, generamos grandes cambios</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/26dejunio-mesdelambiente.jpeg" alt="Mes del Medio Ambiente - SITRAINA" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>¡Por un INA más verde, sostenible y consciente! Llegamos a la recta final del <strong>Mes del Medio Ambiente</strong>. Proteger nuestro entorno es un esfuerzo diario y una responsabilidad colectiva: recordar acciones esenciales como reducir, reutilizar, reciclar y reforestar es vital para asegurar el bienestar de nuestro planeta.</p>
-                            <p>¡Llegó el momento de completar el desafío! Revelamos la <strong>Frase Secreta (Parte 4 - Final)</strong> para cerrar este mes de conciencia ecológica. Recordamos a toda la gran familia de SITRAINA que quienes entreguen la frase completa participarán en la gran <strong>Rifa de Plantas</strong>. ¡Aportemos nuestro granito de arena por la calidad de vida de toda la sociedad!</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">30 de junio</span>
-                    <span class="efemeride-titulo">Canje vidrio x vidrio</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/vidrioxvidrio.jpg" alt="Canje Vidrio x Vidrio" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>¡Te invitamos a participar en nuestra jornada ecológica! Este martes 30 de junio, únete a la iniciativa <strong>Vidrio x Vidrio</strong> en la Sede Central del INA, Uruca (Oficinas de SITRAINA), de 9:00 a.m. a 2:00 p.m.</p>
-                            <p>Recuerda: ¡Por cada 5 kilos de vidrio para reciclar, recibirás un vaso! *Hasta terminar existencias.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">15 de julio</span>
-                    <span class="efemeride-titulo">Día Nacional de la Educación Técnica y Formación Profesional</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/diaeducacióntécnica.jpeg" alt="Día Nacional de la Educación Técnica" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Este miércoles 15 de julio, celebramos el Día Nacional de la Educación Técnica y Formación Profesional. Desde <strong>SITRAINA</strong>, expresamos nuestro más profundo reconocimiento y agradecimiento a todas las personas trabajadoras del <strong>Instituto Nacional de Aprendizaje (INA)</strong>.</p>
-                            <p>Con compromiso, vocación y excelencia, ustedes hacen posible que la formación técnica y profesional transforme vidas, fortalezca a las familias e impulse el desarrollo económico y social de Costa Rica.</p>
-                            <p>Formación hoy, desarrollo siempre.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">25 de julio</span>
-                    <span class="efemeride-titulo">Anexión del Partido de Nicoya a Guanacaste</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <img src="efemerides/25dejulio.jpeg" alt="Anexión del Partido de Nicoya" class="img-zoomable">
-                        </div>
-                        <div class="evento-texto">
-                            <p>Este 25 de julio celebramos el Día de la <strong>Anexión del Partido de Nicoya</strong>. Un día que nos recuerda nuestra historia, nuestra identidad y el orgullo de ser guanacastecos.</p>
-                            <p>Desde <strong>SITRAINA</strong> conmemoramos 202 años de historia y unidad que fortalecen la identidad cultural y el desarrollo de nuestro país.</p>
-                            <p>¡De la patria por nuestra voluntad!</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">15 de agosto</span>
-                    <span class="efemeride-titulo">Día de la Madre</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <video controls preload="metadata">
-                                <source src="efemerides/diadelamadre.mp4" type="video/mp4">
-                            </video>
-                        </div>
-                        <div class="evento-texto">
-                            <p>En SITRAINA conmemoramos y celebramos con orgullo el Día de la Madre. Reconocemos el valioso rol, la dedicación y el amor incondicional que las madres aportan cada día a nuestra institución. ¡Feliz día a todas!</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">9 de setiembre</span>
-                    <span class="efemeride-titulo">Día de la Niñez</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <video controls preload="metadata">
-                                <source src="efemerides/Díadelniño.mp4" type="video/mp4">
-                            </video>
-                        </div>
-                        <div class="evento-texto">
-                            <p>Que los años nos traigan sabiduría, pero que jamás nos quiten la capacidad de asombrarnos, de soñar sin límites y de mirar el mundo con la curiosidad de nuestros primeros años. Crecer y asumir responsabilidades no significa apagar la chispa que nos impulsa a explorar; significa usar nuestra experiencia para seguir construyendo, transformando realidades y creando cosas nuevas con la misma pasión, imaginación y valentía que teníamos de niños.</p>
-                            <p>Hoy recordamos que la innovación y la capacidad de superar desafíos nacen de ese espíritu inquieto que no teme intentar algo por primera vez.</p>
-                            <p><strong>SITRAINA te desea un feliz Día del Niño y de la Niña.</strong> Sigamos creando, aprendiendo y construyendo juntos un futuro lleno de posibilidades.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="efemeride">
-                <button type="button" class="efemeride-resumen" aria-expanded="false">
-                    <span class="efemeride-fecha">15 de setiembre</span>
-                    <span class="efemeride-titulo">Día de la Independencia</span>
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="efemeride-panel">
-                    <div class="efemeride-cuerpo">
-                        <div class="efemeride-media">
-                            <video controls preload="metadata">
-                                <source src="efemerides/setiembre1.mp4" type="video/mp4">
-                            </video>
-                        </div>
-                        <div class="evento-texto">
-                            <p>Celebrar nuestra independencia es rendir homenaje a la libertad, la paz y la democracia que definen a Costa Rica. Es recordar que la patria no solo se contempla, sino que se construye día a día con esfuerzo, ética, justicia social y el trabajo con el que aportamos al desarrollo de nuestro país.</p>
-                            <p>Como organización comprometida con la clase trabajadora y la educación, reafirmamos nuestra misión de seguir impulsando oportunidades, defendiendo derechos y fortaleciendo las bases que garantizan un futuro más justo, solidario y próspero para todas y todos.</p>
-                            <p><strong>SITRAINA les desea un feliz Día de la Independencia.</strong> Sigamos haciendo patria juntos con orgullo, trabajo y esperanza.</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
+        <div class="lista-efemerides" id="lista-docs-efemerides">
+            <p class="vacio-bloque">Cargando…</p>
         </div>
 
     </main>
@@ -1194,34 +647,9 @@
   </div>
 </div>
 <main class="contenedor-galeria">
-  <div class="grid-videos">
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 11" data-src="hojamier/Videos/Hojadelmiércoles-15-04-26.mp4" data-desc="Edición del miércoles 15 de abril.">Volumen 11</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 12" data-src="hojamier/Videos/Hojadelmiércoles22-4-26.mp4" data-desc="Edición del miércoles 22 de abril.">Volumen 12</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 13" data-src="hojamier/Videos/Hojadelmiércoles29-4-26.mp4" data-desc="Edición del miércoles 29 de abril.">Volumen 13</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 14" data-src="hojamier/Videos/hojadelmiércoles6-5-26.mp4" data-desc="Edición del miércoles 6 de mayo.">Volumen 14</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 15" data-src="hojamier/Videos/Hojadelmiércoles13-5-26.mp4" data-desc="Edición del miércoles 13 de mayo.">Volumen 15</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 17" data-src="hojamier/Videos/Hojadelmiércoles-27-05-26.mp4" data-desc="Edición del miércoles 27 de mayo.">Volumen 17</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 18" data-src="hojamier/Videos/Hojadelmiércoles3-6-26.mp4" data-desc="Edición del miércoles 3 de junio.">Volumen 18</button>
-    <button type="button" class="hoja-titulo" data-titulo="Edición Especial" data-src="hojamier/Videos/Mesambiente.mp4" data-desc="Edición especial del Mes del Ambiente.">Edición Especial</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 19" data-src="hojamier/Videos/Hojadelmiércoles10-6-26.mp4" data-desc="Edición del miércoles 10 de junio.">Volumen 19</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 20" data-src="hojamier/Videos/Hojadelmiércoles-17-06-26.mp4" data-desc="Edición del miércoles 17 de junio, con el informe del estado de la educación técnica en el INA." data-pdf="documentos/InformeEstadodelaEducaciónTécnicaenelINA2025-SITRAINA.pdf" data-pdf-nombre="Descargar: Estado de la Educación Técnica en el INA">Volumen 20</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 21" data-src="hojamier/Videos/Hojadelmiércoles24-6-26.mp4" data-desc="Edición del miércoles 24 de junio.">Volumen 21</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 22" data-src="hojamier/Videos/hojadelmiercoles1-7-26.mp4" data-desc="Edición del miércoles 1 de julio.">Volumen 22</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 23" data-src="hojamier/Videos/Hojadelmiércoles8-7-26.mp4" data-desc="Edición del miércoles 8 de julio.">Volumen 23</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 24" data-src="hojamier/Videos/Hojadelmiércoles15-7-26.mp4" data-desc="Edición del miércoles 15 de julio.">Volumen 24</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 25" data-src="hojamier/Videos/Hojadelmiércoles22-7-26.mp4" data-desc="Edición del miércoles 22 de julio.">Volumen 25</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 26" data-src="hojamier/Videos/Hojadelmiércoles29-7-26.mp4" data-desc="Edición del miércoles 29 de julio.">Volumen 26</button>
-    <button type="button" class="hoja-titulo" data-titulo="Victorias que protegen al INA" data-src="hojamier/Videos/Victorias2026-07-31.mp4" data-desc="Publicación del viernes 31 de julio.">Victorias que protegen al INA</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 27" data-src="hojamier/Videos/Hojadelmiércoles5-8-26.mp4" data-desc="Edición del miércoles 5 de agosto.">Volumen 27</button>
-    <button type="button" class="hoja-titulo" data-titulo="Victorias que protegen al INA" data-src="hojamier/Videos/Victorias2026-08-11.mp4" data-desc="Publicación del martes 11 de agosto.">Victorias que protegen al INA</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 28" data-src="hojamier/Videos/Hojadelmiércoles12-8-26.mp4" data-desc="Edición del miércoles 12 de agosto.">Volumen 28</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 29" data-src="hojamier/Videos/Hojadelmiercoles19-08-2026.mp4" data-desc="Edición del miércoles 19 de agosto.">Volumen 29</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 30" data-src="hojamier/Videos/Hojadelmiércoles26-8-26.mp4" data-desc="Edición del miércoles 26 de agosto.">Volumen 30</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 31" data-src="hojamier/Videos/Hojadelmiércoles2-9-26.mp4" data-desc="Edición del miércoles 2 de setiembre.">Volumen 31</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 32" data-src="hojamier/Videos/Hojadelmiércoles9-9-26.mp4" data-desc="Edición del miércoles 9 de setiembre.">Volumen 32</button>
-    <button type="button" class="hoja-titulo" data-titulo="Volumen 33" data-src="hojamier/Videos/hojadelmiércoles16-09-2026.mp4" data-desc="Edición del miércoles 16 de setiembre.">Volumen 33</button>
+  <div class="grid-videos" id="hoja-grid" aria-live="polite">
+    <p class="hoja-cargando">Cargando ediciones…</p>
   </div>
-
 </main>
 </div>
 <div class="vista-publica" id="vista-convenios" data-vista-publica="convenios" hidden>
@@ -1241,252 +669,9 @@
         <button class="btn-categoria" onclick="filtrar('turismo')">Turismo</button>
     </div>
 
-    <div class="grid-revista">
-        
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (1).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (2).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (3).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (4).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (5).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (6).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (7).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (8).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (9).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Asembis/asembis (10).jpg" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Asembis</h3>
-                <p>Requiere código de afiliación</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Zhen/Zhen (1).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Clinica Zhen</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Zhen/Zhen (2).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Clinica Zhen</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-       <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Zhen/Zhen (3).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Clinica Zhen</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-               <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Zhen/Zhen (4).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Clinica Zhen</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-               <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Zhen/Zhen (5).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Clinica Zhen</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/Zhen/Zhen (6).png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Clinica Zhen</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-
-        <div class="tarjeta-pagina" data-category="salud">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/SmartFit/Smartfit.png" loading="lazy" alt="Salud" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>SmartFit</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-  
-        <div class="tarjeta-pagina" data-category="educacion">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/ucienciasarte/ucienciaarte.png" loading="lazy" alt="educacion" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>U. Ciencias y Artes</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-                <div class="tarjeta-pagina" data-category="educacion">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/ufidelitas/ufidelitas.png" loading="lazy"   alt="educacion" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>U. Fidélitas</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-
-                <div class="tarjeta-pagina" data-category="educacion">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/UStaLucia/sta.png" loading="lazy" alt="educacion" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>U. Sta.Lucía</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-                        <div class="tarjeta-pagina" data-category="turismo">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/bestwester/best.png" loading="lazy" alt="Turismo" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Best Wester</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-        <div class="tarjeta-pagina" data-category="turismo">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/ponderosa/ponderosa.png" loading="lazy" alt="Turismo" onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Ponderosa</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-        <div class="tarjeta-pagina" data-category="turismo">
-            <div class="foto-convenio">
-                <img src="convenios/img-conv/termomania/thermo.png" loading="lazy" alt="Turismo"  onclick="abrirImagen(this.src)">
-            </div>
-            <div class="pie-pagina">
-                <h3>Thermomanía</h3>
-                <p>Requiere identificación como afiliado</p>
-            </div>
-        </div>
-
-
-
+    <div class="grid-revista" id="lista-docs-convenios">
+        <p class="vacio-bloque">Cargando…</p>
+    </div>
 </main>
 </div>
 <main class="contenedor pagina-contacto vista-publica" id="vista-contacto" data-vista-publica="contacto" hidden>
@@ -1748,13 +933,14 @@
     <img id="imagen-maximizada" src="" alt="Convenio Ampliado">
 </div>
 <script src="js/avisos.js?v=1.11"></script>
-<script src="js/script.js?v=3.44"></script>
+<script src="js/script.js?v=3.46"></script>
 <script src="js/cita-calendario.js?v=1.16"></script>
 <script src="js/vistas-publicas.js?v=1.5"></script>
 <script src="js/guia-formsubmit.js?v=1.8"></script>
-<script src="js/cuenta.js?v=1.16"></script>
+<script src="js/cuenta.js?v=1.17"></script>
 <script src="js/script-conve.js"></script>
-<script src="js/script-hoja.js?v=1.1"></script>
+<script src="js/script-documentos.js?v=1.0"></script>
+<script src="js/script-hoja.js?v=1.2"></script>
 <script>
 /* Arma el PDF de la boleta en el navegador y lo adjunta al envío. */
 (function () {
