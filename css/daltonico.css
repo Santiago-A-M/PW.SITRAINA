@@ -875,6 +875,7 @@ body.dark-mode .labor-popup .directiva-popup-panel img {
   margin: 10% auto;
   padding: 30px;
   border-radius: 10px;
+  border: 1.5px solid #8ec0dc;
   width: 90%;
   max-width: 500px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -1635,6 +1636,7 @@ body.dark-mode .nota-afiliacion p {
 .dark-mode .modal-contenido {
   background-color: var(--color-fondo-tarjeta-modo) !important;
   color: var(--color-texto-claro-modo) !important;
+  border-color: #8ec4f6 !important;
 }
 
 .dark-mode .modal h2 {
@@ -2914,11 +2916,16 @@ body.dark-mode .evento-contenido,
 body.dark-mode .lawyer-card,
 body.dark-mode .appointment-cta,
 body.dark-mode .seccion-info-contacto,
-body.dark-mode form,
-body.dark-mode .modal-contenido {
+body.dark-mode form {
   background-color: #2c2320 !important;
   color: #f7f2ee !important;
   border-color: #4a3d38 !important;
+}
+
+body.dark-mode .modal-contenido {
+  background-color: #2c2320 !important;
+  color: #f7f2ee !important;
+  border-color: #8ec4f6 !important;
 }
 
 body.dark-mode h1,
@@ -4205,6 +4212,7 @@ body.directiva-abierta > :not(.directiva-popup):not(script) {
   overflow: auto;
   padding: 36px 28px 28px;
   border-radius: 16px;
+  border: 1.5px solid #8ec0dc;
   background: #fff;
   color: #2b211f;
   text-align: center;
@@ -4290,11 +4298,16 @@ body.dark-mode .directiva-popup-info {
   color: #f0e8e2 !important;
 }
 
-body.dark-mode .directivo-card,
-body.dark-mode .directiva-popup-panel {
+body.dark-mode .directivo-card {
   background: #2c2320 !important;
   color: #f7f2ee !important;
   border-color: #4a3d38 !important;
+}
+
+body.dark-mode .directiva-popup-panel {
+  background: #2c2320 !important;
+  color: #f7f2ee !important;
+  border-color: #8ec4f6 !important;
 }
 
 body.dark-mode .directivo-card strong,
@@ -4696,7 +4709,7 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   box-sizing: border-box;
   padding: 28px 24px 20px;
   border-radius: 22px;
-  border: 2px solid #8ec0dc;
+  border: 1.5px solid #8ec0dc;
   background: #fffdfb;
   box-shadow: 0 24px 60px rgba(28, 22, 20, 0.3);
   opacity: 0;
@@ -4937,7 +4950,7 @@ body.dark-mode .cita-guia-abrir-inline:hover {
 
 body.dark-mode .guia-cita-ventana {
   background: #2c2320;
-  border-color: #8ec0dc;
+  border-color: #8ec4f6;
   color: #f7f2ee;
 }
 
@@ -5397,7 +5410,7 @@ body.dark-mode .cita-hora.elegida {
   background: #fffdfb;
   color: #2b211f;
   border-radius: 16px;
-  border-top: 6px solid #0072b2;
+  border: 1.5px solid #8ec0dc;
   padding: 28px 26px 24px;
   box-shadow: 0 18px 40px rgba(43, 33, 31, 0.28);
 }
@@ -5479,6 +5492,7 @@ body.cita-bloqueada {
 body.dark-mode .cita-puerta-panel {
   background: #2c2320;
   color: #f7f2ee;
+  border-color: #8ec4f6;
 }
 
 body.dark-mode .cita-puerta-panel h2 {
@@ -6660,6 +6674,20 @@ html.daltonico .hoja-cerrar {
   color: #0a3d5c;
   background: #fff;
 }
+html.daltonico .hoja-popup-panel {
+  border: 1.5px solid #8ec0dc;
+}
+html.daltonico body.dark-mode .hoja-popup-panel,
+html.daltonico.dark-mode .hoja-popup-panel {
+  border-color: #8ec4f6;
+}
+html.daltonico .bandeja-popup-caja {
+  border: 1.5px solid #8ec0dc;
+}
+html.daltonico body.dark-mode .bandeja-popup-caja,
+html.daltonico.dark-mode .bandeja-popup-caja {
+  border-color: #8ec4f6;
+}
 html.daltonico .hoja-popup-panel h2 { color: #0a3d5c; }
 html.daltonico .btn-copiar,
 html.daltonico .btn-descarga { background: #0072b2; color: #fff !important; }
@@ -6712,9 +6740,9 @@ html.daltonico a:hover,
 html.daltonico a:focus-visible {
   color: #084066;
 }
-html.daltonico header a,
-html.daltonico header a:hover,
-html.daltonico header a:focus-visible,
+html.daltonico header a:not(.nav-opciones-item),
+html.daltonico header a:not(.nav-opciones-item):hover,
+html.daltonico header a:not(.nav-opciones-item):focus-visible,
 html.daltonico .navbar a,
 html.daltonico .navbar a:hover,
 html.daltonico .navbar a.active,
@@ -6731,6 +6759,26 @@ html.daltonico .footer-franja a,
 html.daltonico .dato-texto a.valor,
 html.daltonico a.btn-atras {
   color: #ffffff !important;
+}
+html.daltonico .nav-opciones-menu a.nav-opciones-item,
+html.daltonico .nav-opciones-menu a.nav-opciones-item:visited {
+  color: #2b211f !important;
+}
+html.daltonico .nav-opciones-menu a.nav-opciones-item:hover,
+html.daltonico .nav-opciones-menu a.nav-opciones-item:focus-visible {
+  color: #0a3d5c !important;
+}
+html.daltonico.dark-mode .nav-opciones-menu a.nav-opciones-item,
+html.daltonico.dark-mode .nav-opciones-menu a.nav-opciones-item:visited,
+html.daltonico body.dark-mode .nav-opciones-menu a.nav-opciones-item,
+html.daltonico body.dark-mode .nav-opciones-menu a.nav-opciones-item:visited {
+  color: #f7f2ee !important;
+}
+html.daltonico.dark-mode .nav-opciones-menu a.nav-opciones-item:hover,
+html.daltonico.dark-mode .nav-opciones-menu a.nav-opciones-item:focus-visible,
+html.daltonico body.dark-mode .nav-opciones-menu a.nav-opciones-item:hover,
+html.daltonico body.dark-mode .nav-opciones-menu a.nav-opciones-item:focus-visible {
+  color: #9ad0f5 !important;
 }
 html.daltonico header.header .logo-atras-icono,
 html.daltonico body.con-atras-docs header.header .logo-atras-icono,
@@ -7706,4 +7754,31 @@ html.daltonico.dark-mode .reserva-muestra.reserva-ocupada {
 .formulario-ya-afiliado input[type="date"]::-webkit-datetime-edit-text {
   text-decoration: line-through;
   text-decoration-thickness: 2px;
+}
+/* Textos que seguian en rojo en daltonico (cuenta, bandeja, notas). */
+html.daltonico .cuenta-aviso-error,
+html.daltonico .bandeja-icono-rechazada,
+html.daltonico .cuenta-notas-cuenta,
+html.daltonico .legal-notas-cuenta {
+  color: #0a3d5c !important;
+}
+
+html.daltonico .bandeja-icono-rechazada {
+  background: #e7f2fc;
+}
+
+html.daltonico.dark-mode .cuenta-aviso-error,
+html.daltonico body.dark-mode .cuenta-aviso-error,
+html.daltonico.dark-mode .bandeja-icono-rechazada,
+html.daltonico body.dark-mode .bandeja-icono-rechazada,
+html.daltonico.dark-mode .cuenta-notas-cuenta,
+html.daltonico body.dark-mode .cuenta-notas-cuenta,
+html.daltonico.dark-mode .legal-notas-cuenta,
+html.daltonico body.dark-mode .legal-notas-cuenta {
+  color: #b3dff5 !important;
+}
+
+html.daltonico.dark-mode .bandeja-icono-rechazada,
+html.daltonico body.dark-mode .bandeja-icono-rechazada {
+  background: #24384f;
 }

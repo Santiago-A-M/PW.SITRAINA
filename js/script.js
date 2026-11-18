@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const hojaDaltonico = () => {
-        var href = "css/daltonico.css?v=1.39";
+        var href = "css/daltonico.css?v=1.42";
         try {
             var links = document.getElementsByTagName("link");
             for (var i = 0; i < links.length; i++) {
                 var h = links[i].getAttribute("href") || "";
                 if (h.indexOf("estilo.css") !== -1) {
-                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.39");
+                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.42");
                     break;
                 }
             }

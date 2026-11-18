@@ -38,10 +38,10 @@
     body.pagina-panel { background: transparent; }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.87">
+  <link rel="stylesheet" href="admin.css?v=6.95">
   <link rel="stylesheet" href="../css/avisos.css?v=1.9">
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.57';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.62';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body class="pagina-panel {{rol-clase}}">
@@ -373,7 +373,7 @@
       <button type="button" class="asistente-cerrar" id="cerrar-afiliado" aria-label="Cerrar">&times;</button>
       <h2 class="asistente-titulo" id="afiliado-titulo">Añadir afiliado</h2>
       <p class="asistente-ayuda">Estos tres datos tienen que ser los mismos que la persona usa cuando pide cita.</p>
-      <form id="form-afiliado">
+      <form id="form-afiliado" enctype="multipart/form-data">
         <label class="asistente-label" for="afiliado-cedula">Cédula
           <input id="afiliado-cedula" name="cedula" inputmode="numeric" maxlength="9" autocomplete="off" required>
         </label>
@@ -383,6 +383,10 @@
         <label class="asistente-label" for="afiliado-correo">Correo
           <input id="afiliado-correo" name="correo" type="email" maxlength="120" autocomplete="email" required>
         </label>
+        <label class="asistente-label" for="afiliado-foto">Foto (opcional)
+          <input id="afiliado-foto" name="foto" type="file" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif">
+        </label>
+        <p class="asistente-nota">JPG, PNG, WEBP o GIF. Máximo 5 MB.</p>
         <div class="asistente-acciones">
           <button type="submit" class="btn-atajo" id="guardar-afiliado">Guardar</button>
         </div>
@@ -575,8 +579,8 @@
   <div id="lista-mes" hidden></div>
   <script src="../js/avisos.js?v=1.5"></script>
   <script src="agenda.js?v=4.16"></script>
-  <script src="solicitudes.js?v=4.33"></script>
-  <script src="documentacion.js?v=1.6"></script>
+  <script src="solicitudes.js?v=4.34"></script>
+  <script src="documentacion.js?v=1.9"></script>
   <script src="tono.js?v=3.18"></script>
   <script src="sitrabot-admin.js?v=4.7"></script>
 

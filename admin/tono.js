@@ -12,13 +12,13 @@
     };
 
     var hojaDaltonicoAdmin = function () {
-        var href = 'daltonico-admin.css?v=1.57';
+        var href = 'daltonico-admin.css?v=1.62';
         try {
             var scripts = document.getElementsByTagName('script');
             for (var i = 0; i < scripts.length; i++) {
                 var src = scripts[i].src || '';
                 if (src.indexOf('tono.js') !== -1) {
-                    href = src.replace(/tono\.js.*$/, 'daltonico-admin.css?v=1.57');
+                    href = src.replace(/tono\.js.*$/, 'daltonico-admin.css?v=1.62');
                     break;
                 }
             }

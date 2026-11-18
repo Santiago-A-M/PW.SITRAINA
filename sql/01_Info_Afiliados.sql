@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS Cuenta (
   cedula CHAR(9) NOT NULL,
   nombre_completo VARCHAR(120) NOT NULL,
   correo VARCHAR(120) NOT NULL,
+  foto VARCHAR(255) NULL DEFAULT NULL,
   creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uk_cuenta_cedula (cedula),

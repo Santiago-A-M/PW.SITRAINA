@@ -80,8 +80,8 @@ $sesionTexto = !empty($_SESSION['admin_cuenta']) ? (string) $_SESSION['admin_cue
     })();
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../admin.css?v=6.79">
-  <link rel="stylesheet" href="legal.css?v=9">
+  <link rel="stylesheet" href="../admin.css?v=6.95">
+  <link rel="stylesheet" href="legal.css?v=10">
   <script>
     (function () {
       try {
@@ -89,7 +89,7 @@ $sesionTexto = !empty($_SESSION['admin_cuenta']) ? (string) $_SESSION['admin_cue
         var link = document.createElement('link');
         link.id = 'daltonico-css';
         link.rel = 'stylesheet';
-        link.href = '../daltonico-admin.css?v=1.54';
+        link.href = '../daltonico-admin.css?v=1.62';
         document.head.appendChild(link);
       } catch (e) {}
     })();

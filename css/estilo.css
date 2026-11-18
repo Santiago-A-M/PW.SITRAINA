@@ -877,6 +877,7 @@ body.dark-mode .labor-popup .directiva-popup-panel img {
   margin: 10% auto;
   padding: 30px;
   border-radius: 10px;
+  border: 1.5px solid #b7cbe4;
   width: 90%;
   max-width: 500px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -1642,6 +1643,7 @@ body.dark-mode .nota-afiliacion p {
 .dark-mode .modal-contenido {
   background-color: var(--color-fondo-tarjeta-modo) !important;
   color: var(--color-texto-claro-modo) !important;
+  border-color: #6d93b8 !important;
 }
 
 .dark-mode .modal h2 {
@@ -2921,11 +2923,16 @@ body.dark-mode .evento-contenido,
 body.dark-mode .lawyer-card,
 body.dark-mode .appointment-cta,
 body.dark-mode .seccion-info-contacto,
-body.dark-mode form,
-body.dark-mode .modal-contenido {
+body.dark-mode form {
   background-color: #2c2320 !important;
   color: #f7f2ee !important;
   border-color: #4a3d38 !important;
+}
+
+body.dark-mode .modal-contenido {
+  background-color: #2c2320 !important;
+  color: #f7f2ee !important;
+  border-color: #6d93b8 !important;
 }
 
 body.dark-mode h1,
@@ -4227,6 +4234,7 @@ body.directiva-abierta > :not(.directiva-popup):not(script) {
   overflow: auto;
   padding: 36px 28px 28px;
   border-radius: 16px;
+  border: 1.5px solid #b7cbe4;
   background: #fff;
   color: #2b211f;
   text-align: center;
@@ -4312,11 +4320,16 @@ body.dark-mode .directiva-popup-info {
   color: #f0e8e2 !important;
 }
 
-body.dark-mode .directivo-card,
-body.dark-mode .directiva-popup-panel {
+body.dark-mode .directivo-card {
   background: #2c2320 !important;
   color: #f7f2ee !important;
   border-color: #4a3d38 !important;
+}
+
+body.dark-mode .directiva-popup-panel {
+  background: #2c2320 !important;
+  color: #f7f2ee !important;
+  border-color: #6d93b8 !important;
 }
 
 body.dark-mode .directivo-card strong,
@@ -5193,7 +5206,7 @@ body[data-guia-formsubmit="afiliacion"] section.afiliacion,
   box-sizing: border-box;
   padding: 28px 24px 20px;
   border-radius: 22px;
-  border: 2px solid #e3a4a7;
+  border: 1.5px solid #e4c48a;
   background: #fffdfb;
   box-shadow: 0 24px 60px rgba(28, 22, 20, 0.3);
   opacity: 0;
@@ -5434,7 +5447,7 @@ body.dark-mode .cita-guia-abrir-inline:hover {
 
 body.dark-mode .guia-cita-ventana {
   background: #2c2320;
-  border-color: #e3a4a7;
+  border-color: #c4922a;
   color: #f7f2ee;
 }
 
@@ -5894,7 +5907,7 @@ body.dark-mode .cita-hora.elegida {
   background: #fffdfb;
   color: #2b211f;
   border-radius: 16px;
-  border-top: 6px solid #c81d25;
+  border: 1.5px solid #b7cbe4;
   padding: 28px 26px 24px;
   box-shadow: 0 18px 40px rgba(43, 33, 31, 0.28);
 }
@@ -6002,6 +6015,7 @@ body.cita-bloqueada {
 body.dark-mode .cita-puerta-panel {
   background: #2c2320;
   color: #f7f2ee;
+  border-color: #6d93b8;
 }
 
 body.dark-mode .cita-puerta-panel h2 {
@@ -7203,9 +7217,9 @@ html.daltonico a:hover,
 html.daltonico a:focus-visible {
   color: #084066;
 }
-html.daltonico header a,
-html.daltonico header a:hover,
-html.daltonico header a:focus-visible,
+html.daltonico header a:not(.nav-opciones-item),
+html.daltonico header a:not(.nav-opciones-item):hover,
+html.daltonico header a:not(.nav-opciones-item):focus-visible,
 html.daltonico .navbar a,
 html.daltonico .navbar a:hover,
 html.daltonico .navbar a:focus-visible,
@@ -7221,6 +7235,26 @@ html.daltonico .dato-texto a.valor:hover,
 html.daltonico a.btn-atras,
 html.daltonico a.btn-atras:hover {
   color: #ffffff !important;
+}
+html.daltonico .nav-opciones-menu a.nav-opciones-item,
+html.daltonico .nav-opciones-menu a.nav-opciones-item:visited {
+  color: #2b211f !important;
+}
+html.daltonico .nav-opciones-menu a.nav-opciones-item:hover,
+html.daltonico .nav-opciones-menu a.nav-opciones-item:focus-visible {
+  color: #0a3d5c !important;
+}
+html.daltonico.dark-mode .nav-opciones-menu a.nav-opciones-item,
+html.daltonico.dark-mode .nav-opciones-menu a.nav-opciones-item:visited,
+html.daltonico body.dark-mode .nav-opciones-menu a.nav-opciones-item,
+html.daltonico body.dark-mode .nav-opciones-menu a.nav-opciones-item:visited {
+  color: #f7f2ee !important;
+}
+html.daltonico.dark-mode .nav-opciones-menu a.nav-opciones-item:hover,
+html.daltonico.dark-mode .nav-opciones-menu a.nav-opciones-item:focus-visible,
+html.daltonico body.dark-mode .nav-opciones-menu a.nav-opciones-item:hover,
+html.daltonico body.dark-mode .nav-opciones-menu a.nav-opciones-item:focus-visible {
+  color: #9ad0f5 !important;
 }
 html.daltonico .logo img {
   border-color: #0a3d5c;
@@ -7847,6 +7881,7 @@ body.dark-mode .bandeja-detalle {
   overflow: auto;
   padding: 28px 28px 22px;
   border-radius: 20px;
+  border: 1.5px solid #b7cbe4;
   background: #fff;
   color: #16324f;
   box-shadow: 0 24px 60px rgba(18, 40, 72, 0.28);
@@ -7906,6 +7941,7 @@ body.dark-mode .bandeja-detalle {
 body.dark-mode .bandeja-popup-caja {
   background: #1b2836;
   color: #e8f4fc;
+  border-color: #6d93b8;
 }
 
 body.dark-mode .bandeja-popup-cerrar {

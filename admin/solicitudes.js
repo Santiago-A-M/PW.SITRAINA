@@ -1021,6 +1021,20 @@
         });
     }
 
+    function urlFotoAfiliado(ruta) {
+        var limpia = String(ruta || '').replace(/^\//, '');
+        if (!limpia || limpia.indexOf('..') !== -1) return '';
+        return '../' + limpia;
+    }
+
+    function htmlIconoAfiliado(fila) {
+        var url = urlFotoAfiliado(fila && fila.foto);
+        if (url) {
+            return '<span class="afiliado-icono afiliado-icono-foto" aria-hidden="true"><img src="' + escapar(url) + '" alt=""></span>';
+        }
+        return '<span class="afiliado-icono" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.5" fill="currentColor"/><path fill="currentColor" d="M5 19.4c.5-3.5 3.2-5.3 7-5.3s6.5 1.8 7 5.3c.1.4-.2.8-.6.8H5.6c-.4 0-.7-.4-.6-.8z"/></svg></span>';
+    }
+
     function pintarAfiliados() {
         if (!listaAfiliados) return;
         var todas = datos.afiliados || [];
@@ -1036,19 +1050,47 @@
                 : 'Todavía no hay afiliados. Usá Añadir afiliado para registrar cédula, nombre y correo.') + '</p>';
             return;
         }
-        var icono = '<span class="afiliado-icono" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.5" fill="currentColor"/><path fill="currentColor" d="M5 19.4c.5-3.5 3.2-5.3 7-5.3s6.5 1.8 7 5.3c.1.4-.2.8-.6.8H5.6c-.4 0-.7-.4-.6-.8z"/></svg></span>';
         var html = '<ul class="rejilla-casillas sol-rejilla">';
         filas.forEach(function (fila) {
             var id = String(fila.id);
             var nombre = fila.nombre_completo || 'Sin nombre';
             html += '<li class="sol-item afiliado-casilla" data-sol-id="' + escapar(id) + '" data-sol-tipo="afiliados">';
             html += '<button type="button" class="sol-tarjeta" aria-label="' + escapar(nombre) + '">';
-            html += icono;
+            html += htmlIconoAfiliado(fila);
             html += '<span class="afiliado-nombre">' + escapar(nombre) + '</span>';
             html += '</button></li>';
         });
         html += '</ul>';
         listaAfiliados.innerHTML = html;
+    }
+
+    function guardarFotoAfiliado(id, archivo) {
+        var idNum = parseInt(id, 10);
+        if (!(idNum > 0) || !archivo || guardandoAfiliado) return;
+        guardandoAfiliado = true;
+        var cuerpo = new FormData();
+        cuerpo.append('token', token());
+        cuerpo.append('accion', 'actualizar_foto_afiliado');
+        cuerpo.append('id', String(idNum));
+        cuerpo.append('foto', archivo);
+        fetch('solicitudes.php', { method: 'POST', body: cuerpo, credentials: 'same-origin' })
+            .then(function (r) { return r.json().catch(function () { return null; }); })
+            .then(function (json) {
+                guardandoAfiliado = false;
+                if (!json || !json.ok) {
+                    throw new Error((json && json.mensaje) || 'No se pudo guardar la foto.');
+                }
+                (datos.afiliados || []).forEach(function (fila) {
+                    if (parseInt(fila.id, 10) === idNum) fila.foto = json.foto || '';
+                });
+                pintarAfiliados();
+                abrirFicha('afiliados', idNum);
+                mostrarAviso(json.mensaje || 'Foto guardada.');
+            })
+            .catch(function (err) {
+                guardandoAfiliado = false;
+                mostrarAviso(err.message || 'No se pudo guardar la foto.', true);
+            });
     }
 
     function cargar(silencioso, sinAviso) {
@@ -1405,6 +1447,10 @@
             cuerpo.append('cedula', cedula);
             cuerpo.append('nombre_completo', nombre);
             cuerpo.append('correo', correo);
+            var fotoInput = document.getElementById('afiliado-foto');
+            if (fotoInput && fotoInput.files && fotoInput.files[0]) {
+                cuerpo.append('foto', fotoInput.files[0]);
+            }
             fetch('solicitudes.php', { method: 'POST', body: cuerpo, credentials: 'same-origin' })
                 .then(function (r) { return r.json().catch(function () { return null; }); })
                 .then(function (json) {
@@ -1498,7 +1544,10 @@
 
     function cerrarFicha() {
         var caja = document.getElementById('sol-ficha');
-        if (caja) caja.hidden = true;
+        if (caja) {
+            caja.hidden = true;
+            caja.classList.remove('sol-ficha-afiliado', 'sol-ficha-cita');
+        }
     }
 
     function abrirFicha(tipo, id) {
@@ -1538,16 +1587,35 @@
         var html = '';
         if (tipo === 'cita') {
             html = htmlGruposCita(fila, estado);
-        } else {
-            if (tipo !== 'afiliados') {
-                html += '<p class="sol-badge ' + claseEstado(estado) + '">' + escapar(textoEstadoFila(fila)) + '</p>';
+        } else if (tipo === 'afiliados') {
+            var urlFoto = urlFotoAfiliado(fila.foto);
+            html += '<div class="afiliado-ficha-cuerpo">';
+            html += '<div class="afiliado-ficha-datos">';
+            partes.forEach(function (m) {
+                html += '<p class="item-meta-fila"><span class="item-meta-etiqueta">' + escapar(m.et) + '</span>';
+                html += '<span class="item-meta-valor">' + escapar(m.val) + '</span></p>';
+            });
+            html += '</div>';
+            html += '<div class="afiliado-ficha-lado">';
+            if (urlFoto) {
+                html += '<img class="afiliado-ficha-img" src="' + escapar(urlFoto) + '" alt="' + escapar(fila.nombre_completo || 'Foto') + '">';
+            } else {
+                html += '<div class="afiliado-ficha-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.5" fill="currentColor"/><path fill="currentColor" d="M5 19.4c.5-3.5 3.2-5.3 7-5.3s6.5 1.8 7 5.3c.1.4-.2.8-.6.8H5.6c-.4 0-.7-.4-.6-.8z"/></svg></div>';
             }
+            html += '<label class="afiliado-foto-cambiar">';
+            html += '<span>' + (urlFoto ? 'Cambiar foto' : 'Agregar foto') + '</span>';
+            html += '<input type="file" class="afiliado-foto-input" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif" data-id="' + escapar(String(id)) + '">';
+            html += '</label>';
+            html += '</div></div>';
+        } else {
+            html += '<p class="sol-badge ' + claseEstado(estado) + '">' + escapar(textoEstadoFila(fila)) + '</p>';
             partes.forEach(function (m) {
                 html += '<p class="item-meta-fila"><span class="item-meta-etiqueta">' + escapar(m.et) + '</span>';
                 html += '<span class="item-meta-valor">' + escapar(m.val) + '</span></p>';
             });
         }
         meta.innerHTML = html;
+        caja.classList.toggle('sol-ficha-afiliado', tipo === 'afiliados');
         var acc = '';
         if (tipo === 'afiliados') {
             acc += '<button type="button" class="btn-atajo btn-atajo-secundario sol-eliminar-afiliado">Quitar para siempre</button>';
@@ -1779,6 +1847,12 @@
             if (evento.target.closest('.sol-eliminar')) {
                 eliminarConsulta(fichaCaja);
             }
+        });
+        fichaCaja.addEventListener('change', function (evento) {
+            var inputFoto = evento.target.closest('.afiliado-foto-input');
+            if (!inputFoto || !inputFoto.files || !inputFoto.files[0]) return;
+            guardarFotoAfiliado(inputFoto.getAttribute('data-id') || fichaCaja.getAttribute('data-sol-id'), inputFoto.files[0]);
+            inputFoto.value = '';
         });
         fichaCaja.addEventListener('input', function (evento) {
             var caja = evento.target.closest('.sol-cupos');

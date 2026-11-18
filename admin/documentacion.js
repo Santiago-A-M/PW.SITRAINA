@@ -123,35 +123,58 @@
         return '<span class="docs-item-glyph docs-item-glyph-' + tipo + '" aria-hidden="true">' + svg + '</span>';
     }
 
-    function htmlAcciones(item, conVer) {
+    function htmlAcciones(item) {
         var id = escapar(item.id);
         var html = '<div class="docs-item-acciones">';
-        if (conVer) {
-            html += '<button type="button" class="btn-atajo btn-atajo-secundario docs-ver" data-id="' + id + '">Ver</button>';
-        }
         html += '<button type="button" class="btn-atajo btn-atajo-secundario docs-editar" data-id="' + id + '">Editar</button>';
         html += '<button type="button" class="btn-atajo btn-atajo-peligro docs-borrar" data-id="' + id + '">Quitar</button>';
         html += '</div>';
         return html;
     }
 
+    function urlPublica(ruta) {
+        if (!ruta) return '';
+        return '../' + String(ruta).replace(/^\//, '');
+    }
+
+    function esPdf(ruta) {
+        return /\.pdf($|\?)/i.test(String(ruta || ''));
+    }
+
+    function htmlMedia(cat, item) {
+        var ruta = rutaMedia(cat, item);
+        var url = urlPublica(ruta);
+        var tipo = tipoArchivo(cat, item);
+        if (!url) {
+            return '<p class="docs-visor-estado">Este elemento no tiene archivo para mostrar.</p>';
+        }
+        if (tipo === 'video') {
+            return '<video class="docs-visor-video" controls playsinline preload="metadata" src="' + escapar(url) + '"></video>';
+        }
+        if (tipo === 'imagen') {
+            return '<img class="docs-visor-imagen" src="' + escapar(url) + '" alt="' + escapar(tituloItem(item)) + '">';
+        }
+        if (esPdf(ruta)) {
+            return '<iframe class="docs-visor-pdf" title="' + escapar(tituloItem(item)) + '" src="' + escapar(url) + '#toolbar=1"></iframe>';
+        }
+        return '<div class="docs-visor-archivo">' +
+            '<p class="docs-visor-estado">Este formato no se puede previsualizar aquí.</p>' +
+            '</div>';
+    }
+
     function htmlFicha(item) {
         var id = escapar(item.id);
-        var meta = metaItem(categoriaActiva, item);
-        var html = '<div class="docs-ficha-capa">';
-        html += '<button type="button" class="docs-ficha-atras" id="docs-ficha-atras" aria-label="Volver a la lista">';
+        var html = '<div class="docs-ficha-capa docs-visor-capa" data-id="' + id + '">';
+        html += '<div class="docs-visor-barra">';
+        html += '<button type="button" class="docs-ficha-atras" id="docs-ficha-atras" aria-label="Volver a la lista" title="Volver">';
         html += '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        html += '<span>Volver</span></button>';
-        html += '<article class="docs-ficha" data-id="' + id + '">';
-        html += '<div class="docs-ficha-cabecera">';
-        html += '<div class="docs-item-icono docs-ficha-icono">' + iconoTipo(categoriaActiva, item) + '</div>';
-        html += '<div class="docs-item-texto docs-ficha-texto">';
-        html += '<strong>' + escapar(tituloItem(item)) + '</strong>';
-        if (meta) html += '<span>' + escapar(meta) + '</span>';
-        html += '</div></div>';
-        html += '<p class="docs-ficha-ayuda">Podés ver el archivo, cambiar el nombre o la información, o quitarlo.</p>';
-        html += htmlAcciones(item, true);
-        html += '</article></div>';
+        html += '</button>';
+        html += htmlAcciones(item);
+        html += '</div>';
+        html += '<div class="docs-visor-escenario" aria-label="' + escapar(tituloItem(item)) + '">';
+        html += htmlMedia(categoriaActiva, item);
+        html += '</div>';
+        html += '</div>';
         return html;
     }
 
@@ -172,28 +195,33 @@
         var filtrados = !q ? items.slice() : items.filter(function (item) {
             return normalizar(textoBusqueda(categoriaActiva, item)).indexOf(q) !== -1;
         });
-        if (tituloPanel) tituloPanel.textContent = nombres[categoriaActiva] || categoriaActiva;
         listaEl.classList.toggle('docs-lista-detalle', modoVista === 'detalle' && !itemActivoId);
         listaEl.classList.toggle('docs-lista-iconos', modoVista === 'iconos' && !itemActivoId);
         listaEl.classList.toggle('docs-lista-ficha', !!itemActivoId);
+        popup.classList.toggle('docs-viendo', !!itemActivoId);
         sincronizarVistaSwitch();
 
         if (itemActivoId && !filtrados.some(function (it) { return it.id === itemActivoId; })
             && !items.some(function (it) { return it.id === itemActivoId; })) {
             itemActivoId = '';
+            popup.classList.remove('docs-viendo');
         }
 
         if (itemActivoId) {
             var abierto = buscarItem(itemActivoId);
             if (!abierto) {
                 itemActivoId = '';
+                popup.classList.remove('docs-viendo');
             } else {
+                if (tituloPanel) tituloPanel.textContent = tituloItem(abierto);
                 listaEl.innerHTML = htmlFicha(abierto);
                 var btnAtras = document.getElementById('docs-ficha-atras');
                 if (btnAtras) btnAtras.focus();
                 return;
             }
         }
+
+        if (tituloPanel) tituloPanel.textContent = nombres[categoriaActiva] || categoriaActiva;
 
         if (!items.length) {
             listaEl.innerHTML = '<p class="vacio-bloque">Todavía no hay elementos en esta categoría.</p>';
@@ -216,7 +244,7 @@
             }
             html += '</div>';
             if (!esIconos) {
-                html += htmlAcciones(item, false);
+                html += htmlAcciones(item);
             }
             html += '</article>';
             return html;
@@ -271,7 +299,7 @@
     function cerrarExplorador() {
         cerrarForm();
         itemActivoId = '';
-        popup.classList.remove('asistente-visible');
+        popup.classList.remove('asistente-visible', 'docs-viendo');
         document.body.classList.remove('asistente-abierto', 'docs-explorador-abierto');
         window.setTimeout(function () {
             popup.hidden = true;
@@ -360,16 +388,6 @@
         return null;
     }
 
-    function verItem(id) {
-        var item = buscarItem(id);
-        var ruta = rutaMedia(categoriaActiva, item);
-        if (!ruta) {
-            setEstado(estadoEl, 'Este elemento no tiene archivo para abrir.', true);
-            return;
-        }
-        window.open('../' + ruta.replace(/^\//, ''), '_blank', 'noopener');
-    }
-
     function borrarItem(id) {
         var item = buscarItem(id);
         var nombre = item ? tituloItem(item) : 'este documento';
@@ -444,6 +462,19 @@
 
     function cerrarFicha() {
         if (!itemActivoId) return;
+        var capa = listaEl.querySelector('.docs-visor-capa');
+        var video = listaEl.querySelector('.docs-visor-video');
+        if (video && !video.paused) {
+            try { video.pause(); } catch (e) {}
+        }
+        if (capa && !capa.classList.contains('docs-visor-saliendo')) {
+            capa.classList.add('docs-visor-saliendo');
+            window.setTimeout(function () {
+                itemActivoId = '';
+                pintarLista();
+            }, 280);
+            return;
+        }
         itemActivoId = '';
         pintarLista();
     }
@@ -454,13 +485,6 @@
             ev.preventDefault();
             ev.stopPropagation();
             cerrarFicha();
-            return;
-        }
-        var ver = ev.target.closest('.docs-ver');
-        if (ver) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            verItem(ver.getAttribute('data-id') || '');
             return;
         }
         var editar = ev.target.closest('.docs-editar');
@@ -477,8 +501,8 @@
             borrarItem(borrar.getAttribute('data-id') || '');
             return;
         }
+        if (ev.target.closest('a, button, input, textarea, select, video, iframe')) return;
         if (itemActivoId) return;
-        if (modoVista !== 'iconos') return;
         var tarjeta = ev.target.closest('.docs-item');
         if (!tarjeta || !listaEl.contains(tarjeta)) return;
         ev.preventDefault();
@@ -488,8 +512,8 @@
 
     listaEl.addEventListener('keydown', function (ev) {
         if (itemActivoId) return;
-        if (modoVista !== 'iconos') return;
         if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        if (ev.target.closest('.docs-editar, .docs-borrar, button, a, input')) return;
         var tarjeta = ev.target.closest('.docs-item');
         if (!tarjeta || !listaEl.contains(tarjeta)) return;
         ev.preventDefault();

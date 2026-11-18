@@ -5197,6 +5197,7 @@ body.dark-mode .sol-estado-neutral {
   overflow: auto;
   padding: 20px;
   border-radius: 16px;
+  border: 1.5px solid #8ec0dc;
   background: #fff;
   color: #0a3d5c;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
@@ -5222,6 +5223,7 @@ html.daltonico.dark-mode .sol-preview-caja,
 html.daltonico body.dark-mode .sol-preview-caja {
   background: #08324c;
   color: #e8f4fc;
+  border-color: #8ec4f6;
 }
 
 html.daltonico.dark-mode .sol-preview-cuerpo,
@@ -5354,6 +5356,7 @@ html.daltonico body.dark-mode .sol-preview-cuerpo {
   background: #fff;
   color: #2b211f;
   border-radius: 18px;
+  border: 1.5px solid #8ec0dc;
   box-shadow: 0 16px 40px rgba(28, 22, 20, 0.28);
   display: flex;
   flex-direction: column;
@@ -5565,6 +5568,7 @@ body.dark-mode #sitrabot-admin .sitrabot-cerrar {
 body.dark-mode #sitrabot-admin .sitrabot-panel {
   background: #2c2320;
   color: #f7f2ee;
+  border-color: #8ec4f6;
 }
 
 body.dark-mode #sitrabot-admin .sitrabot-mensajes {
@@ -5944,7 +5948,7 @@ html.daltonico body.dark-mode textarea::placeholder {
 .sol-ficha-cita .sol-ficha-caja {
   background: #fff;
   color: #16324f;
-  border-top-color: #0072b2;
+  border: 1.5px solid #8ec0dc;
 }
 
 .sol-ficha-cita .sol-ficha-tipo,
@@ -5998,7 +6002,7 @@ body.dark-mode .inicio-card-cita:focus-visible .cita-sello {
 body.dark-mode .sol-ficha-cita .sol-ficha-caja {
   background: #1b2836;
   color: #e8f4fc;
-  border-top-color: #0072b2;
+  border-color: #8ec4f6;
 }
 
 body.dark-mode .sol-ficha-cita .sol-ficha-tipo,
@@ -6036,7 +6040,7 @@ body.dark-mode .sol-ficha-cita .sol-ficha-cerrar {
 .sol-ficha-caja {
   background: #fff;
   color: #16324f;
-  border-top-color: #0072b2;
+  border: 1.5px solid #8ec0dc;
   box-shadow: 0 24px 60px rgba(18, 40, 72, 0.28);
 }
 
@@ -6075,7 +6079,7 @@ body.dark-mode .sol-tarjeta .casilla-titulo {
 body.dark-mode .sol-ficha-caja {
   background: #1b2836;
   color: #e8f4fc;
-  border-top-color: #0072b2;
+  border-color: #8ec4f6;
 }
 
 body.dark-mode .sol-ficha-tipo,
@@ -6638,6 +6642,17 @@ html.daltonico body.dark-mode #lista-afiliados .afiliado-icono {
   color: #d5e4ef;
 }
 
+html.daltonico .afiliado-foto-cambiar:hover,
+html.daltonico .afiliado-foto-cambiar:focus-within {
+  border-color: #0072b2;
+}
+
+html.daltonico.dark-mode .afiliado-ficha-placeholder,
+html.daltonico body.dark-mode .afiliado-ficha-placeholder {
+  background: #243646;
+  color: #d5e4ef;
+}
+
 html.daltonico :is(#lista-sol-cita, #lista-sol-contacto, #lista-sol-afilacion) .sol-fila {
   background: #f4f6f8 !important;
   border-color: #d5dee6 !important;
@@ -6720,7 +6735,7 @@ html.daltonico body.dark-mode :is(#lista-sol-cita, #lista-sol-contacto, #lista-s
   color: #d5e4ef !important;
   border-color: #355066 !important;
 }
-/* Documentación: borde del explorador según tono daltónico */
+/* Documentaciï¿½n: borde del explorador segï¿½n tono daltï¿½nico */
 html.daltonico .docs-explorador .docs-explorador-ventana,
 html.daltonico #popup-docs-form .asistente-ventana {
   border-color: #8ec0dc;
@@ -6751,12 +6766,62 @@ body.dark-mode .docs-vista-switch {
 }
 
 html.daltonico .docs-ficha-atras:hover,
-html.daltonico .docs-ficha-atras:focus-visible,
-html.daltonico .docs-ficha {
+html.daltonico .docs-ficha-atras:focus-visible {
+  border-color: #8ec0dc;
+}
+
+html.daltonico .docs-visor-escenario {
+  background: linear-gradient(105deg, #d7e8fb 0%, #b3dff5 100%);
+}
+
+html.daltonico .docs-visor-estado {
+  color: #0a3d5c;
+}
+
+html.daltonico.dark-mode .docs-visor-escenario,
+html.daltonico body.dark-mode .docs-visor-escenario {
+  background: linear-gradient(105deg, #24384f 0%, #0a3d5c 100%);
+}
+
+html.daltonico.dark-mode .docs-visor-estado,
+html.daltonico body.dark-mode .docs-visor-estado {
+  color: #b3dff5;
+}
+
+/* Textos que seguian en rojo en daltonico (docs, afiliados, estados). */
+html.daltonico .docs-admin-landing h2,
+html.daltonico .docs-cat-btn.activo,
+html.daltonico .docs-panel-toolbar h3,
+html.daltonico .docs-ficha-atras,
+html.daltonico .docs-item-icono,
+html.daltonico .docs-visor-titulos strong,
+html.daltonico .afiliado-foto-cambiar,
+html.daltonico .hoja-admin-estado-error,
+html.daltonico #sitrabot-admin .sitrabot-cerrar {
+  color: #0a3d5c !important;
+}
+
+html.daltonico .docs-item:hover,
+html.daltonico .docs-item:focus-visible,
+html.daltonico .docs-item:focus-within {
   border-color: #0072b2;
 }
 
-html.daltonico.dark-mode .docs-ficha,
-html.daltonico body.dark-mode .docs-ficha {
-  border-color: #56b4e9;
+html.daltonico.dark-mode .docs-admin-landing h2,
+html.daltonico body.dark-mode .docs-admin-landing h2,
+html.daltonico.dark-mode .docs-cat-btn.activo,
+html.daltonico body.dark-mode .docs-cat-btn.activo,
+html.daltonico.dark-mode .docs-panel-toolbar h3,
+html.daltonico body.dark-mode .docs-panel-toolbar h3,
+html.daltonico.dark-mode .docs-ficha-atras,
+html.daltonico body.dark-mode .docs-ficha-atras,
+html.daltonico.dark-mode .docs-item-icono,
+html.daltonico body.dark-mode .docs-item-icono,
+html.daltonico.dark-mode .afiliado-foto-cambiar,
+html.daltonico body.dark-mode .afiliado-foto-cambiar,
+html.daltonico.dark-mode .hoja-admin-estado-error,
+html.daltonico body.dark-mode .hoja-admin-estado-error,
+html.daltonico.dark-mode #sitrabot-admin .sitrabot-cerrar,
+html.daltonico body.dark-mode #sitrabot-admin .sitrabot-cerrar {
+  color: #b3dff5 !important;
 }

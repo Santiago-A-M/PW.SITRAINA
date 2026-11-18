@@ -125,13 +125,127 @@ function listar_citas($dbUsuarios, $dbResp, $cuentas = null) {
     return array_slice($filas, 0, 300);
 }
 
+function afiliados_asegurar_foto($db) {
+    static $listo = false;
+    if ($listo || !$db) {
+        return $listo;
+    }
+    $col = $db->query("SHOW COLUMNS FROM Cuenta LIKE 'foto'");
+    $hay = $col && $col->num_rows > 0;
+    if ($col) {
+        $col->free();
+    }
+    if (!$hay) {
+        $db->query('ALTER TABLE Cuenta ADD COLUMN foto VARCHAR(255) NULL DEFAULT NULL AFTER correo');
+        $col = $db->query("SHOW COLUMNS FROM Cuenta LIKE 'foto'");
+        $hay = $col && $col->num_rows > 0;
+        if ($col) {
+            $col->free();
+        }
+    }
+    $listo = (bool) $hay;
+    return $listo;
+}
+
+function afiliados_ruta_foto_ok($ruta) {
+    $ruta = str_replace('\\', '/', trim((string) $ruta));
+    if ($ruta === '' || strpos($ruta, '..') !== false) {
+        return '';
+    }
+    if (strpos($ruta, 'afiliados/fotos/') !== 0) {
+        return '';
+    }
+    return $ruta;
+}
+
+function afiliados_borrar_foto($ruta) {
+    $ruta = afiliados_ruta_foto_ok($ruta);
+    if ($ruta === '') {
+        return;
+    }
+    $archivo = dirname(__DIR__) . '/' . str_replace('/', DIRECTORY_SEPARATOR, $ruta);
+    if (is_file($archivo)) {
+        @unlink($archivo);
+    }
+}
+
+function afiliados_recibir_foto($campo, $obligatorio, $prefijo) {
+    if (empty($_FILES[$campo]) || !is_array($_FILES[$campo])) {
+        if ($obligatorio) {
+            solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí una foto.']);
+        }
+        return null;
+    }
+    $file = $_FILES[$campo];
+    $error = (int) ($file['error'] ?? UPLOAD_ERR_NO_FILE);
+    if ($error === UPLOAD_ERR_NO_FILE) {
+        if ($obligatorio) {
+            solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí una foto.']);
+        }
+        return null;
+    }
+    if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'La foto es demasiado pesada.']);
+    }
+    if ($error !== UPLOAD_ERR_OK) {
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'No se pudo recibir la foto. Intentá de nuevo.']);
+    }
+    $tmp = (string) ($file['tmp_name'] ?? '');
+    $tamano = (int) ($file['size'] ?? 0);
+    if ($tmp === '' || !is_uploaded_file($tmp) || $tamano < 1) {
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'La foto no es válida.']);
+    }
+    if ($tamano > 5 * 1024 * 1024) {
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'La foto no puede pasar de 5 MB.']);
+    }
+    $nombreOriginal = strtolower((string) ($file['name'] ?? ''));
+    $ext = '';
+    foreach (['.jpg', '.jpeg', '.png', '.webp', '.gif'] as $e) {
+        if (substr($nombreOriginal, -strlen($e)) === $e) {
+            $ext = $e === '.jpeg' ? '.jpg' : $e;
+            break;
+        }
+    }
+    $finfo = function_exists('finfo_open') ? finfo_open(FILEINFO_MIME_TYPE) : false;
+    $mime = $finfo ? finfo_file($finfo, $tmp) : '';
+    if ($finfo) {
+        finfo_close($finfo);
+    }
+    $mimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if ($ext === '' || ($mime !== '' && !in_array($mime, $mimes, true))) {
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Usá una imagen JPG, PNG, WEBP o GIF.']);
+    }
+    $dirRel = 'afiliados/fotos';
+    $dirAbs = dirname(__DIR__) . '/' . str_replace('/', DIRECTORY_SEPARATOR, $dirRel);
+    if (!is_dir($dirAbs) && !mkdir($dirAbs, 0755, true)) {
+        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo preparar la carpeta de fotos.']);
+    }
+    $base = preg_replace('/[^a-zA-Z0-9_-]+/', '-', (string) $prefijo);
+    $base = trim($base, '-');
+    if ($base === '') {
+        $base = 'afiliado';
+    }
+    if (function_exists('mb_substr')) {
+        $base = mb_substr($base, 0, 40, 'UTF-8');
+    } else {
+        $base = substr($base, 0, 40);
+    }
+    $nombreArchivo = $base . '-' . date('Ymd-His') . '-' . bin2hex(random_bytes(3)) . $ext;
+    $destino = $dirAbs . DIRECTORY_SEPARATOR . $nombreArchivo;
+    if (!move_uploaded_file($tmp, $destino)) {
+        solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No se pudo guardar la foto.']);
+    }
+    return $dirRel . '/' . $nombreArchivo;
+}
+
 function listar_afiliados() {
     $db = abrir_afiliados();
     if (!$db) {
         return null;
     }
+    afiliados_asegurar_foto($db);
     $resultado = $db->query(
-        'SELECT id, cedula, nombre_completo, correo, creado_en
+        'SELECT id, cedula, nombre_completo, correo, foto, creado_en
          FROM Cuenta ORDER BY id DESC LIMIT 500'
     );
     if (!$resultado) {
@@ -145,6 +259,7 @@ function listar_afiliados() {
             'cedula' => preg_replace('/\D/', '', (string) $fila['cedula']),
             'nombre_completo' => (string) ($fila['nombre_completo'] ?? ''),
             'correo' => strtolower(trim((string) ($fila['correo'] ?? ''))),
+            'foto' => afiliados_ruta_foto_ok($fila['foto'] ?? ''),
             'creado_en' => (string) ($fila['creado_en'] ?? ''),
         ];
     }
@@ -416,19 +531,32 @@ if (!hash_equals(token_admin(), $token)) {
 $accion = (string) ($_POST['accion'] ?? '');
 
 /* Cuenta solo se escribe desde este panel (sesión de admin + token). */
-if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado') {
+if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado' || $accion === 'actualizar_foto_afiliado') {
     $dbUsuarios->close();
     $dbResp->close();
     $dbAfiliados = abrir_afiliados();
     if (!$dbAfiliados) {
         solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos abrir las personas afiliadas. Intentá más tarde.']);
     }
+    afiliados_asegurar_foto($dbAfiliados);
     $dbAfiliados->query("SET @sitraina_panel = '1'");
     if ($accion === 'eliminar_afiliado') {
         $idAfiliado = (int) ($_POST['id'] ?? 0);
         if ($idAfiliado < 1) {
             $dbAfiliados->close();
             solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí a la persona.']);
+        }
+        $fotoVieja = '';
+        $leerFoto = $dbAfiliados->prepare('SELECT foto FROM Cuenta WHERE id = ? LIMIT 1');
+        if ($leerFoto) {
+            $leerFoto->bind_param('i', $idAfiliado);
+            if ($leerFoto->execute()) {
+                $filaFoto = solicitudes_fetch_assoc($leerFoto, ['foto']);
+                if ($filaFoto) {
+                    $fotoVieja = afiliados_ruta_foto_ok($filaFoto['foto'] ?? '');
+                }
+            }
+            $leerFoto->close();
         }
         $borrar = $dbAfiliados->prepare('DELETE FROM Cuenta WHERE id = ? LIMIT 1');
         if (!$borrar) {
@@ -442,7 +570,58 @@ if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado') {
         if (!$borro) {
             solicitudes_responder(404, ['ok' => false, 'mensaje' => 'Esa persona ya no está en la lista.']);
         }
+        afiliados_borrar_foto($fotoVieja);
         solicitudes_responder(200, ['ok' => true, 'mensaje' => 'Listo, se quitó a esa persona.']);
+    }
+    if ($accion === 'actualizar_foto_afiliado') {
+        $idAfiliado = (int) ($_POST['id'] ?? 0);
+        if ($idAfiliado < 1) {
+            $dbAfiliados->close();
+            solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Elegí a la persona.']);
+        }
+        $leer = $dbAfiliados->prepare('SELECT cedula, foto FROM Cuenta WHERE id = ? LIMIT 1');
+        if (!$leer) {
+            $dbAfiliados->close();
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos actualizar la foto.']);
+        }
+        $leer->bind_param('i', $idAfiliado);
+        if (!$leer->execute()) {
+            $leer->close();
+            $dbAfiliados->close();
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos actualizar la foto.']);
+        }
+        $fila = solicitudes_fetch_assoc($leer, ['cedula', 'foto']);
+        $leer->close();
+        if (!$fila) {
+            $dbAfiliados->close();
+            solicitudes_responder(404, ['ok' => false, 'mensaje' => 'Esa persona ya no está en la lista.']);
+        }
+        $fotoVieja = afiliados_ruta_foto_ok($fila['foto'] ?? '');
+        $cedulaPrefijo = preg_replace('/\D/', '', (string) ($fila['cedula'] ?? '')) ?: 'afiliado';
+        $fotoNueva = afiliados_recibir_foto('foto', true, $cedulaPrefijo);
+        $actualizar = $dbAfiliados->prepare('UPDATE Cuenta SET foto = ? WHERE id = ? LIMIT 1');
+        if (!$actualizar) {
+            afiliados_borrar_foto($fotoNueva);
+            $dbAfiliados->close();
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos guardar la foto.']);
+        }
+        $actualizar->bind_param('si', $fotoNueva, $idAfiliado);
+        $ok = $actualizar->execute();
+        $actualizar->close();
+        $dbAfiliados->close();
+        if (!$ok) {
+            afiliados_borrar_foto($fotoNueva);
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos guardar la foto.']);
+        }
+        if ($fotoVieja !== '' && $fotoVieja !== $fotoNueva) {
+            afiliados_borrar_foto($fotoVieja);
+        }
+        solicitudes_responder(200, [
+            'ok' => true,
+            'mensaje' => 'Listo, se guardó la foto.',
+            'foto' => $fotoNueva,
+            'id' => $idAfiliado,
+        ]);
     }
     $cedulaNueva = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
     $nombreNuevo = trim((string) ($_POST['nombre_completo'] ?? ''));
@@ -460,21 +639,26 @@ if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado') {
         $dbAfiliados->close();
         solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Escribí un correo válido.']);
     }
+    $fotoNueva = afiliados_recibir_foto('foto', false, $cedulaNueva);
+    $fotoGuardar = $fotoNueva ? $fotoNueva : '';
     $creadoEn = (new DateTime('now', new DateTimeZone('America/Costa_Rica')))->format('Y-m-d H:i:s');
-    $insertar = $dbAfiliados->prepare('INSERT INTO Cuenta (cedula, nombre_completo, correo, creado_en) VALUES (?, ?, ?, ?)');
+    $insertar = $dbAfiliados->prepare('INSERT INTO Cuenta (cedula, nombre_completo, correo, foto, creado_en) VALUES (?, ?, ?, ?, ?)');
     if (!$insertar) {
+        afiliados_borrar_foto($fotoNueva);
         $dbAfiliados->close();
         solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos anotar a esa persona.']);
     }
-    $insertar->bind_param('ssss', $cedulaNueva, $nombreNuevo, $correoNuevo, $creadoEn);
+    $insertar->bind_param('sssss', $cedulaNueva, $nombreNuevo, $correoNuevo, $fotoGuardar, $creadoEn);
     $guardo = $insertar->execute();
     $duplicado = !$guardo && ((int) $insertar->errno === 1062 || (int) $dbAfiliados->errno === 1062);
     $insertar->close();
     $dbAfiliados->close();
     if ($duplicado) {
+        afiliados_borrar_foto($fotoNueva);
         solicitudes_responder(409, ['ok' => false, 'mensaje' => 'Esa cédula o ese correo ya está registrado.']);
     }
     if (!$guardo) {
+        afiliados_borrar_foto($fotoNueva);
         solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos anotar a esa persona.']);
     }
     solicitudes_responder(200, ['ok' => true, 'mensaje' => 'Listo, la persona quedó anotada.']);
