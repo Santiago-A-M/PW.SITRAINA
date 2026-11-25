@@ -15,52 +15,74 @@ function usuario_auth_responder($codigo, $datos) {
     exit;
 }
 
-/* null si no existe, false si la consulta falló. */
-function usuario_web_por_correo($db, $correo) {
-    $consulta = $db->prepare('SELECT id, nombre, activo FROM Usuario_Web WHERE LOWER(TRIM(correo)) = ? LIMIT 1');
-    if (!$consulta) {
-        $consulta = $db->prepare('SELECT id, nombre, 1 FROM Usuario_Web WHERE LOWER(TRIM(correo)) = ? LIMIT 1');
+function usuario_auth_normalizar_cedula($valor) {
+    return preg_replace('/\D/', '', (string) $valor);
+}
+
+function usuario_auth_correo_opcional($valor) {
+    $correo = strtolower(trim((string) $valor));
+    if ($correo === '') {
+        return '';
     }
+    if (!filter_var($correo, FILTER_VALIDATE_EMAIL) || strlen($correo) > 120) {
+        return false;
+    }
+    return $correo;
+}
+
+/* null si no existe, false si la consulta falló. */
+function usuario_web_por_cedula($db, $cedula) {
+    $consulta = $db->prepare('SELECT id, nombre, correo, cedula, activo FROM Usuario_Web WHERE cedula = ? LIMIT 1');
     if (!$consulta) {
         return false;
     }
-    $consulta->bind_param('s', $correo);
+    $consulta->bind_param('s', $cedula);
     if (!$consulta->execute()) {
         $consulta->close();
         return false;
     }
     $id = 0;
     $nombre = '';
+    $correo = null;
+    $cedulaDb = null;
     $activo = 0;
-    $consulta->bind_result($id, $nombre, $activo);
+    $consulta->bind_result($id, $nombre, $correo, $cedulaDb, $activo);
     $hay = $consulta->fetch();
     $consulta->close();
     if (!$hay) {
         return null;
     }
-    return ['id' => (int) $id, 'nombre' => (string) $nombre, 'activo' => (int) $activo];
+    $cedulaLimpia = usuario_auth_normalizar_cedula($cedulaDb);
+    $correoLimpio = strtolower(trim((string) $correo));
+    return [
+        'id' => (int) $id,
+        'nombre' => (string) $nombre,
+        'correo' => filter_var($correoLimpio, FILTER_VALIDATE_EMAIL) ? $correoLimpio : '',
+        'cedula' => preg_match('/^[0-9]{9}$/', $cedulaLimpia) ? $cedulaLimpia : '',
+        'activo' => (int) $activo,
+    ];
 }
 
-/* Si el correo ya está en Cuenta, abre la misma cuenta de ingreso. null si no es afiliado. */
-function usuario_web_desde_afiliado($db, $correo) {
+/* Si la cédula ya está en Cuenta, abre la misma cuenta de ingreso. null si no es afiliado. */
+function usuario_web_desde_afiliado($db, $cedula) {
     $afiliados = abrir_afiliados();
     if (!$afiliados) {
         return false;
     }
-    $consulta = $afiliados->prepare('SELECT nombre_completo, cedula FROM Cuenta WHERE LOWER(TRIM(correo)) = ? LIMIT 1');
+    $consulta = $afiliados->prepare('SELECT nombre_completo, correo FROM Cuenta WHERE cedula = ? LIMIT 1');
     if (!$consulta) {
         $afiliados->close();
         return false;
     }
-    $consulta->bind_param('s', $correo);
+    $consulta->bind_param('s', $cedula);
     if (!$consulta->execute()) {
         $consulta->close();
         $afiliados->close();
         return false;
     }
     $nombre = '';
-    $cedula = '';
-    $consulta->bind_result($nombre, $cedula);
+    $correo = null;
+    $consulta->bind_result($nombre, $correo);
     $hay = $consulta->fetch();
     $consulta->close();
     $afiliados->close();
@@ -71,19 +93,22 @@ function usuario_web_desde_afiliado($db, $correo) {
     if ($nombre === '') {
         $nombre = 'Cuenta';
     }
-    $cedula = preg_replace('/\D+/', '', (string) $cedula);
-    if (strlen($cedula) === 9) {
+    $correoLimpio = strtolower(trim((string) $correo));
+    if ($correoLimpio === '' || !filter_var($correoLimpio, FILTER_VALIDATE_EMAIL)) {
+        $correoLimpio = '';
+    }
+    if ($correoLimpio !== '') {
         $alta = $db->prepare('INSERT INTO Usuario_Web (nombre, correo, cedula, activo) VALUES (?, ?, ?, 1)');
         if (!$alta) {
             return false;
         }
-        $alta->bind_param('sss', $nombre, $correo, $cedula);
+        $alta->bind_param('sss', $nombre, $correoLimpio, $cedula);
     } else {
-        $alta = $db->prepare('INSERT INTO Usuario_Web (nombre, correo, activo) VALUES (?, ?, 1)');
+        $alta = $db->prepare('INSERT INTO Usuario_Web (nombre, correo, cedula, activo) VALUES (?, NULL, ?, 1)');
         if (!$alta) {
             return false;
         }
-        $alta->bind_param('ss', $nombre, $correo);
+        $alta->bind_param('ss', $nombre, $cedula);
     }
     $ok = $alta->execute();
     $codigo = (int) $alta->errno;
@@ -91,7 +116,7 @@ function usuario_web_desde_afiliado($db, $correo) {
     if (!$ok && $codigo !== 1062) {
         return false;
     }
-    $cuenta = usuario_web_por_correo($db, $correo);
+    $cuenta = usuario_web_por_cedula($db, $cedula);
     if ($cuenta === false || !$cuenta || !(int) $cuenta['activo']) {
         return $cuenta === false ? false : null;
     }
@@ -111,7 +136,8 @@ function usuario_auth_estado() {
         'usuario_id' => $id,
         'nombre' => $nombre,
         'token' => sitraina_usuario_token(),
-        'afiliado' => $marca === 'si',
+        'afiliado' => $marca === 'si' || $marca === 'menor_anio',
+        'puede_cita' => $marca === 'si',
         'afiliacion' => $marca,
     ];
 }
@@ -158,13 +184,13 @@ if (!$db) {
 }
 
 if ($accion === 'ingresar') {
-    $correo = strtolower(trim((string) ($_POST['correo'] ?? '')));
-    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+    $cedula = usuario_auth_normalizar_cedula($_POST['cedula'] ?? '');
+    if (!preg_match('/^[0-9]{9}$/', $cedula)) {
         $_SESSION['usuario_fallos'] = $fallos + 1;
         $db->close();
-        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Escribí tu correo para continuar.']);
+        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Escribí tu cédula de 9 dígitos para continuar.']);
     }
-    $cuentaWeb = usuario_web_por_correo($db, $correo);
+    $cuentaWeb = usuario_web_por_cedula($db, $cedula);
     if ($cuentaWeb === false) {
         $db->close();
         usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo consultar la cuenta.']);
@@ -172,10 +198,10 @@ if ($accion === 'ingresar') {
     if ($cuentaWeb && !(int) $cuentaWeb['activo']) {
         $db->close();
         $_SESSION['usuario_fallos'] = $fallos + 1;
-        usuario_auth_responder(401, ['ok' => false, 'mensaje' => 'Ese correo todavía no tiene una cuenta. Podés crearla.']);
+        usuario_auth_responder(401, ['ok' => false, 'mensaje' => 'Esa cédula todavía no tiene una cuenta. Podés crearla.']);
     }
     if (!$cuentaWeb) {
-        $cuentaWeb = usuario_web_desde_afiliado($db, $correo);
+        $cuentaWeb = usuario_web_desde_afiliado($db, $cedula);
         if ($cuentaWeb === false) {
             $db->close();
             usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo consultar la cuenta.']);
@@ -184,7 +210,7 @@ if ($accion === 'ingresar') {
     if (!$cuentaWeb) {
         $db->close();
         $_SESSION['usuario_fallos'] = $fallos + 1;
-        usuario_auth_responder(401, ['ok' => false, 'mensaje' => 'Ese correo todavía no tiene una cuenta. Podés crearla.']);
+        usuario_auth_responder(401, ['ok' => false, 'mensaje' => 'Esa cédula todavía no tiene una cuenta. Podés crearla.']);
     }
     if (sitraina_usuario_id() > 0) {
         $db->close();
@@ -209,7 +235,8 @@ if ($accion === 'ingresar') {
     $_SESSION['usuario_sesion'] = $claveSesion;
     $_SESSION['usuario_id'] = (int) $cuentaWeb['id'];
     $_SESSION['usuario_nombre'] = (string) $cuentaWeb['nombre'];
-    $_SESSION['usuario_correo'] = $correo;
+    $_SESSION['usuario_correo'] = (string) ($cuentaWeb['correo'] ?? '');
+    $_SESSION['usuario_cedula'] = (string) ($cuentaWeb['cedula'] ?? $cedula);
     $_SESSION['usuario_fallos'] = 0;
     unset($_SESSION['usuario_token']);
     usuario_auth_responder(200, array_merge(usuario_auth_estado(), ['mensaje' => 'Listo, ya entraste.']));
@@ -217,34 +244,43 @@ if ($accion === 'ingresar') {
 
 if ($accion === 'registrar') {
     $nombre = trim((string) ($_POST['nombre'] ?? ''));
-    $correo = strtolower(trim((string) ($_POST['correo'] ?? '')));
-    $cedula = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
-    if ($cedula === '') {
-        $cedula = null;
-    } elseif (strlen($cedula) !== 9) {
-        $db->close();
-        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'La cédula, si la ponés, debe tener 9 dígitos.']);
-    }
+    $correo = usuario_auth_correo_opcional($_POST['correo'] ?? '');
+    $cedula = usuario_auth_normalizar_cedula($_POST['cedula'] ?? '');
     if ($nombre === '' || strlen($nombre) > 120) {
         $db->close();
         usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Escribí tu nombre. Si quedó muy largo, acortalo un poco.']);
     }
-    if (!filter_var($correo, FILTER_VALIDATE_EMAIL) || strlen($correo) > 120) {
+    if (!preg_match('/^[0-9]{9}$/', $cedula)) {
         $db->close();
-        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Revisá el correo. Tiene que estar completo.']);
+        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'La cédula es obligatoria y debe tener 9 dígitos.']);
+    }
+    if ($correo === false) {
+        $db->close();
+        usuario_auth_responder(400, ['ok' => false, 'mensaje' => 'Revisá el correo. Si lo ponés, tiene que estar completo.']);
     }
     if (sitraina_usuario_id() > 0) {
         $db->close();
         usuario_auth_responder(409, ['ok' => false, 'mensaje' => 'Ya iniciaste sesión en este navegador. Cerrala antes de crear otra cuenta.']);
     }
-    $consulta = $db->prepare(
-        'INSERT INTO Usuario_Web (nombre, correo, cedula, activo) VALUES (?, ?, ?, 1)'
-    );
-    if (!$consulta) {
-        $db->close();
-        usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No pudimos crear la cuenta en este momento. Intentá de nuevo más tarde.']);
+    if ($correo !== '') {
+        $consulta = $db->prepare(
+            'INSERT INTO Usuario_Web (nombre, correo, cedula, activo) VALUES (?, ?, ?, 1)'
+        );
+        if (!$consulta) {
+            $db->close();
+            usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No pudimos crear la cuenta en este momento. Intentá de nuevo más tarde.']);
+        }
+        $consulta->bind_param('sss', $nombre, $correo, $cedula);
+    } else {
+        $consulta = $db->prepare(
+            'INSERT INTO Usuario_Web (nombre, correo, cedula, activo) VALUES (?, NULL, ?, 1)'
+        );
+        if (!$consulta) {
+            $db->close();
+            usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No pudimos crear la cuenta en este momento. Intentá de nuevo más tarde.']);
+        }
+        $consulta->bind_param('ss', $nombre, $cedula);
     }
-    $consulta->bind_param('sss', $nombre, $correo, $cedula);
     $ok = $consulta->execute();
     $codigo = $consulta->errno;
     $nuevoId = $ok ? (int) $db->insert_id : 0;
@@ -257,7 +293,7 @@ if ($accion === 'registrar') {
     $db->close();
     if (!$ok) {
         if ($codigo === 1062) {
-            usuario_auth_responder(409, ['ok' => false, 'mensaje' => 'Ese correo ya tiene una cuenta.']);
+            usuario_auth_responder(409, ['ok' => false, 'mensaje' => 'Esa cédula o ese correo ya tiene una cuenta.']);
         }
         usuario_auth_responder(500, ['ok' => false, 'mensaje' => 'No se pudo crear la cuenta.']);
     }
@@ -265,7 +301,8 @@ if ($accion === 'registrar') {
     $_SESSION['usuario_sesion'] = $claveSesion;
     $_SESSION['usuario_id'] = $nuevoId;
     $_SESSION['usuario_nombre'] = $nombre;
-    $_SESSION['usuario_correo'] = $correo;
+    $_SESSION['usuario_correo'] = $correo !== '' ? $correo : '';
+    $_SESSION['usuario_cedula'] = $cedula;
     $_SESSION['usuario_fallos'] = 0;
     unset($_SESSION['usuario_token']);
     usuario_auth_responder(200, array_merge(usuario_auth_estado(), ['mensaje' => 'Listo, tu cuenta quedó creada.']));

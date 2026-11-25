@@ -70,11 +70,12 @@
     }
 
     function notaDia(dia, iso) {
-        if (dia && dia.ocupada) return 'Ocupada';
-        if (!dia) return mesDe(iso) === mesVisible ? 'Deshabilitada' : '';
-        if (diaTieneLibre(dia)) return 'Disponible';
-        if (dia.pasado || dia.fuera) return 'Deshabilitada';
-        return 'Deshabilitada';
+        var esHoy = !!(datos && datos.hoy && iso === datos.hoy);
+        if (dia && dia.ocupada) return esHoy ? 'Hoy, ocupada' : 'Ocupada';
+        if (!dia) return mesDe(iso) === mesVisible ? (esHoy ? 'Hoy' : 'Deshabilitada') : '';
+        if (diaTieneLibre(dia)) return esHoy ? 'Hoy, disponible' : 'Disponible';
+        if (dia.pasado || dia.fuera) return esHoy ? 'Hoy' : 'Deshabilitada';
+        return esHoy ? 'Hoy' : 'Deshabilitada';
     }
 
     function mesDe(iso) {
@@ -138,13 +139,26 @@
 
     function claseDia(iso) {
         var dia = diaDe(iso);
-        if (mesDe(iso) !== mesVisible) return 'reserva-otro';
-        if (dia && dia.ocupada) return 'reserva-ocupada';
-        if (dia && eleccion.fecha === iso && diaTieneLibre(dia)) return 'reserva-disponible reserva-activo';
-        if (dia && dia.pasado) return 'reserva-pasado';
-        if (diaTieneLibre(dia)) return 'reserva-disponible';
-        if (dia && dia.fuera) return 'reserva-fuera';
-        return 'reserva-no';
+        var clases = '';
+        if (mesDe(iso) !== mesVisible) {
+            clases = 'reserva-otro';
+        } else if (dia && dia.ocupada) {
+            clases = 'reserva-ocupada';
+        } else if (dia && eleccion.fecha === iso && diaTieneLibre(dia)) {
+            clases = 'reserva-disponible reserva-activo';
+        } else if (dia && dia.pasado) {
+            clases = 'reserva-pasado';
+        } else if (diaTieneLibre(dia)) {
+            clases = 'reserva-disponible';
+        } else if (dia && dia.fuera) {
+            clases = 'reserva-fuera';
+        } else {
+            clases = 'reserva-no';
+        }
+        if (datos && datos.hoy && iso === datos.hoy && mesDe(iso) === mesVisible) {
+            clases += ' reserva-hoy';
+        }
+        return clases;
     }
 
     function etiquetaDe(iso) {
@@ -240,6 +254,7 @@
         html += '<li><i class="reserva-muestra reserva-ocupada"></i> Ocupada</li>';
         html += '<li><i class="reserva-muestra reserva-no"></i> Deshabilitada</li>';
         html += '<li><i class="reserva-muestra reserva-activo"></i> Seleccionada</li>';
+        html += '<li><i class="reserva-muestra reserva-hoy"></i> Hoy</li>';
         html += '</ul>';
         return html;
     }
@@ -609,6 +624,8 @@
                     datos.puede_reservar = json.puede_reservar;
                     datos.sesion = json.sesion;
                     datos.afiliado = json.afiliado;
+                    datos.motivo = json.motivo || '';
+                    datos.mensaje = json.mensaje || '';
                     datos.hoy = json.hoy;
                     datos.limite = json.limite;
                     datos.mes_inicio = json.mes_inicio || datos.mes_inicio;
@@ -652,7 +669,29 @@
             else aviso('Iniciá sesión', 'Entrá con tu cuenta de afiliado para reservar la cita.', true);
             return true;
         }
-        aviso('Solo para afiliados', 'La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA.', true);
+        var motivo = datos.motivo || '';
+        var mensaje = datos.mensaje || '';
+        if (motivo === 'menor_anio') {
+            aviso(
+                'Comunicate con Secretaría',
+                mensaje || 'Todavía no cumplís un año de afiliación. Para gestionar una cita de asesoría, comunicate con Secretaría.',
+                true
+            );
+            return true;
+        }
+        if (motivo === 'sin_cedula') {
+            aviso(
+                'Falta la cédula',
+                mensaje || 'Tu cuenta no tiene cédula. Completá la cédula en tu cuenta para poder pedir cita.',
+                true
+            );
+            return true;
+        }
+        aviso(
+            'Solo para afiliados',
+            mensaje || 'La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA.',
+            true
+        );
         return true;
     }
 

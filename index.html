@@ -23,8 +23,8 @@
   <meta property="og:description" content="Defendiendo los derechos de los trabajadores del INA. Conoce nuestros servicios y comunicados.">
   <meta property="og:image" content="img/logo.png">
   <meta property="og:url" content="https://www.sitrainacr.org">
-  <link rel="stylesheet" href="css/estilo.css?v=3.96">
-  <link rel="stylesheet" href="css/avisos.css?v=1.9">
+  <link rel="stylesheet" href="css/estilo.css?v=3.99">
+  <link rel="stylesheet" href="css/avisos.css?v=2.0">
   <link rel="stylesheet" href="css/estilo-conve.css?v=1.0">
   <link rel="stylesheet" href="css/estilo-hoja.css?v=1.8">
   <link rel="icon" type="image/png" href="img/favicon-logo.png?v=1">
@@ -55,7 +55,7 @@
 }
 </script>
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.42';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='css/daltonico.css?v=1.45';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body class="pagina-inicio pagina-fondo">
@@ -750,11 +750,11 @@
 <main class="contenedor pagina-contacto vista-publica" id="vista-ingresar" data-vista-publica="ingresar" hidden>
   <section class="seccion-formulario cuenta-caja">
     <h2>Ingresar</h2>
-    <p>Entrá con el correo de tu cuenta. Si más adelante nos escribís, pedís cita o te afiliás con ese mismo correo, la respuesta del sindicato llega a Mis mensajes.</p>
+    <p>Entrá con la cédula de tu cuenta. Si más adelante nos escribís o te afiliás con el correo de la cuenta (si lo registraste), la respuesta del sindicato llega a Mis mensajes.</p>
     <form id="form-ingreso">
       <div class="form-grupo">
-        <label for="ingreso-correo">Correo</label>
-        <input type="email" id="ingreso-correo" name="correo" required maxlength="120" autocomplete="username">
+        <label for="ingreso-cedula">Cédula</label>
+        <input type="text" id="ingreso-cedula" name="cedula" required maxlength="9" inputmode="numeric" autocomplete="username">
       </div>
       <button type="submit" class="btn">Ingresar</button>
       <p class="cita-resultado" id="ingreso-aviso" hidden></p>
@@ -765,19 +765,19 @@
 <main class="contenedor pagina-contacto vista-publica" id="vista-registro" data-vista-publica="registro" hidden>
   <section class="seccion-formulario cuenta-caja">
     <h2>Crear cuenta</h2>
-    <p>Creá tu cuenta con tu nombre y tu correo. Usá ese mismo correo cuando nos escribas, pidas cita o te afiliés, para que la respuesta llegue aquí.</p>
+    <p>Creá tu cuenta con tu nombre y tu cédula. El correo es opcional; si lo ponés, usalo cuando nos escribas o te afiliés para que la respuesta llegue aquí.</p>
     <form id="form-registro">
       <div class="form-grupo">
         <label for="registro-nombre">Nombre</label>
         <input type="text" id="registro-nombre" name="nombre" required maxlength="120" autocomplete="name">
       </div>
       <div class="form-grupo">
-        <label for="registro-correo">Correo</label>
-        <input type="email" id="registro-correo" name="correo" required maxlength="120" autocomplete="email">
+        <label for="registro-cedula">Cédula</label>
+        <input type="text" id="registro-cedula" name="cedula" required maxlength="9" inputmode="numeric" autocomplete="off">
       </div>
       <div class="form-grupo">
-        <label for="registro-cedula">Cédula (opcional)</label>
-        <input type="text" id="registro-cedula" name="cedula" maxlength="9" inputmode="numeric" autocomplete="off">
+        <label for="registro-correo">Correo (opcional)</label>
+        <input type="email" id="registro-correo" name="correo" maxlength="120" autocomplete="email">
       </div>
       <button type="submit" class="btn">Registrarme</button>
       <p class="cita-resultado" id="registro-aviso" hidden></p>
@@ -933,11 +933,11 @@
     <img id="imagen-maximizada" src="" alt="Convenio Ampliado">
 </div>
 <script src="js/avisos.js?v=1.11"></script>
-<script src="js/script.js?v=3.46"></script>
-<script src="js/cita-calendario.js?v=1.16"></script>
+<script src="js/script.js?v=3.47"></script>
+<script src="js/cita-calendario.js?v=1.20"></script>
 <script src="js/vistas-publicas.js?v=1.5"></script>
-<script src="js/guia-formsubmit.js?v=1.8"></script>
-<script src="js/cuenta.js?v=1.17"></script>
+<script src="js/guia-formsubmit.js?v=1.9"></script>
+<script src="js/cuenta.js?v=1.18"></script>
 <script src="js/script-conve.js"></script>
 <script src="js/script-documentos.js?v=1.0"></script>
 <script src="js/script-hoja.js?v=1.2"></script>
@@ -1078,6 +1078,7 @@
   var enviandoBoleta = false;
   form.addEventListener('submit', function (evento) {
     evento.preventDefault();
+    evento.stopPropagation();
     if (enviandoBoleta) return;
     if (valor('_honey')) return;
     var correoIna = valor('correo_ina');
@@ -1171,13 +1172,20 @@
     /* Afiliación: php/afiliados.php guarda en Consulta_Afiliacion. */
     form.action = 'php/afiliados.php';
     if (!window.SitrainaAvisos || !window.SitrainaAvisos.exigirSesion) return;
+    enviandoBoleta = true;
+    var botonBoleta = form.querySelector('[type="submit"]');
+    if (botonBoleta) botonBoleta.disabled = true;
     window.SitrainaAvisos.exigirSesion().then(function (conSesion) {
-      if (!conSesion) return;
-      enviandoBoleta = true;
-      var botonBoleta = form.querySelector('[type="submit"]');
-      if (botonBoleta) botonBoleta.disabled = true;
+      if (!conSesion) {
+        enviandoBoleta = false;
+        if (botonBoleta) botonBoleta.disabled = false;
+        return;
+      }
       window.SitrainaAvisos.procesando('Enviando solicitud', 'Estamos guardando tu solicitud. Por favor, esperá y no la envíes de nuevo.');
       form.submit();
+    }).catch(function () {
+      enviandoBoleta = false;
+      if (botonBoleta) botonBoleta.disabled = false;
     });
   });
 })();
@@ -1207,10 +1215,12 @@
   }
   form.addEventListener('submit', function (evento) {
     evento.preventDefault();
+    evento.stopPropagation();
     if (enviandoContacto) return;
     var nombre = form.elements.nombre;
     var email = form.elements.email;
     var mensaje = form.elements.mensaje;
+    var boton = form.querySelector('[type="submit"]');
     nombre.value = nombre.value.trim();
     email.value = email.value.trim();
     mensaje.value = mensaje.value.trim();
@@ -1227,21 +1237,33 @@
       return;
     }
     if (!window.SitrainaAvisos || !window.SitrainaAvisos.exigirSesion) return;
+    enviandoContacto = true;
+    if (boton) boton.disabled = true;
     window.SitrainaAvisos.exigirSesion().then(function (conSesion) {
-      if (!conSesion) return;
-      enviandoContacto = true;
-      var boton = form.querySelector('[type="submit"]');
-      if (boton) boton.disabled = true;
+      if (!conSesion) {
+        enviandoContacto = false;
+        if (boton) boton.disabled = false;
+        return;
+      }
       window.SitrainaAvisos.procesando('Enviando solicitud', 'Estamos registrando tu mensaje. No vuelvas a enviarlo.');
       enviarContacto(boton);
+    }).catch(function () {
+      enviandoContacto = false;
+      if (boton) boton.disabled = false;
     });
-    function enviarContacto(boton) {
-    fetch(form.action || 'contacto.php', { method: 'POST', body: new FormData(form), credentials: 'same-origin' })
+    function enviarContacto(botonEnvio) {
+    fetch(form.action || 'contacto.php', {
+      method: 'POST',
+      body: new FormData(form),
+      credentials: 'same-origin',
+      redirect: 'follow',
+      cache: 'no-store'
+    })
       .then(function (respuesta) { return respuesta.text(); })
       .then(function (html) {
         var resultado = leerRespuesta(html);
         enviandoContacto = false;
-        if (boton) boton.disabled = false;
+        if (botonEnvio) botonEnvio.disabled = false;
         if (!window.SitrainaAvisos) return;
         if (resultado.tipo === 'sesion') {
           window.SitrainaAvisos.sesion();
@@ -1258,7 +1280,7 @@
       })
       .catch(function () {
         enviandoContacto = false;
-        if (boton) boton.disabled = false;
+        if (botonEnvio) botonEnvio.disabled = false;
         if (window.SitrainaAvisos) {
           window.SitrainaAvisos.error('No se pudo enviar', 'Ocurrió un problema al procesar la solicitud. Volvé a intentarlo.');
         }

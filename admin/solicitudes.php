@@ -238,15 +238,51 @@ function afiliados_recibir_foto($campo, $obligatorio, $prefijo) {
     return $dirRel . '/' . $nombreArchivo;
 }
 
+function afiliados_asegurar_sede_estado($db) {
+    static $listo = false;
+    if ($listo || !$db) {
+        return $listo;
+    }
+    $colSede = $db->query("SHOW COLUMNS FROM Cuenta LIKE 'sede_regional'");
+    $haySede = $colSede && $colSede->num_rows > 0;
+    if ($colSede) {
+        $colSede->free();
+    }
+    if (!$haySede) {
+        $db->query('ALTER TABLE Cuenta ADD COLUMN sede_regional VARCHAR(160) NULL DEFAULT NULL AFTER correo');
+    }
+    $colEstado = $db->query("SHOW COLUMNS FROM Cuenta LIKE 'estado'");
+    $hayEstado = $colEstado && $colEstado->num_rows > 0;
+    if ($colEstado) {
+        $colEstado->free();
+    }
+    if (!$hayEstado) {
+        $db->query('ALTER TABLE Cuenta ADD COLUMN estado VARCHAR(40) NULL DEFAULT NULL AFTER sede_regional');
+    }
+    $colCorreo = $db->query("SHOW COLUMNS FROM Cuenta LIKE 'correo'");
+    if ($colCorreo && $colCorreo->num_rows > 0) {
+        $meta = $colCorreo->fetch_assoc();
+        if ($meta && strtoupper((string) ($meta['Null'] ?? '')) === 'NO') {
+            $db->query('ALTER TABLE Cuenta MODIFY correo VARCHAR(120) NULL DEFAULT NULL');
+        }
+    }
+    if ($colCorreo) {
+        $colCorreo->free();
+    }
+    $listo = true;
+    return $listo;
+}
+
 function listar_afiliados() {
     $db = abrir_afiliados();
     if (!$db) {
         return null;
     }
     afiliados_asegurar_foto($db);
+    afiliados_asegurar_sede_estado($db);
     $resultado = $db->query(
-        'SELECT id, cedula, nombre_completo, correo, foto, creado_en
-         FROM Cuenta ORDER BY id DESC LIMIT 500'
+        'SELECT id, cedula, nombre_completo, correo, sede_regional, estado, foto, creado_en
+         FROM Cuenta ORDER BY nombre_completo ASC LIMIT 2000'
     );
     if (!$resultado) {
         $db->close();
@@ -259,12 +295,76 @@ function listar_afiliados() {
             'cedula' => preg_replace('/\D/', '', (string) $fila['cedula']),
             'nombre_completo' => (string) ($fila['nombre_completo'] ?? ''),
             'correo' => strtolower(trim((string) ($fila['correo'] ?? ''))),
+            'sede_regional' => (string) ($fila['sede_regional'] ?? ''),
+            'estado' => (string) ($fila['estado'] ?? ''),
             'foto' => afiliados_ruta_foto_ok($fila['foto'] ?? ''),
             'creado_en' => (string) ($fila['creado_en'] ?? ''),
         ];
     }
     $resultado->free();
     $db->close();
+    return $filas;
+}
+
+function listar_usuarios_web() {
+    $db = abrir_cuentas_web();
+    if (!$db) {
+        return null;
+    }
+    $resultado = $db->query(
+        'SELECT id, nombre, correo, cedula, activo, creado_en
+         FROM Usuario_Web ORDER BY id DESC LIMIT 1000'
+    );
+    if (!$resultado) {
+        $db->close();
+        return null;
+    }
+    $filas = [];
+    $cedulas = [];
+    while ($fila = $resultado->fetch_assoc()) {
+        $cedula = preg_replace('/\D/', '', (string) ($fila['cedula'] ?? ''));
+        $item = [
+            'id' => (int) $fila['id'],
+            'nombre' => (string) ($fila['nombre'] ?? ''),
+            'nombre_completo' => (string) ($fila['nombre'] ?? ''),
+            'correo' => strtolower(trim((string) ($fila['correo'] ?? ''))),
+            'cedula' => $cedula,
+            'activo' => (int) ($fila['activo'] ?? 1),
+            'creado_en' => (string) ($fila['creado_en'] ?? ''),
+            'es_afiliado' => 0,
+        ];
+        $filas[] = $item;
+        if (preg_match('/^[0-9]{9}$/', $cedula)) {
+            $cedulas[$cedula] = true;
+        }
+    }
+    $resultado->free();
+    $db->close();
+    if (!$cedulas) {
+        return $filas;
+    }
+    $dbAfil = abrir_afiliados();
+    if (!$dbAfil) {
+        return $filas;
+    }
+    $mapa = [];
+    $consulta = $dbAfil->query('SELECT cedula FROM Cuenta');
+    if ($consulta) {
+        while ($filaAfil = $consulta->fetch_assoc()) {
+            $ced = preg_replace('/\D/', '', (string) ($filaAfil['cedula'] ?? ''));
+            if (preg_match('/^[0-9]{9}$/', $ced)) {
+                $mapa[$ced] = true;
+            }
+        }
+        $consulta->free();
+    }
+    $dbAfil->close();
+    foreach ($filas as &$fila) {
+        if (!empty($mapa[$fila['cedula']])) {
+            $fila['es_afiliado'] = 1;
+        }
+    }
+    unset($fila);
     return $filas;
 }
 
@@ -455,6 +555,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'contacto' => [],
                 'cita' => listar_citas($dbUsuarios, $dbResp),
                 'afilacion' => [],
+                'usuarios' => [],
                 'afiliados' => [],
             ];
         } else {
@@ -462,6 +563,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'contacto' => listar_contactos($dbUsuarios, $dbResp),
                 'cita' => listar_citas($dbUsuarios, $dbResp),
                 'afilacion' => listar_afilaciones($dbUsuarios, $dbResp),
+                'usuarios' => listar_usuarios_web(),
                 'afiliados' => listar_afiliados(),
             ];
         }
@@ -476,6 +578,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         solicitudes_responder(200, ['ok' => true, 'datos' => $datos]);
+    }
+    if ($tipo === 'usuarios') {
+        $lista = listar_usuarios_web();
+        $dbUsuarios->close();
+        $dbResp->close();
+        if ($lista === null) {
+            solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos leer las cuentas de usuario. Intentá más tarde.']);
+        }
+        solicitudes_responder(200, ['ok' => true, 'tipo' => 'usuarios', 'filas' => $lista]);
     }
     if ($tipo === 'afiliados') {
         $lista = listar_afiliados();
@@ -539,6 +650,7 @@ if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado' || $accion
         solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos abrir las personas afiliadas. Intentá más tarde.']);
     }
     afiliados_asegurar_foto($dbAfiliados);
+    afiliados_asegurar_sede_estado($dbAfiliados);
     $dbAfiliados->query("SET @sitraina_panel = '1'");
     if ($accion === 'eliminar_afiliado') {
         $idAfiliado = (int) ($_POST['id'] ?? 0);
@@ -626,7 +738,10 @@ if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado' || $accion
     $cedulaNueva = preg_replace('/\D/', '', (string) ($_POST['cedula'] ?? ''));
     $nombreNuevo = trim((string) ($_POST['nombre_completo'] ?? ''));
     $correoNuevo = strtolower(trim((string) ($_POST['correo'] ?? '')));
+    $sedeNueva = trim((string) ($_POST['sede_regional'] ?? ''));
+    $estadoNuevo = strtoupper(trim((string) ($_POST['estado'] ?? '')));
     $largoNombre = function_exists('mb_strlen') ? mb_strlen($nombreNuevo, 'UTF-8') : strlen($nombreNuevo);
+    $largoSede = function_exists('mb_strlen') ? mb_strlen($sedeNueva, 'UTF-8') : strlen($sedeNueva);
     if (!preg_match('/^[0-9]{9}$/', $cedulaNueva)) {
         $dbAfiliados->close();
         solicitudes_responder(400, ['ok' => false, 'mensaje' => 'La cédula debe tener 9 dígitos.']);
@@ -635,20 +750,43 @@ if ($accion === 'agregar_afiliado' || $accion === 'eliminar_afiliado' || $accion
         $dbAfiliados->close();
         solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Escribí el nombre completo.']);
     }
-    if (!preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/', $correoNuevo) || strlen($correoNuevo) > 120) {
+    if ($correoNuevo !== '' && (!preg_match('/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/', $correoNuevo) || strlen($correoNuevo) > 120)) {
         $dbAfiliados->close();
-        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Escribí un correo válido.']);
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'Escribí un correo válido o dejalo vacío.']);
     }
+    if ($largoSede > 160) {
+        $dbAfiliados->close();
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'La sede o regional es demasiado larga.']);
+    }
+    if ($estadoNuevo !== '' && $estadoNuevo !== 'MAS DE UN AÑO' && $estadoNuevo !== 'MENOS DE UN AÑO') {
+        $dbAfiliados->close();
+        solicitudes_responder(400, ['ok' => false, 'mensaje' => 'El estado debe ser MAS DE UN AÑO o MENOS DE UN AÑO.']);
+    }
+    $correoBind = $correoNuevo !== '' ? $correoNuevo : null;
+    $sedeBind = $sedeNueva !== '' ? $sedeNueva : null;
+    $estadoBind = $estadoNuevo !== '' ? $estadoNuevo : null;
     $fotoNueva = afiliados_recibir_foto('foto', false, $cedulaNueva);
-    $fotoGuardar = $fotoNueva ? $fotoNueva : '';
+    $fotoGuardar = $fotoNueva ? $fotoNueva : null;
     $creadoEn = (new DateTime('now', new DateTimeZone('America/Costa_Rica')))->format('Y-m-d H:i:s');
-    $insertar = $dbAfiliados->prepare('INSERT INTO Cuenta (cedula, nombre_completo, correo, foto, creado_en) VALUES (?, ?, ?, ?, ?)');
+    $insertar = $dbAfiliados->prepare(
+        'INSERT INTO Cuenta (cedula, nombre_completo, correo, sede_regional, estado, foto, creado_en)
+         VALUES (?, ?, ?, ?, ?, ?, ?)'
+    );
     if (!$insertar) {
         afiliados_borrar_foto($fotoNueva);
         $dbAfiliados->close();
         solicitudes_responder(500, ['ok' => false, 'mensaje' => 'No pudimos anotar a esa persona.']);
     }
-    $insertar->bind_param('sssss', $cedulaNueva, $nombreNuevo, $correoNuevo, $fotoGuardar, $creadoEn);
+    $insertar->bind_param(
+        'sssssss',
+        $cedulaNueva,
+        $nombreNuevo,
+        $correoBind,
+        $sedeBind,
+        $estadoBind,
+        $fotoGuardar,
+        $creadoEn
+    );
     $guardo = $insertar->execute();
     $duplicado = !$guardo && ((int) $insertar->errno === 1062 || (int) $dbAfiliados->errno === 1062);
     $insertar->close();

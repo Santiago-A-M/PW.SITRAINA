@@ -4714,7 +4714,6 @@ body.dark-mode .pagina-cita .contenedor {
 
 .reserva-no,
 .reserva-pasado,
-.reserva-otro,
 .reserva-fuera {
   background: #f6f1ee;
   border-color: #e4d5ce;
@@ -4722,10 +4721,19 @@ body.dark-mode .pagina-cita .contenedor {
   cursor: not-allowed;
 }
 
+.reserva-otro {
+  background: transparent;
+  border-color: transparent;
+  color: #2b211f;
+  opacity: 0.32;
+  box-shadow: none;
+  cursor: default;
+}
+
 .reserva-no strong,
 .reserva-pasado strong,
-.reserva-otro strong,
-.reserva-fuera strong {
+.reserva-fuera strong,
+.reserva-otro strong {
   text-decoration: none;
 }
 
@@ -4971,11 +4979,18 @@ body.dark-mode .reserva-muestra.reserva-ocupada {
 
 body.dark-mode .reserva-no,
 body.dark-mode .reserva-pasado,
-body.dark-mode .reserva-otro,
 body.dark-mode .reserva-fuera {
   background: #241c1a;
   border-color: #4a3d38;
   color: #a89890;
+}
+
+body.dark-mode .reserva-otro {
+  background: transparent;
+  border-color: transparent;
+  color: #f7f2ee;
+  opacity: 0.3;
+  box-shadow: none;
 }
 
 body.dark-mode .reserva-hora:hover:not(:disabled),
@@ -9364,7 +9379,6 @@ body.dark-mode .reserva-popup-caja.reserva-caja-calendario {
 
 .reserva-dia.reserva-no::after,
 .reserva-dia.reserva-pasado::after,
-.reserva-dia.reserva-otro::after,
 .reserva-dia.reserva-fuera::after,
 .reserva-muestra.reserva-no::after,
 .reserva-muestra.reserva-pasado::after,
@@ -9378,6 +9392,10 @@ body.dark-mode .reserva-popup-caja.reserva-caja-calendario {
   line-height: 1;
   pointer-events: none;
   color: #8e1a20;
+}
+
+.reserva-dia.reserva-otro::after {
+  content: none;
 }
 
 .reserva-muestra.reserva-no,
@@ -9403,7 +9421,6 @@ body.dark-mode .reserva-popup-caja.reserva-caja-calendario {
 
 body:not(.dark-mode) .reserva-dia.reserva-no,
 body:not(.dark-mode) .reserva-dia.reserva-pasado,
-body:not(.dark-mode) .reserva-dia.reserva-otro,
 body:not(.dark-mode) .reserva-dia.reserva-fuera,
 body:not(.dark-mode) .reserva-muestra.reserva-no,
 body:not(.dark-mode) .reserva-muestra.reserva-pasado,
@@ -9411,6 +9428,14 @@ body:not(.dark-mode) .reserva-muestra.reserva-fuera {
   background: #f3eeeb;
   border-color: #d7ccc6;
   color: #5c463f;
+}
+
+body:not(.dark-mode) .reserva-dia.reserva-otro {
+  background: transparent;
+  border-color: transparent;
+  color: #2b211f;
+  opacity: 0.32;
+  box-shadow: none;
 }
 
 body:not(.dark-mode) .reserva-dia.reserva-ocupada,
@@ -9430,7 +9455,6 @@ body.dark-mode .reserva-muestra.reserva-disponible {
 
 body.dark-mode .reserva-dia.reserva-no,
 body.dark-mode .reserva-dia.reserva-pasado,
-body.dark-mode .reserva-dia.reserva-otro,
 body.dark-mode .reserva-dia.reserva-fuera,
 body.dark-mode .reserva-muestra.reserva-no,
 body.dark-mode .reserva-muestra.reserva-pasado,
@@ -9438,6 +9462,14 @@ body.dark-mode .reserva-muestra.reserva-fuera {
   background: #241c1a;
   border-color: #4a3d38;
   color: #d7ccc6;
+}
+
+body.dark-mode .reserva-dia.reserva-otro {
+  background: transparent;
+  border-color: transparent;
+  color: #f7f2ee;
+  opacity: 0.3;
+  box-shadow: none;
 }
 
 body.dark-mode .reserva-dia.reserva-ocupada,
@@ -9449,12 +9481,81 @@ body.dark-mode .reserva-muestra.reserva-ocupada {
 
 body.dark-mode .reserva-dia.reserva-no::after,
 body.dark-mode .reserva-dia.reserva-pasado::after,
-body.dark-mode .reserva-dia.reserva-otro::after,
 body.dark-mode .reserva-dia.reserva-fuera::after,
 body.dark-mode .reserva-muestra.reserva-no::after,
 body.dark-mode .reserva-muestra.reserva-pasado::after,
 body.dark-mode .reserva-muestra.reserva-fuera::after {
   color: #ffc4bc;
+}
+
+body.dark-mode .reserva-dia.reserva-otro::after {
+  content: none;
+}
+
+@keyframes reserva-hoy-pulso {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(200, 29, 37, 0.42);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(200, 29, 37, 0.12);
+  }
+}
+
+.reserva-dia.reserva-hoy,
+.reserva-muestra.reserva-hoy {
+  position: relative;
+  border: 2px solid #c81d25;
+  z-index: 1;
+}
+
+.reserva-dia.reserva-hoy {
+  animation: reserva-hoy-pulso 1.8s ease-in-out infinite;
+}
+
+.reserva-dia.reserva-hoy.reserva-activo,
+.reserva-dia.reserva-hoy.reserva-activo:hover:not(:disabled),
+.reserva-dia.reserva-hoy.reserva-activo:focus-visible:not(:disabled) {
+  border-color: #c81d25;
+  animation: reserva-hoy-pulso 1.8s ease-in-out infinite;
+}
+
+.reserva-muestra.reserva-hoy {
+  background: transparent;
+  box-shadow: 0 0 0 2px rgba(200, 29, 37, 0.28);
+}
+
+body.dark-mode .reserva-dia.reserva-hoy,
+body.dark-mode .reserva-muestra.reserva-hoy {
+  border-color: #ff8a90;
+}
+
+body.dark-mode .reserva-dia.reserva-hoy {
+  animation-name: reserva-hoy-pulso-oscuro;
+}
+
+@keyframes reserva-hoy-pulso-oscuro {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 138, 144, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(255, 138, 144, 0.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reserva-dia.reserva-hoy,
+  .reserva-dia.reserva-hoy.reserva-activo,
+  .reserva-dia.reserva-hoy.reserva-activo:hover:not(:disabled),
+  .reserva-dia.reserva-hoy.reserva-activo:focus-visible:not(:disabled) {
+    animation: none;
+    box-shadow: 0 0 0 3px rgba(200, 29, 37, 0.22);
+  }
+
+  body.dark-mode .reserva-dia.reserva-hoy {
+    box-shadow: 0 0 0 3px rgba(255, 138, 144, 0.25);
+  }
 }
 
 @media (max-width: 640px) {
@@ -9536,6 +9637,29 @@ body.dark-mode .reserva-muestra.reserva-fuera::after {
 .reserva-muestra.reserva-ocupada::after {
   top: 5px;
   right: 7.5px;
+}
+
+.reserva-dia.reserva-hoy:not(.reserva-ocupada)::after,
+.reserva-dia.reserva-hoy.reserva-activo:not(.reserva-ocupada)::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  width: 0.95rem;
+  height: 0.95rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  color: #c81d25;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='8' r='3.5' fill='black'/%3E%3Cpath fill='black' d='M5 19.4c.5-3.5 3.2-5.3 7-5.3s6.5 1.8 7 5.3c.1.4-.2.8-.6.8H5.6c-.4 0-.7-.4-.6-.8z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='8' r='3.5' fill='black'/%3E%3Cpath fill='black' d='M5 19.4c.5-3.5 3.2-5.3 7-5.3s6.5 1.8 7 5.3c.1.4-.2.8-.6.8H5.6c-.4 0-.7-.4-.6-.8z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+body.dark-mode .reserva-dia.reserva-hoy:not(.reserva-ocupada)::after,
+body.dark-mode .reserva-dia.reserva-hoy.reserva-activo:not(.reserva-ocupada)::after {
+  color: #ff8a90;
 }
 
 body.dark-mode .reserva-dia.reserva-activo,

@@ -287,14 +287,28 @@
 
     function enviarAuth(accion, datos, avisoId) {
         if (enviando) return;
+        var cedulaAuth = String(datos.cedula || '').replace(/\D/g, '');
         if (accion === 'registrar') {
-            if (!String(datos.nombre || '').trim() || !String(datos.correo || '').trim()) {
-                if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'El nombre y el correo son obligatorios.');
+            if (!String(datos.nombre || '').trim()) {
+                if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'El nombre es obligatorio.');
                 return;
             }
-        } else if (!String(datos.correo || '').trim()) {
-            if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'Escribí el correo de la cuenta.');
+            if (!/^[0-9]{9}$/.test(cedulaAuth)) {
+                if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'La cédula es obligatoria y debe tener 9 dígitos.');
+                return;
+            }
+            var correoOpcional = String(datos.correo || '').trim();
+            if (correoOpcional && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoOpcional)) {
+                if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'Si ponés correo, tiene que estar completo.');
+                return;
+            }
+            datos.cedula = cedulaAuth;
+            datos.correo = correoOpcional;
+        } else if (!/^[0-9]{9}$/.test(cedulaAuth)) {
+            if (window.SitrainaAvisos) window.SitrainaAvisos.campos('Revisá la información', 'Escribí la cédula de 9 dígitos de la cuenta.');
             return;
+        } else {
+            datos.cedula = cedulaAuth;
         }
         enviando = true;
         if (window.SitrainaAvisos) {
@@ -455,7 +469,7 @@
         formIngreso.addEventListener('submit', function (ev) {
             ev.preventDefault();
             enviarAuth('ingresar', {
-                correo: ($('ingreso-correo') || {}).value || ''
+                cedula: ($('ingreso-cedula') || {}).value || ''
             }, 'ingreso-aviso');
         });
     }
@@ -466,8 +480,8 @@
             ev.preventDefault();
             enviarAuth('registrar', {
                 nombre: ($('registro-nombre') || {}).value || '',
-                correo: ($('registro-correo') || {}).value || '',
-                cedula: ($('registro-cedula') || {}).value || ''
+                cedula: ($('registro-cedula') || {}).value || '',
+                correo: ($('registro-correo') || {}).value || ''
             }, 'registro-aviso');
         });
     }

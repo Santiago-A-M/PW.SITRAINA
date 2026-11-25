@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const hojaDaltonico = () => {
-        var href = "css/daltonico.css?v=1.42";
+        var href = "css/daltonico.css?v=1.45";
         try {
             var links = document.getElementsByTagName("link");
             for (var i = 0; i < links.length; i++) {
                 var h = links[i].getAttribute("href") || "";
                 if (h.indexOf("estilo.css") !== -1) {
-                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.42");
+                    href = h.replace(/estilo\.css.*/, "daltonico.css?v=1.45");
                     break;
                 }
             }
@@ -1718,7 +1718,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return bot('Editado significa que administración corrigió una respuesta que ya te había enviado. La primera vez que llega no lleva esa etiqueta. Solo aparece si la volvieron a enviar con un cambio.');
         }
         if (/crear cuenta|crear una cuenta|registrarme|iniciar sesion|ingresar a mi cuenta|cerrar sesion|ya inicie sesion/.test(q)) {
-            return bot('En el engranaje de la barra están Ayuda, Ingresar y Crear cuenta. La cuenta pide tu nombre y tu correo; la cédula es opcional. Cuando ya entraste, Ingresar y Crear cuenta se ocultan y quedan Citas, Mis mensajes y Cerrar sesión. Ayuda explica cómo moverte por la página. En Citas ves las confirmadas, las que no se aceptaron y las canceladas.');
+            return bot('En el engranaje de la barra están Ayuda, Ingresar y Crear cuenta. La cuenta pide tu nombre y tu cédula; el correo es opcional. Para ingresar usás la cédula. Cuando ya entraste, Ingresar y Crear cuenta se ocultan y quedan Citas, Mis mensajes y Cerrar sesión. Ayuda explica cómo moverte por la página. En Citas ves las confirmadas, las que no se aceptaron y las canceladas.');
         }
         if (/no (me )?deja (pedir|continuar|seguir)( con)?( la)? cita|no coinciden|datos no coinciden|no reconoce (mi |la )?cedula/.test(q)) {
             return bot('Para seguir con la cita, la cédula de 9 dígitos, el nombre completo y el correo tienen que ser exactamente los mismos que administración tiene registrados. Revisá tildes, espacios y el correo. Si siguen sin coincidir, escribí a sitraina@ina.ac.cr.');

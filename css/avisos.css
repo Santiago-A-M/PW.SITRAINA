@@ -95,7 +95,7 @@ body.sit-aviso-abierto {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #f3ebe6;
+  background: #f3e0de;
   color: #6e1218;
 }
 
@@ -369,18 +369,55 @@ body.dark-mode .sit-aviso-confirmar .sit-aviso-titulo {
   color: #ffd7a8;
 }
 
-html.dark-mode .sit-aviso-exito .sit-aviso-icono,
-body.dark-mode .sit-aviso-exito .sit-aviso-icono,
 html.dark-mode .sit-aviso-exito .sit-aviso-titulo,
 body.dark-mode .sit-aviso-exito .sit-aviso-titulo {
   color: #b7ebc9;
 }
 
 html.dark-mode .sit-aviso-campos .sit-aviso-titulo,
-body.dark-mode .sit-aviso-campos .sit-aviso-titulo,
-html.dark-mode .sit-aviso-campos .sit-aviso-icono,
-body.dark-mode .sit-aviso-campos .sit-aviso-icono {
+body.dark-mode .sit-aviso-campos .sit-aviso-titulo {
   color: #ffd7a8;
+}
+
+/* Circulo e icono: contraste en modo oscuro (rojo). */
+html.dark-mode .sit-aviso-icono,
+body.dark-mode .sit-aviso-icono {
+  background: #3a221f;
+  color: #ffc4bc;
+}
+
+html.dark-mode .sit-aviso-exito .sit-aviso-icono,
+body.dark-mode .sit-aviso-exito .sit-aviso-icono {
+  background: #1e3a2a;
+  color: #b7ebc9;
+}
+
+html.dark-mode .sit-aviso-error .sit-aviso-icono,
+body.dark-mode .sit-aviso-error .sit-aviso-icono,
+html.dark-mode .sit-aviso-peligro .sit-aviso-icono,
+body.dark-mode .sit-aviso-peligro .sit-aviso-icono {
+  background: #4a1f22;
+  color: #ffc4bc;
+}
+
+html.dark-mode .sit-aviso-campos .sit-aviso-icono,
+body.dark-mode .sit-aviso-campos .sit-aviso-icono,
+html.dark-mode .sit-aviso-confirmar .sit-aviso-icono,
+body.dark-mode .sit-aviso-confirmar .sit-aviso-icono {
+  background: #3a2a18;
+  color: #ffd7a8;
+}
+
+html.dark-mode .sit-aviso-afiliado .sit-aviso-icono,
+body.dark-mode .sit-aviso-afiliado .sit-aviso-icono {
+  background: #3a221f;
+  color: #ffc4bc;
+}
+
+html.dark-mode .sit-aviso-proceso .sit-aviso-icono,
+body.dark-mode .sit-aviso-proceso .sit-aviso-icono {
+  background: transparent;
+  color: #ffc4bc;
 }
 
 html.dark-mode .sit-aviso-btn-sec,
@@ -427,27 +464,56 @@ html.daltonico .sit-aviso-confirmar .sit-aviso-caja {
 }
 
 html.daltonico .sit-aviso-titulo,
-html.daltonico .sit-aviso-cerrar,
-html.daltonico .sit-aviso-icono {
+html.daltonico .sit-aviso-cerrar {
   color: #0a3d5c;
 }
 
 html.daltonico .sit-aviso-error .sit-aviso-titulo,
-html.daltonico .sit-aviso-error .sit-aviso-icono,
 html.daltonico .sit-aviso-peligro .sit-aviso-titulo {
   color: #0a3d5c;
 }
 
-html.daltonico .sit-aviso-exito .sit-aviso-titulo,
-html.daltonico .sit-aviso-exito .sit-aviso-icono {
+html.daltonico .sit-aviso-exito .sit-aviso-titulo {
   color: #146338;
 }
 
 html.daltonico .sit-aviso-campos .sit-aviso-titulo,
-html.daltonico .sit-aviso-campos .sit-aviso-icono,
-html.daltonico .sit-aviso-confirmar .sit-aviso-titulo,
-html.daltonico .sit-aviso-confirmar .sit-aviso-icono {
+html.daltonico .sit-aviso-confirmar .sit-aviso-titulo {
   color: #8a4e22;
+}
+
+/* Circulo e icono: modo daltónico claro (azul). */
+html.daltonico .sit-aviso-icono {
+  background: #e3f0fb;
+  color: #0a3d5c;
+}
+
+html.daltonico .sit-aviso-exito .sit-aviso-icono {
+  background: #e7f6ee;
+  color: #146338;
+}
+
+html.daltonico .sit-aviso-error .sit-aviso-icono,
+html.daltonico .sit-aviso-peligro .sit-aviso-icono {
+  background: #e3f0fb;
+  color: #0a3d5c;
+}
+
+html.daltonico .sit-aviso-campos .sit-aviso-icono,
+html.daltonico .sit-aviso-confirmar .sit-aviso-icono {
+  background: #fff0e4;
+  color: #8a4e22;
+}
+
+html.daltonico .sit-aviso-sesion .sit-aviso-icono,
+html.daltonico .sit-aviso-afiliado .sit-aviso-icono {
+  background: #e3f0fb;
+  color: #0a3d5c;
+}
+
+html.daltonico .sit-aviso-proceso .sit-aviso-icono {
+  background: transparent;
+  color: #0072b2;
 }
 
 html.daltonico .sit-aviso-cerrar {
@@ -540,19 +606,52 @@ html.daltonico.dark-mode .sit-aviso-titulo,
 html.daltonico.dark-mode .sit-aviso-exito .sit-aviso-titulo,
 html.daltonico.dark-mode .sit-aviso-campos .sit-aviso-titulo,
 html.daltonico.dark-mode .sit-aviso-cerrar,
-html.daltonico.dark-mode .sit-aviso-icono,
-html.daltonico.dark-mode .sit-aviso-exito .sit-aviso-icono,
-html.daltonico.dark-mode .sit-aviso-error .sit-aviso-icono,
-html.daltonico.dark-mode .sit-aviso-campos .sit-aviso-icono,
 html.daltonico body.dark-mode .sit-aviso-titulo,
-html.daltonico body.dark-mode .sit-aviso-cerrar,
-html.daltonico body.dark-mode .sit-aviso-icono {
+html.daltonico body.dark-mode .sit-aviso-cerrar {
   color: #b3dff5;
 }
 
+/* Circulo e icono: modo daltónico oscuro (azul). */
 html.daltonico.dark-mode .sit-aviso-icono,
 html.daltonico body.dark-mode .sit-aviso-icono {
-  background: #24384f;
+  background: #1a3148;
+  color: #b3dff5;
+}
+
+html.daltonico.dark-mode .sit-aviso-exito .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-exito .sit-aviso-icono {
+  background: #1e3a2a;
+  color: #b7ebc9;
+}
+
+html.daltonico.dark-mode .sit-aviso-error .sit-aviso-icono,
+html.daltonico.dark-mode .sit-aviso-peligro .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-error .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-peligro .sit-aviso-icono {
+  background: #1a3148;
+  color: #b3dff5;
+}
+
+html.daltonico.dark-mode .sit-aviso-campos .sit-aviso-icono,
+html.daltonico.dark-mode .sit-aviso-confirmar .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-campos .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-confirmar .sit-aviso-icono {
+  background: #3a2a18;
+  color: #f6d3be;
+}
+
+html.daltonico.dark-mode .sit-aviso-sesion .sit-aviso-icono,
+html.daltonico.dark-mode .sit-aviso-afiliado .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-sesion .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-afiliado .sit-aviso-icono {
+  background: #1a3148;
+  color: #b3dff5;
+}
+
+html.daltonico.dark-mode .sit-aviso-proceso .sit-aviso-icono,
+html.daltonico body.dark-mode .sit-aviso-proceso .sit-aviso-icono {
+  background: transparent;
+  color: #8ec4f6;
 }
 
 html.daltonico.dark-mode .sit-aviso-cerrar,

@@ -69,6 +69,25 @@ function registrar_contacto_consulta($nombre, $correo, $asunto, $mensaje) {
     $correo = strtolower(trim((string) $correo));
     $asunto = trim((string) $asunto);
     $mensaje = trim((string) $mensaje);
+    /* Un mismo envío a veces llega dos veces (doble clic o reintento). Si ya está, no insertar otra fila. */
+    $revisar = $db->prepare(
+        'SELECT id FROM Consulta_Contacto
+         WHERE correo = ? AND mensaje = ?
+           AND creado_en >= (NOW() - INTERVAL 5 MINUTE)
+         ORDER BY id DESC LIMIT 1'
+    );
+    if ($revisar) {
+        $revisar->bind_param('ss', $correo, $mensaje);
+        if ($revisar->execute()) {
+            $revisar->store_result();
+            if ($revisar->num_rows > 0) {
+                $revisar->close();
+                $db->close();
+                return true;
+            }
+        }
+        $revisar->close();
+    }
     $usuarioId = sitraina_id_si_cuenta_en_formulario([$correo]);
     $uid = $usuarioId > 0 ? $usuarioId : null;
     $consulta = $db->prepare(

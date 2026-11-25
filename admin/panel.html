@@ -38,10 +38,10 @@
     body.pagina-panel { background: transparent; }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.95">
-  <link rel="stylesheet" href="../css/avisos.css?v=1.9">
+  <link rel="stylesheet" href="admin.css?v=7.00">
+  <link rel="stylesheet" href="../css/avisos.css?v=2.0">
 <script>
-(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.62';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
+(function(){try{if(!document.documentElement.classList.contains('daltonico'))return;var href='daltonico-admin.css?v=1.64';var link=document.getElementById('daltonico-css');if(!link){link=document.createElement('link');link.id='daltonico-css';link.rel='stylesheet';link.href=href;}document.head.appendChild(link);}catch(e){}})();
 </script>
 </head>
 <body class="pagina-panel {{rol-clase}}">
@@ -78,11 +78,11 @@
           </span>
           <span class="admin-nav-label">Afiliaciones</span>
         </a>
-        <a href="#afiliados" data-admin-nav="afiliados" title="Afiliados" aria-label="Afiliados">
+        <a href="#usuarios" data-admin-nav="usuarios" title="Usuarios" aria-label="Usuarios">
           <span class="admin-nav-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a3.5 3.5 0 0 1 0 6.74" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </span>
-          <span class="admin-nav-label">Afiliados</span>
+          <span class="admin-nav-label">Usuarios</span>
         </a>
         <a href="#cita" data-admin-nav="cita" title="Citas con Asesoría" aria-label="Citas con Asesoría">
           <span class="admin-nav-icon" aria-hidden="true">
@@ -229,20 +229,21 @@
     <div id="lista-sol-afilacion" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
-  <main class="caja caja-panel admin-vista" id="vista-afiliados" data-vista="afiliados" hidden>
+  <main class="caja caja-panel admin-vista" id="vista-usuarios" data-vista="usuarios" hidden>
     <header class="vista-cabeza">
-      <h1>Afiliados</h1>
-      <p class="panel-intro">Personas afiliadas que pueden pedir cita. Su cédula, su nombre y su correo se anotan aquí.</p>
+      <h1>Usuarios</h1>
+      <p class="panel-intro">Cuentas que la gente creó o usó para ingresar al sitio. Acá también gestionás el padrón de afiliados.</p>
     </header>
-    <p class="guardadas-panel-ayuda">Las solicitudes que envía la gente siguen en Afiliaciones. Aquí solo se agregan o se quitan personas afiliadas.</p>
+    <p class="guardadas-panel-ayuda">La lista muestra cuentas web. Para ver o agregar afiliados del padrón usá los botones de abajo.</p>
     <div class="panel-acciones">
       <button type="button" class="btn-abrir-asistente" id="abrir-afiliado">Añadir afiliado</button>
+      <button type="button" class="btn-abrir-asistente btn-atajo-secundario" id="abrir-lista-afiliados">Ver afiliados</button>
     </div>
     <div class="admin-buscar">
-      <label class="admin-buscar-label" for="buscar-afiliados">Buscar</label>
-      <input type="search" id="buscar-afiliados" class="admin-buscar-input" placeholder="Nombre, cédula, correo…" autocomplete="off">
+      <label class="admin-buscar-label" for="buscar-usuarios">Buscar</label>
+      <input type="search" id="buscar-usuarios" class="admin-buscar-input" placeholder="Nombre, cédula, correo…" autocomplete="off">
     </div>
-    <div id="lista-afiliados" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
+    <div id="lista-usuarios" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
   </main>
 
   <main class="caja caja-panel admin-vista" id="vista-cita" data-vista="cita" hidden>
@@ -372,7 +373,7 @@
     <div class="asistente-ventana" role="dialog" aria-modal="true" aria-labelledby="afiliado-titulo">
       <button type="button" class="asistente-cerrar" id="cerrar-afiliado" aria-label="Cerrar">&times;</button>
       <h2 class="asistente-titulo" id="afiliado-titulo">Añadir afiliado</h2>
-      <p class="asistente-ayuda">Estos tres datos tienen que ser los mismos que la persona usa cuando pide cita.</p>
+      <p class="asistente-ayuda">La cédula es la clave para citas. El correo es opcional.</p>
       <form id="form-afiliado" enctype="multipart/form-data">
         <label class="asistente-label" for="afiliado-cedula">Cédula
           <input id="afiliado-cedula" name="cedula" inputmode="numeric" maxlength="9" autocomplete="off" required>
@@ -380,8 +381,18 @@
         <label class="asistente-label" for="afiliado-nombre">Nombre completo
           <input id="afiliado-nombre" name="nombre_completo" maxlength="120" autocomplete="name" required>
         </label>
-        <label class="asistente-label" for="afiliado-correo">Correo
-          <input id="afiliado-correo" name="correo" type="email" maxlength="120" autocomplete="email" required>
+        <label class="asistente-label" for="afiliado-correo">Correo (opcional)
+          <input id="afiliado-correo" name="correo" type="email" maxlength="120" autocomplete="email">
+        </label>
+        <label class="asistente-label" for="afiliado-sede">Sede / Regional (opcional)
+          <input id="afiliado-sede" name="sede_regional" maxlength="160" autocomplete="off">
+        </label>
+        <label class="asistente-label" for="afiliado-estado">Estado (opcional)
+          <select id="afiliado-estado" name="estado">
+            <option value="">Sin indicar</option>
+            <option value="MAS DE UN AÑO">MAS DE UN AÑO</option>
+            <option value="MENOS DE UN AÑO">MENOS DE UN AÑO</option>
+          </select>
         </label>
         <label class="asistente-label" for="afiliado-foto">Foto (opcional)
           <input id="afiliado-foto" name="foto" type="file" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif">
@@ -391,6 +402,33 @@
           <button type="submit" class="btn-atajo" id="guardar-afiliado">Guardar</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div class="asistente" id="popup-lista-afiliados" hidden>
+    <div class="asistente-fondo" data-cerrar-lista-afiliados="1" aria-hidden="true"></div>
+    <div class="asistente-ventana asistente-ventana-ancha" role="dialog" aria-modal="true" aria-labelledby="lista-afiliados-titulo">
+      <button type="button" class="asistente-cerrar" id="cerrar-lista-afiliados" aria-label="Cerrar">&times;</button>
+      <h2 class="asistente-titulo" id="lista-afiliados-titulo">Afiliados</h2>
+      <p class="asistente-ayuda">Padrón de personas afiliadas. Tocá una casilla para ver el detalle.</p>
+      <div class="admin-buscar admin-buscar-afiliados">
+        <label class="admin-buscar-label" for="buscar-afiliados">Buscar</label>
+        <div class="admin-buscar-fila">
+          <input type="search" id="buscar-afiliados" class="admin-buscar-input" placeholder="Nombre o cédula…" autocomplete="off">
+          <div class="afiliados-filtro" id="afiliados-filtro">
+            <button type="button" class="afiliados-filtro-btn" id="afiliados-filtro-btn" aria-expanded="false" aria-controls="afiliados-filtro-menu" title="Filtrar por antigüedad">
+              <span class="afiliados-filtro-texto" id="afiliados-filtro-texto">Antigüedad</span>
+              <span class="afiliados-filtro-flecha" aria-hidden="true"></span>
+            </button>
+            <div class="afiliados-filtro-menu" id="afiliados-filtro-menu" hidden role="listbox" aria-label="Filtrar afiliados por antigüedad">
+              <button type="button" class="afiliados-filtro-opcion activo" data-filtro-estado="" role="option" aria-selected="true">Todos</button>
+              <button type="button" class="afiliados-filtro-opcion" data-filtro-estado="mas" role="option" aria-selected="false">Más de un año</button>
+              <button type="button" class="afiliados-filtro-opcion" data-filtro-estado="menos" role="option" aria-selected="false">Menos de un año</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="lista-afiliados" class="lista-guardadas-wrap sol-lista-pagina"><p class="vacio-bloque">Un momento, por favor.</p></div>
     </div>
   </div>
 
@@ -579,7 +617,7 @@
   <div id="lista-mes" hidden></div>
   <script src="../js/avisos.js?v=1.5"></script>
   <script src="agenda.js?v=4.16"></script>
-  <script src="solicitudes.js?v=4.34"></script>
+  <script src="solicitudes.js?v=4.43"></script>
   <script src="documentacion.js?v=1.9"></script>
   <script src="tono.js?v=3.18"></script>
   <script src="sitrabot-admin.js?v=4.7"></script>

@@ -17,7 +17,7 @@ function pagina($titulo, $mensaje, $volver) {
     echo '<title>' . h($titulo) . '</title>';
     echo '<link rel="icon" type="image/png" href="../img/favicon-logo.png?v=1">';
     echo '<link rel="stylesheet" href="../css/estilo.css?v=3.67">';
-    echo '<link rel="stylesheet" href="../css/avisos.css?v=1.9">';
+    echo '<link rel="stylesheet" href="../css/avisos.css?v=2.0">';
     echo '</head><body data-sit-aviso="error" data-sit-titulo="' . h($titulo) . '" data-sit-texto="' . h($mensaje) . '">';
     echo '<main class="contenedor" style="padding:120px 20px 60px">';
     echo '<p><a class="btn" href="' . h($volver) . '">Volver</a></p>';
@@ -140,6 +140,12 @@ if ($accion === 'verificar') {
     if ($marcaAfiliacion === 'error') {
         pagina('Cita', 'No se pudo revisar la afiliación. Intentá de nuevo más tarde.', volver($accion));
     }
+    if ($marcaAfiliacion === 'sin_cedula') {
+        pagina('Cita', 'Tu cuenta no tiene cédula. Completá la cédula en tu cuenta para poder pedir cita.', volver($accion));
+    }
+    if ($marcaAfiliacion === 'menor_anio') {
+        pagina('Cita', 'Todavía no cumplís un año de afiliación. Para gestionar una cita de asesoría, comunicate con Secretaría.', volver($accion));
+    }
     if ($marcaAfiliacion !== 'si') {
         pagina('Solicitud no procedente', 'Su pedido de cita no puede aceptarse. La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA.', volver($accion));
     }
@@ -239,7 +245,7 @@ if ($accion === 'verificar') {
 
 if ($accion === 'guardar') {
     /* Guarda la petición en Consulta_Afiliacion. No toca Info_Afiliados.Cuenta. */
-    if (sitraina_marca_afiliacion() === 'si') {
+    if (function_exists('sitraina_es_afiliado_registrado') ? sitraina_es_afiliado_registrado() : sitraina_marca_afiliacion() === 'si') {
         $mysqli->close();
         pagina('Ya estás afiliado', 'Tu cuenta ya está registrada como afiliada a SITRAINA. No hace falta enviar otra solicitud.', volver($accion));
     }

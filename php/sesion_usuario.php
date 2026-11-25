@@ -65,6 +65,7 @@ function sitraina_usuario_cerrar_local() {
         $_SESSION['usuario_id'],
         $_SESSION['usuario_nombre'],
         $_SESSION['usuario_correo'],
+        $_SESSION['usuario_cedula'],
         $_SESSION['usuario_sesion'],
         $_SESSION['usuario_token']
     );
@@ -309,19 +310,60 @@ function sitraina_usuario_token_ok($token) {
     return is_string($token) && $token !== '' && hash_equals($esperado, $token);
 }
 
+/* Cédula de la cuenta web con la que ya inició sesión (9 dígitos o vacío). */
+function sitraina_cedula_cuenta() {
+    $id = sitraina_usuario_id();
+    if ($id < 1) {
+        return '';
+    }
+    $guardada = preg_replace('/\D/', '', (string) ($_SESSION['usuario_cedula'] ?? ''));
+    if (preg_match('/^[0-9]{9}$/', $guardada)) {
+        return $guardada;
+    }
+    if (!function_exists('abrir_cuentas_web')) {
+        require_once __DIR__ . '/conexion.php';
+    }
+    $db = abrir_cuentas_web();
+    if (!$db) {
+        return '';
+    }
+    $consulta = $db->prepare('SELECT cedula FROM Usuario_Web WHERE id = ? AND activo = 1 LIMIT 1');
+    if (!$consulta) {
+        $db->close();
+        return '';
+    }
+    $consulta->bind_param('i', $id);
+    $consulta->execute();
+    $cedula = null;
+    $consulta->bind_result($cedula);
+    $hay = $consulta->fetch();
+    $consulta->close();
+    $db->close();
+    if (!$hay) {
+        return '';
+    }
+    $cedula = preg_replace('/\D/', '', (string) $cedula);
+    if (!preg_match('/^[0-9]{9}$/', $cedula)) {
+        return '';
+    }
+    $_SESSION['usuario_cedula'] = $cedula;
+    return $cedula;
+}
+
 /*
- * La cuenta (Usuario_Web) y el afiliado (Cuenta) no comparten un id.
- * El vínculo que ya existe es el correo, único en las dos tablas.
+ * La cuenta (Usuario_Web) y el afiliado (Cuenta) se cruzan por cédula.
  * Se busca siempre a partir del id de la sesión, nunca de un dato enviado por el navegador.
- * Devuelve sin_sesion, si, no o error.
+ * Devuelve: sin_sesion | sin_cedula | no | si | menor_anio | error
+ * si = afiliado con MAS DE UN AÑO (o sin estado cargado).
+ * menor_anio = afiliado con MENOS DE UN AÑO (no puede pedir cita).
  */
 function sitraina_marca_afiliacion() {
     if (sitraina_usuario_id() < 1) {
         return 'sin_sesion';
     }
-    $correo = sitraina_correo_cuenta();
-    if ($correo === '') {
-        return 'no';
+    $cedula = sitraina_cedula_cuenta();
+    if ($cedula === '') {
+        return 'sin_cedula';
     }
     if (!function_exists('abrir_afiliados')) {
         require_once __DIR__ . '/conexion.php';
@@ -330,23 +372,54 @@ function sitraina_marca_afiliacion() {
     if (!$db) {
         return 'error';
     }
-    $consulta = $db->prepare('SELECT id FROM Cuenta WHERE correo = ? LIMIT 1');
+    $consulta = $db->prepare('SELECT id, estado FROM Cuenta WHERE cedula = ? LIMIT 1');
     if (!$consulta) {
+        /* Columna estado todavía no existe: solo comprobar cédula. */
+        $consulta = $db->prepare('SELECT id FROM Cuenta WHERE cedula = ? LIMIT 1');
+        if (!$consulta) {
+            $db->close();
+            return 'error';
+        }
+        $consulta->bind_param('s', $cedula);
+        $pudo = $consulta->execute();
+        if (!$pudo) {
+            $consulta->close();
+            $db->close();
+            return 'error';
+        }
+        $consulta->store_result();
+        $hay = $consulta->num_rows === 1;
+        $consulta->close();
         $db->close();
-        return 'error';
+        return $hay ? 'si' : 'no';
     }
-    $consulta->bind_param('s', $correo);
+    $consulta->bind_param('s', $cedula);
     $pudo = $consulta->execute();
     if (!$pudo) {
         $consulta->close();
         $db->close();
         return 'error';
     }
-    $consulta->store_result();
-    $hay = $consulta->num_rows === 1;
+    $id = 0;
+    $estado = null;
+    $consulta->bind_result($id, $estado);
+    $hay = $consulta->fetch();
     $consulta->close();
     $db->close();
-    return $hay ? 'si' : 'no';
+    if (!$hay) {
+        return 'no';
+    }
+    $estadoNorm = strtoupper(trim((string) $estado));
+    $estadoNorm = str_replace(['Á', 'É', 'Í', 'Ó', 'Ú'], ['A', 'E', 'I', 'O', 'U'], $estadoNorm);
+    if ($estadoNorm === 'MENOS DE UN ANO' || $estadoNorm === 'MENOS DE UN AÑO') {
+        return 'menor_anio';
+    }
+    return 'si';
+}
+
+function sitraina_es_afiliado_registrado() {
+    $marca = sitraina_marca_afiliacion();
+    return $marca === 'si' || $marca === 'menor_anio';
 }
 
 /* Corta el envío si no hay cuenta pública. No usa datos enviados por el formulario. */
@@ -367,7 +440,7 @@ function sitraina_exige_cuenta($volver, $prefijo) {
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>' . htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8') . '</title>';
     echo '<link rel="icon" type="image/png" href="' . $prefijo . 'img/favicon-logo.png?v=1">';
-    echo '<link rel="stylesheet" href="' . $prefijo . 'css/avisos.css?v=1.9">';
+    echo '<link rel="stylesheet" href="' . $prefijo . 'css/avisos.css?v=2.0">';
     echo '</head><body data-sit-aviso="sesion" data-sit-titulo="' . htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8') . '" data-sit-texto="' . htmlspecialchars($texto, ENT_QUOTES, 'UTF-8') . '">';
     echo '<main style="padding:120px 20px"><p><a href="' . htmlspecialchars((string) $volver, ENT_QUOTES, 'UTF-8') . '">Volver</a></p></main>';
     echo '<script src="' . $prefijo . 'js/avisos.js?v=1.3"></script></body></html>';

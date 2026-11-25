@@ -7924,6 +7924,94 @@ body.dark-mode .sit-nota {
 }
 
 /* Afiliados: casillas cuadradas, icono de persona y el nombre debajo. */
+/* Popup afiliados: borde suave rojo y scroll dentro de la casilla. */
+#popup-lista-afiliados .asistente-ventana {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: min(90vh, 860px);
+  overflow: hidden;
+  border-color: #e3a4a7;
+}
+
+#popup-lista-afiliados .asistente-titulo,
+#popup-lista-afiliados .asistente-ayuda,
+#popup-lista-afiliados .admin-buscar-afiliados {
+  flex: 0 0 auto;
+}
+
+#popup-lista-afiliados #lista-afiliados {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 12px;
+  padding: 2px 10px 4px 2px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #c81d25 #f3ebe6;
+}
+
+#popup-lista-afiliados #lista-afiliados::-webkit-scrollbar {
+  width: 10px;
+}
+
+#popup-lista-afiliados #lista-afiliados::-webkit-scrollbar-track {
+  margin: 4px 0;
+  background: #f3ebe6;
+  border-radius: 999px;
+}
+
+#popup-lista-afiliados #lista-afiliados::-webkit-scrollbar-thumb {
+  background: #c81d25;
+  border: 2px solid #f3ebe6;
+  border-radius: 999px;
+}
+
+#popup-lista-afiliados #lista-afiliados::-webkit-scrollbar-thumb:hover {
+  background: #a3181f;
+}
+
+body.dark-mode #popup-lista-afiliados .asistente-ventana {
+  border-color: #c47a7e;
+}
+
+body.dark-mode #popup-lista-afiliados #lista-afiliados {
+  scrollbar-color: #ff8a90 #2a221f;
+}
+
+body.dark-mode #popup-lista-afiliados #lista-afiliados::-webkit-scrollbar-track {
+  background: #2a221f;
+}
+
+body.dark-mode #popup-lista-afiliados #lista-afiliados::-webkit-scrollbar-thumb {
+  background: #ff8a90;
+  border-color: #2a221f;
+}
+
+body.dark-mode #popup-lista-afiliados #lista-afiliados::-webkit-scrollbar-thumb:hover {
+  background: #ff9ea3;
+}
+
+#popup-lista-afiliados .admin-buscar-input {
+  border: 1.5px solid #e3a4a7;
+}
+
+#popup-lista-afiliados .admin-buscar-input:hover,
+#popup-lista-afiliados .admin-buscar-input:focus {
+  border-color: #c81d25;
+}
+
+body.dark-mode #popup-lista-afiliados .admin-buscar-input {
+  border-color: #c47a7e;
+}
+
+body.dark-mode #popup-lista-afiliados .admin-buscar-input:hover,
+body.dark-mode #popup-lista-afiliados .admin-buscar-input:focus {
+  border-color: #ff8a90;
+}
+
 #lista-afiliados .sol-rejilla {
   grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
   align-items: start;
@@ -7939,11 +8027,14 @@ body.dark-mode .sit-nota {
 #lista-afiliados .afiliado-casilla .sol-tarjeta {
   min-height: 0;
   height: 100%;
+  width: 100%;
+  max-width: 100%;
   align-items: center;
   justify-content: center;
   gap: 10px;
   padding: 14px 10px;
   text-align: center;
+  overflow: hidden;
 }
 
 #lista-afiliados .afiliado-icono {
@@ -8077,16 +8168,198 @@ body.dark-mode .afiliado-foto-cambiar {
 }
 
 #lista-afiliados .afiliado-nombre {
+  display: block;
   width: 100%;
+  max-width: 100%;
   margin: 0;
+  min-width: 0;
+  box-sizing: border-box;
   font-size: 0.92rem;
   font-weight: 700;
   line-height: 1.25;
   text-align: center;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-buscar-afiliados .admin-buscar-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.afiliados-filtro {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.afiliados-filtro-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 148px;
+  height: 100%;
+  min-height: 42px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1.5px solid #e3a4a7;
+  border-radius: 10px;
+  background: #fff;
+  color: #6e1218;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.afiliados-filtro-btn:hover,
+.afiliados-filtro-btn:focus-visible {
+  border-color: #c81d25;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(110, 18, 24, 0.1);
+}
+
+.afiliados-filtro.abierto .afiliados-filtro-btn {
+  border-color: #c81d25;
+  background: #fdf4f3;
+}
+
+.afiliados-filtro-texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.afiliados-filtro-flecha {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  flex: 0 0 auto;
+}
+
+.afiliados-filtro.abierto .afiliados-filtro-flecha {
+  transform: rotate(225deg) translateY(-1px);
+}
+
+.afiliados-filtro-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  min-width: 100%;
+  width: max-content;
+  padding: 6px;
+  border: 1px solid #eadfd8;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(28, 22, 20, 0.14);
+  display: grid;
+  gap: 4px;
+  transform-origin: top right;
+  animation: afiliados-filtro-entra 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.afiliados-filtro-menu[hidden] {
+  display: none;
+}
+
+@keyframes afiliados-filtro-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.afiliados-filtro-opcion {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #3d322e;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.afiliados-filtro-opcion:hover,
+.afiliados-filtro-opcion:focus-visible {
+  background: #f6f0ec;
+  outline: none;
+}
+
+.afiliados-filtro-opcion.activo {
+  background: #f8e8e6;
+  color: #6e1218;
+}
+
+body.dark-mode .afiliados-filtro-btn {
+  background: #241c1a;
+  border-color: #c47a7e;
+  color: #ffc4bc;
+}
+
+body.dark-mode .afiliados-filtro.abierto .afiliados-filtro-btn,
+body.dark-mode .afiliados-filtro-btn:hover,
+body.dark-mode .afiliados-filtro-btn:focus-visible {
+  background: #3a241c;
+  border-color: #ff8a90;
+}
+
+body.dark-mode .afiliados-filtro-menu {
+  background: #1c1614;
+  border-color: #4a3d38;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .afiliados-filtro-opcion {
+  color: #f0e8e2;
+}
+
+body.dark-mode .afiliados-filtro-opcion:hover,
+body.dark-mode .afiliados-filtro-opcion:focus-visible {
+  background: #2a221f;
+}
+
+body.dark-mode .afiliados-filtro-opcion.activo {
+  background: #3a241c;
+  color: #ffc4bc;
+}
+
+@media (max-width: 640px) {
+  .admin-buscar-afiliados .admin-buscar-fila {
+    grid-template-columns: 1fr;
+  }
+
+  .afiliados-filtro-btn {
+    width: 100%;
+  }
+
+  .afiliados-filtro-menu {
+    left: 0;
+    right: 0;
+    width: auto;
+  }
 }
 
 /* Afiliados: tarjetas quietas, sin verde ni rojo que choquen con el fondo. */
@@ -8148,6 +8421,127 @@ body.dark-mode #lista-afiliados .sol-estado-aceptada {
 body.dark-mode #lista-afiliados .afiliado-icono {
   background: #3a342f;
   color: #e4dcd6;
+}
+
+/* Usuarios web: filas compactas (mismo patrón que citas/contacto). */
+#lista-usuarios .sol-rejilla {
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+#lista-usuarios .sol-fila {
+  min-height: 0;
+  height: auto;
+  background: #f6f3f1;
+  border: 1px solid #e4ddd8;
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+#lista-usuarios .sol-fila:hover,
+#lista-usuarios .sol-fila:focus-within {
+  transform: none;
+  background: #f3efec;
+  border-color: #d4ccc6;
+  box-shadow: none;
+}
+
+#lista-usuarios .sol-tarjeta {
+  min-height: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: transparent;
+  color: #2a2422;
+}
+
+#lista-usuarios .sol-fila-texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+#lista-usuarios .casilla-titulo {
+  flex: 0 1 auto;
+  width: 100%;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #2a2422;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
+#lista-usuarios .sol-tapa-fecha {
+  margin: 0;
+  max-width: 100%;
+  font-size: 0.82rem;
+  line-height: 1.3;
+  color: #5c534e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#lista-usuarios .sol-badge {
+  margin: 0;
+  flex: 0 0 auto;
+  border: 1px solid transparent;
+  font-size: 0.78rem;
+  padding: 4px 8px;
+}
+
+#lista-usuarios .sol-estado-aceptada {
+  background: #e5efe8;
+  color: #1d4a32;
+  border-color: #d0e2d6;
+}
+
+#lista-usuarios .sol-estado-neutral {
+  background: #ece7e4;
+  color: #3f3834;
+  border-color: #ddd4cf;
+}
+
+body.dark-mode #lista-usuarios .sol-fila {
+  background: #2a2422;
+  border-color: #3f3834;
+}
+
+body.dark-mode #lista-usuarios .sol-fila:hover,
+body.dark-mode #lista-usuarios .sol-fila:focus-within {
+  background: #322c29;
+  border-color: #514842;
+}
+
+body.dark-mode #lista-usuarios .sol-tarjeta,
+body.dark-mode #lista-usuarios .casilla-titulo {
+  color: #f3ece7;
+}
+
+body.dark-mode #lista-usuarios .sol-tapa-fecha {
+  color: #cbb8ae;
+}
+
+body.dark-mode #lista-usuarios .sol-estado-aceptada {
+  background: #24362c;
+  color: #b7d7c2;
+  border-color: #355244;
+}
+
+body.dark-mode #lista-usuarios .sol-estado-neutral {
+  background: #3a342f;
+  color: #e4dcd6;
+  border-color: #4a433e;
 }
 
 /* Citas, contacto y afiliaciones: filas quietas, nombre a la izquierda y estado a la derecha. */

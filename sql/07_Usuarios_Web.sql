@@ -11,11 +11,12 @@
 CREATE TABLE IF NOT EXISTS Usuario_Web (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   nombre VARCHAR(120) NOT NULL,
-  correo VARCHAR(120) NOT NULL,
-  cedula CHAR(9) NULL,
+  correo VARCHAR(120) NULL DEFAULT NULL,
+  cedula CHAR(9) NOT NULL,
   activo TINYINT(1) NOT NULL DEFAULT 1,
   creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
+  UNIQUE KEY uk_usuario_web_cedula (cedula),
   UNIQUE KEY uk_usuario_web_correo (correo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

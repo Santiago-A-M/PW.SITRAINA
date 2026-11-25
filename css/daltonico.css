@@ -7230,7 +7230,6 @@ html.daltonico .reserva-muestra.reserva-disponible {
 }
 html.daltonico .reserva-no,
 html.daltonico .reserva-pasado,
-html.daltonico .reserva-otro,
 html.daltonico .reserva-fuera,
 html.daltonico .reserva-muestra.reserva-no,
 html.daltonico .reserva-muestra.reserva-pasado,
@@ -7238,6 +7237,13 @@ html.daltonico .reserva-muestra.reserva-fuera {
   background: #f4f7fb;
   border-color: #8ec0dc;
   color: #5c7e99;
+}
+html.daltonico .reserva-otro {
+  background: transparent;
+  border-color: transparent;
+  color: #0a3d5c;
+  opacity: 0.32;
+  box-shadow: none;
 }
 html.daltonico .reserva-disponible:hover:not(:disabled),
 html.daltonico .reserva-hora:hover:not(:disabled),
@@ -7254,11 +7260,17 @@ html.daltonico body.dark-mode .reserva-resumen,
 html.daltonico body.dark-mode .reserva-mes-btn,
 html.daltonico body.dark-mode .reserva-no,
 html.daltonico body.dark-mode .reserva-pasado,
-html.daltonico body.dark-mode .reserva-otro,
 html.daltonico body.dark-mode .reserva-fuera {
   background: #1b2836;
   border-color: #3d5f86;
   color: #9ec3de;
+}
+html.daltonico body.dark-mode .reserva-otro {
+  background: transparent;
+  border-color: transparent;
+  color: #d6eeff;
+  opacity: 0.3;
+  box-shadow: none;
 }
 html.daltonico body.dark-mode .reserva-disponible,
 html.daltonico body.dark-mode .reserva-muestra.reserva-disponible {
@@ -7589,7 +7601,6 @@ html.daltonico .reserva-caja-calendario .reserva-muestra {
 
 html.daltonico body:not(.dark-mode) .reserva-dia.reserva-no,
 html.daltonico body:not(.dark-mode) .reserva-dia.reserva-pasado,
-html.daltonico body:not(.dark-mode) .reserva-dia.reserva-otro,
 html.daltonico body:not(.dark-mode) .reserva-dia.reserva-fuera,
 html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-no,
 html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-pasado,
@@ -7597,6 +7608,14 @@ html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-fuera {
   background: #f4f7fb;
   border-color: #8ec0dc;
   color: #0a3d5c;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-otro {
+  background: transparent;
+  border-color: transparent;
+  color: #0a3d5c;
+  opacity: 0.32;
+  box-shadow: none;
 }
 
 html.daltonico body:not(.dark-mode) .reserva-dia.reserva-ocupada,
@@ -7608,12 +7627,17 @@ html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-ocupada {
 
 html.daltonico body:not(.dark-mode) .reserva-dia.reserva-no::after,
 html.daltonico body:not(.dark-mode) .reserva-dia.reserva-pasado::after,
-html.daltonico body:not(.dark-mode) .reserva-dia.reserva-otro::after,
 html.daltonico body:not(.dark-mode) .reserva-dia.reserva-fuera::after,
 html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-no::after,
 html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-pasado::after,
 html.daltonico body:not(.dark-mode) .reserva-muestra.reserva-fuera::after {
   color: #0072b2;
+}
+
+html.daltonico body:not(.dark-mode) .reserva-dia.reserva-otro::after,
+html.daltonico.dark-mode .reserva-dia.reserva-otro::after,
+html.daltonico body.dark-mode .reserva-dia.reserva-otro::after {
+  content: none;
 }
 
 html.daltonico body.dark-mode .reserva-disponible,
@@ -7634,16 +7658,101 @@ html.daltonico.dark-mode .reserva-caja-calendario .reserva-muestra {
 
 html.daltonico body.dark-mode .reserva-dia.reserva-no,
 html.daltonico body.dark-mode .reserva-dia.reserva-pasado,
-html.daltonico body.dark-mode .reserva-dia.reserva-otro,
 html.daltonico body.dark-mode .reserva-dia.reserva-fuera,
 html.daltonico body.dark-mode .reserva-muestra.reserva-no,
 html.daltonico.dark-mode .reserva-dia.reserva-no,
 html.daltonico.dark-mode .reserva-dia.reserva-pasado,
-html.daltonico.dark-mode .reserva-dia.reserva-otro,
 html.daltonico.dark-mode .reserva-dia.reserva-fuera {
   background: #121c28;
   border-color: #3d5f86;
   color: #d6eeff;
+}
+
+html.daltonico body.dark-mode .reserva-dia.reserva-otro,
+html.daltonico.dark-mode .reserva-dia.reserva-otro {
+  background: transparent;
+  border-color: transparent;
+  color: #d6eeff;
+  opacity: 0.3;
+  box-shadow: none;
+}
+
+@keyframes reserva-hoy-pulso-azul {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 114, 178, 0.42);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(0, 114, 178, 0.14);
+  }
+}
+
+@keyframes reserva-hoy-pulso-azul-oscuro {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(86, 180, 233, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(86, 180, 233, 0.14);
+  }
+}
+
+html.daltonico .reserva-dia.reserva-hoy,
+html.daltonico .reserva-muestra.reserva-hoy,
+html.daltonico .reserva-dia.reserva-hoy.reserva-activo,
+html.daltonico .reserva-dia.reserva-hoy.reserva-activo:hover:not(:disabled),
+html.daltonico .reserva-dia.reserva-hoy.reserva-activo:focus-visible:not(:disabled) {
+  border-color: #0072b2;
+}
+
+html.daltonico .reserva-dia.reserva-hoy:not(.reserva-ocupada)::after,
+html.daltonico .reserva-dia.reserva-hoy.reserva-activo:not(.reserva-ocupada)::after {
+  color: #0072b2;
+}
+
+html.daltonico .reserva-dia.reserva-hoy,
+html.daltonico .reserva-dia.reserva-hoy.reserva-activo,
+html.daltonico .reserva-dia.reserva-hoy.reserva-activo:hover:not(:disabled),
+html.daltonico .reserva-dia.reserva-hoy.reserva-activo:focus-visible:not(:disabled) {
+  animation-name: reserva-hoy-pulso-azul;
+}
+
+html.daltonico .reserva-muestra.reserva-hoy {
+  box-shadow: 0 0 0 2px rgba(0, 114, 178, 0.28);
+}
+
+html.daltonico.dark-mode .reserva-dia.reserva-hoy,
+html.daltonico body.dark-mode .reserva-dia.reserva-hoy,
+html.daltonico.dark-mode .reserva-muestra.reserva-hoy,
+html.daltonico body.dark-mode .reserva-muestra.reserva-hoy {
+  border-color: #56b4e9;
+}
+
+html.daltonico.dark-mode .reserva-dia.reserva-hoy:not(.reserva-ocupada)::after,
+html.daltonico body.dark-mode .reserva-dia.reserva-hoy:not(.reserva-ocupada)::after,
+html.daltonico.dark-mode .reserva-dia.reserva-hoy.reserva-activo:not(.reserva-ocupada)::after,
+html.daltonico body.dark-mode .reserva-dia.reserva-hoy.reserva-activo:not(.reserva-ocupada)::after {
+  color: #56b4e9;
+}
+
+html.daltonico.dark-mode .reserva-dia.reserva-hoy,
+html.daltonico body.dark-mode .reserva-dia.reserva-hoy,
+html.daltonico.dark-mode .reserva-dia.reserva-hoy.reserva-activo,
+html.daltonico body.dark-mode .reserva-dia.reserva-hoy.reserva-activo {
+  animation-name: reserva-hoy-pulso-azul-oscuro;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.daltonico .reserva-dia.reserva-hoy,
+  html.daltonico .reserva-dia.reserva-hoy.reserva-activo {
+    animation: none;
+    box-shadow: 0 0 0 3px rgba(0, 114, 178, 0.22);
+  }
+
+  html.daltonico.dark-mode .reserva-dia.reserva-hoy,
+  html.daltonico body.dark-mode .reserva-dia.reserva-hoy {
+    box-shadow: 0 0 0 3px rgba(86, 180, 233, 0.25);
+  }
 }
 
 html.daltonico body.dark-mode .reserva-dia.reserva-ocupada,
@@ -7657,7 +7766,6 @@ html.daltonico.dark-mode .reserva-muestra.reserva-ocupada {
 
 html.daltonico body.dark-mode .reserva-dia.reserva-no::after,
 html.daltonico body.dark-mode .reserva-dia.reserva-pasado::after,
-html.daltonico body.dark-mode .reserva-dia.reserva-otro::after,
 html.daltonico body.dark-mode .reserva-dia.reserva-fuera::after,
 html.daltonico.dark-mode .reserva-dia.reserva-no::after {
   color: #56b4e9;

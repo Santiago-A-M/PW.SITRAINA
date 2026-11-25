@@ -24,7 +24,7 @@
                 },
                 {
                     titulo: 'Tu cuenta',
-                    texto: 'Si todavía no entraste, vas a ver Ingresar y Crear cuenta. La cuenta pide tu nombre y tu correo. Cuando ya entraste, esas dos se ocultan y aparecen Citas, Mis mensajes y Cerrar sesión.',
+                    texto: 'Si todavía no entraste, vas a ver Ingresar y Crear cuenta. La cuenta pide tu nombre y tu cédula; el correo es opcional. Para ingresar usás la cédula. Cuando ya entraste, esas dos se ocultan y aparecen Citas, Mis mensajes y Cerrar sesión.',
                     icono: '3'
                 },
                 {

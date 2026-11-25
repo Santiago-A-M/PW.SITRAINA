@@ -8,7 +8,8 @@
     var vistas = {
         agenda: document.getElementById('vista-agenda'),
         afilacion: document.getElementById('vista-afilacion'),
-        afiliados: document.getElementById('vista-afiliados'),
+        usuarios: document.getElementById('vista-usuarios'),
+        afiliados: document.getElementById('vista-usuarios'),
         cita: document.getElementById('vista-cita'),
         contacto: document.getElementById('vista-contacto'),
         documentacion: document.getElementById('vista-documentacion'),
@@ -21,10 +22,13 @@
         cita: document.getElementById('lista-sol-cita'),
         contacto: document.getElementById('lista-sol-contacto')
     };
+    var listaUsuarios = document.getElementById('lista-usuarios');
     var listaAfiliados = document.getElementById('lista-afiliados');
+    var popupListaAfiliados = document.getElementById('popup-lista-afiliados');
 
-    var datos = { contacto: [], cita: [], afilacion: [], afiliados: [] };
-    var filtrosBusqueda = { agenda: '', afilacion: '', afiliados: '', cita: '', contacto: '' };
+    var datos = { contacto: [], cita: [], afilacion: [], usuarios: [], afiliados: [] };
+    var filtrosBusqueda = { agenda: '', afilacion: '', usuarios: '', afiliados: '', cita: '', contacto: '' };
+    var filtroEstadoAfiliados = '';
     var vistaActiva = 'agenda';
     var enviando = false;
     var cargado = false;
@@ -386,7 +390,7 @@
         var papelera = document.getElementById('papelera');
         if (papelera && !papelera.hidden) return 'papelera';
         if (vistaActiva === 'cita') return 'cita';
-        if (vistaActiva === 'afiliados' || vistaActiva === 'afilacion') return 'afiliado';
+        if (vistaActiva === 'usuarios' || vistaActiva === 'afiliados' || vistaActiva === 'afilacion') return 'afiliado';
         if (vistaActiva === 'contacto') return 'contacto';
         return 'solicitud';
     }
@@ -478,7 +482,9 @@
             partes.push(fila.persona, fila.correo, fila.cedula, fila.fecha, fila.hora, fila.motivo, fila.notas, fila.creado_en, fila.estado, fila.modalidad);
             if (fila.fecha) partes.push(textoFechaHora([fila.fecha, fila.hora].filter(Boolean).join(' ')));
         } else if (tipo === 'afiliados') {
-            partes.push(fila.nombre_completo, fila.correo, fila.cedula);
+            partes.push(fila.nombre_completo, fila.cedula);
+        } else if (tipo === 'usuarios') {
+            partes.push(fila.nombre, fila.nombre_completo, fila.correo, fila.cedula, fila.es_afiliado ? 'afiliado' : '');
         } else {
             partes.push(fila.nombre, fila.correo, fila.cedula, fila.asunto, fila.creado_en, fila.estado);
             if (fila.creado_en) partes.push(textoFechaHora(fila.creado_en));
@@ -1013,6 +1019,8 @@
                     });
                     pintarAfiliados();
                     cerrarFicha();
+                    cargado = false;
+                    return cargar(true);
                 })
                 .catch(function (err) {
                     guardandoAfiliado = false;
@@ -1035,19 +1043,84 @@
         return '<span class="afiliado-icono" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="3.5" fill="currentColor"/><path fill="currentColor" d="M5 19.4c.5-3.5 3.2-5.3 7-5.3s6.5 1.8 7 5.3c.1.4-.2.8-.6.8H5.6c-.4 0-.7-.4-.6-.8z"/></svg></span>';
     }
 
+    function pintarUsuarios() {
+        if (!listaUsuarios) return;
+        var todas = datos.usuarios || [];
+        var filas = filasFiltradas('usuarios');
+        var hayFiltro = !!normalizarBusqueda(filtrosBusqueda.usuarios || '');
+        if (!todas.length) {
+            listaUsuarios.innerHTML = '<p class="vacio-bloque">Todavía no hay cuentas web registradas.</p>';
+            return;
+        }
+        if (!filas.length) {
+            listaUsuarios.innerHTML = '<p class="vacio-bloque">' + (hayFiltro
+                ? 'No hay usuarios que coincidan con esa búsqueda.'
+                : 'Todavía no hay cuentas web registradas.') + '</p>';
+            return;
+        }
+        var html = '<ul class="rejilla-casillas sol-rejilla">';
+        filas.forEach(function (fila) {
+            var id = String(fila.id);
+            var nombre = fila.nombre || fila.nombre_completo || 'Sin nombre';
+            var cedula = String(fila.cedula || '').replace(/\D/g, '');
+            var correo = String(fila.correo || '').trim();
+            var esAfiliado = parseInt(fila.es_afiliado, 10) === 1;
+            var meta = [];
+            if (cedula) meta.push('Cédula ' + cedula);
+            if (correo) meta.push(correo);
+            var etiqueta = esAfiliado ? 'Afiliado' : 'Cuenta';
+            var aria = nombre + (meta.length ? '. ' + meta.join('. ') : '') + '. ' + etiqueta;
+            html += '<li class="sol-item sol-fila" data-sol-id="' + escapar(id) + '" data-sol-tipo="usuarios">';
+            html += '<button type="button" class="sol-tarjeta" aria-label="' + escapar(aria) + '">';
+            html += '<span class="sol-fila-texto">';
+            html += '<span class="casilla-titulo" title="' + escapar(nombre) + '">' + escapar(nombre) + '</span>';
+            if (meta.length) html += '<span class="sol-tapa-fecha">' + escapar(meta.join(' · ')) + '</span>';
+            html += '</span>';
+            html += '<span class="sol-badge ' + (esAfiliado ? 'sol-estado-aceptada' : 'sol-estado-neutral') + '">' + escapar(etiqueta) + '</span>';
+            html += '</button></li>';
+        });
+        html += '</ul>';
+        listaUsuarios.innerHTML = html;
+    }
+
+    function normalizarEstadoAfiliado(estado) {
+        return String(estado || '')
+            .toUpperCase()
+            .replace(/[ÁÀÄÂ]/g, 'A')
+            .replace(/[ÉÈËÊ]/g, 'E')
+            .replace(/[ÍÌÏÎ]/g, 'I')
+            .replace(/[ÓÒÖÔ]/g, 'O')
+            .replace(/[ÚÙÜÛ]/g, 'U')
+            .replace(/[Ñ]/g, 'N')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function afiliadoPasaFiltroEstado(fila) {
+        if (!filtroEstadoAfiliados) return true;
+        var estado = normalizarEstadoAfiliado(fila && fila.estado);
+        if (filtroEstadoAfiliados === 'mas') {
+            return estado === 'MAS DE UN ANO' || estado.indexOf('MAS DE UN ANO') === 0;
+        }
+        if (filtroEstadoAfiliados === 'menos') {
+            return estado === 'MENOS DE UN ANO' || estado.indexOf('MENOS DE UN ANO') === 0;
+        }
+        return true;
+    }
+
     function pintarAfiliados() {
         if (!listaAfiliados) return;
         var todas = datos.afiliados || [];
-        var filas = filasFiltradas('afiliados');
-        var hayFiltro = !!normalizarBusqueda(filtrosBusqueda.afiliados || '');
+        var filas = filasFiltradas('afiliados').filter(afiliadoPasaFiltroEstado);
+        var hayFiltro = !!normalizarBusqueda(filtrosBusqueda.afiliados || '') || !!filtroEstadoAfiliados;
         if (!todas.length) {
-            listaAfiliados.innerHTML = '<p class="vacio-bloque">Todavía no hay afiliados. Usá Añadir afiliado para registrar cédula, nombre y correo.</p>';
+            listaAfiliados.innerHTML = '<p class="vacio-bloque">Todavía no hay afiliados. Usá Añadir afiliado para registrar cédula y nombre.</p>';
             return;
         }
         if (!filas.length) {
             listaAfiliados.innerHTML = '<p class="vacio-bloque">' + (hayFiltro
                 ? 'No hay afiliados que coincidan con esa búsqueda.'
-                : 'Todavía no hay afiliados. Usá Añadir afiliado para registrar cédula, nombre y correo.') + '</p>';
+                : 'Todavía no hay afiliados. Usá Añadir afiliado para registrar cédula y nombre.') + '</p>';
             return;
         }
         var html = '<ul class="rejilla-casillas sol-rejilla">';
@@ -1057,11 +1130,31 @@
             html += '<li class="sol-item afiliado-casilla" data-sol-id="' + escapar(id) + '" data-sol-tipo="afiliados">';
             html += '<button type="button" class="sol-tarjeta" aria-label="' + escapar(nombre) + '">';
             html += htmlIconoAfiliado(fila);
-            html += '<span class="afiliado-nombre">' + escapar(nombre) + '</span>';
+            html += '<span class="afiliado-nombre" title="' + escapar(nombre) + '">' + escapar(nombre) + '</span>';
             html += '</button></li>';
         });
         html += '</ul>';
         listaAfiliados.innerHTML = html;
+    }
+
+    function abrirPopupListaAfiliados() {
+        if (!popupListaAfiliados) return;
+        pintarAfiliados();
+        popupListaAfiliados.hidden = false;
+        document.body.classList.add('asistente-abierto');
+        requestAnimationFrame(function () {
+            popupListaAfiliados.classList.add('asistente-visible');
+        });
+    }
+
+    function cerrarPopupListaAfiliados() {
+        if (!popupListaAfiliados || popupListaAfiliados.hidden) return;
+        if (typeof cerrarFiltroAfiliados === 'function') cerrarFiltroAfiliados();
+        popupListaAfiliados.classList.remove('asistente-visible');
+        document.body.classList.remove('asistente-abierto');
+        window.setTimeout(function () {
+            popupListaAfiliados.hidden = true;
+        }, 280);
     }
 
     function guardarFotoAfiliado(id, archivo) {
@@ -1098,6 +1191,7 @@
             Object.keys(listas).forEach(function (clave) {
                 if (listas[clave]) listas[clave].innerHTML = '<p class="vacio-bloque">Un momento, por favor.</p>';
             });
+            if (listaUsuarios) listaUsuarios.innerHTML = '<p class="vacio-bloque">Un momento, por favor.</p>';
             if (listaAfiliados) listaAfiliados.innerHTML = '<p class="vacio-bloque">Un momento, por favor.</p>';
         }
         return fetch('solicitudes.php?tipo=todas', { cache: 'no-store', credentials: 'same-origin' })
@@ -1109,10 +1203,12 @@
                 datos.contacto = json.datos.contacto || [];
                 datos.cita = json.datos.cita || [];
                 datos.afilacion = json.datos.afilacion || [];
+                datos.usuarios = json.datos.usuarios || [];
                 datos.afiliados = json.datos.afiliados || [];
                 pintarLista('contacto');
                 pintarLista('cita');
                 pintarLista('afilacion');
+                pintarUsuarios();
                 pintarAfiliados();
                 pintarInicio();
                 if (popupPapelera && !popupPapelera.hidden) pintarPapelera();
@@ -1124,6 +1220,7 @@
                     Object.keys(listas).forEach(function (clave) {
                         if (listas[clave]) listas[clave].innerHTML = '<p class="vacio-bloque">No se pudo cargar.</p>';
                     });
+                    if (listaUsuarios) listaUsuarios.innerHTML = '<p class="vacio-bloque">No se pudo cargar.</p>';
                     if (listaAfiliados) listaAfiliados.innerHTML = '<p class="vacio-bloque">No se pudo cargar.</p>';
                     if (inicioCitas) inicioCitas.innerHTML = '<p class="vacio-bloque">No se pudo cargar.</p>';
                     if (notaPapeleraInicio) notaPapeleraInicio.textContent = 'No se pudo cargar';
@@ -1311,8 +1408,8 @@
             pintarInicio();
             /* Al volver a Inicio, revalida pendientes contra el servidor sin vaciar la UI. */
             cargar(true);
-        } else if (nombre === 'afiliados') {
-            pintarAfiliados();
+        } else if (nombre === 'usuarios' || nombre === 'afiliados') {
+            pintarUsuarios();
         } else if (nombre === 'documentacion' || nombre === 'hoja') {
             /* La carga del catálogo ocurre al abrir el explorador. */
         } else if (vistasLista[nombre]) {
@@ -1329,6 +1426,7 @@
         cerrarFicha();
         if (document.body.classList.contains('panel-abogado')) nombre = 'cita';
         if (nombre === 'hoja') nombre = 'documentacion';
+        if (nombre === 'afiliados') nombre = 'usuarios';
         if (!vistas[nombre]) nombre = 'agenda';
         if (cambiandoVista) return;
         if (nombre === vistaActiva) {
@@ -1418,11 +1516,74 @@
 
     var btnAbrirAfiliado = document.getElementById('abrir-afiliado');
     var btnCerrarAfiliado = document.getElementById('cerrar-afiliado');
+    var btnAbrirListaAfiliados = document.getElementById('abrir-lista-afiliados');
+    var btnCerrarListaAfiliados = document.getElementById('cerrar-lista-afiliados');
     if (btnAbrirAfiliado) btnAbrirAfiliado.addEventListener('click', abrirPopupAfiliado);
     if (btnCerrarAfiliado) btnCerrarAfiliado.addEventListener('click', cerrarPopupAfiliado);
+    if (btnAbrirListaAfiliados) btnAbrirListaAfiliados.addEventListener('click', abrirPopupListaAfiliados);
+    if (btnCerrarListaAfiliados) btnCerrarListaAfiliados.addEventListener('click', cerrarPopupListaAfiliados);
     if (popupAfiliado) {
         popupAfiliado.addEventListener('click', function (evento) {
             if (evento.target && evento.target.getAttribute('data-cerrar-afiliado') === '1') cerrarPopupAfiliado();
+        });
+    }
+    if (popupListaAfiliados) {
+        popupListaAfiliados.addEventListener('click', function (evento) {
+            if (evento.target && evento.target.getAttribute('data-cerrar-lista-afiliados') === '1') cerrarPopupListaAfiliados();
+        });
+    }
+
+    var filtroAfiliadosCaja = document.getElementById('afiliados-filtro');
+    var filtroAfiliadosBtn = document.getElementById('afiliados-filtro-btn');
+    var filtroAfiliadosMenu = document.getElementById('afiliados-filtro-menu');
+    var filtroAfiliadosTexto = document.getElementById('afiliados-filtro-texto');
+
+    function cerrarFiltroAfiliados() {
+        if (!filtroAfiliadosCaja || !filtroAfiliadosBtn || !filtroAfiliadosMenu) return;
+        filtroAfiliadosCaja.classList.remove('abierto');
+        filtroAfiliadosBtn.setAttribute('aria-expanded', 'false');
+        filtroAfiliadosMenu.hidden = true;
+    }
+
+    function abrirFiltroAfiliados() {
+        if (!filtroAfiliadosCaja || !filtroAfiliadosBtn || !filtroAfiliadosMenu) return;
+        filtroAfiliadosMenu.hidden = false;
+        filtroAfiliadosCaja.classList.add('abierto');
+        filtroAfiliadosBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function aplicarFiltroEstadoAfiliados(valor) {
+        filtroEstadoAfiliados = valor || '';
+        var etiquetas = { '': 'Antigüedad', mas: 'Más de un año', menos: 'Menos de un año' };
+        if (filtroAfiliadosTexto) filtroAfiliadosTexto.textContent = etiquetas[filtroEstadoAfiliados] || 'Antigüedad';
+        if (filtroAfiliadosMenu) {
+            filtroAfiliadosMenu.querySelectorAll('[data-filtro-estado]').forEach(function (opcion) {
+                var activo = (opcion.getAttribute('data-filtro-estado') || '') === filtroEstadoAfiliados;
+                opcion.classList.toggle('activo', activo);
+                opcion.setAttribute('aria-selected', activo ? 'true' : 'false');
+            });
+        }
+        pintarAfiliados();
+        cerrarFiltroAfiliados();
+    }
+
+    if (filtroAfiliadosBtn && filtroAfiliadosMenu) {
+        filtroAfiliadosBtn.addEventListener('click', function (evento) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            if (filtroAfiliadosCaja && filtroAfiliadosCaja.classList.contains('abierto')) cerrarFiltroAfiliados();
+            else abrirFiltroAfiliados();
+        });
+        filtroAfiliadosMenu.addEventListener('click', function (evento) {
+            var opcion = evento.target.closest('[data-filtro-estado]');
+            if (!opcion) return;
+            evento.preventDefault();
+            aplicarFiltroEstadoAfiliados(opcion.getAttribute('data-filtro-estado') || '');
+        });
+        document.addEventListener('click', function (evento) {
+            if (!filtroAfiliadosCaja || !filtroAfiliadosCaja.classList.contains('abierto')) return;
+            if (filtroAfiliadosCaja.contains(evento.target)) return;
+            cerrarFiltroAfiliados();
         });
     }
     if (formAfiliado) {
@@ -1432,6 +1593,8 @@
             var cedula = ((document.getElementById('afiliado-cedula') || {}).value || '').replace(/\D/g, '');
             var nombre = ((document.getElementById('afiliado-nombre') || {}).value || '').trim();
             var correo = ((document.getElementById('afiliado-correo') || {}).value || '').trim();
+            var sede = ((document.getElementById('afiliado-sede') || {}).value || '').trim();
+            var estado = ((document.getElementById('afiliado-estado') || {}).value || '').trim();
             if (!/^[0-9]{9}$/.test(cedula)) {
                 mostrarAviso('La cédula debe tener 9 dígitos.', true);
                 return;
@@ -1447,6 +1610,8 @@
             cuerpo.append('cedula', cedula);
             cuerpo.append('nombre_completo', nombre);
             cuerpo.append('correo', correo);
+            cuerpo.append('sede_regional', sede);
+            cuerpo.append('estado', estado);
             var fotoInput = document.getElementById('afiliado-foto');
             if (fotoInput && fotoInput.files && fotoInput.files[0]) {
                 cuerpo.append('foto', fotoInput.files[0]);
@@ -1471,8 +1636,24 @@
         });
     }
     document.addEventListener('keydown', function (evento) {
-        if (evento.key === 'Escape' && popupAfiliado && !popupAfiliado.hidden) cerrarPopupAfiliado();
+        if (evento.key !== 'Escape') return;
+        if (filtroAfiliadosCaja && filtroAfiliadosCaja.classList.contains('abierto')) {
+            cerrarFiltroAfiliados();
+            return;
+        }
+        if (popupAfiliado && !popupAfiliado.hidden) cerrarPopupAfiliado();
+        if (popupListaAfiliados && !popupListaAfiliados.hidden) cerrarPopupListaAfiliados();
     });
+
+    if (listaUsuarios) {
+        listaUsuarios.addEventListener('click', function (evento) {
+            var tarjeta = evento.target.closest('.sol-tarjeta');
+            if (!tarjeta) return;
+            var item = tarjeta.closest('.sol-item');
+            if (!item) return;
+            abrirFicha(item.getAttribute('data-sol-tipo'), item.getAttribute('data-sol-id'));
+        });
+    }
 
     if (listaAfiliados) {
         listaAfiliados.addEventListener('click', function (evento) {
@@ -1551,7 +1732,9 @@
     }
 
     function abrirFicha(tipo, id) {
-        var lista = tipo === 'afiliados' ? (datos.afiliados || []) : (datos[tipo] || []);
+        var lista = tipo === 'afiliados'
+            ? (datos.afiliados || [])
+            : (tipo === 'usuarios' ? (datos.usuarios || []) : (datos[tipo] || []));
         var fila = null;
         lista.forEach(function (item) {
             if (String(item.id) === String(id)) fila = item;
@@ -1563,27 +1746,44 @@
         var acciones = document.getElementById('sol-ficha-acciones');
         if (!fila || !caja || !meta || !acciones) return;
         var estado = fila.estado || 'pendiente';
-        var ya = tipo !== 'afiliados' && estado !== 'pendiente';
+        var ya = tipo !== 'afiliados' && tipo !== 'usuarios' && estado !== 'pendiente';
         var tieneCuenta = parseInt(fila.cuenta_web, 10) === 1;
         caja.setAttribute('data-sol-tipo', tipo);
         caja.setAttribute('data-sol-id', String(id));
         caja.setAttribute('data-sol-cuenta', tieneCuenta ? '1' : '0');
         caja.setAttribute('data-sol-editar', '0');
         caja.classList.toggle('sol-ficha-cita', tipo === 'cita');
-        if (tipoNodo) tipoNodo.textContent = tipo === 'afiliados' ? 'Afiliado' : etiquetaTipo(tipo);
-        if (titulo) {
-            titulo.textContent = tipo === 'afiliados'
-                ? ((fila.nombre_completo || 'Sin nombre') + (fila.cedula ? ' · ' + fila.cedula : ''))
-                : tituloFila(tipo, fila);
+        if (tipoNodo) {
+            tipoNodo.textContent = tipo === 'afiliados' ? 'Afiliado' : (tipo === 'usuarios' ? 'Usuario' : etiquetaTipo(tipo));
         }
-        var partes = tipo === 'afiliados'
-            ? [
+        if (titulo) {
+            if (tipo === 'afiliados' || tipo === 'usuarios') {
+                titulo.textContent = ((fila.nombre_completo || fila.nombre || 'Sin nombre') + (fila.cedula ? ' · ' + fila.cedula : ''));
+            } else {
+                titulo.textContent = tituloFila(tipo, fila);
+            }
+        }
+        var partes;
+        if (tipo === 'afiliados') {
+            partes = [
                 { et: 'Nombre', val: fila.nombre_completo || '—' },
                 { et: 'Cédula', val: fila.cedula || '—' },
-                { et: 'Correo', val: fila.correo || '—' }
-            ]
-            : metaFila(tipo, fila);
-        if (tipo === 'afiliados' && fila.creado_en) partes.push({ et: 'Registrado', val: fila.creado_en });
+                { et: 'Correo', val: fila.correo || '—' },
+                { et: 'Sede / Regional', val: fila.sede_regional || '—' },
+                { et: 'Estado', val: fila.estado || '—' }
+            ];
+            if (fila.creado_en) partes.push({ et: 'Registrado', val: fila.creado_en });
+        } else if (tipo === 'usuarios') {
+            partes = [
+                { et: 'Nombre', val: fila.nombre || fila.nombre_completo || '—' },
+                { et: 'Cédula', val: fila.cedula || '—' },
+                { et: 'Correo', val: fila.correo || '—' },
+                { et: 'Afiliado', val: parseInt(fila.es_afiliado, 10) === 1 ? 'Sí' : 'No' }
+            ];
+            if (fila.creado_en) partes.push({ et: 'Alta', val: fila.creado_en });
+        } else {
+            partes = metaFila(tipo, fila);
+        }
         var html = '';
         if (tipo === 'cita') {
             html = htmlGruposCita(fila, estado);
@@ -1607,6 +1807,11 @@
             html += '<input type="file" class="afiliado-foto-input" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif" data-id="' + escapar(String(id)) + '">';
             html += '</label>';
             html += '</div></div>';
+        } else if (tipo === 'usuarios') {
+            partes.forEach(function (m) {
+                html += '<p class="item-meta-fila"><span class="item-meta-etiqueta">' + escapar(m.et) + '</span>';
+                html += '<span class="item-meta-valor">' + escapar(m.val) + '</span></p>';
+            });
         } else {
             html += '<p class="sol-badge ' + claseEstado(estado) + '">' + escapar(textoEstadoFila(fila)) + '</p>';
             partes.forEach(function (m) {
@@ -1615,10 +1820,12 @@
             });
         }
         meta.innerHTML = html;
-        caja.classList.toggle('sol-ficha-afiliado', tipo === 'afiliados');
+        caja.classList.toggle('sol-ficha-afiliado', tipo === 'afiliados' || tipo === 'usuarios');
         var acc = '';
         if (tipo === 'afiliados') {
             acc += '<button type="button" class="btn-atajo btn-atajo-secundario sol-eliminar-afiliado">Quitar para siempre</button>';
+        } else if (tipo === 'usuarios') {
+            acc += '';
         } else {
             if (!tieneCuenta) {
                 acc += '<p class="sol-sin-cuenta">No se envió con la cuenta iniciada: la respuesta queda en el panel, no en Mis mensajes.</p>';
@@ -1923,6 +2130,7 @@
 
     enlazarBuscador('buscar-agenda', 'agenda', function () { pintarInicio(); });
     enlazarBuscador('buscar-afilacion', 'afilacion', function () { pintarLista('afilacion'); });
+    enlazarBuscador('buscar-usuarios', 'usuarios', function () { pintarUsuarios(); });
     enlazarBuscador('buscar-afiliados', 'afiliados', function () { pintarAfiliados(); });
     enlazarBuscador('buscar-cita', 'cita', function () { pintarLista('cita'); });
     enlazarBuscador('buscar-contacto', 'contacto', function () { pintarLista('contacto'); });
@@ -1937,6 +2145,7 @@
         var hash = (location.hash || '#agenda').replace('#', '');
         if (hash === 'horario') hash = 'cita';
         if (hash === 'hoja') hash = 'documentacion';
+        if (hash === 'afiliados') hash = 'usuarios';
         return vistas[hash] ? hash : 'agenda';
     }
 

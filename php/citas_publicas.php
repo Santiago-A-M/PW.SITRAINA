@@ -22,55 +22,102 @@ function citas_responder($codigo, $datos) {
 }
 
 function citas_afiliado_sesion() {
-    $correo = sitraina_correo_cuenta();
-    if ($correo === '') {
+    $cedulaSesion = sitraina_cedula_cuenta();
+    if ($cedulaSesion === '') {
         return null;
     }
     $db = abrir_afiliados();
     if (!$db) {
         return false;
     }
-    $consulta = $db->prepare('SELECT cedula, nombre_completo, correo FROM Cuenta WHERE correo = ? LIMIT 1');
+    $consulta = $db->prepare('SELECT cedula, nombre_completo, correo, estado FROM Cuenta WHERE cedula = ? LIMIT 1');
     if (!$consulta) {
+        $consulta = $db->prepare('SELECT cedula, nombre_completo, correo FROM Cuenta WHERE cedula = ? LIMIT 1');
+        if (!$consulta) {
+            $db->close();
+            return false;
+        }
+        $consulta->bind_param('s', $cedulaSesion);
+        $consulta->execute();
+        $cedula = '';
+        $nombre = '';
+        $correoGuardado = '';
+        $consulta->bind_result($cedula, $nombre, $correoGuardado);
+        $hay = $consulta->fetch();
+        $consulta->close();
         $db->close();
-        return false;
+        if (!$hay) {
+            return null;
+        }
+        $correo = strtolower(trim((string) $correoGuardado));
+        if ($correo === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            $correo = sitraina_correo_cuenta();
+        }
+        return [
+            'cedula' => preg_replace('/\D/', '', (string) $cedula),
+            'nombre' => trim((string) $nombre),
+            'correo' => $correo,
+            'estado' => '',
+        ];
     }
-    $consulta->bind_param('s', $correo);
+    $consulta->bind_param('s', $cedulaSesion);
     $consulta->execute();
     $cedula = '';
     $nombre = '';
     $correoGuardado = '';
-    $consulta->bind_result($cedula, $nombre, $correoGuardado);
+    $estado = '';
+    $consulta->bind_result($cedula, $nombre, $correoGuardado, $estado);
     $hay = $consulta->fetch();
     $consulta->close();
     $db->close();
     if (!$hay) {
         return null;
     }
+    $correo = strtolower(trim((string) $correoGuardado));
+    if ($correo === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        $correo = sitraina_correo_cuenta();
+    }
     return [
         'cedula' => preg_replace('/\D/', '', (string) $cedula),
         'nombre' => trim((string) $nombre),
-        'correo' => strtolower(trim((string) $correoGuardado)),
+        'correo' => $correo,
+        'estado' => trim((string) $estado),
     ];
+}
+
+function citas_mensaje_marca($marca) {
+    if ($marca === 'sin_sesion') {
+        return 'Iniciá sesión para reservar una cita.';
+    }
+    if ($marca === 'sin_cedula') {
+        return 'Tu cuenta no tiene cédula. Completá la cédula en tu cuenta para poder pedir cita.';
+    }
+    if ($marca === 'menor_anio') {
+        return 'Todavía no cumplís un año de afiliación. Para gestionar una cita de asesoría, comunicate con Secretaría.';
+    }
+    if ($marca === 'error') {
+        return 'No se pudo revisar la afiliación. Intentá de nuevo más tarde.';
+    }
+    return 'La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA.';
 }
 
 function citas_exigir_afiliado() {
     $marca = sitraina_marca_afiliacion();
     if ($marca === 'sin_sesion') {
-        citas_responder(401, ['ok' => false, 'mensaje' => 'Iniciá sesión para reservar una cita.']);
+        citas_responder(401, ['ok' => false, 'mensaje' => citas_mensaje_marca($marca), 'motivo' => $marca]);
     }
     if ($marca === 'error') {
-        citas_responder(500, ['ok' => false, 'mensaje' => 'No se pudo revisar la afiliación. Intentá de nuevo más tarde.']);
+        citas_responder(500, ['ok' => false, 'mensaje' => citas_mensaje_marca($marca), 'motivo' => $marca]);
     }
     if ($marca !== 'si') {
-        citas_responder(403, ['ok' => false, 'mensaje' => 'La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA.']);
+        citas_responder(403, ['ok' => false, 'mensaje' => citas_mensaje_marca($marca), 'motivo' => $marca]);
     }
     $afiliado = citas_afiliado_sesion();
     if ($afiliado === false) {
         citas_responder(500, ['ok' => false, 'mensaje' => 'No pudimos revisar tu afiliación. Intentá de nuevo más tarde.']);
     }
     if ($afiliado === null || $afiliado['cedula'] === '' || $afiliado['nombre'] === '') {
-        citas_responder(403, ['ok' => false, 'mensaje' => 'La asesoría legal se brinda únicamente a las personas afiliadas a SITRAINA.']);
+        citas_responder(403, ['ok' => false, 'mensaje' => citas_mensaje_marca('no'), 'motivo' => 'no']);
     }
     return $afiliado;
 }
@@ -177,7 +224,7 @@ function citas_avisar($afiliado, $cuando, $modalidadTexto, $motivo) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $marca = sitraina_marca_afiliacion();
-    $afiliado = $marca === 'si' ? citas_afiliado_sesion() : null;
+    $afiliado = ($marca === 'si' || $marca === 'menor_anio') ? citas_afiliado_sesion() : null;
     $puedeReservar = $marca === 'si' && is_array($afiliado) && $afiliado['cedula'] !== '' && $afiliado['nombre'] !== '';
     $calendario = calendario_reserva_publica();
     if (!$calendario) {
@@ -187,7 +234,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'ok' => true,
         'puede_reservar' => $puedeReservar,
         'sesion' => $marca !== 'sin_sesion',
-        'afiliado' => $marca === 'si',
+        'afiliado' => $marca === 'si' || $marca === 'menor_anio',
+        'motivo' => $marca,
+        'mensaje' => $puedeReservar ? '' : citas_mensaje_marca($marca),
         'token' => sitraina_usuario_token(),
         'nombre' => $puedeReservar ? $afiliado['nombre'] : '',
         'correo' => $puedeReservar ? $afiliado['correo'] : '',

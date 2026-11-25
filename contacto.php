@@ -23,7 +23,7 @@ function pagina_contacto($tipo, $titulo, $mensaje) {
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>' . $tituloSeguro . '</title>';
     echo '<link rel="icon" type="image/png" href="img/favicon-logo.png?v=1">';
-    echo '<link rel="stylesheet" href="css/avisos.css?v=1.9">';
+    echo '<link rel="stylesheet" href="css/avisos.css?v=2.0">';
     $tipoAviso = ($tipo === 'exito' || $tipo === 'sesion') ? $tipo : 'error';
     echo '</head><body data-sit-aviso="' . $tipoAviso . '" data-sit-titulo="' . $tituloSeguro . '" data-sit-texto="' . $mensajeSeguro . '">';
     echo '<main style="padding:120px 20px"><p><a href="index.html#contacto">Volver al inicio</a></p></main>';
